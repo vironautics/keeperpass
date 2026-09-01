@@ -21,7 +21,7 @@ jobs:
           scan-type: fs
           scan-ref: .
           format: template
-          template: "@$HOME/.local/bin/trivy-bin/contrib/html.tpl"
+          template: "@/home/runner/.local/bin/trivy-bin/contrib/html.tpl"
           output: trivy-report.html
           severity: CRITICAL,HIGH,MEDIUM,LOW
           exit-code: 0
