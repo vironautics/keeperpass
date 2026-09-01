@@ -1,6 +1,6 @@
 services:
     web:
-        image: ghcr.io/vironauticsgroup/keeperpass/web:latest
+        image: ghcr.io/vironautics/keeperpass/web:latest
         container_name: keeperpass-web
         restart: always
         ports:
@@ -9,7 +9,7 @@ services:
             - keeperpass-network
 
     welcome:
-        image: ghcr.io/vironauticsgroup/keeperpass/welcome:latest
+        image: ghcr.io/vironautics/keeperpass/welcome:latest
         container_name: keeperpass-welcome
         restart: always
         ports:
