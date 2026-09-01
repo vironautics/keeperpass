@@ -1,0 +1,32 @@
+<div hlmCard>
+  <div hlmCardHeader>
+    <h2 hlmCardTitle class="text-base">{{ 'settings.language.title' | t }}</h2>
+    <p hlmCardDescription>{{ 'settings.language.hint' | t }}</p>
+  </div>
+
+  <div hlmCardContent>
+    <hlm-field>
+      <label hlmFieldLabel for="locale-select">{{ 'settings.language.label' | t }}</label>
+      <!--
+        `[itemToString]` because the value is a locale code: the trigger stringifies the
+        value, and the options only exist while the panel is open, so a closed trigger
+        would read "en" instead of "English".
+      -->
+      <hlm-select
+        id="locale-select"
+        class="locale-select"
+        [formControl]="control"
+        [itemToString]="localeLabel"
+      >
+        <hlm-select-trigger class="w-full sm:w-64">
+          <hlm-select-value placeholder="Language" />
+        </hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          @for (option of localeOptions; track option.value) {
+            <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
+          }
+        </hlm-select-content>
+      </hlm-select>
+    </hlm-field>
+  </div>
+</div>

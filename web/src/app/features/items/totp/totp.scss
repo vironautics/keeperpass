@@ -1,0 +1,37 @@
+:host {
+  display: flex;
+  align-items: center;
+  font: inherit;
+  white-space: normal;
+}
+
+.code {
+  user-select: text;
+}
+
+.countdown {
+  width: 1em;
+  height: 1em;
+  margin-left: 0.7em;
+  flex: none;
+  /* The ring is drawn with a stroke thick enough to spill past the corners of
+     its 10x10 viewBox, which is what makes a countdown this small still legible.
+     Rounding the box crops that spill back into a circle; without it the ring
+     reads as a square with a bite out of it. */
+  border-radius: 100%;
+}
+
+.countdown circle {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 8;
+  stroke-dasharray: 25;
+  transform: rotate(-90deg);
+  transform-origin: center;
+  transition: stroke-dashoffset 1s linear;
+}
+
+.countdown circle.track {
+  opacity: 0.2;
+  stroke-dashoffset: 0;
+}

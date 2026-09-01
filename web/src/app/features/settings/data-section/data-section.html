@@ -1,0 +1,78 @@
+<div hlmCard>
+  <div hlmCardHeader>
+    <h2 hlmCardTitle class="text-base">{{ 'settings.data.title' | t }}</h2>
+  </div>
+
+  <div hlmCardContent class="flex flex-col gap-6">
+    <div class="flex flex-wrap gap-2">
+      <button hlmBtn variant="outline" size="sm" class="import-button" (click)="chooseFile()">
+        <app-icon name="import" />
+        {{ 'settings.data.import' | t }}
+      </button>
+
+      <button hlmBtn variant="outline" size="sm" class="export-button" (click)="startExport()">
+        <app-icon name="export" />
+        {{ 'settings.data.export' | t }}
+      </button>
+    </div>
+
+    <!--
+      What left the vault, and when. Kept in the vault itself (see
+      `VaultStore.recordExport`), so it is the same list on every device and it is
+      behind the same encryption as the data it describes.
+    -->
+    <div class="flex flex-col gap-2">
+      <h3 class="text-muted-foreground text-xs font-semibold tracking-[0.08em] uppercase">
+        {{ 'settings.data.history' | t }}
+      </h3>
+
+      @if (exports().length) {
+        <ul class="divide-y rounded-lg border">
+          @for (record of exports(); track record.key) {
+            <li>
+              <div hlmItem size="sm" class="export-row rounded-none! border-transparent">
+                <hlm-item-media variant="icon" class="text-accent-strong size-5">
+                  <app-icon name="export" />
+                </hlm-item-media>
+
+                <hlm-item-content class="min-w-0">
+                  <hlm-item-title class="min-w-0 max-w-full">
+                    <span class="min-w-0 truncate">{{ record.when }}</span>
+                  </hlm-item-title>
+                  <hlm-item-description class="min-w-0">
+                    <span class="min-w-0 truncate text-xs">
+                      {{ record.scope }} · {{ record.itemCount }}
+                      {{ 'settings.data.historyItems' | t }}
+                    </span>
+                  </hlm-item-description>
+                </hlm-item-content>
+
+                <hlm-item-actions>
+                  <span hlmBadge variant="secondary" class="shrink-0 uppercase">
+                    {{ record.format }}
+                  </span>
+                </hlm-item-actions>
+              </div>
+            </li>
+          }
+        </ul>
+
+        <p class="text-muted-foreground text-xs">{{ 'settings.data.historyHint' | t }}</p>
+      } @else {
+        <p class="text-muted-foreground text-sm">{{ 'settings.data.historyEmpty' | t }}</p>
+      }
+    </div>
+  </div>
+</div>
+
+<!-- Hidden picker driven by the Import button, so the control can be styled. -->
+<input
+  #filePicker
+  type="file"
+  class="sr-only"
+  [accept]="acceptedFiles"
+  (change)="onFileChosen($event)"
+/>
+
+<app-import-dialog [(open)]="importing" [file]="chosenFile()" />
+<app-export-dialog [(open)]="exporting" />

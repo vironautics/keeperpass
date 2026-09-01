@@ -1,0 +1,23 @@
+/**
+ * Sized through a custom property rather than a plain `height`, so a caller can
+ * set it without racing this `:host` rule in the cascade.
+ */
+:host {
+  display: block;
+  height: var(--logo-height, 3em);
+}
+
+/**
+ * Drawn as a mask filled with `currentColor` rather than an <img>, so one asset
+ * serves both themes and the colour follows the surrounding context.
+ * The aspect ratio comes from the artwork's viewBox (1151 x 217).
+ */
+.mark {
+  display: block;
+  height: 100%;
+  aspect-ratio: 1151 / 217;
+  margin: 0 auto;
+  background-color: currentColor;
+  mask: url('/logo.svg') no-repeat center / contain;
+  -webkit-mask: url('/logo.svg') no-repeat center / contain;
+}

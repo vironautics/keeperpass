@@ -1,0 +1,288 @@
+<!--
+  Two headers, one at a time — the title with its actions, or the selection toolbar.
+  Both are the same shape, so switching between them does not move the list underneath.
+-->
+@if (!selecting()) {
+  <header class="flex shrink-0 items-center gap-1 border-b p-2">
+    <!--
+      The sidebar is a sheet below `md`, so it needs one obvious way in. From `md` up the
+      sidebar column is permanently on screen and its own header owns the toggle.
+    -->
+    <button hlmSidebarTrigger class="md:hidden" srOnlyText="Open navigation menu"></button>
+
+    <h1 class="flex min-w-0 flex-1 items-center gap-2 px-1 text-sm font-semibold">
+      <app-icon name="vault" class="text-accent-strong text-[0.8125rem]" />
+      <span class="min-w-0 truncate">My Vaults</span>
+    </h1>
+
+    <div class="flex shrink-0 items-center">
+      <button
+        hlmBtn
+        variant="ghost"
+        size="icon-sm"
+        hlmTooltip="Select multiple vaults"
+        aria-label="Select multiple vaults"
+        [disabled]="isEmpty()"
+        (click)="startSelecting()"
+      >
+        <app-icon name="checkbox-checked" />
+      </button>
+
+      <button
+        hlmBtn
+        variant="ghost"
+        size="icon-sm"
+        hlmTooltip="New vault"
+        aria-label="New vault"
+        (click)="creatingVault.set(true)"
+      >
+        <app-icon name="add" />
+      </button>
+    </div>
+  </header>
+} @else {
+  <header class="bg-accent/40 flex shrink-0 items-center gap-1 border-b p-2">
+    <button
+      hlmBtn
+      variant="ghost"
+      size="icon-sm"
+      aria-label="Leave selection mode"
+      (click)="cancelSelecting()"
+    >
+      <app-icon name="cancel" />
+    </button>
+
+    <button
+      hlmBtn
+      variant="ghost"
+      size="icon-sm"
+      hlmTooltip="Select or deselect all"
+      aria-label="Select or deselect all"
+      (click)="toggleSelectAll()"
+    >
+      <app-icon name="select-all" />
+    </button>
+
+    <span class="min-w-0 flex-1 truncate px-1 text-center text-sm font-semibold">
+      {{ selectedCount() }} {{ selectedCount() === 1 ? 'vault' : 'vaults' }} selected
+    </span>
+
+    <button
+      hlmBtn
+      variant="ghost"
+      size="icon-sm"
+      class="text-destructive"
+      hlmTooltip="Delete selected vaults"
+      aria-label="Delete selected vaults"
+      [disabled]="!selectedCount()"
+      (click)="requestBulkDelete()"
+    >
+      <app-icon name="delete" />
+    </button>
+  </header>
+}
+
+<!--
+  The list is a column, not the full width of the window: a row is a name and two
+  numbers, and on a wide screen its actions would end up an inch of empty space away
+  from the name they belong to.
+-->
+<main class="min-h-0 flex-1 overflow-y-auto">
+  <div class="mx-auto w-full max-w-3xl p-4 sm:p-6">
+    @if (isEmpty()) {
+      <div hlmEmpty class="py-12">
+        <hlm-empty-header>
+          <hlm-empty-media variant="icon">
+            <app-icon name="vault" class="text-2xl" />
+          </hlm-empty-media>
+          <div hlmEmptyTitle>You only have the default vault</div>
+          <div hlmEmptyDescription>
+            A second vault keeps a set of items apart — work from personal, or shared from private.
+          </div>
+        </hlm-empty-header>
+
+        <hlm-empty-content>
+          <button hlmBtn variant="outline" size="sm" (click)="creatingVault.set(true)">
+            <app-icon name="add" />
+            New Vault
+          </button>
+        </hlm-empty-content>
+      </div>
+    } @else {
+      <ul class="bg-card divide-y overflow-hidden rounded-lg border">
+        @for (vault of vaultRows(); track vault.id) {
+          <li>
+            <div
+              hlmItem
+              size="sm"
+              class="group/row relative rounded-none! border-transparent hover:bg-muted/40"
+            >
+              @if (selecting()) {
+                <!--
+                  One control for the whole row: the checkbox's own button carries a
+                  stretched pseudo-element, so the row keeps its large hit area without a
+                  second, redundant control beside it — as `app-item-row` does.
+                -->
+                <hlm-checkbox
+                  class="before:absolute before:inset-0 before:content-['']"
+                  [checked]="isSelected(vault.id)"
+                  [aria-label]="'Select ' + vault.name"
+                  (checkedChange)="toggleSelection(vault.id)"
+                />
+              }
+
+              <hlm-item-media variant="icon" class="text-accent-strong size-5">
+                <app-icon name="vault" />
+              </hlm-item-media>
+
+              <hlm-item-content class="min-w-0">
+                <hlm-item-title class="min-w-0 max-w-full">
+                  <span class="min-w-0 truncate">{{ vault.name }}</span>
+                </hlm-item-title>
+
+                <!--
+                  What is actually worth knowing about a vault: how much is in it, and
+                  how long it has been there.
+                -->
+                <hlm-item-description class="min-w-0">
+                  <span class="text-xs">
+                    {{ vault.itemCount }} {{ vault.itemCount === 1 ? 'item' : 'items' }}
+                    @if (vault.created) {
+                      · created {{ vault.created }}
+                    }
+                  </span>
+                </hlm-item-description>
+              </hlm-item-content>
+
+              @if (!selecting()) {
+                <hlm-item-actions
+                  class="opacity-60 transition-opacity group-focus-within/row:opacity-100 group-hover/row:opacity-100"
+                >
+                  <button
+                    hlmBtn
+                    variant="ghost"
+                    size="icon-sm"
+                    class="rename-vault"
+                    [hlmTooltip]="'Rename ' + vault.name"
+                    [attr.aria-label]="'Rename ' + vault.name"
+                    (click)="startRenaming(vault.id, vault.name)"
+                  >
+                    <app-icon name="edit" />
+                  </button>
+
+                  <button
+                    hlmBtn
+                    variant="ghost"
+                    size="icon-sm"
+                    class="delete-vault text-destructive"
+                    [hlmTooltip]="'Delete ' + vault.name"
+                    [attr.aria-label]="'Delete ' + vault.name"
+                    (click)="requestDelete(vault.id, vault.name)"
+                  >
+                    <app-icon name="delete" />
+                  </button>
+                </hlm-item-actions>
+              }
+            </div>
+          </li>
+        }
+      </ul>
+
+      <!--
+        The personal vault is listed too, but as a footnote rather than a row: it cannot
+        be renamed or deleted, so a row for it would carry two disabled buttons.
+      -->
+      @if (personalSummary(); as personal) {
+        <p class="text-muted-foreground mt-3 px-1 text-xs">
+          {{ personal }}
+        </p>
+      }
+    }
+  </div>
+</main>
+
+<!--
+  Driven from signals rather than triggers: what opens them is a row's action button or
+  a header action. Naming is an `hlm-dialog`; the two destructive confirmations are
+  `hlm-alert-dialog`s, as everywhere else in this app.
+-->
+<app-create-vault-dialog [(open)]="creatingVault" />
+
+<hlm-dialog
+  [state]="renamingVault() ? 'open' : 'closed'"
+  (stateChanged)="$event === 'closed' && cancelRename()"
+>
+  <hlm-dialog-content *hlmDialogPortal class="sm:max-w-sm" aria-label="Rename Vault">
+    <hlm-dialog-header>
+      <h3 hlmDialogTitle>Rename Vault</h3>
+      <p hlmDialogDescription>The items in it are not affected.</p>
+    </hlm-dialog-header>
+
+    <hlm-field>
+      <label hlmFieldLabel for="rename-vault-name">Vault name</label>
+      <input
+        hlmInput
+        id="rename-vault-name"
+        class="rename-input w-full"
+        [formControl]="renameControl"
+        autocomplete="off"
+        (keydown.enter)="confirmRename()"
+      />
+      @if (renameIsDuplicate()) {
+        <hlm-field-error forceShow>
+          A vault named “{{ renameControl.value.trim() }}” already exists.
+        </hlm-field-error>
+      }
+    </hlm-field>
+
+    <hlm-dialog-footer>
+      <button hlmBtn variant="outline" (click)="cancelRename()">Cancel</button>
+      <button hlmBtn [disabled]="!canRename()" (click)="confirmRename()">Save</button>
+    </hlm-dialog-footer>
+  </hlm-dialog-content>
+</hlm-dialog>
+
+<hlm-alert-dialog
+  [state]="deletingVault() ? 'open' : 'closed'"
+  (stateChanged)="$event === 'closed' && cancelDelete()"
+>
+  <hlm-alert-dialog-content *hlmAlertDialogPortal aria-label="Delete Vault">
+    <hlm-alert-dialog-header>
+      <h3 hlmAlertDialogTitle>Delete “{{ deletingVault()?.name }}”?</h3>
+      <p hlmAlertDialogDescription>
+        Its {{ deletingCount() }} {{ deletingCount() === 1 ? 'item' : 'items' }}
+        {{ deletingCount() === 1 ? 'moves' : 'move' }} to My Vault. This cannot be undone.
+      </p>
+    </hlm-alert-dialog-header>
+
+    <hlm-alert-dialog-footer>
+      <button hlmAlertDialogCancel (click)="cancelDelete()">Cancel</button>
+      <button hlmAlertDialogAction variant="destructive" (click)="confirmDelete()">Delete</button>
+    </hlm-alert-dialog-footer>
+  </hlm-alert-dialog-content>
+</hlm-alert-dialog>
+
+<hlm-alert-dialog
+  [state]="bulkDeleteRequested() ? 'open' : 'closed'"
+  (stateChanged)="$event === 'closed' && cancelBulkDelete()"
+>
+  <hlm-alert-dialog-content *hlmAlertDialogPortal aria-label="Delete Vaults">
+    <hlm-alert-dialog-header>
+      <h3 hlmAlertDialogTitle>
+        Delete {{ selectedCount() }} {{ selectedCount() === 1 ? 'vault' : 'vaults' }}?
+      </h3>
+      <p hlmAlertDialogDescription>
+        Everything in them — {{ selectedItemCount() }}
+        {{ selectedItemCount() === 1 ? 'item' : 'items' }} — moves to My Vault. This cannot be
+        undone.
+      </p>
+    </hlm-alert-dialog-header>
+
+    <hlm-alert-dialog-footer>
+      <button hlmAlertDialogCancel (click)="cancelBulkDelete()">Cancel</button>
+      <button hlmAlertDialogAction variant="destructive" (click)="confirmBulkDelete()">
+        Delete
+      </button>
+    </hlm-alert-dialog-footer>
+  </hlm-alert-dialog-content>
+</hlm-alert-dialog>

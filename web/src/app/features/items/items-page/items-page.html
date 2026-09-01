@@ -1,0 +1,27 @@
+<!--
+  Master/detail.
+
+  Wide: the list is a fixed column beside the detail pane. Narrow (≤700px, the width
+  at which the two no longer fit side by side): both fill the page and the detail
+  slides in over the list, driven by `data-detail` on this wrapper — a `group-data`
+  variant rather than a class binding, since the class name would need brackets that
+  Angular's parser will not take.
+
+  700px rather than a Tailwind breakpoint because it is this pane's own threshold: it
+  is where 25rem of list plus a readable detail stops fitting.
+-->
+<div class="group/pane flex h-full" [attr.data-detail]="hasSelection()">
+  <app-items-list
+    class="bg-card flex min-h-0 w-full max-w-100 flex-col border-e max-[700px]:absolute max-[700px]:inset-0 max-[700px]:max-w-none max-[700px]:border-e-0 max-[700px]:transition-transform max-[700px]:duration-300 max-[700px]:group-data-[detail=true]/pane:-translate-x-1/2"
+  />
+
+  <!--
+    Positioning context for the detail route, which fills it from its own `:host`.
+    Above the list on a narrow screen, so the slide-over covers it.
+  -->
+  <div
+    class="relative flex-1 overflow-hidden max-[700px]:absolute max-[700px]:inset-0 max-[700px]:z-10 max-[700px]:translate-x-full max-[700px]:shadow-[-1px_0_6px_-3px_rgb(0_0_0/30%)] max-[700px]:transition-transform max-[700px]:duration-300 max-[700px]:group-data-[detail=true]/pane:translate-x-0"
+  >
+    <router-outlet />
+  </div>
+</div>

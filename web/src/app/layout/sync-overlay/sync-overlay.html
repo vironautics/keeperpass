@@ -1,0 +1,68 @@
+<!--
+  `disableClose` is the whole point of this dialog: while a save is in flight there is
+  deliberately no way out — no Escape, no backdrop click, and no close button
+  (`[showCloseButton]="false"`), because anything the user could touch mid-save is
+  something that could interrupt it. brain routes every dismissal through
+  `BrnDialog.dismiss()`, which refuses while `disableClose` is set.
+
+  `[state]` is driven by the service and never written back: what closes this is the save
+  finishing or the error being dismissed, not the dialog itself.
+-->
+<hlm-dialog [state]="open() ? 'open' : 'closed'" disableClose>
+  <hlm-dialog-content
+    *hlmDialogPortal
+    [showCloseButton]="false"
+    class="sm:max-w-sm"
+    aria-label="Saving your vault"
+  >
+    @if (syncing()) {
+      <div class="flex flex-col items-center gap-4 py-2 text-center">
+        <!--
+          Sized with `text-*`, never `size-*`. helm sizes the glyph by *font-size*
+          (`text-[length:--spacing(4)]`) and spins the host box: a `size-6` host around a
+          16px glyph rotates about the box's centre, 5px away from the glyph's own, so the
+          glyph orbits that point as well as turning. `!` because this is the same
+          property helm sets.
+        -->
+        <hlm-spinner class="text-2xl!" />
+
+        @if (uploading()) {
+          <!--
+            Two different waits, said apart: encrypting is real work with nothing to
+            measure, the upload has a byte count.
+          -->
+          <div class="flex w-full flex-col gap-1.5">
+            <hlm-progress [value]="percent()" class="h-1.5">
+              <hlm-progress-indicator />
+            </hlm-progress>
+            <p class="text-muted-foreground text-xs">Saving to Google Drive… {{ percent() }}%</p>
+          </div>
+        } @else {
+          <p class="text-muted-foreground text-xs">Encrypting your vault…</p>
+        }
+      </div>
+    } @else if (error()) {
+      <hlm-dialog-header>
+        <h3 hlmDialogTitle>Your vault was not saved</h3>
+      </hlm-dialog-header>
+
+      <!-- Two columns by hand: see the note on the same alert in `start-page.html`. -->
+      <div hlmAlert variant="destructive" class="grid-cols-[auto_1fr] gap-x-2.5!" role="alert">
+        <app-icon name="alert" class="translate-y-0.5" />
+        <p hlmAlertDescription class="col-start-2">{{ error() }}</p>
+      </div>
+
+      <!--
+        Retry and Dismiss are the only ways out, and neither is automatic: a silent
+        auto-close is indistinguishable from a successful save.
+      -->
+      <hlm-dialog-footer>
+        <button hlmBtn variant="outline" class="dismiss-sync" (click)="dismiss()">Dismiss</button>
+        <button hlmBtn class="retry-sync" (click)="retry()">
+          <app-icon name="refresh" />
+          Retry
+        </button>
+      </hlm-dialog-footer>
+    }
+  </hlm-dialog-content>
+</hlm-dialog>

@@ -1,0 +1,70 @@
+<ul hlmSidebarMenu>
+  <li hlmSidebarMenuItem>
+    <button
+      hlmSidebarMenuButton
+      size="lg"
+      [tooltip]="label()"
+      [hlmDropdownMenuTrigger]="menu"
+      [side]="menuSide()"
+      align="end"
+    >
+      <hlm-avatar class="rounded-lg">
+        <span class="bg-primary text-primary-foreground rounded-lg" hlmAvatarFallback>
+          {{ initials() }}
+        </span>
+      </hlm-avatar>
+      <div class="grid flex-1 text-left text-sm leading-tight">
+        <span class="truncate font-medium">{{ label() }}</span>
+        @if (email()) {
+          <span class="truncate text-xs">{{ email() }}</span>
+        }
+      </div>
+      <app-icon name="chevron-down" class="ms-auto" />
+    </button>
+  </li>
+</ul>
+
+<ng-template #menu>
+  <hlm-dropdown-menu class="min-w-56 rounded-lg">
+    <hlm-dropdown-menu-label>
+      <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+        <hlm-avatar class="rounded-lg">
+          <span class="bg-primary text-primary-foreground rounded-lg" hlmAvatarFallback>
+            {{ initials() }}
+          </span>
+        </hlm-avatar>
+        <div class="grid flex-1 text-left text-sm leading-tight">
+          <span class="truncate font-medium">{{ label() }}</span>
+          @if (email()) {
+            <span class="truncate text-xs">{{ email() }}</span>
+          }
+        </div>
+      </div>
+    </hlm-dropdown-menu-label>
+
+    <hlm-dropdown-menu-separator />
+
+    <hlm-dropdown-menu-group>
+      <!-- Cycles auto -> dark -> light -> auto, same as the legacy menu's theme button. -->
+      <button hlmDropdownMenuItem (click)="nextTheme()">
+        <app-icon [name]="themeIcon()" />
+        Theme: {{ themePreference() }}
+      </button>
+    </hlm-dropdown-menu-group>
+
+    <hlm-dropdown-menu-separator />
+
+    <hlm-dropdown-menu-group>
+      <!-- Lock: forget the secret and the decrypted vault, keep the Google session. -->
+      <button hlmDropdownMenuItem (click)="lockRequested.emit()">
+        <app-icon name="lock" />
+        Lock app
+      </button>
+      <!-- Disconnect: end the Google session too, so signing back in needs consent. -->
+      <button hlmDropdownMenuItem (click)="signOutRequested.emit()">
+        <app-icon name="disconnect" />
+        Disconnect
+      </button>
+    </hlm-dropdown-menu-group>
+  </hlm-dropdown-menu>
+</ng-template>

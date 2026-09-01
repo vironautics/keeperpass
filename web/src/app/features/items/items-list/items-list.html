@@ -1,0 +1,261 @@
+<!--
+  Three headers, one at a time: what is being shown, a search field, or the selection
+  toolbar. Each is the same shape — a fixed 1px-bordered bar — so switching between
+  them does not move the list underneath.
+-->
+@if (!searching() && !selecting()) {
+  <header class="flex shrink-0 items-center gap-1 border-b p-2">
+    <!--
+      The sidebar is a sheet below `md`, so it needs one obvious way in. From `md` up
+      the sidebar column is permanently on screen and its own header owns the toggle.
+    -->
+    <button hlmSidebarTrigger class="md:hidden" srOnlyText="Open navigation menu"></button>
+
+    <h1 class="flex min-w-0 flex-1 items-center gap-2 px-1 text-sm font-semibold">
+      <app-icon [name]="headingIcon()" class="text-accent-strong text-[0.8125rem]" />
+      <span class="min-w-0 truncate">
+        @if (headingContext()) {
+          <span class="text-accent-strong">{{ headingContext() }} / </span>
+        }
+        {{ headingTitle() }}
+      </span>
+    </h1>
+
+    <div class="flex shrink-0 items-center">
+      <button
+        hlmBtn
+        variant="ghost"
+        size="icon-sm"
+        aria-label="Select multiple items"
+        (click)="startSelecting()"
+      >
+        <app-icon name="checkbox-checked" />
+      </button>
+
+      <button hlmBtn variant="ghost" size="icon-sm" aria-label="New item" (click)="createItem()">
+        <app-icon name="add" />
+      </button>
+
+      <button
+        hlmBtn
+        variant="ghost"
+        size="icon-sm"
+        aria-label="Search items"
+        (click)="startSearch()"
+      >
+        <app-icon name="search" />
+      </button>
+
+      <!--
+        Newest first by default, which is what you want right after adding something.
+        One button rather than a menu: there are only two orders worth having, and the
+        arrow says which one is on.
+      -->
+      <button
+        hlmBtn
+        variant="ghost"
+        size="icon-sm"
+        [attr.aria-label]="newestFirst() ? 'Sort oldest first' : 'Sort newest first'"
+        [hlmTooltip]="newestFirst() ? 'Newest first' : 'Oldest first'"
+        (click)="toggleSortOrder()"
+      >
+        <app-icon [name]="newestFirst() ? 'sort-desc' : 'sort-asc'" />
+      </button>
+    </div>
+  </header>
+}
+
+@if (searching()) {
+  <header class="flex shrink-0 items-center gap-1 border-b p-2">
+    <hlm-input-group class="flex-1">
+      <hlm-input-group-addon align="inline-start">
+        <app-icon name="search" class="text-muted-foreground text-xs" />
+      </hlm-input-group-addon>
+
+      <input
+        hlmInputGroupInput
+        #searchInput
+        class="text-foreground"
+        [formControl]="searchControl"
+        placeholder="Type to search"
+        aria-label="Search items"
+        (keydown.escape)="cancelSearch()"
+      />
+
+      <hlm-input-group-addon align="inline-end">
+        <button
+          hlmInputGroupButton
+          size="icon-xs"
+          type="button"
+          aria-label="Cancel search"
+          (click)="cancelSearch()"
+        >
+          <app-icon name="cancel" />
+        </button>
+      </hlm-input-group-addon>
+    </hlm-input-group>
+  </header>
+}
+
+@if (selecting()) {
+  <header class="flex shrink-0 items-center gap-1 border-b p-2">
+    <button
+      hlmBtn
+      variant="ghost"
+      size="icon-sm"
+      aria-label="Leave selection mode"
+      (click)="cancelSelecting()"
+    >
+      <app-icon name="cancel" />
+    </button>
+
+    <button
+      hlmBtn
+      variant="ghost"
+      size="icon-sm"
+      aria-label="Select or deselect all"
+      (click)="toggleSelectAll()"
+    >
+      <app-icon name="list-check" />
+    </button>
+
+    <span class="min-w-0 flex-1 truncate text-center text-sm">
+      {{ selectedCount() }} {{ selectedCount() === 1 ? 'item' : 'items' }} selected
+    </span>
+
+    <button
+      hlmBtn
+      variant="ghost"
+      size="icon-sm"
+      aria-label="Move selected items"
+      [disabled]="!selectedCount()"
+      (click)="openMove()"
+    >
+      <app-icon name="move" />
+    </button>
+
+    <button
+      hlmBtn
+      variant="ghost"
+      size="icon-sm"
+      aria-label="Delete selected items"
+      [disabled]="!selectedCount()"
+      (click)="requestDelete()"
+    >
+      <app-icon name="delete" />
+    </button>
+  </header>
+}
+
+<main class="relative flex min-h-0 flex-1 flex-col">
+  @if (isEmpty()) {
+    <div class="absolute inset-0 flex items-center justify-center p-6">
+      <div hlmEmpty>
+        <hlm-empty-header>
+          <hlm-empty-media variant="icon">
+            <app-icon [name]="emptyStateIcon()" class="text-2xl" />
+          </hlm-empty-media>
+          <div hlmEmptyTitle>{{ emptyStateMessage() }}</div>
+        </hlm-empty-header>
+
+        <hlm-empty-content>
+          <button hlmBtn variant="outline" size="sm" (click)="createItem()">
+            <app-icon name="add" />
+            New Vault Item
+          </button>
+        </hlm-empty-content>
+      </div>
+    </div>
+  } @else {
+    <!--
+      Virtualized: only the rows near the viewport exist in the DOM. A vault with a
+      few thousand items would otherwise build every row up front, which blocked the
+      main thread for seconds and forced a full-page reflow.
+
+      `min-h-0 flex-1` is what gives the viewport a real height to scroll within —
+      CDK makes it the scroll container, so without a bounded height it grows to fit
+      its content and nothing scrolls.
+
+      The `w-full` on CDK's content wrapper is not decoration. For a vertical viewport
+      CDK constrains only its height, leaving the absolutely-positioned wrapper to
+      shrink-wrap its content — and a row's max-content includes every field chip laid
+      out end to end, so the rows came out wider than the pane and the whole list
+      scrolled sideways. Pinned to the viewport's width, each row fills it and the chips
+      scroll inside their own row instead.
+    -->
+    <cdk-virtual-scroll-viewport
+      [itemSize]="rowHeight()"
+      class="min-h-0 flex-1 [&_.cdk-virtual-scroll-content-wrapper]:w-full"
+      role="list"
+    >
+      <app-item-row
+        *cdkVirtualFor="let row of rows(); trackBy: trackRow; templateCacheSize: 40"
+        role="listitem"
+        [item]="row.item"
+        [vaultLabel]="row.vaultLabel"
+        [favourite]="row.favourite"
+        [flagged]="row.flagged"
+        [selectable]="selecting()"
+        [selected]="isSelected(row.item)"
+        (selectionToggled)="toggleSelection(row.item)"
+      />
+    </cdk-virtual-scroll-viewport>
+  }
+</main>
+
+<app-create-item-dialog [(open)]="creating" />
+
+<!--
+  Both dialogs are driven from a signal rather than a trigger button: what opens them
+  is a toolbar action. `aria-label` names each one inside the overlay container.
+-->
+<hlm-dialog
+  [state]="movingItems() ? 'open' : 'closed'"
+  (stateChanged)="movingItems.set($event === 'open')"
+>
+  <hlm-dialog-content *hlmDialogPortal class="sm:max-w-sm" aria-label="Move To Vault">
+    <hlm-dialog-header>
+      <h2 hlmDialogTitle>
+        Move {{ selectedCount() }} {{ selectedCount() === 1 ? 'item' : 'items' }}
+      </h2>
+      <p hlmDialogDescription>Pick the vault they should live in.</p>
+    </hlm-dialog-header>
+
+    <hlm-select [formControl]="moveVaultControl" [itemToString]="vaultOptionLabel">
+      <hlm-select-trigger class="w-full">
+        <hlm-select-value placeholder="Select a vault" />
+      </hlm-select-trigger>
+      <hlm-select-content *hlmSelectPortal>
+        @for (option of moveVaultOptions(); track option.value) {
+          <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
+        }
+      </hlm-select-content>
+    </hlm-select>
+
+    <hlm-dialog-footer>
+      <button hlmBtn variant="outline" (click)="cancelMove()">Cancel</button>
+      <button hlmBtn [disabled]="!canMove()" (click)="confirmMove()">Move</button>
+    </hlm-dialog-footer>
+  </hlm-dialog-content>
+</hlm-dialog>
+
+<hlm-alert-dialog
+  [state]="deleteRequested() ? 'open' : 'closed'"
+  (stateChanged)="deleteRequested.set($event === 'open')"
+>
+  <hlm-alert-dialog-content *hlmAlertDialogPortal aria-label="Delete Items">
+    <hlm-alert-dialog-header>
+      <h2 hlmAlertDialogTitle>
+        Delete {{ selectedCount() }} {{ selectedCount() === 1 ? 'item' : 'items' }}
+      </h2>
+      <p hlmAlertDialogDescription>
+        Are you sure you want to delete
+        {{ selectedCount() === 1 ? 'this item' : 'these items' }}? This cannot be undone.
+      </p>
+    </hlm-alert-dialog-header>
+    <hlm-alert-dialog-footer>
+      <button hlmAlertDialogCancel (click)="cancelDelete()">Cancel</button>
+      <button hlmAlertDialogAction variant="destructive" (click)="confirmDelete()">Delete</button>
+    </hlm-alert-dialog-footer>
+  </hlm-alert-dialog-content>
+</hlm-alert-dialog>

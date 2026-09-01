@@ -1,0 +1,195 @@
+<!--
+  Same card shape as `/unlock` — every step of the flow is one spartan card in the
+  layout's centred column, so moving between them doesn't move the surface.
+-->
+<form
+  hlmCard
+  class="animate-in fade-in slide-in-from-bottom-4 mx-auto w-full max-w-100 duration-700"
+  [formGroup]="form"
+  (ngSubmit)="submit()"
+  novalidate
+>
+  <div hlmCardHeader>
+    <h1 hlmCardTitle>Create your vault</h1>
+    <p hlmCardDescription>
+      Choose the secret that will encrypt your vault. Everything you save is locked with it.
+    </p>
+  </div>
+
+  <div hlmCardContent class="flex flex-col gap-4">
+    @if (email()) {
+      <!-- Which Google account this vault will belong to: the wrong one is worth catching now. -->
+      <p class="text-muted-foreground text-xs">
+        Setting up for <strong class="text-foreground font-medium">{{ email() }}</strong>
+      </p>
+    }
+
+    <hlm-field>
+      <label hlmFieldLabel for="setup-secret">Secret</label>
+
+      <hlm-input-group>
+        <input
+          hlmInputGroupInput
+          id="setup-secret"
+          formControlName="secret"
+          [type]="revealed() ? 'text' : 'password'"
+          autocomplete="new-password"
+          autofocus
+        />
+        <hlm-input-group-addon align="inline-end">
+          <button
+            hlmInputGroupButton
+            type="button"
+            size="icon-xs"
+            aria-label="Generate a secret"
+            (click)="generating.set(true)"
+          >
+            <app-icon name="generate" />
+          </button>
+          <button
+            hlmInputGroupButton
+            type="button"
+            size="icon-xs"
+            [attr.aria-label]="revealed() ? 'Hide secret' : 'Show secret'"
+            [attr.aria-pressed]="revealed()"
+            (click)="toggleRevealed()"
+          >
+            <app-icon [name]="revealed() ? 'hide' : 'show'" />
+          </button>
+        </hlm-input-group-addon>
+      </hlm-input-group>
+
+      @if (secret()) {
+        <!-- The same meter the item fields use, so "strong" means one thing everywhere. -->
+        <div class="mt-1 space-y-1">
+          <hlm-progress [value]="strengthPercent()" class="h-1">
+            <hlm-progress-indicator [class]="strengthColour()" />
+          </hlm-progress>
+          <p class="text-muted-foreground text-[0.7rem]">{{ strengthLabel() }}</p>
+        </div>
+      }
+
+      @if (weak()) {
+        <!-- A native output element: the same announcement as a status role, without the role. -->
+        <output hlmFieldDescription>
+          This secret is weak, which makes the encryption around your vault easier to break. You can
+          continue, but a longer passphrase is strongly recommended.
+        </output>
+      }
+    </hlm-field>
+
+    <!--
+      `forceInvalid` rather than `aria-invalid` on the input: the two secrets are
+      compared by a validator on the *group*, so the control itself is valid and
+      BrnInput would overwrite an attribute set by hand. This is the lever helm
+      exposes for exactly that case.
+    -->
+    <hlm-field [forceInvalid]="mismatch()">
+      <label hlmFieldLabel for="setup-confirmation">Repeat secret</label>
+
+      <!--
+        The reveal toggle covers both fields from one signal: this field exists to be
+        compared against the one above, and showing half of a comparison helps nobody.
+      -->
+      <hlm-input-group>
+        <input
+          hlmInputGroupInput
+          id="setup-confirmation"
+          formControlName="confirmation"
+          [type]="revealed() ? 'text' : 'password'"
+          autocomplete="new-password"
+        />
+        <hlm-input-group-addon align="inline-end">
+          <button
+            hlmInputGroupButton
+            type="button"
+            size="icon-xs"
+            [attr.aria-label]="revealed() ? 'Hide secret' : 'Show secret'"
+            [attr.aria-pressed]="revealed()"
+            (click)="toggleRevealed()"
+          >
+            <app-icon [name]="revealed() ? 'hide' : 'show'" />
+          </button>
+        </hlm-input-group-addon>
+      </hlm-input-group>
+
+      @if (mismatch()) {
+        <hlm-field-error forceShow>The two secrets do not match.</hlm-field-error>
+      }
+    </hlm-field>
+
+    <!--
+      The one thing on this page a user must not skim past — this is the moment the
+      secret becomes the only key that exists.
+
+      Loud through the fill and the icon, not the copy: the `destructive` variant
+      colours its text `--destructive`, which is 4.1:1 on this tint at 14px and so
+      misses AA for a block this long. The default variant keeps the text on the
+      foreground colour (10:1) and the red is carried by the border and the icon,
+      where 3:1 is the bar.
+
+      Two columns by hand: see the note on the same alert in `start-page.html`.
+    -->
+    <div hlmAlert class="bg-destructive/10! border-destructive/30 grid-cols-[auto_1fr] gap-x-2.5!">
+      <app-icon name="alert" class="text-destructive row-span-2 translate-y-0.5" />
+      <h2 hlmAlertTitle class="col-start-2">Please read this before you continue</h2>
+      <!-- No gap of its own: the description already spaces a `p` that isn't last. -->
+      <div hlmAlertDescription class="text-foreground! col-start-2">
+        <p>
+          Your vault is encrypted on this device with a key made from the secret you choose here.
+          KeeperPass never receives that secret, so we could not read your vault even if we were
+          asked to. That is the point — and it comes with three consequences worth knowing now
+          rather than later:
+        </p>
+        <ul class="flex list-disc flex-col gap-1 ps-4">
+          <li>
+            Your secret is never sent anywhere and is never stored. Nobody — not us, not Google —
+            can look it up or reset it for you.
+          </li>
+          <li>
+            If you forget it, your vault cannot be recovered. There is no reset link and no support
+            request that can open it.
+          </li>
+          <li>Write it down and keep it somewhere safe before you continue.</li>
+        </ul>
+      </div>
+    </div>
+
+    @if (errorMessage()) {
+      <div
+        hlmAlert
+        variant="destructive"
+        class="submit-error grid-cols-[auto_1fr] gap-x-2.5!"
+        role="alert"
+      >
+        <app-icon name="alert" class="translate-y-0.5" />
+        <p hlmAlertDescription class="col-start-2">{{ errorMessage() }}</p>
+      </div>
+    }
+  </div>
+
+  <div hlmCardFooter class="flex-col gap-2">
+    <button hlmBtn type="submit" class="w-full" [disabled]="!canSubmit() || submitting()">
+      @if (submitting()) {
+        <hlm-spinner />
+      } @else {
+        <app-icon name="vault" />
+      }
+      Create vault
+    </button>
+
+    <button
+      hlmBtn
+      type="button"
+      variant="ghost"
+      size="sm"
+      class="text-muted-foreground w-full"
+      (click)="disconnect()"
+    >
+      <app-icon name="disconnect" />
+      Disconnect
+    </button>
+  </div>
+</form>
+
+<app-generate-password-dialog [(open)]="generating" (confirmed)="onGenerated($event)" />

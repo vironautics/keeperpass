@@ -1,0 +1,65 @@
+<!--
+  Driven from the `open` model rather than a trigger button: the thing that opens
+  this is the list header's "New item" action, which lives in another component.
+-->
+<hlm-dialog [state]="open() ? 'open' : 'closed'" (stateChanged)="open.set($event === 'open')">
+  <hlm-dialog-content *hlmDialogPortal class="sm:max-w-lg" aria-label="New Vault Item">
+    <hlm-dialog-header>
+      <h3 hlmDialogTitle>New Vault Item</h3>
+      <p hlmDialogDescription>Pick the vault it belongs in and the kind of item you want to add.</p>
+    </hlm-dialog-header>
+
+    <hlm-field>
+      <label hlmFieldLabel for="create-item-vault">Vault</label>
+      <hlm-select
+        id="create-item-vault"
+        [formControl]="vaultControl"
+        [itemToString]="vaultOptionLabel"
+      >
+        <hlm-select-trigger class="w-full">
+          <hlm-select-value placeholder="Select a vault" />
+        </hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          @for (option of vaultOptions(); track option.value) {
+            <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
+          }
+        </hlm-select-content>
+      </hlm-select>
+    </hlm-field>
+
+    <!--
+      The template decides which fields the new item starts with, so it is picked
+      here rather than after the fact.
+
+      Tiles rather than `hlmItem` rows: a type picker is a grid of choices, not a
+      list, and a plain button takes `border-primary` and `bg-primary/5` for the
+      selected state without fighting a helm variant's own `border-border` for
+      stylesheet order. `aria-pressed` is both the state and what styles it.
+    -->
+    <hlm-field>
+      <span hlmFieldLabel id="create-item-type">Item type</span>
+      <div
+        class="template-grid grid max-h-[45vh] grid-cols-2 gap-2 overflow-y-auto p-0.5 sm:grid-cols-3"
+        role="group"
+        aria-labelledby="create-item-type"
+      >
+        @for (template of templates; track template.id) {
+          <button
+            type="button"
+            class="template border-input bg-card hover:bg-accent focus-visible:ring-ring/50 aria-pressed:border-primary aria-pressed:bg-primary/5 aria-pressed:text-accent-strong flex cursor-pointer flex-col items-center gap-1.5 rounded-lg border px-2 py-3 text-center transition-colors focus-visible:ring-2 focus-visible:outline-none"
+            [attr.aria-pressed]="isSelected(template)"
+            (click)="selectTemplate(template)"
+          >
+            <app-icon [name]="glyphFor(template)" class="text-xl" />
+            <span class="text-xs leading-tight">{{ template.label }}</span>
+          </button>
+        }
+      </div>
+    </hlm-field>
+
+    <hlm-dialog-footer>
+      <button hlmBtn variant="outline" (click)="cancel()">Cancel</button>
+      <button hlmBtn [disabled]="!canCreate()" (click)="create()">Create</button>
+    </hlm-dialog-footer>
+  </hlm-dialog-content>
+</hlm-dialog>

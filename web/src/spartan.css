@@ -1,0 +1,283 @@
+/**
+ * The application's only global stylesheet: Tailwind + spartan/ui, the webfonts, and
+ * the design tokens both of those read.
+ *
+ * The ported stylesheet this app started from (`src/styles.scss` and `src/styles/`) has
+ * been deleted — it was a derivative of the original project and could not be shipped.
+ * Nothing here is carried over from it: the palette below is the same set of colours
+ * expressed as spartan's own tokens, and every layout rule now lives in the component
+ * that needs it, as Tailwind utilities.
+ *
+ * A component that has not been migrated yet therefore renders unstyled. That is
+ * expected, and it is the work list — see SPARTAN.md.
+ */
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/preflight.css' layer(base);
+@import 'tailwindcss/utilities.css';
+
+@import '@spartan-ng/brain/hlm-tailwind-preset.css';
+
+/**
+ * Tailwind's automatic source detection starts from this file's directory, which would
+ * miss the generated helm components in `libs/ui`. Both trees are declared explicitly.
+ */
+@source '../src';
+@source '../libs';
+
+/* ------------------------------------------------------------------ webfonts ---- */
+
+/* Nunito — the UI typeface. Self-hosted; nothing is fetched from Google. */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 200;
+  font-display: swap;
+  src: url('/fonts/Nunito-200.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('/fonts/Nunito-300.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/Nunito-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/Nunito-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/Nunito-700.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('/fonts/Nunito-800.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('/fonts/Nunito-900.woff2') format('woff2');
+}
+
+/* Space Mono — secrets, codes, anything that must not be misread. */
+@font-face {
+  font-family: 'Space Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/SpaceMono-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Space Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/SpaceMono-700.woff2') format('woff2');
+}
+
+/**
+ * FontAwesome Pro — icon glyphs, addressed by codepoint from `IconComponent`.
+ *
+ * One family, four faces selected by weight: 300 and 400 both map to Light, which is
+ * the weight the UI draws at, and 900 is Solid — the only face with filled glyphs
+ * (a favourited star, for instance).
+ */
+@font-face {
+  font-family: 'FontAwesome';
+  font-style: normal;
+  font-weight: 100;
+  font-display: block;
+  src: url('/fonts/fa-thin-100.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'FontAwesome';
+  font-style: normal;
+  font-weight: 300;
+  font-display: block;
+  src: url('/fonts/fa-light-300.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'FontAwesome';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('/fonts/fa-light-300.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'FontAwesome';
+  font-style: normal;
+  font-weight: 900;
+  font-display: block;
+  src: url('/fonts/fa-solid-900.woff2') format('woff2');
+}
+
+/* -------------------------------------------------------------------- theme ----- */
+
+/**
+ * `color-scheme` decides the native UI the page does not draw itself — scrollbars,
+ * form controls, the caret — so it has to agree with the tokens below.
+ */
+:root {
+  color-scheme: light;
+}
+
+:root.dark {
+  color-scheme: dark;
+}
+
+/**
+ * Theme for the `vega` component style (see components.json).
+ *
+ * Literal values rather than references, now that there is no second token layer to
+ * read from. `ThemeService` puts `dark` on <html>, which is also what Tailwind's
+ * `dark:` variant keys off, so the variables and the variant cannot disagree.
+ */
+:root {
+  --font-sans: 'Nunito', sans-serif;
+  --font-mono: 'Space Mono', ui-monospace, monospace;
+
+  /**
+   * In rem, not em: custom properties inherit as an unresolved token stream, so an
+   * `em` here would be re-resolved against each element's own font-size and
+   * `rounded-lg` would come out a different size on `text-sm` than on `text-base`.
+   */
+  --radius: 0.5rem;
+
+  /* The page itself, then the surfaces that sit on it. */
+  --background: #e7eaf1;
+  --foreground: #3a3d46;
+  --card: #f8f9fc;
+  --card-foreground: #3a3d46;
+  --popover: #f8f9fc;
+  --popover-foreground: #3a3d46;
+
+  --primary: #85ade5;
+  /* The accent is light, so text on it has to be dark — white is 2.3:1 on it. */
+  --primary-foreground: #1a1c22;
+
+  /**
+   * The accent, dark enough to be read as text (6.9:1 on --card).
+   *
+   * #85ade5 is a fill colour: behind dark text it is fine, but *as* text it is 2.2:1
+   * on these surfaces — a 11px field label in it is barely there, and nowhere near
+   * AA. So accented text and state icons use this instead, and in dark mode, where
+   * the accent already reads at 7.7:1, this is the accent itself.
+   */
+  --accent-strong: #24559e;
+
+  /**
+   * Subtle fills are translucent so they land on whatever surface is under them,
+   * which is what keeps a hover on a card and a hover on the page looking alike.
+   */
+  --secondary: rgb(0 0 0 / 5%);
+  --secondary-foreground: #3a3d46;
+  --muted: rgb(0 0 0 / 5%);
+  --accent: rgb(0 0 0 / 10%);
+  --accent-foreground: #3a3d46;
+
+  /** A 70% blend of foreground into background, darkened until it clears AA (5.7:1). */
+  --muted-foreground: #60636a;
+
+  --destructive: #dc2626;
+
+  --border: rgb(0 0 0 / 5%);
+  --input: rgb(0 0 0 / 5%);
+  --ring: #85ade5;
+
+  /* The nav column. */
+  --sidebar: #f1f3f8;
+  --sidebar-foreground: #3a3d46;
+  --sidebar-primary: #85ade5;
+  --sidebar-primary-foreground: #1a1c22;
+  --sidebar-accent: rgb(133 173 229 / 20%);
+  /** The accent itself is 2.2:1 on this tint — same hue, dark enough to read (6.9:1). */
+  --sidebar-accent-foreground: #24559e;
+  --sidebar-border: rgb(0 0 0 / 5%);
+  --sidebar-ring: #85ade5;
+}
+
+:root.dark {
+  --background: #0c0d10;
+  --foreground: #e8e9ed;
+  --card: #1a1c22;
+  --card-foreground: #e8e9ed;
+  --popover: #1a1c22;
+  --popover-foreground: #e8e9ed;
+
+  --primary: #85ade5;
+  --primary-foreground: #1a1c22;
+  --accent-strong: #85ade5;
+
+  --secondary: rgb(255 255 255 / 5%);
+  --secondary-foreground: #e8e9ed;
+  --muted: rgb(255 255 255 / 5%);
+  --accent: rgb(255 255 255 / 10%);
+  --accent-foreground: #e8e9ed;
+
+  /** The same 70% blend the other way — foreground into the dark background. 7.5:1. */
+  --muted-foreground: #aaacb0;
+
+  --destructive: #dc2626;
+
+  --border: rgb(255 255 255 / 5%);
+  --input: rgb(255 255 255 / 5%);
+  --ring: #85ade5;
+
+  --sidebar: #15171c;
+  --sidebar-foreground: #e8e9ed;
+  --sidebar-primary: #85ade5;
+  --sidebar-primary-foreground: #1a1c22;
+  --sidebar-accent: rgb(133 173 229 / 15%);
+  /** On this surface the accent reads at 7.4:1, so it can be used as-is. */
+  --sidebar-accent-foreground: #85ade5;
+  --sidebar-border: rgb(255 255 255 / 5%);
+  --sidebar-ring: #85ade5;
+}
+
+/**
+ * The one token this app adds to spartan's set, mapped so `text-accent-strong`
+ * exists as a utility.
+ */
+@theme inline {
+  --color-accent-strong: var(--accent-strong);
+}
+
+/* --------------------------------------------------------------- app shell ----- */
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  /**
+   * The document never scrolls: it is fixed to the viewport and each view manages its
+   * own overflow, which is what lets a pane scroll without moving the header above it.
+   */
+  html,
+  body {
+    @apply bg-background text-foreground fixed h-full w-full overscroll-none antialiased;
+  }
+
+  app-root {
+    @apply block h-full;
+  }
+}

@@ -1,0 +1,5 @@
+@if (showFavicon()) {
+  <img [src]="faviconUrl()" alt="" (error)="onFaviconError()" />
+} @else {
+  <app-icon [name]="icon()" />
+}

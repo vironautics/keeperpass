@@ -1,0 +1,24 @@
+<!--
+  Same header shape as every other view: the mobile sidebar trigger, then the title.
+  The panel below it is a fixed-width column rather than full-bleed — a generator is
+  read one line at a time, and a 150-character string across a 1440px page is not.
+-->
+<header class="flex shrink-0 items-center gap-1 border-b p-2">
+  <button hlmSidebarTrigger class="md:hidden" srOnlyText="Open navigation menu"></button>
+
+  <h1 class="flex min-w-0 flex-1 items-center gap-2 px-1 text-sm font-semibold">
+    <app-icon name="generate" class="text-accent-strong text-[0.8125rem]" />
+    <span class="min-w-0 truncate">Password Generator</span>
+  </h1>
+</header>
+
+<!--
+  The panel is centred in what is left of the page, as it was before, but the scroll
+  container is the outer element and the centring one is `min-h-full`: centring inside
+  a scroller would otherwise cut the top off once the content is taller than the view.
+-->
+<div class="min-h-0 flex-1 overflow-y-auto">
+  <div class="flex min-h-full items-center justify-center p-4">
+    <app-generator-panel class="w-full max-w-120" />
+  </div>
+</div>

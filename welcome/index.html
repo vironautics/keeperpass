@@ -1,0 +1,1027 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>KeeperPass</title>
+<meta name="description" content="A free, open-source password manager that stores your encrypted vault in your own Google Drive — no company database, no server, nothing to breach." />
+<link rel="canonical" href="https://keeperpass.com/" />
+<link rel="icon" href="logo.svg" type="image/svg+xml" />
+
+<!-- Social share previews (Open Graph + Twitter Card) -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="KeeperPass — Your passwords live in your Google Drive" />
+<meta property="og:description" content="A free, open-source password manager that stores your encrypted vault in your own Google Drive — no company database, no server, nothing to breach." />
+<meta property="og:url" content="https://keeperpass.com/" />
+<meta property="og:image" content="https://keeperpass.com/images/web.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="KeeperPass — Your passwords live in your Google Drive" />
+<meta name="twitter:description" content="A free, open-source password manager that stores your encrypted vault in your own Google Drive — no company database, no server, nothing to breach." />
+<meta name="twitter:image" content="https://keeperpass.com/images/web.png" />
+
+<meta name="theme-color" content="#e7eaf1" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#0c0d10" media="(prefers-color-scheme: dark)" />
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-G2HHD6E3VL"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-G2HHD6E3VL');
+</script>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          background: 'var(--background)',
+          foreground: 'var(--foreground)',
+          card: 'var(--card)',
+          cardf: 'var(--card-foreground)',
+          primary: 'var(--primary)',
+          primaryf: 'var(--primary-foreground)',
+          accent: 'var(--accent-strong)',
+          muted: 'var(--muted-foreground)',
+          edge: 'var(--border)',
+          success: 'var(--success)',
+        },
+        fontFamily: {
+          display: ['Nunito', 'ui-sans-serif', 'sans-serif'],
+          body: ['Nunito', 'ui-sans-serif', 'sans-serif'],
+          mono: ['"Space Mono"', 'ui-monospace', 'monospace'],
+        },
+      },
+    },
+  };
+</script>
+
+<style>
+  @font-face { font-family: 'Nunito'; font-style: normal; font-weight: 400; font-display: swap; src: url('fonts/Nunito-400.woff2') format('woff2'); }
+  @font-face { font-family: 'Nunito'; font-style: normal; font-weight: 600; font-display: swap; src: url('fonts/Nunito-600.woff2') format('woff2'); }
+  @font-face { font-family: 'Nunito'; font-style: normal; font-weight: 700; font-display: swap; src: url('fonts/Nunito-700.woff2') format('woff2'); }
+  @font-face { font-family: 'Nunito'; font-style: normal; font-weight: 800; font-display: swap; src: url('fonts/Nunito-800.woff2') format('woff2'); }
+  @font-face { font-family: 'Nunito'; font-style: normal; font-weight: 900; font-display: swap; src: url('fonts/Nunito-900.woff2') format('woff2'); }
+  @font-face { font-family: 'Space Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url('fonts/SpaceMono-400.woff2') format('woff2'); }
+  @font-face { font-family: 'Space Mono'; font-style: normal; font-weight: 700; font-display: swap; src: url('fonts/SpaceMono-700.woff2') format('woff2'); }
+
+  /*
+    KeeperPass's own token set — light is the bare :root, dark redefines the
+    same names under prefers-color-scheme. Values match the shipping app
+    (COLORS.md / spartan.css) so this page and the product it's selling look
+    like the same thing.
+  */
+  :root {
+    --background: #e7eaf1;
+    --foreground: #3a3d46;
+    --card: #f8f9fc;
+    --card-foreground: #3a3d46;
+    --primary: #85ade5;
+    --primary-foreground: #1a1c22;
+    --accent-strong: #24559e;
+    --muted-foreground: #5b5e68;
+    --border: rgb(0 0 0 / 9%);
+    --success: #3f9c6c;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: #0c0d10;
+      --foreground: #e8e9ed;
+      --card: #16181d;
+      --card-foreground: #e8e9ed;
+      --primary: #85ade5;
+      --primary-foreground: #0c0d10;
+      --accent-strong: #9dc0f2;
+      --muted-foreground: #9a9da5;
+      --border: rgb(255 255 255 / 10%);
+      --success: #56c990;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { color-scheme: light dark; scroll-behavior: smooth; scroll-padding-top: 5.5rem; }
+
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: 'Nunito', ui-sans-serif, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3 { text-wrap: balance; }
+  p { text-wrap: pretty; }
+  .prose-copy { max-width: 38rem; }
+  ::selection { background: var(--primary); color: var(--primary-foreground); }
+
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* ---- skip link ---- */
+  .skip-link {
+    position: absolute; top: 0; left: 1rem; z-index: 100;
+    transform: translateY(-140%);
+    background: var(--accent-strong); color: #f8f9fc;
+    padding: 0.7rem 1.15rem; border-radius: 0 0 10px 10px;
+    font-weight: 700; font-size: 0.85rem;
+    transition: transform 0.15s ease;
+  }
+  .skip-link:focus { transform: translateY(0); }
+  @media (prefers-color-scheme: dark) { .skip-link { color: #0c0d10; } }
+
+  .cta-primary {
+    background: var(--accent-strong);
+    color: #f8f9fc;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 8%);
+  }
+  .cta-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 20px -6px rgb(36 85 158 / 45%); }
+  @media (prefers-color-scheme: dark) { .cta-primary { color: #0c0d10; } }
+
+  .cta-ghost {
+    border: 1.5px solid var(--border);
+    color: var(--foreground);
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .cta-ghost:hover { border-color: var(--accent-strong); background: var(--card); }
+
+  .chip { border: 1px solid var(--border); color: var(--muted-foreground); font-family: 'Space Mono', ui-monospace, monospace; }
+  .card-surface { background: var(--card); border: 1px solid var(--border); }
+
+  /* <img> can't inherit currentColor into an SVG's fills, so the wordmark is
+     drawn as a mask instead — same technique the app itself uses. */
+  .wordmark {
+    display: inline-block;
+    background-color: var(--foreground);
+    aspect-ratio: 1151 / 217;
+    mask: url('logo.svg') no-repeat center / contain;
+    -webkit-mask: url('logo.svg') no-repeat center / contain;
+  }
+
+  /* ---- nav ---- */
+  #site-header {
+    background: transparent;
+    border-bottom: 1px solid transparent;
+    transition: background 0.25s ease, border-color 0.25s ease;
+  }
+  #site-header.is-scrolled { background: var(--background); border-bottom-color: var(--border); }
+  #site-header:has(#mobile-menu:not(.hidden)) { background: var(--background); border-bottom-color: var(--border); }
+
+  .nav-link { position: relative; padding-bottom: 3px; }
+  .nav-link::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px;
+    background: var(--accent-strong); transform: scaleX(0); transform-origin: left;
+    transition: transform 0.2s ease;
+  }
+  .nav-link:hover::after { transform: scaleX(1); }
+  .nav-link[aria-current="true"] { color: var(--foreground); }
+  .nav-link[aria-current="true"]::after { transform: scaleX(1); }
+
+  .icon-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 2.25rem; height: 2.25rem; border-radius: 9999px;
+    color: var(--muted-foreground);
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .icon-btn:hover { background: var(--card); color: var(--foreground); }
+
+  /* ---- mobile menu: full-screen overlay, not a stacked panel ---- */
+  #mobile-menu {
+    position: fixed;
+    top: 5rem; right: 0; bottom: 0; left: 0;
+    z-index: 40;
+    background: var(--background);
+    overflow-y: auto;
+  }
+  #mobile-menu .menu-inner {
+    min-height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 2.5rem 1.5rem 4rem;
+  }
+  /* The page behind must not scroll while the full-screen menu is open. */
+  html:has(#mobile-menu:not(.hidden)) { overflow: hidden; }
+
+  /* ---- hero flow diagram ----
+     Real DOM nodes rather than one fixed-viewBox SVG. An SVG scales its text
+     down with its box, so a 12px label inside a 1160-unit viewBox lands around
+     3px on a phone — unreadable, and unfixable from CSS. Here every label is
+     real text at a real size, and the diagram re-flows (column → row → two
+     zones side by side) instead of merely shrinking. */
+  .flow { display: grid; gap: 0; }
+
+  .flow-zone {
+    position: relative;
+    display: flex; flex-direction: column;
+    border: 1.5px dashed var(--border);
+    border-radius: 18px;
+    padding: 2.2rem 0.9rem 1rem;
+  }
+  .flow-zone-label {
+    position: absolute; top: 0.85rem; left: 1.15rem;
+    font-family: 'Space Mono', ui-monospace, monospace;
+    font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+
+  .flow-stages { display: flex; flex-direction: column; gap: 0; flex: 1; }
+
+  .stage {
+    display: flex; align-items: center; gap: 0.85rem;
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 0.85rem 1rem;
+  }
+  .stage-icon {
+    flex: none; display: grid; place-items: center;
+    width: 2.4rem; height: 2.4rem; border-radius: 11px;
+    background: color-mix(in srgb, var(--accent-strong) 13%, transparent);
+    color: var(--accent-strong);
+  }
+  .stage-out .stage-icon {
+    background: color-mix(in srgb, var(--success) 15%, transparent);
+    color: var(--success);
+  }
+  .stage-text { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+  .stage-title {
+    font-family: 'Space Mono', ui-monospace, monospace;
+    font-size: 0.78rem; font-weight: 700; color: var(--foreground);
+  }
+  .stage-note { font-size: 0.72rem; line-height: 1.45; color: var(--muted-foreground); }
+
+  /* Connector between two stages. Vertical by default; the media queries below
+     flip it horizontal at whichever breakpoint its own container turns into a
+     row — which is 768px inside a zone, but only 1024px for the boundary. */
+  .rail {
+    --delay: 0s;
+    position: relative; display: block; flex: none; align-self: center;
+    width: 2px; height: 22px;
+    background-image: repeating-linear-gradient(to bottom, var(--border) 0 4px, transparent 4px 9px);
+  }
+  .rail::after {
+    content: ''; position: absolute; top: 0; left: 50%;
+    width: 6px; height: 6px; border-radius: 999px; background: var(--primary);
+    translate: -50% -50%;
+    animation: rail-y 2.2s linear infinite var(--delay);
+  }
+  @keyframes rail-y {
+    0%   { top: 0;    opacity: 0; }
+    18%  { opacity: 1; }
+    82%  { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+  @keyframes rail-x {
+    0%   { left: 0;    opacity: 0; }
+    18%  { opacity: 1; }
+    82%  { opacity: 1; }
+    100% { left: 100%; opacity: 0; }
+  }
+
+  /* The trust boundary: the one place the data crosses out of your control. */
+  .flow-boundary {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 0.5rem; padding: 0.6rem 0;
+  }
+  .boundary-mark { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
+  .boundary-badge {
+    display: grid; place-items: center;
+    width: 2rem; height: 2rem; border-radius: 999px;
+    border: 1.5px solid var(--border); background: var(--background); color: var(--success);
+  }
+  .boundary-note {
+    font-family: 'Space Mono', ui-monospace, monospace;
+    font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted-foreground); white-space: nowrap;
+  }
+
+  /* Stages sit shoulder to shoulder once there's room for three of them. */
+  @media (min-width: 768px) {
+    .flow-stages { flex-direction: row; align-items: stretch; }
+    .stage {
+      flex: 1 1 0; flex-direction: column; text-align: center;
+      gap: 0.65rem; padding: 1.35rem 0.9rem;
+    }
+    .stage-text { align-items: center; }
+    .flow-stages .rail {
+      width: 30px; height: 2px;
+      background-image: repeating-linear-gradient(to right, var(--border) 0 4px, transparent 4px 9px);
+    }
+    .flow-stages .rail::after { top: 50%; left: 0; animation-name: rail-x; }
+  }
+
+  /* Both trust zones side by side — the shape the whole diagram is arguing for. */
+  @media (min-width: 1024px) {
+    .flow { grid-template-columns: minmax(0, 1fr) auto minmax(0, 0.46fr); align-items: stretch; }
+    .flow-zone { padding: 2.4rem 1.1rem 1.2rem; }
+    .flow-boundary { align-self: center; flex-direction: row; padding: 0 0.6rem; }
+    .flow-boundary .rail {
+      width: 28px; height: 2px;
+      background-image: repeating-linear-gradient(to right, var(--border) 0 4px, transparent 4px 9px);
+    }
+    .flow-boundary .rail::after { top: 50%; left: 0; animation-name: rail-x; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rail::after { animation: none; top: 50%; left: 50%; opacity: 1; }
+  }
+
+  /* ---- scroll reveal ---- */
+  .reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.is-visible { opacity: 1; transform: translateY(0); }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+
+  /* ---- cipher swap in the encryption panel ---- */
+  .cipher-line .plain { animation: cipher-plain 6s ease-in-out infinite; }
+  .cipher-line .locked { animation: cipher-locked 6s ease-in-out infinite; }
+  @keyframes cipher-plain { 0%, 38% { opacity: 1; } 46%, 100% { opacity: 0; } }
+  @keyframes cipher-locked { 0%, 38% { opacity: 0; } 46%, 100% { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) {
+    .cipher-line .plain { animation: none; opacity: 0; }
+    .cipher-line .locked { animation: none; opacity: 1; }
+  }
+
+  /* ---- device frames for screenshots ---- */
+  .frame-browser { border: 1px solid var(--border); border-radius: 14px; overflow: hidden; background: var(--card); }
+  .frame-browser .bar { display: flex; align-items: center; gap: 6px; padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  .frame-browser .dot { width: 9px; height: 9px; border-radius: 999px; background: var(--border); }
+  .frame-browser .url { margin-left: 10px; font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--muted-foreground); background: var(--background); border-radius: 999px; padding: 3px 12px; }
+
+  .frame-phone { border: 8px solid var(--card-foreground); opacity: 0.94; border-radius: 34px; overflow: hidden; background: var(--card); box-shadow: 0 20px 40px -20px rgb(0 0 0 / 30%); }
+  .frame-phone .notch { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 90px; height: 18px; background: var(--card-foreground); border-radius: 999px; z-index: 2; }
+
+  .frame-popup { border: 1px solid var(--border); border-radius: 14px; overflow: hidden; background: var(--card); box-shadow: 0 20px 40px -24px rgb(0 0 0 / 35%); }
+  .frame-popup .bar { padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 0.75rem; font-weight: 700; }
+
+  /* ---- click-to-enlarge screenshots ---- */
+  .shot-trigger {
+    position: relative; display: block; width: 100%; height: 100%; padding: 0; border: none;
+    background: none; cursor: zoom-in; font: inherit; text-align: inherit;
+  }
+  .shot-zoom-hint {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    background: rgb(0 0 0 / 0%); opacity: 0;
+    transition: opacity 0.2s ease, background 0.2s ease;
+  }
+  .shot-trigger:hover .shot-zoom-hint,
+  .shot-trigger:focus-visible .shot-zoom-hint {
+    opacity: 1;
+    background: rgb(0 0 0 / 35%);
+  }
+  .shot-zoom-hint svg {
+    color: #fff;
+    filter: drop-shadow(0 1px 3px rgb(0 0 0 / 40%));
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .shot-zoom-hint { transition: none; }
+  }
+
+  /*
+    `position: fixed` is doing real work here, not just centring: the UA gives a
+    modal <dialog> `position: fixed` by default, and overriding that put the
+    dialog back in normal flow at its DOM position. `showModal()` then moves
+    focus into it, the browser scrolls that in-flow box into view, and with
+    `scroll-behavior: smooth` on <html> you watch the page slide away from the
+    screenshot you just clicked. Fixed keeps it out of flow, so there is
+    nothing to scroll to.
+  */
+  #lightbox {
+    position: fixed; inset: 0; margin: auto;
+    width: fit-content; height: fit-content;
+    max-width: min(92vw, 1400px); max-height: 92vh;
+    border: none; padding: 0; background: transparent; overflow: visible;
+  }
+  #lightbox::backdrop { background: rgb(0 0 0 / 78%); backdrop-filter: blur(3px); }
+  #lightbox img {
+    display: block; max-width: min(92vw, 1400px); max-height: 92vh;
+    width: auto; height: auto; border-radius: 12px;
+    box-shadow: 0 30px 70px -20px rgb(0 0 0 / 60%);
+  }
+  #lightbox[open] { animation: lightbox-in 0.18s ease-out; }
+  @keyframes lightbox-in { from { opacity: 0; transform: scale(0.97); } }
+
+  /* Inside the image, not hanging off the corner — at 92vw there is no corner
+     left to hang off on a phone. */
+  #lightbox-close {
+    position: absolute; top: 10px; right: 10px; width: 34px; height: 34px; border-radius: 999px;
+    border: none; background: rgb(0 0 0 / 55%); color: #fff; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(6px); transition: background 0.15s ease;
+  }
+  #lightbox-close:hover { background: rgb(0 0 0 / 80%); }
+
+  /* The page behind must not scroll while the lightbox is up. */
+  html:has(#lightbox[open]) { overflow: hidden; }
+
+  @media (prefers-reduced-motion: reduce) {
+    #lightbox[open] { animation: none; }
+  }
+
+  .shot-fallback { display: none; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--muted-foreground); }
+</style>
+</head>
+<body class="antialiased">
+  <a href="#top" class="skip-link">Skip to main content</a>
+
+  <!-- ============ NAV ============ -->
+  <header id="site-header" class="sticky top-0 z-50">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="h-20 flex items-center justify-between">
+        <a href="#top" class="flex items-center gap-2" aria-label="KeeperPass home">
+          <span class="wordmark h-6"></span>
+        </a>
+
+        <nav class="hidden lg:flex items-center gap-9 text-[0.9rem] font-bold text-muted">
+          <a href="#how-it-works" data-nav-link="how-it-works" class="nav-link hover:text-foreground transition-colors">How it works</a>
+          <a href="#screenshots" data-nav-link="screenshots" class="nav-link hover:text-foreground transition-colors">Screenshots</a>
+          <a href="#encryption" data-nav-link="encryption" class="nav-link hover:text-foreground transition-colors">Encryption</a>
+          <a href="#pricing" data-nav-link="pricing" class="nav-link hover:text-foreground transition-colors">Pricing</a>
+        </nav>
+
+        <div class="flex items-center gap-2">
+          <a href="https://github.com/keeperpass/keeperpass" target="_blank" rel="noopener" class="icon-btn hidden sm:inline-flex" aria-label="View source on GitHub">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.5 0 12.3c0 5.44 3.44 10.05 8.21 11.68.6.11.82-.27.82-.6 0-.29-.01-1.26-.02-2.29-3.34.75-4.04-1.45-4.04-1.45-.55-1.44-1.34-1.82-1.34-1.82-1.09-.77.08-.75.08-.75 1.21.09 1.84 1.28 1.84 1.28 1.07 1.88 2.8 1.34 3.49 1.02.11-.79.42-1.34.76-1.65-2.67-.31-5.47-1.38-5.47-6.13 0-1.35.47-2.46 1.24-3.32-.12-.31-.54-1.57.12-3.28 0 0 1.01-.33 3.3 1.27a11.2 11.2 0 0 1 6.01 0c2.29-1.6 3.3-1.27 3.3-1.27.66 1.71.24 2.97.12 3.28.77.86 1.24 1.97 1.24 3.32 0 4.76-2.8 5.81-5.48 6.12.43.38.81 1.13.81 2.28 0 1.65-.01 2.98-.01 3.38 0 .33.22.72.83.6C20.56 22.34 24 17.73 24 12.3 24 5.5 18.63 0 12 0Z"/></svg>
+          </a>
+          <a href="https://vault.keeperpass.com" class="cta-primary rounded-full px-5 py-2.5 text-sm font-bold">Get Started</a>
+          <button id="nav-toggle" class="icon-btn lg:hidden" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-menu">
+            <svg id="icon-menu" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+            <svg id="icon-close" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" class="hidden"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="mobile-menu" class="hidden lg:hidden" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+      <div class="menu-inner">
+        <nav class="flex flex-col items-center gap-2 text-center">
+          <a href="#how-it-works" class="mobile-nav-link font-display font-black text-3xl py-2 hover:text-accent transition-colors">How it works</a>
+          <a href="#screenshots" class="mobile-nav-link font-display font-black text-3xl py-2 hover:text-accent transition-colors">Screenshots</a>
+          <a href="#encryption" class="mobile-nav-link font-display font-black text-3xl py-2 hover:text-accent transition-colors">Encryption</a>
+          <a href="#pricing" class="mobile-nav-link font-display font-black text-3xl py-2 hover:text-accent transition-colors">Pricing</a>
+        </nav>
+        <div class="mt-10 flex flex-col items-center gap-6">
+          <a href="https://vault.keeperpass.com" class="mobile-nav-link cta-primary rounded-full px-8 py-3.5 font-bold text-base">Get Started — it's free</a>
+          <a href="https://github.com/keeperpass/keeperpass" target="_blank" rel="noopener" class="mobile-nav-link inline-flex items-center gap-2 text-sm font-bold text-muted hover:text-foreground transition-colors">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.5 0 12.3c0 5.44 3.44 10.05 8.21 11.68.6.11.82-.27.82-.6 0-.29-.01-1.26-.02-2.29-3.34.75-4.04-1.45-4.04-1.45-.55-1.44-1.34-1.82-1.34-1.82-1.09-.77.08-.75.08-.75 1.21.09 1.84 1.28 1.84 1.28 1.07 1.88 2.8 1.34 3.49 1.02.11-.79.42-1.34.76-1.65-2.67-.31-5.47-1.38-5.47-6.13 0-1.35.47-2.46 1.24-3.32-.12-.31-.54-1.57.12-3.28 0 0 1.01-.33 3.3 1.27a11.2 11.2 0 0 1 6.01 0c2.29-1.6 3.3-1.27 3.3-1.27.66 1.71.24 2.97.12 3.28.77.86 1.24 1.97 1.24 3.32 0 4.76-2.8 5.81-5.48 6.12.43.38.81 1.13.81 2.28 0 1.65-.01 2.98-.01 3.38 0 .33.22.72.83.6C20.56 22.34 24 17.73 24 12.3 24 5.5 18.63 0 12 0Z"/></svg>
+            View source on GitHub
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- ============ HERO ============ -->
+    <section class="relative overflow-hidden">
+      <div class="mx-auto max-w-6xl px-6 pt-16 pb-4 sm:pt-20">
+        <div class="max-w-3xl">
+          <p class="inline-flex items-center gap-2 chip rounded-full px-3 py-1 text-[0.7rem] tracking-[0.14em] uppercase">
+            Free · Open source · Built on Google Drive
+          </p>
+
+          <h1 class="mt-6 font-display font-black leading-[1.04] text-[2.6rem] sm:text-6xl tracking-tight">
+            Your passwords live in
+            <span style="color: var(--accent-strong);">your</span>
+            Google Drive.
+            <span class="block">Not ours.</span>
+          </h1>
+
+          <p class="prose-copy mt-6 text-lg leading-relaxed text-muted">
+            KeeperPass encrypts your entire vault in your browser and saves the
+            result as a single file, inside a folder in your own Drive. There
+            is no KeeperPass server — because there's nothing left for one to hold.
+          </p>
+
+          <div class="mt-9 flex flex-wrap items-center gap-4">
+            <a href="https://vault.keeperpass.com" class="cta-primary rounded-full px-7 py-3.5 font-bold text-base">Get Started — it's free</a>
+            <a href="https://github.com/keeperpass/keeperpass" target="_blank" rel="noopener" class="cta-ghost rounded-full px-7 py-3.5 font-bold text-base inline-flex items-center gap-2">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.5 0 12.3c0 5.44 3.44 10.05 8.21 11.68.6.11.82-.27.82-.6 0-.29-.01-1.26-.02-2.29-3.34.75-4.04-1.45-4.04-1.45-.55-1.44-1.34-1.82-1.34-1.82-1.09-.77.08-.75.08-.75 1.21.09 1.84 1.28 1.84 1.28 1.07 1.88 2.8 1.34 3.49 1.02.11-.79.42-1.34.76-1.65-2.67-.31-5.47-1.38-5.47-6.13 0-1.35.47-2.46 1.24-3.32-.12-.31-.54-1.57.12-3.28 0 0 1.01-.33 3.3 1.27a11.2 11.2 0 0 1 6.01 0c2.29-1.6 3.3-1.27 3.3-1.27.66 1.71.24 2.97.12 3.28.77.86 1.24 1.97 1.24 3.32 0 4.76-2.8 5.81-5.48 6.12.43.38.81 1.13.81 2.28 0 1.65-.01 2.98-.01 3.38 0 .33.22.72.83.6C20.56 22.34 24 17.73 24 12.3 24 5.5 18.63 0 12 0Z"/></svg>
+              View source
+            </a>
+          </div>
+
+          <ul class="mt-9 flex flex-wrap gap-2.5 text-xs">
+            <li class="chip rounded-md px-2.5 py-1">AES-256-GCM</li>
+            <li class="chip rounded-md px-2.5 py-1">Argon2id</li>
+            <li class="chip rounded-md px-2.5 py-1">drive.file scope only</li>
+            <li class="chip rounded-md px-2.5 py-1">no server</li>
+            <li class="chip rounded-md px-2.5 py-1">GPL-3.0</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- hero diagram: full-width, the page's centerpiece -->
+      <figure class="mx-auto max-w-6xl px-6 mt-14 sm:mt-16">
+        <div class="reveal card-surface rounded-3xl p-4 sm:p-7" data-reveal>
+          <div class="flow">
+
+            <div class="flow-zone">
+              <span class="flow-zone-label">Your device</span>
+              <div class="flow-stages">
+
+                <div class="stage">
+                  <span class="stage-icon">
+                    <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <rect x="2" y="3.5" width="20" height="14" rx="2.5"/><path d="M8 21h8M12 17.5V21"/>
+                    </svg>
+                  </span>
+                  <span class="stage-text">
+                    <strong class="stage-title">Your browser</strong>
+                    <span class="stage-note">where the vault is opened and edited</span>
+                  </span>
+                </div>
+
+                <span class="rail" style="--delay: -0.2s" aria-hidden="true"></span>
+
+                <div class="stage">
+                  <span class="stage-icon">
+                    <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/>
+                      <circle cx="16.5" cy="7.5" r="0.6" fill="currentColor"/>
+                    </svg>
+                  </span>
+                  <span class="stage-text">
+                    <strong class="stage-title">Argon2id</strong>
+                    <span class="stage-note">your secret becomes a 256-bit key</span>
+                  </span>
+                </div>
+
+                <span class="rail" style="--delay: -0.9s" aria-hidden="true"></span>
+
+                <div class="stage">
+                  <span class="stage-icon">
+                    <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <rect x="3" y="10.5" width="18" height="11" rx="2.5"/><path d="M7 10.5V6.8a5 5 0 0 1 10 0v3.7"/>
+                    </svg>
+                  </span>
+                  <span class="stage-text">
+                    <strong class="stage-title">AES-256-GCM</strong>
+                    <span class="stage-note">the whole vault, sealed and signed</span>
+                  </span>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="flow-boundary">
+              <span class="rail" style="--delay: -1.5s" aria-hidden="true"></span>
+              <span class="boundary-mark">
+                <span class="boundary-badge">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 3l7 3v5.5c0 4-2.9 7.3-7 8.5-4.1-1.2-7-4.5-7-8.5V6z"/><path d="M9 12l2 2 4-4"/>
+                  </svg>
+                </span>
+                <span class="boundary-note">ciphertext only</span>
+              </span>
+              <span class="rail" style="--delay: -0.6s" aria-hidden="true"></span>
+            </div>
+
+            <div class="flow-zone">
+              <span class="flow-zone-label">Your Google Drive</span>
+              <div class="flow-stages">
+                <div class="stage stage-out">
+                  <span class="stage-icon">
+                    <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M14.5 2H6.5a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7z"/><path d="M14.5 2v5h5"/>
+                      <rect x="9" y="13" width="6" height="5" rx="1.2"/><path d="M10.5 13v-1.2a1.5 1.5 0 0 1 3 0V13"/>
+                    </svg>
+                  </span>
+                  <span class="stage-text">
+                    <strong class="stage-title">vault.json.enc</strong>
+                    <span class="stage-note">bytes Google can store, but not read</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <figcaption class="mt-4 text-center text-sm text-muted mx-auto max-w-xl">
+          Every step up to and including encryption runs on your device. Only the last one ever reaches Google.
+        </figcaption>
+      </figure>
+    </section>
+
+    <!-- ============ HOW IT WORKS ============ -->
+    <section id="how-it-works" class="border-t border-edge mt-16">
+      <div class="mx-auto max-w-6xl px-6 py-24 grid lg:grid-cols-[0.9fr_1.1fr] gap-16">
+        <div class="reveal" data-reveal>
+          <p class="text-xs font-bold tracking-[0.14em] uppercase text-accent">How it works</p>
+          <h2 class="mt-3 font-display font-black text-3xl sm:text-4xl leading-tight">Three files. One folder.<br/>Nothing else.</h2>
+          <p class="prose-copy mt-5 text-muted leading-relaxed">
+            There's no account database, no user table, no company
+            infrastructure standing between you and your passwords. When you
+            sign in, KeeperPass asks Google for permission to see exactly one
+            thing: a folder it creates for itself.
+          </p>
+
+          <div class="mt-8 card-surface rounded-xl p-5 font-mono text-sm">
+            <p class="flex items-center gap-2 text-foreground font-bold">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>
+              keeperpass/
+            </p>
+            <p class="pl-6 mt-2 flex items-center gap-2 text-muted">
+              <span class="text-muted">└─</span>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              vault.json.enc
+              <span class="text-[0.65rem] text-success">encrypted</span>
+            </p>
+          </div>
+        </div>
+
+        <ol class="space-y-8">
+          <li class="reveal flex gap-5" data-reveal>
+            <span class="shrink-0 h-9 w-9 rounded-full grid place-items-center font-mono font-bold text-sm" style="background: var(--accent-strong); color: #f8f9fc;">1</span>
+            <div>
+              <h3 class="font-bold text-lg">Sign in with Google</h3>
+              <p class="mt-1.5 text-muted leading-relaxed">One click grants a single Drive scope — <code class="font-mono text-[0.85em] chip rounded px-1.5 py-0.5">drive.file</code> — which only lets KeeperPass see files it creates itself. Everything else already in your Drive stays invisible to it.</p>
+            </div>
+          </li>
+          <li class="reveal flex gap-5" data-reveal>
+            <span class="shrink-0 h-9 w-9 rounded-full grid place-items-center font-mono font-bold text-sm" style="background: var(--accent-strong); color: #f8f9fc;">2</span>
+            <div>
+              <h3 class="font-bold text-lg">We create one folder</h3>
+              <p class="mt-1.5 text-muted leading-relaxed">The first time you use KeeperPass, it creates a folder named <code class="font-mono text-[0.85em] chip rounded px-1.5 py-0.5">keeperpass</code> and one file inside it. That's the entire footprint, for as long as you use it.</p>
+            </div>
+          </li>
+          <li class="reveal flex gap-5" data-reveal>
+            <span class="shrink-0 h-9 w-9 rounded-full grid place-items-center font-mono font-bold text-sm" style="background: var(--accent-strong); color: #f8f9fc;">3</span>
+            <div>
+              <h3 class="font-bold text-lg">You choose a secret</h3>
+              <p class="mt-1.5 text-muted leading-relaxed">Your master secret never touches Google and is never transmitted anywhere. It's used once, inside your browser, to derive an encryption key.</p>
+            </div>
+          </li>
+          <li class="reveal flex gap-5" data-reveal>
+            <span class="shrink-0 h-9 w-9 rounded-full grid place-items-center font-mono font-bold text-sm" style="background: var(--accent-strong); color: #f8f9fc;">4</span>
+            <div>
+              <h3 class="font-bold text-lg">Every change re-encrypts and re-uploads</h3>
+              <p class="mt-1.5 text-muted leading-relaxed">Add a password, edit a note, delete an item — each change re-encrypts the whole vault and overwrites that one file. Google stores bytes it cannot read.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============ SCREENSHOTS ============ -->
+    <section id="screenshots" class="border-t border-edge" style="background: var(--card);">
+      <div class="mx-auto max-w-6xl px-6 py-24">
+        <div class="reveal max-w-2xl" data-reveal>
+          <p class="text-xs font-bold tracking-[0.14em] uppercase text-accent">See it everywhere</p>
+          <h2 class="mt-3 font-display font-black text-3xl sm:text-4xl leading-tight">One vault. Every screen.</h2>
+          <p class="prose-copy mt-5 text-muted leading-relaxed">The same encrypted file, opened from the web app, the browser extension, or your phone — nothing is ever synced anywhere but your own Drive.</p>
+        </div>
+
+        <div class="mt-14 grid lg:grid-cols-[1.6fr_1fr] gap-6">
+          <!-- web app: frame matches the real screenshot's own 1291x805 ratio, so object-cover has nothing to crop.
+               self-start: grid stretches every item in a row to the tallest by default, and the extension
+               card beside it is portrait (taller) — without this the landscape web card would be stretched
+               down to match it, leaving empty space below the image. -->
+          <div class="reveal frame-browser self-start" data-reveal>
+            <div class="bar">
+              <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+              <span class="url">vault.keeperpass.com</span>
+            </div>
+            <div class="relative aspect-[1291/805]">
+              <button type="button" class="shot-trigger" aria-label="View the web app screenshot enlarged" onclick="openLightbox(this)">
+                <img src="./images/web.png" alt="KeeperPass web app showing the vault item list" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'; this.closest('.shot-trigger').style.display='none'; this.closest('.shot-trigger').nextElementSibling.style.display='flex';" />
+                <span class="shot-zoom-hint">
+                  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg>
+                </span>
+              </button>
+              <div class="shot-fallback absolute inset-0">
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg>
+                <p class="text-sm font-semibold">Web app screenshot coming soon</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-6">
+            <!-- extension: real screenshot is 399x599, essentially the popup's own native 400x600 -->
+            <div class="reveal frame-popup" data-reveal>
+              <div class="bar">Browser extension</div>
+              <div class="relative aspect-[399/599]">
+                <button type="button" class="shot-trigger" aria-label="View the browser extension screenshot enlarged" onclick="openLightbox(this)">
+                  <img src="./images/ext.png" alt="KeeperPass browser extension popup" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'; this.closest('.shot-trigger').style.display='none'; this.closest('.shot-trigger').nextElementSibling.style.display='flex';" />
+                  <span class="shot-zoom-hint">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg>
+                  </span>
+                </button>
+                <div class="shot-fallback absolute inset-0">
+                  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 7h6M9 11h6M9 15h3"/></svg>
+                  <p class="text-sm font-semibold text-center px-4">Extension screenshot coming soon</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- mobile: real screenshot is 380x817, spans under both columns on large screens -->
+          <div class="lg:col-span-2 flex justify-center">
+            <div class="reveal relative frame-phone w-full max-w-[280px]" data-reveal>
+              <span class="notch"></span>
+              <div class="relative aspect-[380/817]">
+                <button type="button" class="shot-trigger" aria-label="View the mobile screenshot enlarged" onclick="openLightbox(this)">
+                  <img src="./images/mobile.png" alt="KeeperPass on mobile" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'; this.closest('.shot-trigger').style.display='none'; this.closest('.shot-trigger').nextElementSibling.style.display='flex';" />
+                  <span class="shot-zoom-hint">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg>
+                  </span>
+                </button>
+                <div class="shot-fallback absolute inset-0">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/></svg>
+                  <p class="text-sm font-semibold text-center px-6">Mobile screenshot coming soon</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Enlarged view of whichever screenshot was clicked above. -->
+        <dialog id="lightbox" aria-label="Enlarged screenshot">
+          <button type="button" id="lightbox-close" aria-label="Close">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+          <img id="lightbox-img" src="" alt="" />
+        </dialog>
+      </div>
+    </section>
+
+    <!-- ============ ENCRYPTION ============ -->
+    <section id="encryption" class="border-t border-edge">
+      <div class="mx-auto max-w-6xl px-6 py-24 grid lg:grid-cols-[1.05fr_0.95fr] gap-16 items-center">
+        <div class="reveal" data-reveal>
+          <p class="text-xs font-bold tracking-[0.14em] uppercase text-accent">Under the hood</p>
+          <h2 class="mt-3 font-display font-black text-3xl sm:text-4xl leading-tight">Locked before it ever<br/>leaves your device</h2>
+          <p class="prose-copy mt-5 text-muted leading-relaxed">
+            Your secret is run through <strong class="text-foreground">Argon2id</strong> — a
+            memory-hard key-derivation function built to resist GPU cracking,
+            the same default security-focused apps like Bitwarden use. The
+            resulting key encrypts your vault with
+            <strong class="text-foreground">AES-256-GCM</strong>, an authenticated
+            cipher: tamper with a single byte of the ciphertext, and
+            decryption fails outright instead of quietly returning garbage.
+          </p>
+          <p class="prose-copy mt-4 text-muted leading-relaxed">
+            Google can host the file. Google cannot read it. Neither can
+            anyone else — there's no third party holding the key, because
+            there's no third party at all.
+          </p>
+        </div>
+
+        <div class="reveal card-surface rounded-2xl p-6 sm:p-7 font-mono text-sm leading-loose" data-reveal style="background: var(--card);">
+          <p class="text-muted text-xs uppercase tracking-wider mb-4">your secret →</p>
+          <p class="cipher-line relative h-6">
+            <span class="plain absolute inset-0">correct horse battery staple</span>
+            <span class="locked absolute inset-0" style="color: var(--accent-strong);">3f9a1c…e207b4 <span class="text-muted text-xs">(256-bit key)</span></span>
+          </p>
+          <p class="text-muted mt-5 text-xs">↓ Argon2id · 64 MiB · 3 iterations · p=4</p>
+          <p class="text-muted mt-5 text-xs">↓ AES-256-GCM</p>
+          <div class="mt-5 pt-5 border-t" style="border-color: var(--border);">
+            <p class="break-all" style="color: var(--foreground);">U2FsdGVkX1+8mK/qN3vRw==:kX9dP…4Lz2Qa==</p>
+            <p class="mt-2 text-success text-xs">✓ this is what reaches Drive</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ WHY IT MATTERS ============ -->
+    <section id="why" class="border-t border-edge" style="background: var(--card);">
+      <div class="mx-auto max-w-6xl px-6 py-24">
+        <div class="reveal max-w-2xl" data-reveal>
+          <p class="text-xs font-bold tracking-[0.14em] uppercase text-accent">Why this matters</p>
+          <h2 class="mt-3 font-display font-black text-3xl sm:text-4xl leading-tight">Nothing to breach, because<br/>there's nothing to hold</h2>
+        </div>
+
+        <div class="mt-14 grid sm:grid-cols-2 gap-6">
+          <div class="reveal rounded-xl p-6" data-reveal style="background: var(--background); border: 1px solid var(--border);">
+            <h3 class="font-bold text-lg">No company database</h3>
+            <p class="mt-2 text-muted leading-relaxed text-[0.95rem]">Password managers get breached because they're one juicy target holding everyone's vaults at once. KeeperPass has no vaults to lose — each one lives in its owner's own Drive.</p>
+          </div>
+          <div class="reveal rounded-xl p-6" data-reveal style="background: var(--background); border: 1px solid var(--border);">
+            <h3 class="font-bold text-lg">Revoke it in one click</h3>
+            <p class="mt-2 text-muted leading-relaxed text-[0.95rem]">KeeperPass only ever holds a temporary access token, never your data. Remove its access from your Google Account and it's gone instantly — your vault file stays exactly where you left it.</p>
+          </div>
+          <div class="reveal rounded-xl p-6" data-reveal style="background: var(--background); border: 1px solid var(--border);">
+            <h3 class="font-bold text-lg">Real breach checking</h3>
+            <p class="mt-2 text-muted leading-relaxed text-[0.95rem]">The security report checks every password against Have I Been Pwned using k-anonymity — only the first 5 characters of a SHA-1 hash ever leave your browser. Your actual password never does.</p>
+          </div>
+          <div class="reveal rounded-xl p-6" data-reveal style="background: var(--background); border: 1px solid var(--border);">
+            <h3 class="font-bold text-lg">Still a real password manager</h3>
+            <p class="mt-2 text-muted leading-relaxed text-[0.95rem]">TOTP codes, a strong password generator, tags, multiple vaults, CSV import and export — everything you'd expect, built on an architecture most password managers don't have.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PRICING + OPEN SOURCE ============ -->
+    <section id="pricing" class="border-t border-edge">
+      <div class="mx-auto max-w-6xl px-6 py-24">
+        <div class="reveal max-w-2xl" data-reveal>
+          <p class="text-xs font-bold tracking-[0.14em] uppercase text-accent">Free. Open source. Always.</p>
+          <h2 class="mt-3 font-display font-black text-3xl sm:text-4xl leading-tight">No plans. No paywalls. No catch.</h2>
+        </div>
+
+        <div class="mt-14 grid md:grid-cols-2 gap-6">
+          <div class="reveal card-surface rounded-2xl p-8" data-reveal>
+            <p class="font-mono text-5xl font-bold" style="color: var(--accent-strong);">$0</p>
+            <h3 class="mt-3 font-bold text-xl">Free, forever</h3>
+            <ul class="mt-5 space-y-3 text-muted text-[0.95rem]">
+              <li class="flex gap-2.5"><svg class="shrink-0 mt-0.5" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>No subscription, no premium tier, no feature paywall.</li>
+              <li class="flex gap-2.5"><svg class="shrink-0 mt-0.5" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>Unlimited vaults and items, limited only by your own Drive storage.</li>
+              <li class="flex gap-2.5"><svg class="shrink-0 mt-0.5" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>Free because there's no infrastructure to fund — you're already paying Google for Drive, if you pay for it at all.</li>
+            </ul>
+          </div>
+
+          <div class="reveal card-surface rounded-2xl p-8" data-reveal>
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="var(--accent-strong)"><path d="M12 0C5.37 0 0 5.5 0 12.3c0 5.44 3.44 10.05 8.21 11.68.6.11.82-.27.82-.6 0-.29-.01-1.26-.02-2.29-3.34.75-4.04-1.45-4.04-1.45-.55-1.44-1.34-1.82-1.34-1.82-1.09-.77.08-.75.08-.75 1.21.09 1.84 1.28 1.84 1.28 1.07 1.88 2.8 1.34 3.49 1.02.11-.79.42-1.34.76-1.65-2.67-.31-5.47-1.38-5.47-6.13 0-1.35.47-2.46 1.24-3.32-.12-.31-.54-1.57.12-3.28 0 0 1.01-.33 3.3 1.27a11.2 11.2 0 0 1 6.01 0c2.29-1.6 3.3-1.27 3.3-1.27.66 1.71.24 2.97.12 3.28.77.86 1.24 1.97 1.24 3.32 0 4.76-2.8 5.81-5.48 6.12.43.38.81 1.13.81 2.28 0 1.65-.01 2.98-.01 3.38 0 .33.22.72.83.6C20.56 22.34 24 17.73 24 12.3 24 5.5 18.63 0 12 0Z"/></svg>
+            <h3 class="mt-3 font-bold text-xl">Open source</h3>
+            <p class="mt-4 text-muted leading-relaxed text-[0.95rem]">
+              Every line that touches your vault — the encryption, the Drive
+              calls, the app itself — is public under the
+              <strong class="text-foreground">GNU GPL-3.0</strong>. Read it,
+              audit it, or fork it. Trust doesn't have to be a leap when you
+              can just look.
+            </p>
+            <a href="https://github.com/keeperpass/keeperpass" target="_blank" rel="noopener" class="mt-6 inline-flex items-center gap-1.5 font-bold text-sm hover:gap-2.5 transition-all" style="color: var(--accent-strong);">
+              View the repository
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FINAL CTA ============ -->
+    <section class="border-t border-edge" style="background: var(--card);">
+      <div class="mx-auto max-w-6xl px-6 py-24 text-center">
+        <h2 class="reveal font-display font-black text-3xl sm:text-5xl leading-tight max-w-2xl mx-auto" data-reveal>Open your first vault</h2>
+        <p class="reveal mt-5 text-muted text-lg max-w-md mx-auto" data-reveal>Sign in with Google, choose a secret, and KeeperPass writes its first encrypted file in about two seconds.</p>
+        <div class="reveal mt-9" data-reveal>
+          <a href="https://vault.keeperpass.com" class="cta-primary inline-block rounded-full px-8 py-4 font-bold text-base">Get Started</a>
+          <p class="mt-4 text-xs text-muted">Free, forever. No KeeperPass account — just the Google one you already have.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="border-t border-edge">
+    <div class="mx-auto max-w-6xl px-6 py-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+      <div class="lg:col-span-1">
+        <span class="wordmark h-4" role="img" aria-label="KeeperPass"></span>
+        <p class="mt-4 text-sm text-muted max-w-[16rem]">Your Drive. Your keys. Your vault.</p>
+        <a href="https://github.com/keeperpass/keeperpass" target="_blank" rel="noopener" class="mt-5 inline-flex items-center gap-2 text-sm font-bold text-muted hover:text-foreground transition-colors">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.5 0 12.3c0 5.44 3.44 10.05 8.21 11.68.6.11.82-.27.82-.6 0-.29-.01-1.26-.02-2.29-3.34.75-4.04-1.45-4.04-1.45-.55-1.44-1.34-1.82-1.34-1.82-1.09-.77.08-.75.08-.75 1.21.09 1.84 1.28 1.84 1.28 1.07 1.88 2.8 1.34 3.49 1.02.11-.79.42-1.34.76-1.65-2.67-.31-5.47-1.38-5.47-6.13 0-1.35.47-2.46 1.24-3.32-.12-.31-.54-1.57.12-3.28 0 0 1.01-.33 3.3 1.27a11.2 11.2 0 0 1 6.01 0c2.29-1.6 3.3-1.27 3.3-1.27.66 1.71.24 2.97.12 3.28.77.86 1.24 1.97 1.24 3.32 0 4.76-2.8 5.81-5.48 6.12.43.38.81 1.13.81 2.28 0 1.65-.01 2.98-.01 3.38 0 .33.22.72.83.6C20.56 22.34 24 17.73 24 12.3 24 5.5 18.63 0 12 0Z"/></svg>
+          View source
+        </a>
+      </div>
+
+      <div>
+        <p class="text-xs font-bold tracking-[0.1em] uppercase text-muted">Product</p>
+        <ul class="mt-4 space-y-3 text-sm">
+          <li><a href="#how-it-works" style="color: var(--foreground);" class="hover:text-accent transition-colors">How it works</a></li>
+          <li><a href="#screenshots" style="color: var(--foreground);" class="hover:text-accent transition-colors">Screenshots</a></li>
+          <li><a href="#encryption" style="color: var(--foreground);" class="hover:text-accent transition-colors">Encryption</a></li>
+          <li><a href="#pricing" style="color: var(--foreground);" class="hover:text-accent transition-colors">Pricing</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="text-xs font-bold tracking-[0.1em] uppercase text-muted">Company</p>
+        <ul class="mt-4 space-y-3 text-sm">
+          <li><a href="mailto:hello@keeperpass.com" style="color: var(--foreground);" class="hover:text-accent transition-colors">Contact</a></li>
+          <li><a href="/privacy-policy" style="color: var(--foreground);" class="hover:text-accent transition-colors">Privacy Policy</a></li>
+          <li><a href="/terms-of-service" style="color: var(--foreground);" class="hover:text-accent transition-colors">Terms of Service</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="text-xs font-bold tracking-[0.1em] uppercase text-muted">Get started</p>
+        <ul class="mt-4 space-y-3 text-sm">
+          <li><a href="https://vault.keeperpass.com" style="color: var(--foreground);" class="hover:text-accent transition-colors">Web app</a></li>
+          <li><a href="https://github.com/keeperpass/keeperpass" target="_blank" rel="noopener" style="color: var(--foreground);" class="hover:text-accent transition-colors">Browser extension (source)</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="border-t border-edge">
+      <div class="mx-auto max-w-6xl px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted">
+        <p>© 2026 KeeperPass. Not affiliated with Google.</p>
+        <p>Licensed under GPL-3.0 · Free and open source</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Header gains a background once the page scrolls under it.
+    var header = document.getElementById('site-header');
+    var onScroll = function () {
+      header.classList.toggle('is-scrolled', window.scrollY > 8);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // Mobile menu toggle.
+    var toggle = document.getElementById('nav-toggle');
+    var menu = document.getElementById('mobile-menu');
+    var iconMenu = document.getElementById('icon-menu');
+    var iconClose = document.getElementById('icon-close');
+    function closeMenu() {
+      menu.classList.add('hidden');
+      iconMenu.classList.remove('hidden');
+      iconClose.classList.add('hidden');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+    toggle.addEventListener('click', function () {
+      var isOpen = !menu.classList.contains('hidden');
+      if (isOpen) {
+        closeMenu();
+      } else {
+        menu.classList.remove('hidden');
+        iconMenu.classList.add('hidden');
+        iconClose.classList.remove('hidden');
+        toggle.setAttribute('aria-expanded', 'true');
+      }
+    });
+    document.querySelectorAll('.mobile-nav-link').forEach(function (link) {
+      link.addEventListener('click', closeMenu);
+    });
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && !menu.classList.contains('hidden')) {
+        closeMenu();
+        toggle.focus();
+      }
+    });
+
+    // Scroll spy: mark the nav link for whichever section is currently in view.
+    var navLinks = document.querySelectorAll('[data-nav-link]');
+    if (navLinks.length && 'IntersectionObserver' in window) {
+      var navSpy = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          var id = entry.target.id;
+          navLinks.forEach(function (link) {
+            if (link.getAttribute('data-nav-link') === id) {
+              link.setAttribute('aria-current', 'true');
+            } else {
+              link.removeAttribute('aria-current');
+            }
+          });
+        });
+      }, { rootMargin: '-45% 0px -50% 0px' });
+      document.querySelectorAll('#how-it-works, #screenshots, #encryption, #pricing').forEach(function (section) {
+        navSpy.observe(section);
+      });
+    }
+
+    // Fade sections in as they cross the viewport. Purely progressive —
+    // everything is visible without JS, this just times the entrance.
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15 });
+      document.querySelectorAll('[data-reveal]').forEach(function (el) { io.observe(el); });
+    } else {
+      document.querySelectorAll('[data-reveal]').forEach(function (el) { el.classList.add('is-visible'); });
+    }
+
+    // Click-to-enlarge screenshots. `openLightbox` is called inline from
+    // each `.shot-trigger` button with itself as the argument, so there's no
+    // need to re-derive which screenshot was clicked from the event target.
+    var lightbox = document.getElementById('lightbox');
+    var lightboxImg = document.getElementById('lightbox-img');
+
+    function openLightbox(trigger) {
+      var img = trigger.querySelector('img');
+      if (!img || img.style.display === 'none') {
+        return; // Fallback placeholder is showing — nothing to enlarge yet.
+      }
+      lightboxImg.src = img.src;
+      lightboxImg.alt = img.alt;
+      lightbox.showModal();
+    }
+
+    document.getElementById('lightbox-close').addEventListener('click', function () {
+      lightbox.close();
+    });
+
+    // A native <dialog>'s backdrop click lands on the dialog element itself
+    // (with click coordinates outside its box) — the image fills the dialog
+    // exactly (no padding, sized to content), so this only fires for an
+    // actual outside click, never a click on the image.
+    lightbox.addEventListener('click', function (event) {
+      if (event.target === lightbox) {
+        lightbox.close();
+      }
+    });
+  </script>
+</body>
+</html>

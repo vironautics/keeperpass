@@ -1,0 +1,17 @@
+name,tags,url,username,email,password,note
+Facebook,social,https://facebook.com,jane.doe92,jane.doe92@example.com,Tr0ub4dor&3Fake!,
+Instagram,social,https://instagram.com,jane.doe.photos,jane.doe92@example.com,InstaFake#2026,
+X (Twitter),social,https://x.com,@janedoe_fake,jane.doe92@example.com,Xample77!Fake,
+Reddit,social,https://reddit.com,u_janedoe_fake,jane.doe92@example.com,RedditFake#123,
+Docker Hub,"work,dev",https://hub.docker.com,devjane,jane.dev@example.com,D0ckerFakePW!9,CI/CD registry login
+GitHub,"work,dev",https://github.com,janedoe-dev,jane.dev@example.com,Gh0stFakeKey#42,Personal projects account
+GitLab,"work,dev",https://gitlab.com,janedoe-dev,jane.dev@example.com,G1tLabFake$Repo,
+Slack,"work,dev",https://slack.com,jane.dev,jane.dev@example.com,Sl4ckFakeTeam#9,
+LinkedIn,work,https://linkedin.com,jane-doe-example,jane.work@example.com,L1nkedFakePW$,
+Microsoft,work,https://microsoft.com,jane.doe@outlook.com,jane.doe@outlook.com,M1crosoftFake@Acc,
+Amazon,shopping,https://amazon.com,jane.doe92@example.com,jane.doe92@example.com,Am4zonFake#Shop,
+PayPal,finance,https://paypal.com,jane.doe92@example.com,jane.doe92@example.com,P4yPalFake!Secure,
+Netflix,entertainment,https://netflix.com,jane.doe92@example.com,jane.doe92@example.com,Netfl1xFake!Watch,
+Spotify,entertainment,https://spotify.com,janedoe_music,jane.doe92@example.com,Sp0tifyFake&Tunes,
+Apple,personal,https://apple.com,jane.doe92@icloud.com,jane.doe92@icloud.com,4ppleFake!ID2026,
+Dropbox,work,https://dropbox.com,jane.doe92@example.com,jane.doe92@example.com,Dr0pboxFake!Files,

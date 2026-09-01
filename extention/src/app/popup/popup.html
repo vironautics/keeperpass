@@ -1,0 +1,236 @@
+<!-- Header: brand on the left, the session/language/sync cluster on the right. -->
+<div class="flex items-center gap-2 border-b p-3">
+    <app-logo class="h-6 text-foreground" />
+
+    <div class="ml-auto flex items-center gap-1">
+      @if (view() === 'list') {
+        <button
+          hlmBtn
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          [attr.aria-label]="'popup.disconnect' | t"
+          (click)="disconnect()"
+        >
+          <app-icon name="disconnect" />
+        </button>
+
+        <hlm-select
+          class="lang-select"
+          [value]="localeControl.value"
+          [itemToString]="localeLabel"
+          [attr.aria-label]="'popup.language' | t"
+          (valueChange)="onLocalePicked($event)"
+        >
+          <hlm-select-trigger class="h-8 w-auto">
+            <hlm-select-value />
+          </hlm-select-trigger>
+          <hlm-select-content *hlmSelectPortal>
+            @for (option of localeOptions; track option.value) {
+              <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
+            }
+          </hlm-select-content>
+        </hlm-select>
+
+        <button
+          hlmBtn
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          [attr.aria-label]="'popup.sync' | t"
+          [disabled]="syncing()"
+          (click)="sync()"
+        >
+          @if (syncing()) {
+            <hlm-spinner />
+          } @else {
+            <app-icon name="refresh" />
+          }
+        </button>
+      } @else {
+        <button
+          hlmBtn
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          [attr.aria-label]="'popup.back' | t"
+          (click)="backToList()"
+        >
+          <app-icon name="back" />
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- List View -->
+  @if (view() === 'list') {
+    <div class="flex min-h-0 flex-1 flex-col">
+      @if (syncError()) {
+        <div hlmAlert variant="destructive" class="m-3 grid-cols-[auto_1fr] gap-x-2.5!" role="alert">
+          <app-icon name="alert" class="translate-y-0.5" />
+          <p hlmAlertDescription>{{ syncError() }}</p>
+        </div>
+      }
+
+      @if (autoFillStatus()) {
+        <p class="text-muted-foreground px-3 pt-2 text-xs" role="status">{{ autoFillStatus() }}</p>
+      }
+
+      <div class="flex flex-col gap-2 p-3">
+        <input
+          hlmInput
+          [formControl]="searchControl"
+          [placeholder]="'popup.search' | t"
+          class="w-full"
+        />
+
+        <!-- Vault and tag filters split the full width of the row, half each. -->
+        <div class="grid grid-cols-2 gap-2">
+          <hlm-select
+            [value]="vaultControl.value"
+            [itemToString]="vaultOptionLabel"
+            [attr.aria-label]="'popup.allVaults' | t"
+            (valueChange)="onVaultPicked($event)"
+          >
+            <hlm-select-trigger class="w-full">
+              <hlm-select-value [placeholder]="'popup.allVaults' | t" />
+            </hlm-select-trigger>
+            <hlm-select-content *hlmSelectPortal>
+              @for (option of vaultOptions(); track option.value) {
+                <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
+              }
+            </hlm-select-content>
+          </hlm-select>
+
+          <hlm-select
+            [value]="tagControl.value"
+            [itemToString]="tagOptionLabel"
+            [attr.aria-label]="'popup.allTags' | t"
+            (valueChange)="onTagPicked($event)"
+          >
+            <hlm-select-trigger class="w-full">
+              <hlm-select-value [placeholder]="'popup.allTags' | t" />
+            </hlm-select-trigger>
+            <hlm-select-content *hlmSelectPortal>
+              @for (option of tagOptions(); track option.value) {
+                <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
+              }
+            </hlm-select-content>
+          </hlm-select>
+        </div>
+      </div>
+
+      <div class="min-h-0 flex-1 overflow-y-auto">
+        @if (loading()) {
+          <div class="flex flex-col items-center gap-2 p-8">
+            <hlm-spinner />
+            <p class="text-muted-foreground text-sm">{{ 'popup.unlocking' | t }}</p>
+          </div>
+        } @else if (sortedItems().length) {
+          <ul class="divide-y">
+            @for (item of sortedItems(); track item.id) {
+              <li hlmItem size="sm" class="rounded-none! border-transparent">
+                <hlm-item-media variant="icon" class="size-8">
+                  <app-item-icon [item]="item" />
+                </hlm-item-media>
+
+                <hlm-item-content class="min-w-0">
+                  <hlm-item-description class="min-w-0">
+                    <span class="truncate text-xs">{{ vaultLabelFor(item) }}</span>
+                  </hlm-item-description>
+                  <hlm-item-title class="min-w-0 max-w-full">
+                    <span class="truncate text-sm font-semibold">
+                      {{ item.name || ('popup.untitledItem' | t) }}
+                    </span>
+                  </hlm-item-title>
+                </hlm-item-content>
+
+                <hlm-item-actions>
+                  <button
+                    hlmBtn
+                    type="button"
+                    variant="ghost"
+                    size="icon-sm"
+                    [attr.aria-label]="'popup.showDetails' | t"
+                    (click)="showDetails(item)"
+                  >
+                    <app-icon name="show" />
+                  </button>
+
+                  <button
+                    hlmBtn
+                    type="button"
+                    variant="ghost"
+                    size="icon-sm"
+                    [attr.aria-label]="'popup.fillOnPage' | t"
+                    (click)="fillOnPage(item)"
+                  >
+                    <app-icon name="forward" />
+                  </button>
+                </hlm-item-actions>
+              </li>
+            }
+          </ul>
+        } @else {
+          <div class="flex flex-col items-center gap-2 p-8">
+            <app-icon name="search" class="huge text-muted-foreground" />
+            <p class="text-muted-foreground text-sm">{{ 'popup.noItems' | t }}</p>
+          </div>
+        }
+      </div>
+
+      <div class="flex gap-2 border-t p-3">
+        <button hlmBtn variant="outline" class="flex-1" type="button" (click)="openGenerator()">
+          <app-icon name="generate" />
+          <span>{{ 'popup.generate' | t }}</span>
+        </button>
+        <button hlmBtn class="flex-1" type="button" (click)="createNewItem()">
+          <app-icon name="add" />
+          <span>{{ 'popup.newItem' | t }}</span>
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Detail View -->
+  @if (view() === 'details') {
+    <div class="min-h-0 flex-1 overflow-y-auto p-3">
+      @if (selectedItem(); as item) {
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center gap-3">
+            <app-item-icon [item]="item" class="text-2xl" />
+            <div class="min-w-0 flex-1">
+              <p class="text-muted-foreground truncate text-xs">{{ vaultLabelFor(item) }}</p>
+              <p class="truncate text-sm font-semibold">
+                {{ item.name || ('popup.untitledItem' | t) }}
+              </p>
+            </div>
+          </div>
+
+          <div class="divide-y overflow-hidden rounded-lg border">
+            @for (field of item.fields; track $index) {
+              <app-item-field [field]="field" />
+            }
+          </div>
+
+          @if (item.tags.length) {
+            <div class="flex flex-wrap gap-1.5">
+              @for (tag of item.tags; track tag) {
+                <span hlmBadge variant="secondary">
+                  <app-icon name="tag" class="inline" />
+                  {{ tag }}
+                </span>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Generator View -->
+  @if (view() === 'generator') {
+    <div class="min-h-0 flex-1 overflow-y-auto p-3">
+      <app-generator-panel />
+    </div>
+  }

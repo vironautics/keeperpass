@@ -1,0 +1,35 @@
+<!--
+  Driven from the `open` model rather than a trigger: what opens this is the sidebar's
+  "New vault" action or the vaults page header, both in other components.
+-->
+<hlm-dialog [state]="open() ? 'open' : 'closed'" (stateChanged)="open.set($event === 'open')">
+  <hlm-dialog-content *hlmDialogPortal class="sm:max-w-sm" aria-label="New Vault">
+    <hlm-dialog-header>
+      <h3 hlmDialogTitle>New Vault</h3>
+      <p hlmDialogDescription>
+        A vault is a separate group of items. Unlike an item, there is nothing else to choose up
+        front.
+      </p>
+    </hlm-dialog-header>
+
+    <hlm-field>
+      <label hlmFieldLabel for="create-vault-name">Vault name</label>
+      <input
+        hlmInput
+        id="create-vault-name"
+        class="create-input w-full"
+        [formControl]="nameControl"
+        autocomplete="off"
+        (keydown.enter)="create()"
+      />
+      @if (nameIsDuplicate()) {
+        <hlm-field-error forceShow>A vault with this name already exists.</hlm-field-error>
+      }
+    </hlm-field>
+
+    <hlm-dialog-footer>
+      <button hlmBtn variant="outline" (click)="cancel()">Cancel</button>
+      <button hlmBtn [disabled]="!canCreate()" (click)="create()">Create</button>
+    </hlm-dialog-footer>
+  </hlm-dialog-content>
+</hlm-dialog>

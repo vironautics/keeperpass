@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native-argon2/android/build.gradle b/node_modules/react-native-argon2/android/build.gradle
+index 85dff9f..fb39c14 100644
+--- a/node_modules/react-native-argon2/android/build.gradle
++++ b/node_modules/react-native-argon2/android/build.gradle
+@@ -28,7 +28,7 @@ android {
+ 
+ repositories {
+     google()
+-    jcenter()
++    mavenCentral()
+ }
+ 
+ dependencies {

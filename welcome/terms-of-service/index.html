@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Terms of Service — KeeperPass</title>
+<meta name="description" content="The terms on which KeeperPass is provided: a free password manager with no account, no server, and no way for anyone but you to open your vault." />
+<link rel="canonical" href="https://keeperpass.com/terms-of-service" />
+<link rel="icon" href="/logo.svg" type="image/svg+xml" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: { extend: { colors: {
+      background: 'var(--background)', foreground: 'var(--foreground)', card: 'var(--card)',
+      accent: 'var(--accent-strong)', muted: 'var(--muted-foreground)', edge: 'var(--border)',
+    } } },
+  };
+</script>
+<style>
+  @font-face { font-family: 'Nunito'; font-weight: 400; font-display: swap; src: url('/fonts/Nunito-400.woff2') format('woff2'); }
+  @font-face { font-family: 'Nunito'; font-weight: 700; font-display: swap; src: url('/fonts/Nunito-700.woff2') format('woff2'); }
+  @font-face { font-family: 'Nunito'; font-weight: 900; font-display: swap; src: url('/fonts/Nunito-900.woff2') format('woff2'); }
+  :root {
+    --background: #e7eaf1; --foreground: #3a3d46; --card: #f8f9fc;
+    --accent-strong: #24559e; --muted-foreground: #5b5e68; --border: rgb(0 0 0 / 9%);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: #0c0d10; --foreground: #e8e9ed; --card: #16181d;
+      --accent-strong: #9dc0f2; --muted-foreground: #9a9da5; --border: rgb(255 255 255 / 10%);
+    }
+  }
+  html { color-scheme: light dark; }
+  body { background: var(--background); color: var(--foreground); font-family: 'Nunito', ui-sans-serif, sans-serif; -webkit-font-smoothing: antialiased; }
+  .wordmark { display: inline-block; background-color: var(--foreground); aspect-ratio: 1151/217; mask: url('/logo.svg') no-repeat center / contain; -webkit-mask: url('/logo.svg') no-repeat center / contain; }
+  h1, h2, h3 { text-wrap: balance; }
+  a.back { color: var(--muted-foreground); }
+  a.back:hover { color: var(--foreground); }
+  .prose h2 { font-weight: 800; font-size: 1.25rem; margin-top: 2.25rem; margin-bottom: 0.75rem; color: var(--foreground); }
+  .prose h3 { font-weight: 800; font-size: 1rem; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--foreground); }
+  .prose p, .prose li { color: var(--muted-foreground); line-height: 1.75; }
+  .prose p + p { margin-top: 1rem; }
+  .prose ul { margin-top: 0.75rem; padding-left: 1.25rem; list-style: disc; }
+  .prose ol { margin-top: 0.75rem; padding-left: 1.25rem; list-style: decimal; }
+  .prose li + li { margin-top: 0.5rem; }
+  .prose strong { color: var(--foreground); }
+  .prose a { color: var(--accent-strong); font-weight: 700; }
+  .prose code { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 0.875em; background: var(--card); border: 1px solid var(--border); border-radius: 4px; padding: 0.1em 0.35em; color: var(--foreground); }
+  a:focus-visible { outline: 2px solid var(--accent-strong); outline-offset: 3px; border-radius: 4px; }
+  .callout { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.5rem; margin-top: 1.5rem; }
+  .callout p { margin: 0; }
+  .callout p + p { margin-top: 0.75rem; }
+</style>
+</head>
+<body>
+  <header class="border-b border-edge">
+    <div class="mx-auto max-w-3xl px-6 h-20 flex items-center justify-between">
+      <a href="/" aria-label="KeeperPass home"><span class="wordmark h-6"></span></a>
+      <a href="/" class="back text-sm font-bold inline-flex items-center gap-1.5">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+        Back to KeeperPass
+      </a>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-3xl px-6 py-16">
+    <p class="text-xs font-bold tracking-[0.14em] uppercase" style="color: var(--accent-strong);">Legal</p>
+    <h1 class="mt-3 font-black text-4xl">Terms of Service</h1>
+    <p class="mt-3 text-sm text-muted">Last updated 24 August 2026</p>
+
+    <div class="prose mt-10">
+      <p>These terms govern your use of KeeperPass. Please read them together with the <a href="/privacy-policy">Privacy Policy</a>, which explains what data moves where.</p>
+
+      <div class="callout">
+        <p><strong>The one thing to take away.</strong> Your master secret is the only key to your vault, and no copy of it exists anywhere but in your head. If you lose it, your data is gone — permanently, and for everyone, including us. This is the deliberate consequence of a design in which nobody but you can read your vault, and there is no support process that can undo it.</p>
+      </div>
+
+      <h2>1. Who these terms are with</h2>
+      <p>KeeperPass is provided by <strong>[LEGAL ENTITY NAME]</strong>, registered at <strong>[REGISTERED ADDRESS]</strong>, <strong>[MEMBER STATE]</strong> (company number <strong>[REGISTRATION NUMBER]</strong>) — "we", "us", "our". "You" means the person using KeeperPass.</p>
+      <p>These terms cover the website at keeperpass.com, the web app at vault.keeperpass.com, and the KeeperPass browser extension (together, the "Service").</p>
+
+      <h2>2. Accepting these terms</h2>
+      <p>By using the Service, you accept these terms. If you do not accept them, please do not use it. You must be at least 16 years old to use KeeperPass.</p>
+
+      <h2>3. What KeeperPass is</h2>
+      <p>KeeperPass is a password manager that runs entirely in your browser. It is <strong>free of charge</strong>: there is no subscription, no paid tier, and no payment of any kind.</p>
+      <p>There is no KeeperPass account and no KeeperPass server holding your data. Your vault is encrypted on your own device and stored as a single file in <strong>your own Google Drive</strong>, under your own Google account. We are not a custodian of your data — we never hold it.</p>
+      <p>You will need a Google account to use KeeperPass. Your use of Google Drive is governed by your own agreement with Google, which we are not party to and cannot alter.</p>
+
+      <h2>4. Your master secret, and what we cannot do</h2>
+      <p>Your vault is encrypted with a key derived from your master secret. That secret is never transmitted to us and is never stored anywhere outside your device. This has consequences you must accept before relying on the Service:</p>
+      <ul>
+        <li><strong>We cannot recover your vault.</strong> If you forget your master secret, the contents of your vault cannot be decrypted by us, by Google, or by anyone else. The data is not locked away pending a support request — it is mathematically unavailable.</li>
+        <li><strong>There is no password reset in the usual sense.</strong> Resetting your secret does not recover anything. It moves your existing encrypted file aside, keeping it as a timestamped backup in your Drive in case you later remember the original secret, and starts a fresh, empty vault.</li>
+        <li><strong>Keeping your own copies is your responsibility.</strong> The app provides an export feature. We strongly recommend using it to keep your own backups, stored securely.</li>
+        <li><strong>Your Google account security is part of your vault's security.</strong> Anyone with access to both your Google session and your master secret can open your vault.</li>
+      </ul>
+      <p>You accept sole responsibility for safeguarding your master secret and your Google account credentials.</p>
+
+      <h2>5. Acceptable use</h2>
+      <p>You agree not to:</p>
+      <ul>
+        <li>Use the Service to store or process data you have no legal right to hold.</li>
+        <li>Use it for any unlawful purpose, or to store credentials obtained without authorisation.</li>
+        <li>Interfere with the security of the Service, or with the Google authorisation flow, whether for yourself or for anyone else.</li>
+        <li>Attempt to disrupt the Service or the third-party services it depends on, including by automated or excessive requests.</li>
+        <li>Misrepresent the Service as your own, or use our name or branding in a way that suggests an endorsement or affiliation that does not exist.</li>
+      </ul>
+      <p>Reporting a security vulnerability to us in good faith is not a breach of these terms, and we welcome it. Please write to <a href="mailto:hello@keeperpass.com">hello@keeperpass.com</a> rather than disclosing publicly.</p>
+
+      <h2>6. Third-party services</h2>
+      <p>KeeperPass depends on services we do not control, and it sends limited information to them as part of normal operation. Section 6 of the <a href="/privacy-policy#third-parties">Privacy Policy</a> sets out exactly what each one receives. In summary:</p>
+      <ul>
+        <li><strong>Google</strong> — for sign-in and for storing your encrypted vault file.</li>
+        <li><strong>Have I Been Pwned</strong> — for checking your passwords against known breaches, using a method that never reveals the password.</li>
+        <li><strong>DuckDuckGo</strong> — for fetching website icons, which reveals to that service the hostnames stored in your items.</li>
+      </ul>
+      <p>We are not responsible for these services, their availability, or their own terms and policies. If any of them changes or withdraws its service, features of KeeperPass that depend on it may stop working.</p>
+
+      <h2>7. Availability and changes to the Service</h2>
+      <p>We provide the Service on a best-efforts basis and do not guarantee that it will be available without interruption or free from errors. We may modify, suspend, or discontinue any part of it, including the hosted web app, at any time.</p>
+      <p>Because your vault lives in your own Google Drive rather than on our infrastructure, the discontinuation of the hosted app would not delete your data. Your encrypted file would remain in your Drive, and you would retain the ability to run the software yourself.</p>
+
+      <h2>8. Source code</h2>
+      <p>The KeeperPass source code is published at <a href="https://github.com/keeperpass/keeperpass" rel="noopener">github.com/keeperpass/keeperpass</a>, where you can read it and verify the claims made in these documents. Your rights to use, modify, and redistribute that code are governed by the licence terms published in that repository, not by this document. Nothing in these terms grants you any right in our name, logo, or branding.</p>
+
+      <h2>9. Disclaimer</h2>
+      <p>To the fullest extent permitted by law, the Service is provided <strong>"as is"</strong> and <strong>"as available"</strong>, without warranties of any kind, whether express or implied, including any implied warranty of merchantability, fitness for a particular purpose, or non-infringement.</p>
+      <p>We do not warrant that the Service will meet your requirements, that it will be uninterrupted or error-free, or that any defect will be corrected.</p>
+      <p><strong>If you are a consumer in the European Union, this section does not affect your statutory rights.</strong> Mandatory rights under EU and national consumer law — including those under Directive (EU) 2019/770 on digital content and digital services — apply regardless of anything stated here, and nothing in these terms excludes or limits them.</p>
+
+      <h2>10. Limitation of liability</h2>
+      <p>To the fullest extent permitted by law, we are not liable for any indirect, incidental, special, or consequential loss, nor for any loss of data, loss of profits, or loss of business, arising out of or in connection with your use of the Service.</p>
+      <p>In particular, and given the design described in section 4, <strong>we are not liable for the loss of vault data resulting from a forgotten master secret</strong>, from the loss of access to your Google account, or from your own deletion of the vault file.</p>
+      <p><strong>Nothing in these terms excludes or limits our liability</strong> for death or personal injury caused by our negligence, for fraud or fraudulent misrepresentation, or for any other liability that cannot lawfully be excluded or limited. Where our liability cannot be excluded but may be limited, it is limited to the maximum extent permitted by applicable law.</p>
+      <p>Since the Service is provided free of charge, no fees have been paid to us that could form the basis of a monetary claim.</p>
+
+      <h2>11. Ending your use</h2>
+      <p>You may stop using KeeperPass at any time. To remove it completely: delete the <code>keeperpass</code> folder from your Google Drive, revoke KeeperPass's access in your <a href="https://myaccount.google.com/permissions" rel="noopener">Google account permissions</a>, uninstall the browser extension, and clear your browser's site data for vault.keeperpass.com.</p>
+      <p>We may suspend or withdraw access to the hosted Service where it is being used in breach of section 5, or where required by law. Because we hold no account and no data of yours, this does not affect the vault file in your Drive.</p>
+
+      <h2>12. Changes to these terms</h2>
+      <p>We may update these terms. When we do, the "last updated" date above changes, and the revised terms take effect when published on this page. Where a change materially affects your rights, we will make that clear rather than revising silently. Continuing to use the Service after a change means you accept the revised terms; if you do not accept them, please stop using it.</p>
+
+      <h2>13. General</h2>
+      <p>If any provision of these terms is found to be invalid or unenforceable, the remaining provisions stay in full effect. Our failure to enforce a provision is not a waiver of it. You may not transfer your rights under these terms to anyone else.</p>
+      <p>These terms, together with the Privacy Policy, are the entire agreement between you and us regarding the Service.</p>
+
+      <h2>14. Governing law and jurisdiction</h2>
+      <p>These terms are governed by the laws of <strong>[MEMBER STATE]</strong>, excluding its conflict-of-law rules and the UN Convention on Contracts for the International Sale of Goods. The courts of <strong>[MEMBER STATE]</strong> have jurisdiction over any dispute arising from them.</p>
+      <p><strong>If you are a consumer resident in the European Union, this does not deprive you of the protection of the mandatory law of your own country of residence</strong>, and you may bring proceedings in the courts of that country. You may also use the European Commission's <a href="https://ec.europa.eu/consumers/odr" rel="noopener">Online Dispute Resolution platform</a>. We are not obliged, and do not undertake, to participate in dispute resolution proceedings before a consumer arbitration board.</p>
+
+      <h2>15. Contact</h2>
+      <p>Questions about these terms can be sent to <a href="mailto:hello@keeperpass.com">hello@keeperpass.com</a>.</p>
+    </div>
+  </main>
+
+  <footer class="border-t border-edge">
+    <div class="mx-auto max-w-3xl px-6 py-8 flex items-center justify-between text-xs text-muted">
+      <p>© 2026 KeeperPass.</p>
+      <a href="/privacy-policy" class="font-bold hover:text-foreground" style="color: var(--foreground);">Privacy Policy</a>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!--
+  One field as a spartan Item: glyph, then the field's name over its value, then the
+  actions on the same line. The panel around these rows draws the separators, so
+  nothing here owns a border — a row cannot know whether it is last.
+-->
+<div hlmItem size="sm" class="group/field rounded-none! border-transparent hover:bg-muted/40">
+  <hlm-item-media variant="icon" class="text-accent-strong size-5 self-start">
+    <app-icon [name]="icon()" />
+  </hlm-item-media>
+
+  <hlm-item-content class="min-w-0 gap-0.5">
+    <hlm-item-title class="min-w-0 max-w-full">
+      <span
+        class="text-accent-strong min-w-0 truncate text-[0.65rem] font-semibold tracking-[0.08em] uppercase"
+      >
+        {{ displayName() }}
+      </span>
+
+      @for (finding of findings(); track finding.type) {
+        <span
+          hlmBadge
+          variant="destructive"
+          class="shrink-0"
+          [attr.title]="finding.label + ' — ' + finding.description"
+          [attr.aria-label]="finding.label + ' — ' + finding.description"
+        >
+          <app-icon [name]="finding.icon" />
+          {{ finding.label }}
+        </span>
+      }
+    </hlm-item-title>
+
+    <hlm-item-description class="min-w-0 max-w-full">
+      @if (isTotp()) {
+        <app-totp class="text-foreground font-mono text-sm" [secret]="field().value" />
+      } @else if (!field().value) {
+        <span class="text-sm italic opacity-50">[empty]</span>
+      } @else if (isNote()) {
+        <p class="text-foreground min-w-0 text-sm break-words whitespace-pre-wrap select-text">
+          {{ field().value }}
+        </p>
+      } @else {
+        <p
+          class="text-foreground min-w-0 text-sm break-words whitespace-pre-wrap select-text"
+          [class.font-mono]="isSecret()"
+        >
+          {{ displayValue() }}
+        </p>
+      }
+    </hlm-item-description>
+  </hlm-item-content>
+
+  <!--
+    Copy is the reason this screen exists, so it stays on screen rather than waiting
+    for a hover that a touch screen never sends — dimmed until the row is hovered or
+    focused.
+  -->
+  <hlm-item-actions
+    class="self-start opacity-60 transition-opacity group-focus-within/field:opacity-100 group-hover/field:opacity-100"
+  >
+    @if (isMaskable()) {
+      <button
+        hlmBtn
+        type="button"
+        variant="ghost"
+        size="icon-sm"
+        [attr.aria-label]="masked() ? 'Reveal value' : 'Hide value'"
+        (click)="toggleMasked()"
+      >
+        <app-icon [name]="masked() ? 'show' : 'hide'" />
+      </button>
+    }
+
+    <button
+      hlmBtn
+      type="button"
+      variant="ghost"
+      size="icon-sm"
+      [attr.aria-label]="'Copy value'"
+      (click)="copy()"
+    >
+      <app-icon [name]="copied() ? 'check' : 'copy'" />
+    </button>
+  </hlm-item-actions>
+</div>

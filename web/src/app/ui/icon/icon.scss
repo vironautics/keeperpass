@@ -1,0 +1,80 @@
+/**
+ * `color`, `font-size` and `font-weight` are deliberately *not* declared here.
+ *
+ * All three inherit natively, so naming them changed nothing — except that a
+ * component stylesheet is unlayered, which put them above every Tailwind utility.
+ * `<app-icon class="text-destructive">` and `<app-icon class="text-[0.6875rem]">`
+ * were both silently ignored, so an icon could not be recoloured or resized from
+ * the outside and always came out at 1.3em of whatever surrounded it.
+ *
+ * The box still scales with the text either way, because `1.3em` resolves against
+ * the font size this element ends up with, inherited or set.
+ */
+:host {
+  display: inline-block;
+  position: relative;
+  height: 1.3em;
+  width: 1.3em;
+  overflow: hidden;
+  text-align: center;
+
+  /**
+   * An icon never shrinks. The glyph inside is absolutely positioned, so this box's
+   * min-content width is 0 — as a flex item with the default `shrink: 1` it collapses to
+   * nothing the moment the line is over-constrained, which is exactly what happened in
+   * the collapsed sidebar: a 32px rail button held an 18px icon, an 8px gap and a label,
+   * the icon shrank to 1.8px, and what showed through the button's `overflow: hidden` was
+   * the first sliver of the *label* instead of the icon.
+   *
+   * helm's own rule for this (`[&_ng-icon]:shrink-0`) only matches `ng-icon`, and these
+   * are `<app-icon>`. Declared here rather than as a `shrink-0` at every call site
+   * because there is no case where shrinking an icon is the right answer.
+   */
+  flex-shrink: 0;
+}
+
+.glyph {
+  font-family: 'FontAwesome';
+  font-variant: normal;
+  font-style: normal;
+  line-height: 0;
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  height: 0;
+}
+
+/* Flows with surrounding text instead of reserving a square box. */
+:host(.inline) {
+  display: contents;
+}
+
+/*
+ * Resets the base rule's `margin: auto` (there to center the glyph inside
+ * the absolutely-positioned square box above) back to nothing. Left alone,
+ * it's inert wherever `.inline` happens to sit inside a plain inline
+ * ancestor (margin:auto is a no-op on `display:inline`) — but the moment an
+ * inline icon is a *direct* child of a flex container (no wrapping `<span>`
+ * in between), the browser blockifies it and the leftover auto margin
+ * turns into flex auto-margins, sucking up all the free space and shoving
+ * the icon away from the text next to it.
+ */
+:host(.inline) .glyph {
+  position: static;
+  display: inline;
+  line-height: inherit;
+  height: auto;
+  margin: 0;
+}
+
+:host(.large) {
+  font-size: 150%;
+}
+
+:host(.big) {
+  font-size: 300%;
+}
+
+:host(.huge) {
+  font-size: 500%;
+}

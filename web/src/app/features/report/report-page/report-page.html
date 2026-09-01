@@ -1,0 +1,164 @@
+<header class="flex shrink-0 items-center gap-1 border-b p-2">
+  <!--
+    The sidebar is a sheet below `md`, so it needs one obvious way in. From `md` up the
+    sidebar column is permanently on screen and its own header owns the toggle.
+  -->
+  <button hlmSidebarTrigger class="md:hidden" srOnlyText="Open navigation menu"></button>
+
+  <h1 class="flex min-w-0 flex-1 items-center gap-2 px-1 text-sm font-semibold">
+    <app-icon name="audit-clean" class="text-accent-strong text-[0.8125rem]" />
+    <span class="min-w-0 truncate">Security Report</span>
+  </h1>
+
+  @if (flaggedItemCount()) {
+    <span hlmBadge variant="destructive" class="shrink-0">
+      {{ flaggedItemCount() }} {{ flaggedItemCount() === 1 ? 'item' : 'items' }} flagged
+    </span>
+  }
+</header>
+
+<main class="min-h-0 flex-1 overflow-y-auto">
+  <div class="mx-auto w-full max-w-6xl p-4 sm:p-6">
+    <!--
+      The all-clear is worth stating outright. Without it the page reads as three empty
+      boxes, which looks like something failed to load rather than nothing being wrong.
+    -->
+    @if (!flaggedItemCount()) {
+      <div hlmAlert class="mb-4 grid-cols-[auto_1fr] gap-x-2.5!">
+        <app-icon name="success" class="text-accent-strong row-span-2 translate-y-0.5" />
+        <p hlmAlertTitle class="col-start-2">No problems found</p>
+        <p hlmAlertDescription class="col-start-2">
+          Every password in your vaults passed the last audit.
+        </p>
+      </div>
+    }
+
+    <!--
+      One card per audit type. `auto-fit` over a 20rem minimum rather than fixed
+      breakpoints: three cards on a wide screen, one on a phone, and nothing to keep in
+      step with the sidebar's own width.
+    -->
+    <div class="grid grid-cols-[repeat(auto-fit,minmax(min(20rem,100%),1fr))] items-start gap-4">
+      @for (section of sections(); track section.type) {
+        <section hlmCard class="gap-0 overflow-hidden py-0">
+          <!--
+            `hlmCardHeader` is a *grid*, so its children become rows — a `flex-row` on the
+            host loses to its own `grid` and the four things below stacked into a very
+            tall header. One flex child instead: the grid has a single row and the row
+            lays itself out.
+          -->
+          <!--
+            `pb-3!`, not `py-3`: helm's card header adds `pb-(--card-spacing)` — 24px —
+            whenever it carries `border-b`, which left the row 12px from the top and 25px
+            from the bottom instead of centred in the bar.
+          -->
+          <div hlmCardHeader class="bg-muted/40 border-b py-3 pb-3!">
+            <div class="flex min-w-0 items-center gap-2">
+              <app-icon
+                [name]="section.icon"
+                [class]="section.items.length ? 'text-destructive' : 'text-muted-foreground'"
+              />
+
+              <h2 hlmCardTitle class="min-w-0 flex-1 truncate text-sm">{{ section.title }}</h2>
+
+              <span
+                hlmBadge
+                [variant]="section.items.length ? 'destructive' : 'secondary'"
+                class="shrink-0"
+              >
+                {{ section.items.length }}
+              </span>
+
+              <!--
+                The explanation is long — three sentences of why the finding matters — so
+                it sits behind an info button rather than on the card. `#info="brnPopover"`
+                is how the trigger gets a handle on its own popover.
+              -->
+              <hlm-popover #info="brnPopover" align="end">
+                <button
+                  hlmBtn
+                  variant="ghost"
+                  size="icon-sm"
+                  hlmPopoverTrigger
+                  [hlmPopoverTriggerFor]="info"
+                  class="about-section shrink-0"
+                  [attr.aria-label]="'About ' + section.title"
+                >
+                  <app-icon name="info-circle" />
+                </button>
+
+                <hlm-popover-content *hlmPopoverPortal class="w-80">
+                  <p class="text-sm font-semibold">{{ section.title }}</p>
+                  <p class="text-muted-foreground text-sm">{{ section.description }}</p>
+                </hlm-popover-content>
+              </hlm-popover>
+            </div>
+          </div>
+
+          <div hlmCardContent class="px-0">
+            @if (section.items.length) {
+              <ul class="divide-y">
+                @for (entry of visibleItems(section); track entry.item.id) {
+                  <li>
+                    <!--
+                      A plain clickable div, not an anchor: `app-item-row` renders its own
+                      link and copy buttons, and a button inside a link is invalid HTML
+                      and breaks hit testing. The row is `pointer-events-none` so the
+                      whole thing behaves as one target — opening the item — and this
+                      wrapper carries the keyboard handling the anchor would have given.
+                    -->
+                    <div
+                      class="report-row hover:bg-muted/40 focus-visible:ring-ring/50 cursor-pointer focus-visible:ring-2 focus-visible:outline-none"
+                      role="button"
+                      tabindex="0"
+                      [attr.aria-label]="'Open ' + (entry.item.name || 'item')"
+                      (click)="openItem(entry.item.id)"
+                      (keydown.enter)="openItem(entry.item.id)"
+                      (keydown.space)="openItem(entry.item.id); $event.preventDefault()"
+                    >
+                      <!--
+                        The field chips are hidden here: a report card is ~20rem wide, the
+                        chips are 8rem each, and this page is about *which* item is at
+                        risk, not what is on it. Hidden from the outside rather than
+                        behind a new input on `app-item-row`, since no other caller wants
+                        this.
+                      -->
+                      <app-item-row
+                        class="pointer-events-none block [&_[data-slot=item-footer]]:hidden"
+                        [item]="entry.item"
+                        [vaultLabel]="entry.vaultLabel"
+                        [favourite]="isFavourite(entry.item.id)"
+                        [flagged]="true"
+                      />
+                    </div>
+                  </li>
+                }
+              </ul>
+            } @else {
+              <p class="text-muted-foreground flex items-center justify-center gap-2 py-6 text-sm">
+                <app-icon name="success" class="text-accent-strong" />
+                Nothing found
+              </p>
+            }
+          </div>
+
+          @if (section.items.length > maxVisible) {
+            <div hlmCardFooter class="border-t py-3">
+              <a
+                hlmBtn
+                variant="ghost"
+                size="sm"
+                class="show-all w-full"
+                [routerLink]="['/items']"
+                [queryParams]="{ report: section.type }"
+              >
+                Show all {{ section.items.length }}
+                <app-icon name="arrow-right" />
+              </a>
+            </div>
+          }
+        </section>
+      }
+    </div>
+  </div>
+</main>

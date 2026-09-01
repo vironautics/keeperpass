@@ -1,0 +1,48 @@
+<hlm-dialog [state]="open() ? 'open' : 'closed'" (stateChanged)="open.set($event === 'open')">
+  <hlm-dialog-content *hlmDialogPortal class="sm:max-w-md" aria-label="Export Data">
+    <hlm-dialog-header>
+      <h3 hlmDialogTitle>Export Data</h3>
+      <p hlmDialogDescription>
+        Writes a CSV of the chosen vault. Exported items leave the vault's encryption behind — what
+        you do with the file is up to you.
+      </p>
+    </hlm-dialog-header>
+
+    <hlm-field>
+      <label hlmFieldLabel for="export-vault">Source vault</label>
+      <hlm-select id="export-vault" [formControl]="vaultControl" [itemToString]="vaultLabel">
+        <hlm-select-trigger class="w-full">
+          <hlm-select-value placeholder="All Vaults" />
+        </hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          @for (option of vaultOptions(); track option.value) {
+            <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
+          }
+        </hlm-select-content>
+      </hlm-select>
+    </hlm-field>
+
+    <!--
+      Unconditional, because CSV is the only format: there is no combination of
+      choices in this dialog that produces an encrypted file.
+
+      Two columns by hand: see the note on the same alert in `start-page.html`.
+    -->
+    <div hlmAlert variant="destructive" class="grid-cols-[auto_1fr] gap-x-2.5!">
+      <app-icon name="alert" class="translate-y-0.5" />
+      <p hlmAlertTitle class="col-start-2">A CSV file is not encrypted</p>
+      <p hlmAlertDescription class="col-start-2">
+        Anyone who opens it can read every password in it. Keep it somewhere safe and delete it when
+        you are done.
+      </p>
+    </div>
+
+    <hlm-dialog-footer>
+      <button hlmBtn variant="outline" (click)="cancel()">Cancel</button>
+      <button hlmBtn class="confirm-export" [disabled]="!canExport()" (click)="exportData()">
+        <app-icon name="export" />
+        Export {{ itemCount() }} {{ itemCount() === 1 ? 'item' : 'items' }}
+      </button>
+    </hlm-dialog-footer>
+  </hlm-dialog-content>
+</hlm-dialog>

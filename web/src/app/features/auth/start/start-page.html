@@ -1,0 +1,78 @@
+<!--
+  First step of the sign-in flow, in spartan/ui. One action, so the card is mostly
+  explanation: what signing in gives the app access to, and what it does not.
+-->
+<div
+  hlmCard
+  class="animate-in fade-in slide-in-from-bottom-4 mx-auto w-full max-w-100 duration-700"
+>
+  <div hlmCardHeader>
+    <h1 hlmCardTitle>Welcome to KeeperPass</h1>
+    <p hlmCardDescription>
+      Your vault is a single encrypted file in your own Google Drive. Sign in to open it.
+    </p>
+  </div>
+
+  <div hlmCardContent class="flex flex-col gap-4">
+    @if (errorMessage()) {
+      <!--
+        helm's alert lays its icon out with `has-[>ng-icon]` / `*:[ng-icon]` selectors,
+        and this app's icons are `<app-icon>` glyphs, not `<ng-icon>` — so the two-column
+        grid it would have switched on has to be asked for by hand, with the same tokens
+        it uses. Without this the icon takes a row of its own above the title.
+      -->
+      <div hlmAlert variant="destructive" class="grid-cols-[auto_1fr] gap-x-2.5!">
+        <app-icon name="alert" class="row-span-2 translate-y-0.5" />
+        <p hlmAlertTitle class="col-start-2">Sign-in failed</p>
+        <p hlmAlertDescription class="col-start-2">{{ errorMessage() }}</p>
+      </div>
+    }
+
+    <button
+      hlmBtn
+      type="button"
+      variant="outline"
+      class="w-full"
+      [disabled]="submitting()"
+      (click)="signInWithGoogle()"
+    >
+      @if (submitting()) {
+        <hlm-spinner />
+      } @else {
+        <app-google-logo class="size-4" />
+      }
+      Continue with Google
+    </button>
+
+    <!--
+      The three things worth saying before someone hands over an account, each one
+      a fact about how this app works rather than reassurance.
+    -->
+    <ul class="text-muted-foreground flex flex-col gap-2 text-xs">
+      <li class="flex items-start gap-2">
+        <app-icon name="file" class="text-accent-strong mt-0.5 shrink-0" />
+        <span>
+          Access is limited to the files KeeperPass creates. The rest of your Drive stays out of
+          reach.
+        </span>
+      </li>
+      <li class="flex items-start gap-2">
+        <app-icon name="lock" class="text-accent-strong mt-0.5 shrink-0" />
+        <span>
+          Your vault is encrypted in this browser with a secret you choose next. Google stores the
+          file; it cannot read it.
+        </span>
+      </li>
+      <li class="flex items-start gap-2">
+        <app-icon name="cloud" class="text-accent-strong mt-0.5 shrink-0" />
+        <span>There is no KeeperPass server. Nothing is sent anywhere else.</span>
+      </li>
+    </ul>
+  </div>
+
+  <div hlmCardFooter>
+    <p class="text-muted-foreground text-xs">
+      Signing in creates the vault file if you do not have one yet.
+    </p>
+  </div>
+</div>

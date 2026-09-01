@@ -1,0 +1,6 @@
+# Build inputs, not site content — without these they would be served from the
+# document root alongside index.html. nginx.conf is deliberately NOT listed:
+# excluding it here would also remove it from the build context, and the
+# Dockerfile needs to read it. It is moved out of the root during the build.
+Dockerfile
+.dockerignore

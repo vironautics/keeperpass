@@ -1,0 +1,227 @@
+<!--
+  `routerLinkActive` sits on the row rather than on the link: the directive
+  tracks descendant `routerLink`s, and a template ref on the link itself would
+  be scoped to the `@if` block it lives in and invisible out here.
+
+  `rounded-none!` because `hlmItem` ships `rounded-md` and a same-property
+  utility would otherwise be decided by stylesheet order. The row keeps
+  `hlmItem`'s transparent 1px border and only colours the bottom edge, so the
+  divider costs no extra layout.
+-->
+<div
+  hlmItem
+  size="sm"
+  routerLinkActive
+  #row="routerLinkActive"
+  [attr.data-active]="row.isActive"
+  class="relative rounded-none! border-b-border hover:bg-accent/50 has-[a:focus-visible]:ring-ring/50 data-[active=true]:bg-accent data-[active=true]:hover:bg-accent has-[a:focus-visible]:ring-2 data-[active=true]:before:absolute data-[active=true]:before:inset-y-0 data-[active=true]:before:left-0 data-[active=true]:before:w-0.5 data-[active=true]:before:bg-primary data-[active=true]:before:content-['']"
+>
+  @if (selectable()) {
+    <!--
+      One control for the whole row: the checkbox's own button carries a
+      stretched pseudo-element, so the row keeps the large hit area it had
+      without a second, redundant control next to it.
+    -->
+    <hlm-checkbox
+      class="before:absolute before:inset-0 before:content-['']"
+      [checked]="selected()"
+      [aria-label]="'Select ' + displayName()"
+      (checkedChange)="selectionToggled.emit()"
+    />
+  } @else if (showFavicon()) {
+    <!--
+      The tile is white in both themes, on purpose. A favicon is someone else's
+      artwork on a transparent background, and helm's `image` variant has no
+      background of its own — so the glyph took the colour of whatever was behind
+      it and a dark logo vanished in dark mode, a white one in light mode. Brands
+      draw favicons to sit on white, so white is the one surface that carries
+      almost all of them; the hairline keeps the tile from dissolving into the
+      row in light mode. `object-contain` and the padding replace the variant's
+      `object-cover`, which cropped logos with a tight bounding box.
+    -->
+    <hlm-item-media
+      variant="image"
+      class="rounded-md border border-black/10 bg-white p-1 [&_img]:object-contain"
+    >
+      <img [src]="faviconUrl()" alt="" (error)="onFaviconError()" />
+    </hlm-item-media>
+  } @else {
+    <hlm-item-media variant="icon" class="size-8">
+      <app-icon [name]="glyph()" />
+    </hlm-item-media>
+  }
+
+  <hlm-item-content class="min-w-0">
+    @if (vaultLabel()) {
+      <hlm-item-description class="min-w-0">
+        <span class="min-w-0 truncate text-xs">{{ vaultLabel() }}</span>
+      </hlm-item-description>
+    }
+
+    <hlm-item-title class="min-w-0 max-w-full">
+      @if (selectable()) {
+        <span class="min-w-0 truncate" [class.text-muted-foreground]="unnamed()">{{
+          displayName()
+        }}</span>
+      } @else {
+        <!--
+          The pseudo-element covers the row, so the whole row is the link. The
+          field chips are positioned and come later in the DOM, which keeps them
+          painted above it and still clickable.
+        -->
+        <a
+          class="min-w-0 truncate before:absolute before:inset-0 before:content-['']"
+          [class.text-muted-foreground]="unnamed()"
+          [routerLink]="['/items', item().id]"
+          [attr.aria-current]="row.isActive ? 'page' : null"
+          queryParamsHandling="preserve"
+          >{{ displayName() }}</a
+        >
+      }
+    </hlm-item-title>
+  </hlm-item-content>
+
+  <hlm-item-actions class="self-start">
+    @if (flagged()) {
+      <span hlmBadge variant="destructive">
+        <app-icon name="alert" />
+        <span class="sr-only">Security issue</span>
+      </span>
+    }
+
+    @if (firstTag()) {
+      <span hlmBadge variant="secondary" class="max-w-40">
+        <app-icon name="tag" />
+        <span class="min-w-0 truncate">{{ firstTag() }}</span>
+      </span>
+    }
+
+    <!--
+      The rest of the tags collapse into a `+n`. On a row this narrow there is no room
+      to list them, and truncating them to two characters each says less than the count
+      does — the hover card is where the names live.
+    -->
+    @if (extraTagCount()) {
+      <!--
+        `contents`, so the wrapper is not a box: as a block it built a line box
+        around the inline-flex badge, 3.8px taller than the badge next to it, and
+        centring that taller box left the `+n` sitting ~1px below the other pills.
+      -->
+      <hlm-hover-card class="contents">
+        <button
+          hlmBadge
+          hlmHoverCardTrigger
+          variant="secondary"
+          type="button"
+          class="relative z-10 cursor-default"
+          [attr.aria-label]="extraTagCount() + ' more tags'"
+        >
+          <app-icon name="tags" />
+          +{{ extraTagCount() }}
+        </button>
+
+        <hlm-hover-card-content *hlmHoverCardPortal class="w-auto max-w-64">
+          <p class="text-muted-foreground mb-2 text-xs font-semibold tracking-wide uppercase">
+            Tags
+          </p>
+          <div class="flex flex-wrap gap-1.5">
+            @for (tag of item().tags; track tag) {
+              <span hlmBadge variant="secondary" [style.color]="tagColor(tag)">
+                <app-icon name="tag" />
+                {{ tag }}
+              </span>
+            }
+          </div>
+        </hlm-hover-card-content>
+      </hlm-hover-card>
+    }
+
+    @if (favourite()) {
+      <!-- `font-black` selects FontAwesome's Solid face, the only one drawn filled. -->
+      <app-icon name="favourite" class="text-accent-strong text-[0.6875rem] font-black" />
+      <span class="sr-only">Favorite</span>
+    }
+  </hlm-item-actions>
+
+  <!--
+    Fields scroll horizontally so a wide item stays two lines tall. The footer is
+    `basis-full`, which is what wraps them onto their own line; the chips are
+    `flex-1` past a floor of 8rem, so they fill the row until there are too many
+    and then overflow into the scroll.
+  -->
+  <hlm-item-footer class="overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    @for (field of item().fields; track $index) {
+      <!--
+        `only:max-w-full`: with a single field there is no sibling chip to
+        share the line with, so the 60% cap (there for when two-or-more chips
+        need to fit side by side) only wastes the other 40%. `only:` compiles
+        to a `:only-child` selector, which — as a pseudo-class — outranks the
+        plain `.max-w-\[60%\]` class on specificity alone, so this needs no
+        `!important`; `@for`/`@if` don't add wrapper elements, so the single
+        chip really is `<hlm-item-footer>`'s only child in the one-field case.
+      -->
+      <button
+        hlmItem
+        variant="outline"
+        size="xs"
+        type="button"
+        class="group/chip relative min-w-32 max-w-[60%] only:max-w-full flex-1 cursor-pointer text-start hover:bg-accent"
+        [attr.data-copied]="copiedFieldIndex() === $index"
+        [attr.aria-label]="'Copy ' + (field.name || 'field')"
+        (click)="copyField(field, $index)"
+      >
+        <!--
+          The confirmation swaps in over the label rather than resizing the chip.
+          Typography goes on inner spans, never on the `hlm*` hosts: a
+          same-property utility next to the one helm already sets is decided by
+          stylesheet order, and a child element is not.
+        -->
+        <hlm-item-content
+          class="min-w-0 transition duration-200 group-data-[copied=true]/chip:scale-0 group-data-[copied=true]/chip:opacity-0"
+        >
+          <hlm-item-title class="min-w-0 max-w-full">
+            <span
+              class="text-accent-strong flex min-w-0 items-center gap-1 text-[0.7rem] font-normal tracking-wide uppercase"
+            >
+              <app-icon [name]="fieldGlyph(field)" />
+              <span class="min-w-0 truncate">{{ field.name || 'Unnamed' }}</span>
+            </span>
+          </hlm-item-title>
+
+          <hlm-item-description class="min-w-0 max-w-full">
+            @if (isTotp(field)) {
+              <app-totp class="text-foreground text-xs" [secret]="field.value" />
+            } @else if (field.value) {
+              <span class="text-foreground min-w-0 truncate text-xs">{{
+                displayValue(field)
+              }}</span>
+            } @else {
+              <span class="text-xs opacity-50">[empty]</span>
+            }
+          </hlm-item-description>
+        </hlm-item-content>
+
+        <span
+          aria-hidden="true"
+          class="text-accent-strong absolute inset-0 flex scale-0 items-center justify-center text-xs font-bold opacity-0 transition duration-200 group-data-[copied=true]/chip:scale-100 group-data-[copied=true]/chip:opacity-100"
+          >copied</span
+        >
+      </button>
+    }
+
+    @if (!item().fields.length) {
+      <div hlmItem variant="outline" size="xs" class="min-w-32 flex-1" aria-disabled="true">
+        <hlm-item-content class="min-w-0">
+          <hlm-item-title class="min-w-0 max-w-full">
+            <span class="text-muted-foreground text-[0.7rem] font-normal tracking-wide uppercase">
+              No Fields
+            </span>
+          </hlm-item-title>
+          <hlm-item-description>
+            <span class="text-xs">This item has no fields.</span>
+          </hlm-item-description>
+        </hlm-item-content>
+      </div>
+    }
+  </hlm-item-footer>
+</div>

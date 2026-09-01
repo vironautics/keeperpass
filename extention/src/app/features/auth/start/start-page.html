@@ -1,0 +1,34 @@
+<div hlmCard class="mx-auto w-full max-w-100">
+  <div hlmCardContent class="flex flex-col gap-4">
+    <p class="text-muted-foreground text-sm">Welcome! Please sign in with Google to continue.</p>
+
+    @if (errorMessage()) {
+      <!--
+        helm's alert lays its icon out with `has-[>ng-icon]` / `*:[ng-icon]` selectors,
+        and this app's icons are `<app-icon>` glyphs, not `<ng-icon>` — so the two-column
+        grid it would have switched on has to be asked for by hand, with the same tokens
+        it uses. Without this the icon takes a row of its own above the title.
+      -->
+      <div hlmAlert variant="destructive" class="grid-cols-[auto_1fr] gap-x-2.5!" role="alert">
+        <app-icon name="alert" class="translate-y-0.5" />
+        <p hlmAlertDescription>{{ errorMessage() }}</p>
+      </div>
+    }
+
+    <button
+      hlmBtn
+      type="button"
+      variant="outline"
+      class="w-full"
+      [disabled]="submitting()"
+      (click)="signInWithGoogle()"
+    >
+      @if (submitting()) {
+        <hlm-spinner />
+      } @else {
+        <app-google-logo class="size-4" />
+      }
+      Continue with Google
+    </button>
+  </div>
+</div>

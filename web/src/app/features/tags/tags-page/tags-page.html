@@ -1,0 +1,319 @@
+<!--
+  Two headers, one at a time — the title with its actions, or the selection toolbar.
+  Both are the same shape, so switching between them does not move the list underneath.
+-->
+@if (!selecting()) {
+  <header class="flex shrink-0 items-center gap-1 border-b p-2">
+    <!--
+      The sidebar is a sheet below `md`, so it needs one obvious way in. From `md` up the
+      sidebar column is permanently on screen and its own header owns the toggle.
+    -->
+    <button hlmSidebarTrigger class="md:hidden" srOnlyText="Open navigation menu"></button>
+
+    <h1 class="flex min-w-0 flex-1 items-center gap-2 px-1 text-sm font-semibold">
+      <app-icon name="tags" class="text-accent-strong text-[0.8125rem]" />
+      <span class="min-w-0 truncate">Tags</span>
+    </h1>
+
+    <div class="flex shrink-0 items-center">
+      <button
+        hlmBtn
+        variant="ghost"
+        size="icon-sm"
+        hlmTooltip="Select multiple tags"
+        aria-label="Select multiple tags"
+        [disabled]="isEmpty()"
+        (click)="startSelecting()"
+      >
+        <app-icon name="checkbox-checked" />
+      </button>
+
+      <button
+        hlmBtn
+        variant="ghost"
+        size="icon-sm"
+        hlmTooltip="Add tag"
+        aria-label="Add tag"
+        (click)="startAddingTag()"
+      >
+        <app-icon name="add" />
+      </button>
+    </div>
+  </header>
+} @else {
+  <header class="bg-accent/40 flex shrink-0 items-center gap-1 border-b p-2">
+    <button
+      hlmBtn
+      variant="ghost"
+      size="icon-sm"
+      aria-label="Leave selection mode"
+      (click)="cancelSelecting()"
+    >
+      <app-icon name="cancel" />
+    </button>
+
+    <button
+      hlmBtn
+      variant="ghost"
+      size="icon-sm"
+      hlmTooltip="Select or deselect all"
+      aria-label="Select or deselect all"
+      (click)="toggleSelectAll()"
+    >
+      <app-icon name="select-all" />
+    </button>
+
+    <span class="min-w-0 flex-1 truncate px-1 text-center text-sm font-semibold">
+      {{ selectedCount() }} {{ selectedCount() === 1 ? 'tag' : 'tags' }} selected
+    </span>
+
+    <button
+      hlmBtn
+      variant="ghost"
+      size="icon-sm"
+      class="text-destructive"
+      hlmTooltip="Delete selected tags"
+      aria-label="Delete selected tags"
+      [disabled]="!selectedCount()"
+      (click)="requestBulkDelete()"
+    >
+      <app-icon name="delete" />
+    </button>
+  </header>
+}
+
+<!--
+  A column rather than the full width of the window: a row is a name, a count and a
+  date, and on a wide screen its actions would sit an inch of empty space away from the
+  name they belong to.
+-->
+<main class="min-h-0 flex-1 overflow-y-auto">
+  <div class="mx-auto w-full max-w-3xl p-4 sm:p-6">
+    @if (isEmpty()) {
+      <div hlmEmpty class="py-12">
+        <hlm-empty-header>
+          <hlm-empty-media variant="icon">
+            <app-icon name="tags" class="text-2xl" />
+          </hlm-empty-media>
+          <div hlmEmptyTitle>No tags yet</div>
+          <div hlmEmptyDescription>
+            Tags are created from an item, or here — either way they group items across vaults.
+          </div>
+        </hlm-empty-header>
+
+        <hlm-empty-content>
+          <button hlmBtn variant="outline" size="sm" (click)="startAddingTag()">
+            <app-icon name="add" />
+            Add Tag
+          </button>
+        </hlm-empty-content>
+      </div>
+    } @else {
+      <ul class="bg-card divide-y overflow-hidden rounded-lg border">
+        @for (tag of tags(); track tag.name) {
+          <li>
+            <div
+              hlmItem
+              size="sm"
+              class="group/row relative rounded-none! border-transparent hover:bg-muted/40"
+            >
+              @if (selecting()) {
+                <!--
+                  One control for the whole row: the checkbox's own button carries a
+                  stretched pseudo-element, so the row keeps its large hit area without
+                  a second, redundant control beside it — as `app-item-row` does.
+                -->
+                <hlm-checkbox
+                  class="before:absolute before:inset-0 before:content-['']"
+                  [checked]="isSelected(tag)"
+                  [aria-label]="'Select ' + tag.name"
+                  (checkedChange)="toggleSelection(tag)"
+                />
+              }
+
+              <!--
+                The colour stays put while selecting: it is how a tag is recognised at
+                a glance, and losing it would make the list a column of names.
+              -->
+              <hlm-item-media variant="icon" class="size-5">
+                <app-icon name="tag" [style.color]="tag.color" />
+              </hlm-item-media>
+
+              <hlm-item-content class="min-w-0">
+                <hlm-item-title class="min-w-0 max-w-full">
+                  <span class="min-w-0 truncate">{{ tag.name }}</span>
+                </hlm-item-title>
+
+                <!--
+                  What is worth knowing about a tag: how many items carry it, and since
+                  when. A tag registered before the registry stored dates falls back to
+                  the earliest item carrying it — see `VaultStore.tags`.
+                -->
+                <hlm-item-description class="min-w-0">
+                  <span class="text-xs">
+                    {{ tag.count }} {{ tag.count === 1 ? 'item' : 'items' }}
+                    @if (createdLabel(tag); as created) {
+                      · {{ created }}
+                    }
+                  </span>
+                </hlm-item-description>
+              </hlm-item-content>
+
+              @if (!selecting()) {
+                <hlm-item-actions
+                  class="opacity-60 transition-opacity group-focus-within/row:opacity-100 group-hover/row:opacity-100"
+                >
+                  <button
+                    hlmBtn
+                    variant="ghost"
+                    size="icon-sm"
+                    class="rename-tag"
+                    [hlmTooltip]="'Rename ' + tag.name"
+                    [attr.aria-label]="'Rename ' + tag.name"
+                    (click)="startRenaming(tag)"
+                  >
+                    <app-icon name="edit" />
+                  </button>
+
+                  <button
+                    hlmBtn
+                    variant="ghost"
+                    size="icon-sm"
+                    class="delete-tag text-destructive"
+                    [hlmTooltip]="'Delete ' + tag.name"
+                    [attr.aria-label]="'Delete ' + tag.name"
+                    (click)="requestDelete(tag)"
+                  >
+                    <app-icon name="delete" />
+                  </button>
+                </hlm-item-actions>
+              }
+            </div>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+</main>
+
+<!--
+  Four dialogs, each driven from a signal rather than a trigger — what opens them is a
+  header action or a row button. The two that ask for a name are `hlm-dialog`s; the two
+  destructive confirmations are `hlm-alert-dialog`s, as everywhere else in this app.
+-->
+<hlm-dialog
+  [state]="addingTag() ? 'open' : 'closed'"
+  (stateChanged)="addingTag.set($event === 'open')"
+>
+  <hlm-dialog-content *hlmDialogPortal class="sm:max-w-sm" aria-label="Add Tag">
+    <hlm-dialog-header>
+      <h3 hlmDialogTitle>Add Tag</h3>
+      <p hlmDialogDescription>
+        A tag with no items yet. Put it on an item from that item's own page.
+      </p>
+    </hlm-dialog-header>
+
+    <hlm-field>
+      <label hlmFieldLabel for="add-tag-name">Tag name</label>
+      <input
+        hlmInput
+        id="add-tag-name"
+        class="add-input w-full"
+        [formControl]="newTagControl"
+        autocomplete="off"
+        (keydown.enter)="confirmAddTag()"
+      />
+      @if (newTagIsDuplicate()) {
+        <hlm-field-error forceShow>A tag with this name already exists.</hlm-field-error>
+      }
+    </hlm-field>
+
+    <hlm-dialog-footer>
+      <button hlmBtn variant="outline" (click)="cancelAddTag()">Cancel</button>
+      <button hlmBtn [disabled]="!canAddTag()" (click)="confirmAddTag()">Add</button>
+    </hlm-dialog-footer>
+  </hlm-dialog-content>
+</hlm-dialog>
+
+<hlm-dialog
+  [state]="renamingTag() ? 'open' : 'closed'"
+  (stateChanged)="$event === 'closed' && cancelRename()"
+>
+  <hlm-dialog-content *hlmDialogPortal class="sm:max-w-sm" aria-label="Rename Tag">
+    <hlm-dialog-header>
+      <h3 hlmDialogTitle>Rename Tag</h3>
+      <p hlmDialogDescription>Every item carrying it is updated.</p>
+    </hlm-dialog-header>
+
+    <hlm-field>
+      <label hlmFieldLabel for="rename-tag-name">Tag name</label>
+      <input
+        hlmInput
+        id="rename-tag-name"
+        class="rename-input w-full"
+        [formControl]="renameControl"
+        autocomplete="off"
+        (keydown.enter)="confirmRename()"
+      />
+      @if (renameIsDuplicate()) {
+        <!--
+          Not an error: renaming onto an existing tag merges the two, which is a
+          legitimate way to tidy up a vault. It just has to be said first.
+        -->
+        <p hlmFieldDescription>
+          “{{ renameControl.value.trim() }}” already exists — renaming will merge them.
+        </p>
+      }
+    </hlm-field>
+
+    <hlm-dialog-footer>
+      <button hlmBtn variant="outline" (click)="cancelRename()">Cancel</button>
+      <button hlmBtn [disabled]="!canRename()" (click)="confirmRename()">Save</button>
+    </hlm-dialog-footer>
+  </hlm-dialog-content>
+</hlm-dialog>
+
+<hlm-alert-dialog
+  [state]="deletingTag() ? 'open' : 'closed'"
+  (stateChanged)="$event === 'closed' && cancelDelete()"
+>
+  <hlm-alert-dialog-content *hlmAlertDialogPortal aria-label="Delete Tag">
+    <hlm-alert-dialog-header>
+      <h3 hlmAlertDialogTitle>Delete “{{ deletingTag()?.name }}”?</h3>
+      <p hlmAlertDialogDescription>
+        It will be removed from {{ deletingTag()?.count }}
+        {{ deletingTag()?.count === 1 ? 'item' : 'items' }}. The items themselves are kept. This
+        cannot be undone.
+      </p>
+    </hlm-alert-dialog-header>
+
+    <hlm-alert-dialog-footer>
+      <button hlmAlertDialogCancel (click)="cancelDelete()">Cancel</button>
+      <button hlmAlertDialogAction variant="destructive" (click)="confirmDelete()">Delete</button>
+    </hlm-alert-dialog-footer>
+  </hlm-alert-dialog-content>
+</hlm-alert-dialog>
+
+<hlm-alert-dialog
+  [state]="bulkDeleteRequested() ? 'open' : 'closed'"
+  (stateChanged)="$event === 'closed' && cancelBulkDelete()"
+>
+  <hlm-alert-dialog-content *hlmAlertDialogPortal aria-label="Delete Tags">
+    <hlm-alert-dialog-header>
+      <h3 hlmAlertDialogTitle>
+        Delete {{ selectedCount() }} {{ selectedCount() === 1 ? 'tag' : 'tags' }}?
+      </h3>
+      <p hlmAlertDialogDescription>
+        Each one is removed from every item that has it. The items themselves are kept. This cannot
+        be undone.
+      </p>
+    </hlm-alert-dialog-header>
+
+    <hlm-alert-dialog-footer>
+      <button hlmAlertDialogCancel (click)="cancelBulkDelete()">Cancel</button>
+      <button hlmAlertDialogAction variant="destructive" (click)="confirmBulkDelete()">
+        Delete
+      </button>
+    </hlm-alert-dialog-footer>
+  </hlm-alert-dialog-content>
+</hlm-alert-dialog>

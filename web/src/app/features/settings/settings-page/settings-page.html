@@ -1,0 +1,25 @@
+<header class="flex shrink-0 items-center gap-1 border-b p-2">
+  <!--
+    The sidebar is a sheet below `md`, so it needs one obvious way in. From `md` up the
+    sidebar column is permanently on screen and its own header owns the toggle.
+  -->
+  <button hlmSidebarTrigger class="md:hidden" [srOnlyText]="'settings.openMenu' | t"></button>
+
+  <h1 class="flex min-w-0 flex-1 items-center gap-2 px-1 text-sm font-semibold">
+    <app-icon name="settings" class="text-accent-strong text-[0.8125rem]" />
+    <span class="min-w-0 truncate">{{ 'settings.title' | t }}</span>
+  </h1>
+</header>
+
+<!--
+  One scrolling column of cards, capped at `max-w-3xl`: settings are read one row at a
+  time, and a form field stretched across a 1440px window is harder to use, not easier.
+-->
+<main class="min-h-0 flex-1 overflow-y-auto">
+  <div class="mx-auto flex w-full max-w-3xl flex-col gap-4 p-4 sm:p-6">
+    <app-profile-section />
+    <app-language-section />
+    <app-master-password-section />
+    <app-data-section />
+  </div>
+</main>

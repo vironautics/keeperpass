@@ -1,0 +1,50 @@
+/**
+ * Extension-only additions on top of `spartan.css`. Everything else — palette,
+ * fonts, the app-shell rules — comes from the shared stylesheet copied from
+ * ngkeeperspartan; this file holds only what is genuinely specific to being a
+ * Chrome popup rather than a full page.
+ */
+
+/**
+ * A Chrome popup has no size of its own — it shrinks to fit its content, up to a
+ * hard 800x600 ceiling. Without an explicit size it collapses to whatever the
+ * narrowest line of text needs, which is why this has to be set rather than left
+ * at `100%` (100% of nothing is nothing). This is the one place to change it.
+ *
+ * `position: static` overrides spartan.css's `fixed` (`@layer base`, `html, body`
+ * — appropriate for a normal page, where the document never scrolls and each
+ * view owns its own overflow). A popup isn't a normal page: Chrome auto-sizes
+ * the popup frame from the document's normal flow, and `position: fixed` takes
+ * `body` out of that flow entirely — the frame then gets sized wrong, and the
+ * unfilled remainder shows through as the raw black canvas `color-scheme: dark`
+ * introduces (see `index.html`), rather than this stylesheet's own background.
+ * `overflow: hidden` below still stops the *page itself* from scrolling, same
+ * as it always did — only the positioning scheme changes.
+ */
+html,
+body {
+  position: static;
+  width: 400px;
+  height: 600px;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+/**
+ * Semantic status colours the extension uses that spartan's shared token set does
+ * not define (it only has `--destructive`). Mapped through `@theme inline` next to
+ * spartan's own tokens, the same pattern `spartan.css` uses for its one extra
+ * token, `--accent-strong` — this is what makes `bg-success`/`text-warning`/etc.
+ * exist as Tailwind utilities.
+ */
+:root {
+  --color-success: #4caf7d;
+  --color-warning: #f0a04b;
+  --color-info: var(--primary);
+}
+
+@theme inline {
+  --color-success: var(--color-success);
+  --color-warning: var(--color-warning);
+  --color-info: var(--color-info);
+}

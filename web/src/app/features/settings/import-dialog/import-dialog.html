@@ -1,0 +1,50 @@
+<hlm-dialog [state]="open() ? 'open' : 'closed'" (stateChanged)="open.set($event === 'open')">
+  <hlm-dialog-content *hlmDialogPortal class="sm:max-w-md" aria-label="Import Data">
+    <hlm-dialog-header>
+      <h3 hlmDialogTitle>Import Data</h3>
+      @if (fileName()) {
+        <p hlmDialogDescription class="truncate">{{ fileName() }}</p>
+      } @else {
+        <p hlmDialogDescription>Items are added to the vault you pick. Nothing is replaced.</p>
+      }
+    </hlm-dialog-header>
+
+    <hlm-field>
+      <label hlmFieldLabel for="import-vault">Target vault</label>
+      <hlm-select id="import-vault" [formControl]="vaultControl" [itemToString]="vaultLabel">
+        <hlm-select-trigger class="w-full">
+          <hlm-select-value placeholder="My Vault" />
+        </hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          @for (option of vaultOptions(); track option.value) {
+            <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
+          }
+        </hlm-select-content>
+      </hlm-select>
+    </hlm-field>
+
+    @if (parseError()) {
+      <!-- Two columns by hand: see the note on the same alert in `start-page.html`. -->
+      <div hlmAlert variant="destructive" class="grid-cols-[auto_1fr] gap-x-2.5!" role="alert">
+        <app-icon name="alert" class="translate-y-0.5" />
+        <p hlmAlertDescription class="col-start-2">{{ parseError() }}</p>
+      </div>
+    } @else if (previewCount() > 0) {
+      <div hlmAlert class="grid-cols-[auto_1fr] gap-x-2.5!" role="status">
+        <app-icon name="success" class="text-accent-strong translate-y-0.5" />
+        <p hlmAlertDescription class="col-start-2">
+          Found <strong>{{ previewCount() }}</strong>
+          {{ previewCount() === 1 ? 'item' : 'items' }} to import.
+        </p>
+      </div>
+    }
+
+    <hlm-dialog-footer>
+      <button hlmBtn variant="outline" (click)="cancel()">Cancel</button>
+      <button hlmBtn class="confirm-import" [disabled]="!canImport()" (click)="importData()">
+        <app-icon name="import" />
+        Import {{ previewCount() }} {{ previewCount() === 1 ? 'item' : 'items' }}
+      </button>
+    </hlm-dialog-footer>
+  </hlm-dialog-content>
+</hlm-dialog>

@@ -1,0 +1,57 @@
+:host {
+  display: inline-block;
+  position: relative;
+  height: 1.3em;
+  width: 1.3em;
+  overflow: hidden;
+  text-align: center;
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.glyph {
+  font-family: 'FontAwesome';
+  font-variant: normal;
+  font-style: normal;
+  line-height: 0;
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  height: 0;
+}
+
+/* Flows with surrounding text instead of reserving a square box. */
+:host(.inline) {
+  display: contents;
+}
+
+/*
+ * Resets the base rule's `margin: auto` (there to center the glyph inside
+ * the absolutely-positioned square box above) back to nothing. Left alone,
+ * it's inert wherever `.inline` happens to sit inside a plain inline
+ * ancestor (margin:auto is a no-op on `display:inline`) — but the moment an
+ * inline icon is a *direct* child of a flex container (no wrapping `<span>`
+ * in between), the browser blockifies it and the leftover auto margin
+ * turns into flex auto-margins, sucking up all the free space and shoving
+ * the icon away from the text next to it.
+ */
+:host(.inline) .glyph {
+  position: static;
+  display: inline;
+  line-height: inherit;
+  height: auto;
+  margin: 0;
+}
+
+:host(.large) {
+  font-size: 150%;
+}
+
+:host(.big) {
+  font-size: 300%;
+}
+
+:host(.huge) {
+  font-size: 500%;
+}

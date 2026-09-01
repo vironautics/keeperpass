@@ -1,0 +1,122 @@
+<div hlmCard>
+  <div hlmCardHeader>
+    <h2 hlmCardTitle class="text-base">{{ 'settings.profile.title' | t }}</h2>
+    <!--
+      Read-only, and said out loud why: both values come from the Google account this
+      session signed in with, and `UnlockPage` re-reads them from Google on every
+      unlock (`AuthService.fetchProfile`). An editable field here would have looked
+      like it saved and then silently reverted.
+    -->
+    <p hlmCardDescription>{{ 'settings.profile.managedByGoogle' | t }}</p>
+  </div>
+
+  <div hlmCardContent>
+    <dl class="divide-y rounded-lg border">
+      <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1 px-3 py-2.5">
+        <dt class="text-muted-foreground min-w-32 text-xs">
+          {{ 'settings.profile.email' | t }}
+        </dt>
+        <dd class="profile-email min-w-0 flex-1 truncate text-sm">
+          {{ email() || '—' }}
+        </dd>
+      </div>
+
+      <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1 px-3 py-2.5">
+        <dt class="text-muted-foreground min-w-32 text-xs">
+          {{ 'settings.profile.displayName' | t }}
+        </dt>
+        <dd class="profile-name min-w-0 flex-1 truncate text-sm">
+          {{ name() || '—' }}
+        </dd>
+      </div>
+    </dl>
+  </div>
+</div>
+
+<!--
+  The two ways out of the account. Deleting is destructive and irreversible, so it is
+  guarded by a typed confirmation.
+-->
+<div class="mt-4 flex flex-wrap gap-2">
+  <button hlmBtn variant="outline" size="sm" (click)="logOut()">
+    <app-icon name="disconnect" />
+    {{ 'settings.profile.logOut' | t }}
+  </button>
+
+  <button
+    hlmBtn
+    variant="ghost"
+    size="sm"
+    class="delete-account text-destructive"
+    (click)="confirmDelete()"
+  >
+    <app-icon name="delete" />
+    {{ 'settings.profile.deleteAccount' | t }}
+  </button>
+</div>
+
+<hlm-dialog
+  [state]="deleteRequested() ? 'open' : 'closed'"
+  (stateChanged)="deleteRequested.set($event === 'open')"
+>
+  <hlm-dialog-content
+    *hlmDialogPortal
+    class="sm:max-w-md"
+    [attr.aria-label]="'settings.profile.deleteAccount' | t"
+  >
+    <hlm-dialog-header>
+      <h3 hlmDialogTitle>{{ 'settings.profile.deleteAccount' | t }}</h3>
+      <p hlmDialogDescription>{{ 'settings.profile.deleteWarning' | t }}</p>
+    </hlm-dialog-header>
+
+    <hlm-field>
+      <label hlmFieldLabel for="delete-confirmation">
+        {{ 'settings.profile.confirmation' | t }}
+      </label>
+      <input
+        hlmInput
+        id="delete-confirmation"
+        class="delete-confirmation w-full"
+        autocomplete="off"
+        [formControl]="deleteConfirmation"
+        (keydown.enter)="deleteAccount()"
+      />
+      <!-- The token itself is never translated — it is compared literally. -->
+      <p hlmFieldDescription>
+        {{ 'settings.profile.deleteTypePrefix' | t }} <strong>{{ deleteToken }}</strong>
+        {{ 'settings.profile.deleteTypeSuffix' | t }}
+      </p>
+    </hlm-field>
+
+    @if (errorMessage()) {
+      <!-- Two columns by hand: see the note on the same alert in `start-page.html`. -->
+      <div
+        hlmAlert
+        variant="destructive"
+        class="delete-error grid-cols-[auto_1fr] gap-x-2.5!"
+        role="alert"
+      >
+        <app-icon name="alert" class="translate-y-0.5" />
+        <p hlmAlertDescription class="col-start-2">{{ errorMessage() }}</p>
+      </div>
+    }
+
+    <hlm-dialog-footer>
+      <button hlmBtn variant="outline" [disabled]="deleting()" (click)="cancelDelete()">
+        {{ 'common.cancel' | t }}
+      </button>
+      <button
+        hlmBtn
+        variant="destructive"
+        class="confirm-delete"
+        [disabled]="!deleteConfirmed() || deleting()"
+        (click)="deleteAccount()"
+      >
+        @if (deleting()) {
+          <hlm-spinner />
+        }
+        {{ 'common.delete' | t }}
+      </button>
+    </hlm-dialog-footer>
+  </hlm-dialog-content>
+</hlm-dialog>

@@ -1,0 +1,262 @@
+<!--
+  The editing counterpart of `app-item-field`, same Item shape: glyph, then the name
+  and value stacked in the content column, then the remove button.
+
+  Each field type gets the control that fits it — a calendar for a date, a country
+  picker for a phone number, a strength bar under a secret — rather than one text box
+  for everything. The stored value stays a plain string either way; these only change
+  how it is entered.
+-->
+<div hlmItem size="sm" class="rounded-none! border-transparent">
+  <hlm-item-media variant="icon" class="size-8 self-start">
+    <app-icon [name]="glyph()" />
+  </hlm-item-media>
+
+  <hlm-item-content class="min-w-0 gap-2">
+    <input
+      hlmInput
+      #nameInput
+      class="name-input text-accent-strong"
+      [formControl]="nameControl()"
+      placeholder="Field name"
+      aria-label="Field name"
+    />
+
+    @if (isNote()) {
+      <textarea
+        hlmTextarea
+        #valueTextarea
+        class="value-input text-foreground"
+        rows="3"
+        [formControl]="valueControl()"
+        placeholder="Enter value here"
+        aria-label="Field value"
+      ></textarea>
+    } @else if (isMonth()) {
+      <!--
+        A calendar rather than a native date input: the native one renders however the
+        browser feels like, ignores the app's theme entirely, and on some platforms is
+        keyboard-only. The control still holds the same `yyyy-mm` / `yyyy-mm-dd` string.
+      -->
+      <hlm-month-year-picker
+        [date]="dateValue()"
+        [formatDate]="formatMonth"
+        (dateChange)="onDatePicked($event)"
+      >
+        <hlm-date-picker-trigger class="value-input w-full">
+          {{ dateLabel() || 'Pick a month' }}
+        </hlm-date-picker-trigger>
+      </hlm-month-year-picker>
+    } @else if (isDate()) {
+      <hlm-date-picker
+        [date]="dateValue()"
+        [formatDate]="formatDay"
+        (dateChange)="onDatePicked($event)"
+      >
+        <hlm-date-picker-trigger class="value-input w-full">
+          {{ dateLabel() || 'Pick a date' }}
+        </hlm-date-picker-trigger>
+      </hlm-date-picker>
+    } @else if (isPhone()) {
+      <!--
+        The country picker only rewrites the dial code at the front of the value; the
+        number itself stays whatever the user typed. No national-format validation — a
+        stored contact number is whatever it actually is.
+      -->
+      <div class="flex gap-2">
+        <!--
+          A combobox, not a select: 239 countries is too many to scroll past, so the
+          panel opens with a search box. `w-72!` overrides the content's own
+          `w-(--brn-combobox-width)` — it is anchored to a 7rem trigger, and at that
+          width every row wrapped onto a second line.
+        -->
+        <hlm-combobox
+          class="w-28 shrink-0"
+          [value]="phoneIso()"
+          [itemToString]="countryDialLabel"
+          [filter]="countryFilter"
+          (valueChange)="onCountryPicked($event)"
+        >
+          <!--
+            `flex` and the `[&>button]:` prefix are both load-bearing. The trigger's
+            host element is a plain component host — `display: inline` — so `w-full`
+            does nothing on it and a padding utility lands on an *inline* box, which
+            offsets the button inside it and pushes it past the container's right
+            edge: that is what made this control start 8px right of the input above
+            and sit flush against the phone number. `flex` makes the host a
+            block-level box the button can fill, and the padding is aimed at the
+            button itself, 10px to match `hlmInput`'s.
+          -->
+          <hlm-combobox-trigger
+            class="flex w-full justify-between! [&>button]:w-full [&>button]:px-2.5!"
+            aria-label="Country code"
+          >
+            <hlm-combobox-value placeholder="Code" />
+          </hlm-combobox-trigger>
+          <hlm-combobox-content *hlmComboboxPortal class="w-72!">
+            <hlm-combobox-input placeholder="Search countries" />
+            <div hlmComboboxList aria-label="Country codes">
+              <hlm-combobox-empty>No country matches that.</hlm-combobox-empty>
+              @for (country of countries; track country.iso) {
+                <hlm-combobox-item [value]="country.iso" class="whitespace-nowrap">
+                  <span aria-hidden="true">{{ country.flag }}</span>
+                  <span class="text-muted-foreground tabular-nums">{{ country.dial }}</span>
+                  <span class="min-w-0 truncate">{{ country.name }}</span>
+                </hlm-combobox-item>
+              }
+            </div>
+          </hlm-combobox-content>
+        </hlm-combobox>
+
+        <input
+          hlmInput
+          #valueInput
+          class="value-input text-foreground"
+          type="tel"
+          [value]="phoneNational()"
+          placeholder="Phone number"
+          aria-label="Phone number"
+          (input)="onPhoneTyped($event)"
+        />
+      </div>
+    } @else if (isRevealable()) {
+      <!--
+        A password is the one value worth revealing in place, and the one worth
+        generating, so it gets both buttons plus the strength bar below.
+      -->
+      <hlm-input-group class="w-full">
+        <input
+          hlmInputGroupInput
+          #valueInput
+          class="value-input text-foreground"
+          [type]="revealed() ? 'text' : 'password'"
+          [formControl]="valueControl()"
+          placeholder="Enter value here"
+          aria-label="Field value"
+        />
+        <hlm-input-group-addon align="inline-end">
+          <button
+            hlmInputGroupButton
+            size="icon-xs"
+            type="button"
+            aria-label="Generate a password"
+            (click)="generating.set(true)"
+          >
+            <app-icon name="generate" />
+          </button>
+          <button
+            hlmInputGroupButton
+            size="icon-xs"
+            type="button"
+            class="reveal"
+            [attr.aria-label]="revealed() ? 'Hide value' : 'Reveal value'"
+            (click)="toggleRevealed()"
+          >
+            <app-icon [name]="revealed() ? 'hide' : 'show'" />
+          </button>
+        </hlm-input-group-addon>
+      </hlm-input-group>
+    } @else if (isCredit()) {
+      <!--
+        The brand and the Luhn verdict come from the number itself — see
+        `card-number.ts`. Shown inline so a mistyped digit is caught here rather than
+        at a checkout.
+      -->
+      <hlm-input-group class="w-full">
+        <input
+          hlmInputGroupInput
+          #valueInput
+          class="value-input text-foreground font-mono"
+          inputmode="numeric"
+          [formControl]="valueControl()"
+          placeholder="Card number"
+          aria-label="Card number"
+        />
+        @if (card().brand) {
+          <hlm-input-group-addon align="inline-end">
+            <span class="text-muted-foreground flex items-center gap-1 text-[0.7rem]">
+              <!-- f058, a circle-check: a tick in a box reads as "checkbox", not "valid". -->
+              <app-icon [name]="card().valid ? 'success' : 'credit'" />
+              {{ card().brand?.label }}
+            </span>
+          </hlm-input-group-addon>
+        }
+      </hlm-input-group>
+    } @else if (isEmail()) {
+      <hlm-input-group class="w-full">
+        <input
+          hlmInputGroupInput
+          #valueInput
+          class="value-input text-foreground"
+          type="email"
+          autocapitalize="none"
+          spellcheck="false"
+          [formControl]="valueControl()"
+          placeholder="name@example.com"
+          aria-label="Email address"
+        />
+        @if (value()) {
+          <hlm-input-group-addon align="inline-end">
+            <app-icon
+              [name]="emailValid() ? 'success' : 'alert'"
+              [class]="emailValid() ? 'text-accent-strong' : 'text-destructive'"
+            />
+          </hlm-input-group-addon>
+        }
+      </hlm-input-group>
+    } @else {
+      <input
+        hlmInput
+        #valueInput
+        class="value-input text-foreground"
+        [type]="nativeType()"
+        [attr.inputmode]="inputMode()"
+        [formControl]="valueControl()"
+        placeholder="Enter value here"
+        aria-label="Field value"
+      />
+    }
+
+    <!--
+      Secrets get a strength bar under the field. A PIN is scored differently: it is
+      digits only, so what decides it is length and whether it is one of the shapes
+      people actually pick — see `pin-strength.ts`.
+    -->
+    @if (showsStrength() && value()) {
+      <div class="space-y-1">
+        <hlm-progress [value]="strengthPercent()" class="h-1">
+          <hlm-progress-indicator [class]="strengthColour()" />
+        </hlm-progress>
+        <p class="text-muted-foreground text-[0.7rem]">{{ strengthLabel() }}</p>
+      </div>
+    }
+
+    @if (isCredit() && value() && card().complete && !card().valid) {
+      <p class="text-destructive text-[0.7rem]">
+        That number fails its checksum — one of the digits is probably wrong.
+      </p>
+    }
+
+    @if (isEmail() && value() && !emailValid()) {
+      <p class="text-destructive text-[0.7rem]">That does not look like an email address.</p>
+    }
+  </hlm-item-content>
+
+  <hlm-item-actions class="self-start">
+    <button
+      hlmBtn
+      variant="ghost"
+      size="icon-sm"
+      type="button"
+      class="field-remove"
+      aria-label="Remove field"
+      (click)="remove.emit()"
+    >
+      <app-icon name="delete" />
+    </button>
+  </hlm-item-actions>
+</div>
+
+@if (isRevealable()) {
+  <app-generate-password-dialog [(open)]="generating" (confirmed)="onGenerated($event)" />
+}

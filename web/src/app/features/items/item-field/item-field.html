@@ -1,0 +1,124 @@
+<!--
+  One field as a spartan Item: glyph, then the field's name over its value, then the
+  actions on the same line. The panel around these rows draws the separators with
+  `divide-y`, so nothing here owns a border — a row cannot know whether it is last.
+-->
+<div hlmItem size="sm" class="group/field rounded-none! border-transparent hover:bg-muted/40">
+  <hlm-item-media variant="icon" class="text-accent-strong size-5 self-start">
+    <app-icon [name]="glyph()" />
+  </hlm-item-media>
+
+  <hlm-item-content class="min-w-0 gap-0.5">
+    <hlm-item-title class="min-w-0 max-w-full">
+      <span
+        class="text-accent-strong min-w-0 truncate text-[0.65rem] font-semibold tracking-[0.08em] uppercase"
+      >
+        {{ displayName() }}
+      </span>
+
+      <!--
+        Audit findings sit next to the name, as they did before. The explanation
+        is a tooltip rather than a `title` attribute, so it is styled and reachable
+        from the keyboard.
+      -->
+      @for (finding of findings(); track finding.type) {
+        <span
+          hlmBadge
+          variant="destructive"
+          class="shrink-0"
+          [hlmTooltip]="finding.description"
+          [attr.aria-label]="finding.label + ' — ' + finding.description"
+          tabindex="0"
+        >
+          <app-icon [name]="finding.glyph" />
+          {{ finding.label }}
+        </span>
+      }
+    </hlm-item-title>
+
+    <hlm-item-description class="min-w-0 max-w-full">
+      @if (isTotp()) {
+        <app-totp class="text-foreground font-mono text-sm" [secret]="field().value" />
+      } @else if (!field().value) {
+        <span class="text-sm italic opacity-50">[empty]</span>
+      } @else {
+        <!--
+          A `<p>` rather than the `<pre>` this used to be: Tailwind's preflight
+          gives `pre` the mono stack, and only the legacy reset was undoing that.
+          `select-text` because copying the value by hand has to keep working, and
+          `break-words` so a long secret wraps instead of widening the pane. Mono
+          for the types that are read character by character.
+        -->
+        <p
+          class="text-foreground min-w-0 text-sm break-words whitespace-pre-wrap select-text"
+          [class.font-mono]="isSecret()"
+        >
+          {{ displayValue() }}
+        </p>
+      }
+    </hlm-item-description>
+
+    <!--
+      Card brand and checksum, and the strength of a secret — the same read-outs the
+      editor gives, because they are worth having when you are only looking. The
+      strength meter reads the real value even while it is masked; it says how strong
+      the value is, never what it is.
+    -->
+    @if (card()?.brand; as brand) {
+      <span class="text-muted-foreground flex items-center gap-1.5 text-[0.7rem]">
+        <app-icon
+          [name]="card()!.valid ? 'success' : 'credit'"
+          [class]="card()!.valid ? 'text-accent-strong' : 'text-muted-foreground'"
+        />
+        {{ brand.label }}
+        @if (card()!.complete && !card()!.valid) {
+          <span class="text-destructive">— fails its checksum</span>
+        }
+      </span>
+    }
+
+    @if (showsStrength() && field().value) {
+      <div class="flex items-center gap-2">
+        <hlm-progress [value]="strengthPercent()" class="h-1 w-24 shrink-0">
+          <hlm-progress-indicator [class]="strengthColour()" />
+        </hlm-progress>
+        <span class="text-muted-foreground text-[0.7rem]">{{ strengthLabel() }}</span>
+      </div>
+    }
+  </hlm-item-content>
+
+  <!--
+    Copy is the reason this screen exists, so it stays on screen rather than waiting
+    for a hover that a touch screen never sends — dimmed until the row is hovered or
+    focused, and named by a tooltip since there is no room for a text label.
+  -->
+  <hlm-item-actions
+    class="self-start opacity-60 transition-opacity group-focus-within/field:opacity-100 group-hover/field:opacity-100"
+  >
+    @if (isSecret()) {
+      <button
+        hlmBtn
+        variant="ghost"
+        size="icon-sm"
+        [hlmTooltip]="masked() ? 'Reveal value' : 'Hide value'"
+        [attr.aria-label]="masked() ? 'Reveal value' : 'Hide value'"
+        (click)="toggleMasked()"
+      >
+        <app-icon [name]="masked() ? 'show' : 'hide'" />
+      </button>
+    }
+
+    <button
+      hlmBtn
+      variant="ghost"
+      size="icon-sm"
+      class="data-[copied=true]:text-accent-strong"
+      [attr.data-copied]="copied()"
+      [hlmTooltip]="copied() ? 'Copied' : 'Copy value'"
+      aria-label="Copy value"
+      (click)="copy()"
+    >
+      <app-icon [name]="copied() ? 'check' : 'copy'" />
+    </button>
+  </hlm-item-actions>
+</div>

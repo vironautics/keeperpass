@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Privacy Policy — KeeperPass</title>
+<meta name="description" content="What KeeperPass does and does not know about you: no server, no account, and a vault encrypted in your browser before it reaches your own Google Drive." />
+<link rel="canonical" href="https://keeperpass.com/privacy-policy" />
+<link rel="icon" href="/logo.svg" type="image/svg+xml" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: { extend: { colors: {
+      background: 'var(--background)', foreground: 'var(--foreground)', card: 'var(--card)',
+      accent: 'var(--accent-strong)', muted: 'var(--muted-foreground)', edge: 'var(--border)',
+    } } },
+  };
+</script>
+<style>
+  @font-face { font-family: 'Nunito'; font-weight: 400; font-display: swap; src: url('/fonts/Nunito-400.woff2') format('woff2'); }
+  @font-face { font-family: 'Nunito'; font-weight: 700; font-display: swap; src: url('/fonts/Nunito-700.woff2') format('woff2'); }
+  @font-face { font-family: 'Nunito'; font-weight: 900; font-display: swap; src: url('/fonts/Nunito-900.woff2') format('woff2'); }
+  :root {
+    --background: #e7eaf1; --foreground: #3a3d46; --card: #f8f9fc;
+    --accent-strong: #24559e; --muted-foreground: #5b5e68; --border: rgb(0 0 0 / 9%);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: #0c0d10; --foreground: #e8e9ed; --card: #16181d;
+      --accent-strong: #9dc0f2; --muted-foreground: #9a9da5; --border: rgb(255 255 255 / 10%);
+    }
+  }
+  html { color-scheme: light dark; }
+  body { background: var(--background); color: var(--foreground); font-family: 'Nunito', ui-sans-serif, sans-serif; -webkit-font-smoothing: antialiased; }
+  .wordmark { display: inline-block; background-color: var(--foreground); aspect-ratio: 1151/217; mask: url('/logo.svg') no-repeat center / contain; -webkit-mask: url('/logo.svg') no-repeat center / contain; }
+  h1, h2, h3 { text-wrap: balance; }
+  a.back { color: var(--muted-foreground); }
+  a.back:hover { color: var(--foreground); }
+  .prose h2 { font-weight: 800; font-size: 1.25rem; margin-top: 2.25rem; margin-bottom: 0.75rem; color: var(--foreground); }
+  .prose h3 { font-weight: 800; font-size: 1rem; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--foreground); }
+  .prose p, .prose li { color: var(--muted-foreground); line-height: 1.75; }
+  .prose p + p { margin-top: 1rem; }
+  .prose ul { margin-top: 0.75rem; padding-left: 1.25rem; list-style: disc; }
+  .prose ol { margin-top: 0.75rem; padding-left: 1.25rem; list-style: decimal; }
+  .prose li + li { margin-top: 0.5rem; }
+  .prose strong { color: var(--foreground); }
+  .prose a { color: var(--accent-strong); font-weight: 700; }
+  .prose code { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 0.875em; background: var(--card); border: 1px solid var(--border); border-radius: 4px; padding: 0.1em 0.35em; color: var(--foreground); }
+  a:focus-visible { outline: 2px solid var(--accent-strong); outline-offset: 3px; border-radius: 4px; }
+  .callout { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.5rem; margin-top: 1.5rem; }
+  .callout p { margin: 0; }
+  .tablewrap { overflow-x: auto; margin-top: 1rem; border: 1px solid var(--border); border-radius: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+  th { text-align: left; font-weight: 800; color: var(--foreground); padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  td { color: var(--muted-foreground); padding: 0.75rem 1rem; vertical-align: top; line-height: 1.6; }
+  tbody tr + tr td { border-top: 1px solid var(--border); }
+  .toc a { color: var(--muted-foreground); font-weight: 400; }
+  .toc a:hover { color: var(--accent-strong); }
+</style>
+</head>
+<body>
+  <header class="border-b border-edge">
+    <div class="mx-auto max-w-3xl px-6 h-20 flex items-center justify-between">
+      <a href="/" aria-label="KeeperPass home"><span class="wordmark h-6"></span></a>
+      <a href="/" class="back text-sm font-bold inline-flex items-center gap-1.5">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+        Back to KeeperPass
+      </a>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-3xl px-6 py-16">
+    <p class="text-xs font-bold tracking-[0.14em] uppercase" style="color: var(--accent-strong);">Legal</p>
+    <h1 class="mt-3 font-black text-4xl">Privacy Policy</h1>
+    <p class="mt-3 text-sm text-muted">Last updated 24 August 2026</p>
+
+    <div class="prose mt-10">
+      <div class="callout">
+        <p><strong>The short version.</strong> KeeperPass has no server and no database. There is no KeeperPass account. Your vault is encrypted inside your browser and stored as a single file in your own Google Drive. We cannot read your passwords, because we never receive them and have nowhere to put them. Three third parties do receive something while you use the app — Google, DuckDuckGo, and Have I Been Pwned — and <a href="#third-parties">section 6</a> sets out exactly what each one gets.</p>
+      </div>
+
+      <h2>1. Who we are</h2>
+      <p>KeeperPass is operated by <strong>[LEGAL ENTITY NAME]</strong>, registered at <strong>[REGISTERED ADDRESS]</strong>, <strong>[MEMBER STATE]</strong> (company number <strong>[REGISTRATION NUMBER]</strong>). Where this policy says "we" or "us", it means that company.</p>
+      <p>For the small amount of personal data described in this policy, that company is the <strong>data controller</strong> under the EU General Data Protection Regulation (GDPR). You can reach us about anything in this policy at <a href="mailto:hello@keeperpass.com">hello@keeperpass.com</a>.</p>
+
+      <h2>2. What this policy covers</h2>
+      <p>This policy applies to three things:</p>
+      <ul>
+        <li>The marketing website at <strong>keeperpass.com</strong> — the page you are reading now.</li>
+        <li>The web app at <strong>vault.keeperpass.com</strong>.</li>
+        <li>The <strong>KeeperPass browser extension</strong>.</li>
+      </ul>
+      <p>These are not the same in privacy terms, and the differences matter. The marketing website uses analytics. <strong>The web app and the extension do not</strong> — they contain no analytics, no telemetry, no crash reporting, and no advertising or tracking code of any kind.</p>
+
+      <h2>3. What we never receive</h2>
+      <p>There is no KeeperPass server that your data passes through, and no KeeperPass database in which anything about you is recorded. In particular, the following never reach us, in any form, encrypted or otherwise:</p>
+      <ul>
+        <li>Your <strong>master secret</strong>, or anything derived from it.</li>
+        <li>Your <strong>vault</strong> — its items, names, usernames, passwords, notes, custom fields, tags, TOTP secrets, or attachments.</li>
+        <li>The <strong>websites you store credentials for</strong>, or the sites you visit while the extension is installed.</li>
+        <li>Any <strong>page content</strong> from the sites you browse.</li>
+      </ul>
+      <p>This is a structural property, not a promise about our intentions. We have not built the infrastructure that would let us collect these things, and the source code that runs in your browser can be inspected to confirm it.</p>
+
+      <h2>4. Signing in with Google</h2>
+      <p>KeeperPass has no password of its own and no registration form. You sign in through Google's own OAuth flow, using Google Identity Services. Two consequences follow.</p>
+
+      <h3>The permissions we request</h3>
+      <p>KeeperPass asks Google for exactly these scopes, and no others:</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Scope</th><th>What it allows</th></tr></thead>
+          <tbody>
+            <tr><td><code>openid</code>, <code>email</code>, <code>profile</code></td><td>Reads your basic profile — your name, email address, and profile picture — so the app can show who is signed in.</td></tr>
+            <tr><td><code>drive.file</code></td><td>Access limited strictly to files KeeperPass itself creates. It <strong>cannot</strong> see, list, open, or search any other file in your Drive. This is the narrowest Drive scope Google offers.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Your profile information is fetched from Google directly by your browser and used only within that browser session, to display your name and to open your own vault file. It is not logged, stored, or transmitted to any KeeperPass-operated system, because none exists.</p>
+
+      <h3>Your Google access token</h3>
+      <p>The access token Google issues is held in your browser's <code>sessionStorage</code> so that a page refresh does not force you to sign in again. It is <strong>deliberately never written to <code>localStorage</code></strong>, which means it is discarded when you close the tab. It is never transmitted to us.</p>
+
+      <h3>What Google itself learns</h3>
+      <p>Signing in requires your browser to load Google's script from <code>accounts.google.com</code> and to call Google's APIs. Google therefore sees your IP address, your device and browser, and the fact that you are using KeeperPass, and it handles that under its own policies. See <a href="https://policies.google.com/privacy" rel="noopener">Google's Privacy Policy</a>.</p>
+
+      <h2>5. Your vault in your Google Drive</h2>
+      <p>KeeperPass creates one folder in your Drive, named <code>keeperpass</code>, containing one file, <code>vault.json.enc</code>. That file is your entire vault.</p>
+      <p>Before it is ever written to Drive, the vault is compressed and then encrypted in your browser:</p>
+      <ul>
+        <li>Your master secret is put through <strong>Argon2id</strong> — a memory-hard key derivation function — with a 16-byte random salt, 64 MiB of memory, 3 iterations, and a parallelism of 4. These are the same parameters Bitwarden uses in production.</li>
+        <li>The resulting 256-bit key encrypts the vault with <strong>AES-256-GCM</strong>, using a fresh 12-byte random nonce for every save, so encrypting the same vault twice never produces the same ciphertext.</li>
+        <li>The derivation parameters travel alongside the ciphertext, so vaults written under older settings stay readable when those settings are strengthened.</li>
+      </ul>
+      <p><strong>Google stores the encrypted bytes and cannot decrypt them.</strong> Neither can we. Your master secret never leaves your device, and no copy of it exists anywhere else.</p>
+      <p>The vault file lives in your Drive, under your Google account. It counts against your Google storage, it is subject to Google's terms, and you can delete it yourself at any time without involving us.</p>
+
+      <h2 id="third-parties">6. Third parties your browser contacts</h2>
+      <p>While the app has no back end of its own, it does make requests from your browser to three external services. This is the complete list.</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Service</th><th>What is sent</th><th>When</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Google</strong><br>(sign-in and Drive)</td>
+              <td>Your OAuth credentials, your IP address, and the encrypted vault file.</td>
+              <td>At sign-in, and on every load and save of your vault.</td>
+            </tr>
+            <tr>
+              <td><strong>DuckDuckGo</strong><br>(website icons)</td>
+              <td>The <strong>hostname</strong> from an item's URL field — for example <code>github.com</code> — so an icon can be fetched for it. The item, its username, and its password are never sent.</td>
+              <td>Whenever an item with a URL field is displayed.</td>
+            </tr>
+            <tr>
+              <td><strong>Have I Been Pwned</strong><br>(breach checking)</td>
+              <td>The <strong>first five hexadecimal characters</strong> of the SHA-1 hash of a password. Never the password, and never the full hash.</td>
+              <td>Automatically after each unlock, and when an item is created, edited, or restored.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>About the website icons</h3>
+      <p>To show a recognisable icon next to each entry, KeeperPass asks <code>icons.duckduckgo.com</code> for the icon belonging to that entry's web address. The app cannot reach those sites itself, so the alternative is no icons at all.</p>
+      <p>We want to be direct about the trade-off: <strong>this reveals to DuckDuckGo the hostnames of services you hold accounts with</strong> — not which account, not your username, and not your password, but the list of sites itself. Requests carry no identifier of you beyond your IP address, and <strong>there is currently no setting to turn this off</strong>. If that trade-off is not one you want to make, the honest answer today is to run your own build of the app.</p>
+
+      <h3>About the breach check</h3>
+      <p>KeeperPass checks your stored passwords against the Have I Been Pwned breach corpus. The check runs <strong>automatically</strong> each time you unlock your vault, and again whenever you add or change an item — it is not something you switch on.</p>
+      <p>The query is <em>k-anonymous</em>. Your browser computes the SHA-1 hash of a password locally, sends only its first five characters, and receives back every breached hash sharing that prefix — several hundred of them. The comparison happens on your device. Have I Been Pwned therefore cannot tell which password was being asked about, and never sees the password or its full hash. Results are held in memory only and are never written into your vault file.</p>
+
+      <h2>7. What is stored in your browser</h2>
+      <p>KeeperPass keeps a small amount of state on your device. None of it is transmitted anywhere.</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Key</th><th>Where</th><th>What it holds</th></tr></thead>
+          <tbody>
+            <tr><td><code>keeperpass:accessToken</code></td><td>Session storage</td><td>Your Google access token. Cleared when the tab closes.</td></tr>
+            <tr><td><code>keeperpass:accessTokenExpiry</code></td><td>Session storage</td><td>When that token expires. Cleared when the tab closes.</td></tr>
+            <tr><td><code>keeperpass:recentItemIds</code></td><td>Local storage</td><td>The identifiers of up to 50 recently opened items, so this device can show a "recently used" list. Identifiers only — no names, no passwords. Kept out of the vault deliberately, so that what you looked at on a shared computer does not follow you to your phone.</td></tr>
+            <tr><td><code>keeperpass:locale</code></td><td>Local storage</td><td>Your language choice.</td></tr>
+            <tr><td><code>keeperpass.theme</code></td><td>Local storage</td><td>Your light or dark theme choice.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Clearing your browser's site data removes all of it. Your vault is unaffected, because it lives in your Drive.</p>
+
+      <h2>8. The browser extension</h2>
+      <p>The extension needs broad permissions to do its job, and you should understand what they mean.</p>
+      <p>It requests access to <strong>all websites</strong> and runs a small script on the pages you visit. That script exists to find login forms so that it can fill your credentials into them. It reads the structure of forms on the page — where the username and password fields are — and it communicates only with the extension itself.</p>
+      <p><strong>The page script makes no network requests whatsoever.</strong> It has no ability to transmit anything to us or to anyone else, and page content, form values, and your browsing history are never sent off your device. The only outbound connections the extension makes are to Google, for sign-in and for your vault file.</p>
+      <p>Removing the extension removes its access immediately. Your vault is unaffected.</p>
+
+      <h2>9. The marketing website and analytics</h2>
+      <p>This website (keeperpass.com) uses <strong>Google Analytics</strong> (measurement ID <code>G-G2HHD6E3VL</code>) to understand aggregate traffic — which pages are visited, roughly which country visitors come from, and what kind of device they use. Google Analytics sets cookies in your browser and processes your IP address.</p>
+      <p>This runs on the marketing site only. <strong>It does not run on the web app or in the browser extension</strong>, and it has no access to anything vault-related: no vault contents, no items, no passwords, no Google account data. See <a href="https://policies.google.com/privacy" rel="noopener">Google's Privacy Policy</a> for how Google handles what it collects.</p>
+
+      <h2>10. Legal bases for processing</h2>
+      <p>Under Article 6 GDPR, we rely on the following:</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Processing</th><th>Legal basis</th></tr></thead>
+          <tbody>
+            <tr><td>Handling your Google profile and token in your browser so the app can function</td><td><strong>Contract</strong> (Art. 6(1)(b)) — you asked us to provide the service, and it cannot work otherwise.</td></tr>
+            <tr><td>Breach checking and website icons</td><td><strong>Contract</strong> (Art. 6(1)(b)) — both are core features of the product as described.</td></tr>
+            <tr><td>Analytics on the marketing website</td><td><strong>Consent</strong> (Art. 6(1)(a)), together with the consent required for storing cookies under the ePrivacy Directive.</td></tr>
+            <tr><td>Answering an email you send us</td><td><strong>Legitimate interests</strong> (Art. 6(1)(f)) — responding to a person who contacted us.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>11. International transfers</h2>
+      <p>The third-party services described above are operated from outside the European Economic Area, principally the United States. When your browser contacts them, the data described in section 6 is transferred there. Google LLC relies on the EU–US Data Privacy Framework and on Standard Contractual Clauses; Have I Been Pwned and DuckDuckGo receive only the minimal, non-identifying fragments set out above.</p>
+
+      <h2>12. How long anything is kept</h2>
+      <ul>
+        <li><strong>Your vault</strong> is kept in your Google Drive until you delete it. We hold no copy and cannot delete it for you.</li>
+        <li><strong>Browser storage</strong> is kept until you clear it, or — for your access token — until you close the tab.</li>
+        <li><strong>Analytics data</strong> is retained according to the Google Analytics retention setting on our property.</li>
+        <li><strong>Emails you send us</strong> are kept for as long as needed to deal with the matter, and then deleted.</li>
+      </ul>
+      <p>We hold no user database, so there is nothing else to retain or to purge.</p>
+
+      <h2>13. Your rights</h2>
+      <p>Under the GDPR you have the right to access your personal data, to have it corrected or erased, to restrict or object to its processing, and to data portability. You may withdraw consent to analytics at any time.</p>
+      <p>An honest note on how these apply here: because we operate no user database, we usually hold <strong>no personal data about you at all</strong>. A request to access or erase your data will most often be answered with confirmation that we hold nothing. Your vault is not ours to produce or delete — it is in your own Drive, and you already have full control of it. To export it, use the export feature in the app; to erase it, delete the <code>keeperpass</code> folder from your Drive and revoke KeeperPass's access in your <a href="https://myaccount.google.com/permissions" rel="noopener">Google account permissions</a>.</p>
+      <p>To exercise any right, write to <a href="mailto:hello@keeperpass.com">hello@keeperpass.com</a>. If you are unhappy with our response, you have the right to lodge a complaint with your national data protection supervisory authority.</p>
+
+      <h2>14. Children</h2>
+      <p>KeeperPass is not directed at children, and we do not knowingly process the data of anyone under 16. Because there is no account system, we hold no age information.</p>
+
+      <h2>15. Security</h2>
+      <p>The protection of your vault rests on the encryption described in section 5 and on your own master secret. We cannot reset that secret, recover it, or help you regain access if you lose it — see the <a href="/terms-of-service">Terms of Service</a> for what that means in practice.</p>
+      <p>If you believe you have found a security vulnerability in KeeperPass, please report it to <a href="mailto:hello@keeperpass.com">hello@keeperpass.com</a> rather than disclosing it publicly, and we will respond as quickly as we can.</p>
+
+      <h2>16. Changes to this policy</h2>
+      <p>If this policy changes, the "last updated" date above changes with it. Where a change materially affects how your data is handled, we will make that clear on this page rather than revising it silently.</p>
+
+      <h2>17. Contact</h2>
+      <p>Questions about this policy, or about anything described in it, can be sent to <a href="mailto:hello@keeperpass.com">hello@keeperpass.com</a>.</p>
+    </div>
+  </main>
+
+  <footer class="border-t border-edge">
+    <div class="mx-auto max-w-3xl px-6 py-8 flex items-center justify-between text-xs text-muted">
+      <p>© 2026 KeeperPass.</p>
+      <a href="/terms-of-service" class="font-bold hover:text-foreground" style="color: var(--foreground);">Terms of Service</a>
+    </div>
+  </footer>
+</body>
+</html>

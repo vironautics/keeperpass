@@ -1,0 +1,241 @@
+<hlm-sidebar-group>
+  <div hlmSidebarGroupLabel>Vaults &amp; Items</div>
+
+  <button hlmSidebarGroupAction aria-label="New vault" (click)="createVault()">
+    <app-icon name="add" />
+  </button>
+
+  <div hlmSidebarGroupContent>
+    <ul hlmSidebarMenu>
+      <!--
+        Every filter is a link carrying query parameters, so the current view is
+        fully described by the URL. `exactMatch` is what keeps the three apart:
+        without exact query-param matching they all resolve to `/items` and
+        would highlight together.
+      -->
+      <li hlmSidebarMenuItem>
+        <a
+          hlmSidebarMenuButton
+          tooltip="All Vaults"
+          routerLink="/items"
+          [queryParams]="{}"
+          routerLinkActive
+          #allVaults="routerLinkActive"
+          [routerLinkActiveOptions]="exactMatch"
+          [isActive]="allVaults.isActive"
+        >
+          <app-icon name="vaults" />
+          <span>All Vaults</span>
+        </a>
+        <div hlmSidebarMenuBadge>{{ counts().total }}</div>
+      </li>
+
+      <li hlmSidebarMenuItem>
+        <a
+          hlmSidebarMenuButton
+          tooltip="Recently Used"
+          routerLink="/items"
+          [queryParams]="{ recent: true }"
+          routerLinkActive
+          #recent="routerLinkActive"
+          [routerLinkActiveOptions]="exactMatch"
+          [isActive]="recent.isActive"
+        >
+          <app-icon name="history" />
+          <span>Recently Used</span>
+        </a>
+        <div hlmSidebarMenuBadge>{{ recentCount() }}</div>
+      </li>
+
+      <li hlmSidebarMenuItem>
+        <a
+          hlmSidebarMenuButton
+          tooltip="Favorites"
+          routerLink="/items"
+          [queryParams]="{ favourites: true }"
+          routerLinkActive
+          #favourites="routerLinkActive"
+          [routerLinkActiveOptions]="exactMatch"
+          [isActive]="favourites.isActive"
+        >
+          <app-icon name="favourite" />
+          <span>Favorites</span>
+        </a>
+        <div hlmSidebarMenuBadge>{{ counts().favourites }}</div>
+      </li>
+
+      <!--
+        `hlmCollapsible` goes on the <li> itself rather than wrapping it in an
+        <hlm-collapsible> element: the trigger and content only need a
+        BrnCollapsible ancestor, and this keeps <ul> holding nothing but <li>.
+      -->
+      <li
+        hlmSidebarMenuItem
+        hlmCollapsible
+        [expanded]="isExpanded('vaults')"
+        (expandedChange)="setExpanded('vaults', $event)"
+      >
+        <button hlmSidebarMenuButton hlmCollapsibleTrigger tooltip="My Vaults" class="pe-14">
+          <app-icon name="vault" />
+          <span>My Vaults</span>
+        </button>
+
+        <!--
+          Two actions on one row: the gear is shifted left of the chevron, since
+          `hlmSidebarMenuAction` pins itself to `end-1` and they would otherwise
+          stack. `routerLink` on a <button> works — RouterLink is not anchor-only,
+          and the directive only matches buttons.
+        -->
+        <button hlmSidebarMenuAction class="end-7" routerLink="/vaults" aria-label="Manage vaults">
+          <app-icon name="settings" />
+        </button>
+
+        <!-- The chevron toggles too — every disclosure arrow in this app does. -->
+        <button
+          hlmSidebarMenuAction
+          hlmCollapsibleTrigger
+          aria-label="Toggle vaults list"
+          class="data-[state=open]:rotate-90"
+        >
+          <app-icon name="chevron-right" />
+        </button>
+
+        <hlm-collapsible-content>
+          <ul hlmSidebarMenuSub>
+            @for (vault of ownVaults(); track vault.id) {
+              <li hlmSidebarMenuSubItem>
+                <a
+                  hlmSidebarMenuSubButton
+                  routerLink="/items"
+                  [queryParams]="{ vault: vault.id }"
+                  routerLinkActive
+                  #ownVault="routerLinkActive"
+                  [routerLinkActiveOptions]="exactMatch"
+                  [isActive]="ownVault.isActive"
+                >
+                  <span class="truncate">{{ vault.name }}</span>
+                  <span class="ms-auto text-xs tabular-nums opacity-60">
+                    {{ itemCount(vault.id) }}
+                  </span>
+                </a>
+              </li>
+            }
+          </ul>
+        </hlm-collapsible-content>
+      </li>
+
+      @for (organization of organizations(); track organization.id) {
+        <li
+          hlmSidebarMenuItem
+          hlmCollapsible
+          [expanded]="isExpanded(vaultsSectionId(organization.id))"
+          (expandedChange)="setExpanded(vaultsSectionId(organization.id), $event)"
+        >
+          <button hlmSidebarMenuButton hlmCollapsibleTrigger [tooltip]="organization.name">
+            <app-icon name="vaults" />
+            <span>{{ organization.name }}</span>
+          </button>
+
+          <button
+            hlmSidebarMenuAction
+            hlmCollapsibleTrigger
+            [attr.aria-label]="'Toggle ' + organization.name"
+            class="data-[state=open]:rotate-90"
+          >
+            <app-icon name="chevron-right" />
+          </button>
+
+          <hlm-collapsible-content>
+            <ul hlmSidebarMenuSub>
+              @for (vault of vaultsOf(organization.id); track vault.id) {
+                <li hlmSidebarMenuSubItem>
+                  <a
+                    hlmSidebarMenuSubButton
+                    routerLink="/items"
+                    [queryParams]="{ vault: vault.id }"
+                    routerLinkActive
+                    #sharedVault="routerLinkActive"
+                    [routerLinkActiveOptions]="exactMatch"
+                    [isActive]="sharedVault.isActive"
+                  >
+                    <span class="truncate">{{ vault.name }}</span>
+                    <span class="ms-auto text-xs tabular-nums opacity-60">
+                      {{ itemCount(vault.id) }}
+                    </span>
+                  </a>
+                </li>
+              }
+            </ul>
+          </hlm-collapsible-content>
+        </li>
+      }
+
+      <li
+        hlmSidebarMenuItem
+        hlmCollapsible
+        [expanded]="isExpanded('tags')"
+        (expandedChange)="setExpanded('tags', $event)"
+      >
+        <button hlmSidebarMenuButton hlmCollapsibleTrigger tooltip="Tags" class="pe-14">
+          <app-icon name="tags" />
+          <span>Tags</span>
+        </button>
+
+        <button hlmSidebarMenuAction class="end-7" routerLink="/tags" aria-label="Manage tags">
+          <app-icon name="settings" />
+        </button>
+
+        <button
+          hlmSidebarMenuAction
+          hlmCollapsibleTrigger
+          aria-label="Toggle tags list"
+          class="data-[state=open]:rotate-90"
+        >
+          <app-icon name="chevron-right" />
+        </button>
+
+        <hlm-collapsible-content>
+          <ul hlmSidebarMenuSub>
+            @for (tag of tags(); track tag.name) {
+              <li hlmSidebarMenuSubItem>
+                <a
+                  hlmSidebarMenuSubButton
+                  routerLink="/items"
+                  [queryParams]="{ tag: tag.name }"
+                  routerLinkActive
+                  #tagLink="routerLinkActive"
+                  [routerLinkActiveOptions]="exactMatch"
+                  [isActive]="tagLink.isActive"
+                >
+                  <app-icon name="tag" [style.color]="tag.color" />
+                  <span class="truncate">{{ tag.name }}</span>
+                  <span class="ms-auto text-xs tabular-nums opacity-60">{{ tag.count }}</span>
+                </a>
+              </li>
+            } @empty {
+              <li hlmSidebarMenuSubItem>
+                <span class="text-sidebar-foreground/60 block px-2 py-1 text-xs">No tags yet.</span>
+              </li>
+            }
+          </ul>
+        </hlm-collapsible-content>
+      </li>
+
+      <li hlmSidebarMenuItem>
+        <a
+          hlmSidebarMenuButton
+          tooltip="Password Generator"
+          routerLink="/generator"
+          routerLinkActive
+          #generator="routerLinkActive"
+          [isActive]="generator.isActive"
+        >
+          <app-icon name="generate" />
+          <span>Password Generator</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</hlm-sidebar-group>
+
+<app-create-vault-dialog [(open)]="creatingVault" />

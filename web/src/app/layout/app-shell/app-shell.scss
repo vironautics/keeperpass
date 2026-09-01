@@ -1,0 +1,15 @@
+/**
+ * The shell fills the viewport and never scrolls the document: `index.html` fixes
+ * html/body, and each routed view manages its own overflow. Everything visual is
+ * spartan's now — the only reason this file still exists is the safe-area insets,
+ * which routed views read to clear home-screen cutouts on mobile.
+ */
+:host {
+  display: block;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+
+  --inset-top: max(calc(env(safe-area-inset-top, 0px) - 0.5em), 0em);
+  --inset-bottom: max(calc(env(safe-area-inset-bottom, 0px) - 1em), 0em);
+}

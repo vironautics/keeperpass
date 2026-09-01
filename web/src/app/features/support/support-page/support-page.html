@@ -1,0 +1,308 @@
+<header class="flex shrink-0 items-center gap-1 border-b p-2">
+  <!--
+    The sidebar is a sheet below `md`, so it needs one obvious way in. From `md` up the
+    sidebar column is permanently on screen and its own header owns the toggle.
+  -->
+  <button hlmSidebarTrigger class="md:hidden" srOnlyText="Open navigation menu"></button>
+
+  <h1 class="flex min-w-0 flex-1 items-center gap-2 px-1 text-sm font-semibold">
+    <app-icon name="support" class="text-accent-strong text-[0.8125rem]" />
+    <span class="min-w-0 truncate">Support</span>
+  </h1>
+</header>
+
+<!-- A reading column of cards, one per question someone actually arrives with. -->
+<main class="min-h-0 flex-1 overflow-y-auto">
+  <div class="mx-auto flex w-full max-w-3xl flex-col gap-4 p-4 sm:p-6">
+    <!-- Where your data lives -->
+    <section hlmCard>
+      <div hlmCardHeader>
+        <h2 hlmCardTitle class="text-base">Where your data lives</h2>
+        <p hlmCardDescription>
+          Keeperpass has no server. Your vault is a single encrypted file in your own Google Drive,
+          and your browser is the only place it is ever readable.
+        </p>
+      </div>
+
+      <div hlmCardContent class="flex flex-col gap-4">
+        <!--
+          Two parties and what passes between them. A grid rather than absolute
+          positioning: at `sm` it is browser → file → Drive across, and below that the
+          arrow rotates and the three stack.
+        -->
+        <ul class="grid items-center gap-3 sm:grid-cols-[1fr_auto_1fr]">
+          <li class="bg-muted/40 flex flex-col gap-1 rounded-lg border p-3">
+            <app-icon name="computer" class="text-accent-strong text-xl" />
+            <p class="text-sm font-medium">Your browser</p>
+            <p class="text-muted-foreground text-xs">
+              Encrypts and decrypts everything. Your secret never leaves this device.
+            </p>
+          </li>
+
+          <li class="flex flex-col items-center gap-1" aria-hidden="true">
+            <app-icon name="arrow-right" class="text-muted-foreground rotate-90 sm:rotate-0" />
+            <span class="text-muted-foreground text-[0.7rem]">encrypted file</span>
+          </li>
+
+          <li class="bg-muted/40 flex flex-col gap-1 rounded-lg border p-3">
+            <app-icon name="cloud" class="text-accent-strong text-xl" />
+            <p class="text-sm font-medium">Your Google Drive</p>
+            <p class="text-muted-foreground text-xs">
+              Holds <code class="font-mono">keeperpass/vault.json.enc</code> — unreadable
+              ciphertext.
+            </p>
+          </li>
+        </ul>
+
+        <p class="text-muted-foreground text-sm">
+          Keeperpass never receives your data. There is no account to breach and no operator who
+          could read your vault, because there is nobody in the middle.
+        </p>
+      </div>
+    </section>
+
+    <!-- What protects it -->
+    <section hlmCard>
+      <div hlmCardHeader>
+        <h2 hlmCardTitle class="text-base">What protects it</h2>
+      </div>
+
+      <div hlmCardContent>
+        <dl class="grid gap-4 sm:grid-cols-2">
+          <div class="flex flex-col gap-1">
+            <dt class="text-sm font-medium">Your secret</dt>
+            <dd class="text-muted-foreground text-xs">
+              Never transmitted, never stored. It exists only in memory while the app is unlocked.
+            </dd>
+          </div>
+          <div class="flex flex-col gap-1">
+            <dt class="text-sm font-medium">Key derivation</dt>
+            <dd class="text-muted-foreground text-xs">
+              Argon2id, 64&nbsp;MiB memory, 3 passes — deliberately slow to make guessing expensive.
+            </dd>
+          </div>
+          <div class="flex flex-col gap-1">
+            <dt class="text-sm font-medium">Encryption</dt>
+            <dd class="text-muted-foreground text-xs">
+              AES-GCM, which detects tampering as well as preventing reading.
+            </dd>
+          </div>
+          <div class="flex flex-col gap-1">
+            <dt class="text-sm font-medium">Drive access</dt>
+            <dd class="text-muted-foreground text-xs">
+              Scoped to <code class="font-mono">drive.file</code> — Keeperpass sees only the files
+              it creates, nothing else in your Drive.
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- Signing in -->
+    <section hlmCard>
+      <div hlmCardHeader>
+        <h2 hlmCardTitle class="text-base">Signing in</h2>
+        <p hlmCardDescription>Two separate things, for two separate reasons.</p>
+      </div>
+
+      <div hlmCardContent class="flex flex-col gap-4">
+        <ol class="flex flex-col gap-3">
+          <li class="flex gap-3">
+            <span
+              class="bg-primary text-primary-foreground flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-semibold"
+              aria-hidden="true"
+            >
+              1
+            </span>
+            <div class="flex min-w-0 flex-col gap-0.5">
+              <p class="text-sm font-medium">Continue with Google</p>
+              <p class="text-muted-foreground text-xs">
+                Grants permission to read and write your vault file. This proves who owns the Drive
+                — it does not unlock anything.
+              </p>
+            </div>
+          </li>
+
+          <li class="flex gap-3">
+            <span
+              class="bg-primary text-primary-foreground flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-semibold"
+              aria-hidden="true"
+            >
+              2
+            </span>
+            <div class="flex min-w-0 flex-col gap-0.5">
+              <p class="text-sm font-medium">Enter your secret</p>
+              <p class="text-muted-foreground text-xs">
+                Derives the key that decrypts the file, in your browser. Google never sees this, and
+                neither do we.
+              </p>
+            </div>
+          </li>
+        </ol>
+
+        <p class="text-muted-foreground text-sm">
+          Someone with your Google account still cannot read your vault. Someone with your secret
+          still cannot reach the file. Both are needed.
+        </p>
+      </div>
+    </section>
+
+    <!-- Terms worth knowing -->
+    <section hlmCard>
+      <div hlmCardHeader>
+        <h2 hlmCardTitle class="text-base">Terms worth knowing</h2>
+      </div>
+
+      <div hlmCardContent>
+        <dl class="divide-y rounded-lg border">
+          <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1 px-3 py-2.5">
+            <dt class="min-w-32 text-sm font-medium">Secret</dt>
+            <dd class="text-muted-foreground min-w-0 flex-1 text-xs">
+              The one phrase that unlocks your vault. Not recoverable — see below.
+            </dd>
+          </div>
+          <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1 px-3 py-2.5">
+            <dt class="min-w-32 text-sm font-medium">Vault</dt>
+            <dd class="text-muted-foreground min-w-0 flex-1 text-xs">
+              A group of items. Create several to keep work and personal separate.
+            </dd>
+          </div>
+          <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1 px-3 py-2.5">
+            <dt class="min-w-32 text-sm font-medium">Tag</dt>
+            <dd class="text-muted-foreground min-w-0 flex-1 text-xs">
+              A label for filtering across vaults, like <em>work</em> or <em>banking</em>.
+            </dd>
+          </div>
+          <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1 px-3 py-2.5">
+            <dt class="min-w-32 text-sm font-medium">Security report</dt>
+            <dd class="text-muted-foreground min-w-0 flex-1 text-xs">
+              Flags weak, reused, and known-breached passwords. Runs entirely on your device.
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- Questions -->
+    <section hlmCard>
+      <div hlmCardHeader>
+        <h2 hlmCardTitle class="text-base">Questions</h2>
+      </div>
+
+      <div hlmCardContent>
+        <!--
+          An accordion, so seven answers do not have to be scrolled past to reach the
+          eighth. The first one is open on arrival: a forgotten secret is the question
+          people come here with, and it is the one with consequences.
+        -->
+        <hlm-accordion>
+          <hlm-accordion-item isOpened class="faq-item">
+            <hlm-accordion-trigger>What if I forget my secret?</hlm-accordion-trigger>
+            <hlm-accordion-content>
+              <p class="text-muted-foreground text-sm">
+                Your existing vault cannot be recovered. Not by you, not by us — the key is derived
+                from your secret alone, so without it the file stays permanently unreadable. This is
+                the cost of nobody else being able to read it either.
+              </p>
+              <p class="text-muted-foreground text-sm">
+                What you can do is start over. <strong>Forgot your secret?</strong> on the unlock
+                screen sets up a new, empty vault under a new secret. Your old file is not deleted —
+                it is renamed to
+                <code class="font-mono">vault.backup-&lt;timestamp&gt;.json.enc</code> and left in
+                your Drive folder, so if the old secret ever comes back to you, the data is still
+                there.
+              </p>
+              <p class="text-muted-foreground text-sm">
+                Write your secret down and keep it somewhere safe. It is the one thing in Keeperpass
+                that cannot be replaced.
+              </p>
+            </hlm-accordion-content>
+          </hlm-accordion-item>
+
+          <hlm-accordion-item class="faq-item">
+            <hlm-accordion-trigger>Can Keeperpass see my passwords?</hlm-accordion-trigger>
+            <hlm-accordion-content>
+              <p class="text-muted-foreground text-sm">
+                No — and not as a promise, as a consequence of the design. Encryption happens in
+                your browser and the ciphertext goes straight to your Drive. There is no Keeperpass
+                server in the path to see anything.
+              </p>
+            </hlm-accordion-content>
+          </hlm-accordion-item>
+
+          <hlm-accordion-item class="faq-item">
+            <hlm-accordion-trigger>Does it sync across devices?</hlm-accordion-trigger>
+            <hlm-accordion-content>
+              <p class="text-muted-foreground text-sm">
+                Yes. Every device reads the same file from your Drive. Sign in with the same Google
+                account, enter the same secret, and your vault is there.
+              </p>
+            </hlm-accordion-content>
+          </hlm-accordion-item>
+
+          <hlm-accordion-item class="faq-item">
+            <hlm-accordion-trigger>What if Google reads the file?</hlm-accordion-trigger>
+            <hlm-accordion-content>
+              <p class="text-muted-foreground text-sm">
+                They would see encrypted bytes. The key is never sent to Google, so the contents
+                stay unreadable to them.
+              </p>
+            </hlm-accordion-content>
+          </hlm-accordion-item>
+
+          <hlm-accordion-item class="faq-item">
+            <hlm-accordion-trigger>
+              Can I import from another password manager?
+            </hlm-accordion-trigger>
+            <hlm-accordion-content>
+              <p class="text-muted-foreground text-sm">
+                Yes — export to CSV there, then use Import in Settings.
+              </p>
+            </hlm-accordion-content>
+          </hlm-accordion-item>
+
+          <hlm-accordion-item class="faq-item">
+            <hlm-accordion-trigger>How do I change my secret?</hlm-accordion-trigger>
+            <hlm-accordion-content>
+              <p class="text-muted-foreground text-sm">
+                Open Settings and choose <strong>Change Master Password</strong>. You enter your
+                current secret and the new one; your vault is decrypted, re-encrypted under the new
+                secret, and saved back. Nothing is lost — every item comes with you, and the change
+                applies on every device the next time it loads your vault.
+              </p>
+            </hlm-accordion-content>
+          </hlm-accordion-item>
+
+          <hlm-accordion-item class="faq-item">
+            <hlm-accordion-trigger>What does it cost?</hlm-accordion-trigger>
+            <hlm-accordion-content>
+              <p class="text-muted-foreground text-sm">
+                Nothing. Keeperpass is free and open-source, and it stores data in Drive space you
+                already have.
+              </p>
+            </hlm-accordion-content>
+          </hlm-accordion-item>
+        </hlm-accordion>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section hlmCard>
+      <div hlmCardHeader>
+        <h2 hlmCardTitle class="text-base">Still stuck?</h2>
+      </div>
+
+      <div hlmCardContent>
+        <a
+          hlmBtn
+          variant="outline"
+          class="contact w-full justify-start! sm:w-auto"
+          href="mailto:contact@keeperpass.com"
+        >
+          <app-icon name="mail" />
+          contact&#64;keeperpass.com
+        </a>
+      </div>
+    </section>
+  </div>
+</main>

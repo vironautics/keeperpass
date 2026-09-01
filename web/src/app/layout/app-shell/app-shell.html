@@ -1,0 +1,14 @@
+<app-sidebar (lockRequested)="lock()" (signOutRequested)="disconnect()">
+  <main hlmSidebarInset class="min-h-0 overflow-hidden">
+    <!--
+      Positioning context for whatever the router puts here. Routed views fill it
+      from their own `:host` — a `> *` rule could not reach them, because
+      router-created elements do not carry this component's encapsulation attribute.
+    -->
+    <div class="relative min-h-0 flex-1 overflow-hidden">
+      <router-outlet />
+    </div>
+  </main>
+</app-sidebar>
+
+<app-sync-overlay />

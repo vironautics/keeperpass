@@ -1,0 +1,42 @@
+<hlm-sidebar-group>
+  <div hlmSidebarGroupLabel>More</div>
+
+  <div hlmSidebarGroupContent>
+    <ul hlmSidebarMenu>
+      <li hlmSidebarMenuItem>
+        <a
+          hlmSidebarMenuButton
+          size="sm"
+          tooltip="Security Report"
+          routerLink="/report"
+          routerLinkActive
+          #report="routerLinkActive"
+          [isActive]="report.isActive"
+        >
+          <app-icon name="audit-clean" />
+          <span>Security Report</span>
+        </a>
+        @if (flaggedCount()) {
+          <div hlmSidebarMenuBadge class="text-destructive">{{ flaggedCount() }}</div>
+        }
+      </li>
+
+      @for (destination of destinations; track destination.route) {
+        <li hlmSidebarMenuItem>
+          <a
+            hlmSidebarMenuButton
+            size="sm"
+            [tooltip]="destination.label"
+            [routerLink]="destination.route"
+            routerLinkActive
+            #link="routerLinkActive"
+            [isActive]="link.isActive"
+          >
+            <app-icon [name]="destination.icon" />
+            <span>{{ destination.label }}</span>
+          </a>
+        </li>
+      }
+    </ul>
+  </div>
+</hlm-sidebar-group>

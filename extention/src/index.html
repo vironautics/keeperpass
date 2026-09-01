@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Extention</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+
+    <script>
+      /**
+       * Paint the right theme on the first frame. ThemeService only reaches the DOM
+       * once Angular has bootstrapped, which is late enough for a dark-mode user to
+       * see a white flash — worse here than on a normal page, since the popup is
+       * torn down and rebuilt from scratch every time it's opened. Mirrors
+       * ThemeService's own `auto` resolution (there is no persisted preference to
+       * read here, unlike the web app — every open starts from `auto`, so this just
+       * follows the OS setting). `data-boot-theme` exists only until the app
+       * bootstraps, which drops it — see `AppComponent`.
+       */
+      (function () {
+        try {
+          var dark = matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.classList.toggle('dark', dark);
+          document.documentElement.dataset.bootTheme = dark ? 'dark' : 'light';
+        } catch (error) {
+          /* matchMedia unavailable — fall through to the light default */
+        }
+      })();
+    </script>
+
+    <style>
+      /* The backdrop, before the stylesheet has a chance to paint it. Keep in step
+         with --background in spartan.css. These rules stop matching the moment the
+         app drops `data-boot-theme` (see `AppComponent`), handing the backdrop back
+         to `body`'s own `bg-background`. */
+      html[data-boot-theme='light'] {
+        background: #e7eaf1;
+      }
+
+      html[data-boot-theme='dark'] {
+        background: #0c0d10;
+      }
+
+      /* Shown until the app bootstraps, which removes it — see `AppComponent`. */
+      .boot-spinner {
+        position: absolute;
+        inset: 0;
+        margin: auto;
+        width: 50px;
+        height: 50px;
+      }
+
+      /* The accent, per theme. Keep in step with --accent-strong / --primary in
+         spartan.css: the light backdrop needs the darker shade to be visible at all
+         (#85ade5 is 1.6:1 on it), the dark one can take the accent as it is. */
+      html[data-boot-theme='light'] .boot-spinner {
+        color: #24559e;
+      }
+
+      html[data-boot-theme='dark'] .boot-spinner {
+        color: #85ade5;
+      }
+
+      .boot-spinner circle {
+        fill: none;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-width: 10;
+        stroke-dasharray: 252;
+        transform-origin: center center;
+        animation:
+          boot-dash 1.5s cubic-bezier(0.44, 0.22, 0.64, 0.86) alternate infinite,
+          boot-spin 1.2s linear infinite;
+      }
+
+      @keyframes boot-dash {
+        from {
+          stroke-dashoffset: 240;
+        }
+        to {
+          stroke-dashoffset: 40;
+        }
+      }
+
+      @keyframes boot-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <svg viewBox="0 0 100 100" class="boot-spinner" aria-hidden="true">
+      <circle cx="50" cy="50" r="40" />
+    </svg>
+    <app-root></app-root>
+  </body>
+</html>

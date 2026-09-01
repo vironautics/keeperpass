@@ -1,0 +1,16 @@
+<!--
+  Chrome shared by every unauthenticated screen: the brand mark over a single
+  centred column, each step rendering into the outlet below it.
+
+  The backdrop is painted here rather than left to the document, because nothing
+  else covers the page underneath — the pre-bootstrap spinner in `index.html`
+  used to show straight through this layout.
+-->
+<div class="bg-background absolute inset-0 overflow-y-auto">
+  <div
+    class="mx-auto flex min-h-full w-full flex-col items-center justify-center gap-8 px-4 py-10"
+  >
+    <app-logo class="animate-in fade-in shrink-0 duration-700" style="--logo-height: 2.75rem" />
+    <router-outlet />
+  </div>
+</div>

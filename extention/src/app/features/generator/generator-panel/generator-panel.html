@@ -1,0 +1,128 @@
+<div hlmCard class="w-full">
+  <div hlmCardContent class="flex flex-col gap-5">
+    <hlm-toggle-group [value]="mode()" (valueChange)="onModePicked($event)" class="w-full">
+      <button hlmToggleGroupItem value="words" class="flex-1">passphrase</button>
+      <button hlmToggleGroupItem value="chars" class="flex-1">random string</button>
+    </hlm-toggle-group>
+
+    @if (mode() === 'words') {
+      <div class="flex flex-col gap-4">
+        <div hlmField>
+          <label hlmFieldLabel for="generator-separator">Word Separator</label>
+          <hlm-select
+            id="generator-separator"
+            [value]="separatorControl.value"
+            [itemToString]="separatorLabel"
+            (valueChange)="onSeparatorPicked($event)"
+          >
+            <hlm-select-trigger class="w-full">
+              <hlm-select-value placeholder="Separator" />
+            </hlm-select-trigger>
+            <hlm-select-content *hlmSelectPortal>
+              @for (option of separatorOptions; track option.value) {
+                <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
+              }
+            </hlm-select-content>
+          </hlm-select>
+        </div>
+
+        <div hlmField>
+          <label hlmFieldLabel for="generator-language">Language</label>
+          <hlm-select
+            id="generator-language"
+            [value]="languageControl.value"
+            [itemToString]="languageLabel"
+            (valueChange)="onLanguagePicked($event)"
+          >
+            <hlm-select-trigger class="w-full">
+              <hlm-select-value placeholder="Language" />
+            </hlm-select-trigger>
+            <hlm-select-content *hlmSelectPortal>
+              @for (option of languageOptions; track option.value) {
+                <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
+              }
+            </hlm-select-content>
+          </hlm-select>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center justify-between gap-4">
+            <label hlmLabel for="generator-words">Words</label>
+            <span class="text-muted-foreground text-sm tabular-nums">{{ wordCount() }}</span>
+          </div>
+          <hlm-slider
+            id="generator-words"
+            [value]="[wordCount()]"
+            (valueChange)="onWordCountChange($event)"
+            min="3"
+            max="12"
+            step="1"
+            aria-label="Number of words"
+          />
+        </div>
+      </div>
+    }
+
+    @if (mode() === 'chars') {
+      <div class="flex flex-col gap-4">
+        <div class="grid grid-cols-2 gap-2">
+          <label hlmLabel class="gap-2">
+            <hlm-checkbox [checked]="lower()" (checkedChange)="lower.set($event)" />
+            a-z
+          </label>
+          <label hlmLabel class="gap-2">
+            <hlm-checkbox [checked]="upper()" (checkedChange)="upper.set($event)" />
+            A-Z
+          </label>
+          <label hlmLabel class="gap-2">
+            <hlm-checkbox [checked]="numbers()" (checkedChange)="numbers.set($event)" />
+            0-9
+          </label>
+          <label hlmLabel class="gap-2">
+            <hlm-checkbox [checked]="other()" (checkedChange)="other.set($event)" />
+            ?()/%...
+          </label>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center justify-between gap-4">
+            <label hlmLabel for="generator-length">length</label>
+            <span class="text-muted-foreground text-sm tabular-nums">{{ length() }}</span>
+          </div>
+          <hlm-slider
+            id="generator-length"
+            [value]="[length()]"
+            (valueChange)="onLengthChange($event)"
+            min="5"
+            max="150"
+            step="1"
+            aria-label="Password length"
+          />
+        </div>
+      </div>
+    }
+
+    <div #result class="bg-muted/40 rounded-lg border p-6 text-center font-mono text-base break-all select-text">
+      {{ value() }}
+    </div>
+
+    <div class="flex justify-center gap-2">
+      <button hlmBtn variant="outline" class="flex-1" type="button" (click)="generate()">
+        <app-icon name="refresh" />
+        Regenerate
+      </button>
+
+      <button
+        hlmBtn
+        variant="outline"
+        class="flex-1"
+        type="button"
+        aria-label="Copy password"
+        (click)="copy()"
+      >
+        <app-icon [name]="copied() ? 'check' : 'copy'" />
+        {{ copied() ? 'Copied' : 'Copy' }}
+      </button>
+    </div>
+  </div>
+</div>

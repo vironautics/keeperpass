@@ -1,0 +1,74 @@
+<form hlmCard class="mx-auto w-full max-w-100" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <div hlmCardContent class="flex flex-col gap-4">
+    <p class="text-muted-foreground text-sm">Enter your secret to unlock your vault.</p>
+
+    <div hlmField>
+      <label hlmFieldLabel for="unlock-secret">Secret</label>
+
+      <hlm-input-group>
+        <input
+          hlmInputGroupInput
+          id="unlock-secret"
+          formControlName="secret"
+          [type]="revealed() ? 'text' : 'password'"
+          autocomplete="current-password"
+          autofocus
+          (focus)="selectAll($event)"
+        />
+        <hlm-input-group-addon align="inline-end">
+          <button
+            hlmInputGroupButton
+            type="button"
+            size="icon-xs"
+            [attr.aria-label]="revealed() ? 'Hide secret' : 'Show secret'"
+            [attr.aria-pressed]="revealed()"
+            (click)="toggleRevealed()"
+          >
+            <app-icon [name]="revealed() ? 'hide' : 'show'" />
+          </button>
+        </hlm-input-group-addon>
+      </hlm-input-group>
+    </div>
+
+    @if (errorMessage()) {
+      <!-- Two columns by hand: see the note on the same alert in `start-page.html`. -->
+      <div hlmAlert variant="destructive" class="grid-cols-[auto_1fr] gap-x-2.5!" role="alert">
+        <app-icon name="alert" class="translate-y-0.5" />
+        <p hlmAlertDescription>{{ errorMessage() }}</p>
+      </div>
+    }
+  </div>
+
+  <div hlmCardFooter class="flex-col gap-2">
+    <button
+      hlmBtn
+      type="submit"
+      class="w-full"
+      [variant]="hasSecret() ? 'default' : 'secondary'"
+      [disabled]="!hasSecret() || submitting()"
+    >
+      @if (submitting()) {
+        <hlm-spinner />
+      } @else {
+        <app-icon name="unlock" />
+      }
+      Unlock
+    </button>
+
+    <button hlmBtn type="button" variant="ghost" size="sm" class="w-full" (click)="openReset()">
+      Forgot your secret?
+    </button>
+
+    <button
+      hlmBtn
+      type="button"
+      variant="ghost"
+      size="sm"
+      class="text-muted-foreground w-full"
+      (click)="disconnect()"
+    >
+      <app-icon name="disconnect" />
+      Disconnect
+    </button>
+  </div>
+</form>

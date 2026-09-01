@@ -1,0 +1,64 @@
+<!--
+  spartan's `sidebar-inset` block: the wrapper is the flex row, the sidebar is one
+  column, and whatever is projected here (an `<main hlmSidebarInset>`) is the other.
+  `h-svh` rather than the block's `min-h-svh` because this app does not scroll the
+  document — html/body are fixed, and each view manages its own overflow.
+-->
+<!--
+  `collapsible="icon"` rather than the block's default `offcanvas`: the toggle is the
+  one in the header below, so collapsing must leave it on screen. Offcanvas slides the
+  whole column past the left edge, which would take the only way back with it.
+-->
+<div hlmSidebarWrapper class="h-svh min-h-0">
+  <hlm-sidebar variant="inset" collapsible="icon">
+    <hlm-sidebar-header>
+      <ul hlmSidebarMenu>
+        <li
+          hlmSidebarMenuItem
+          class="flex items-center group-data-[collapsible=icon]:justify-center"
+        >
+          <!--
+            The brand mark is the wordmark, so it replaces the block's icon-square +
+            name pair. It hides in the collapsed rail — a 5.3:1 wordmark has no square
+            form to shrink into — which leaves the trigger alone, and centred.
+          -->
+          <a
+            hlmSidebarMenuButton
+            size="lg"
+            routerLink="/items"
+            class="flex-1 gap-2.5 group-data-[collapsible=icon]:hidden"
+          >
+            <!--
+              The wordmark is ~5.3:1, so its width follows the height — at the stock
+              3em it is wider than the whole sidebar column. 1.5em leaves room for the
+              version beside it.
+            -->
+            <app-logo style="--logo-height: 1.5em" />
+            <span class="text-sidebar-foreground/60 text-xs">v{{ version }}</span>
+          </a>
+
+          <!--
+            The only sidebar toggle on a wide screen, and the only way to close the
+            sheet on a narrow one besides the backdrop — spartan hides the sheet's own
+            close button.
+          -->
+          <button hlmSidebarTrigger></button>
+        </li>
+      </ul>
+    </hlm-sidebar-header>
+
+    <hlm-sidebar-content>
+      <app-nav-vaults />
+      <app-nav-more />
+    </hlm-sidebar-content>
+
+    <hlm-sidebar-footer>
+      <app-nav-user
+        (lockRequested)="lockRequested.emit()"
+        (signOutRequested)="signOutRequested.emit()"
+      />
+    </hlm-sidebar-footer>
+  </hlm-sidebar>
+
+  <ng-content />
+</div>

@@ -1,0 +1,10 @@
+@if (error()) {
+  <span class="negative">Invalid code</span>
+} @else {
+  <span class="code">{{ firstHalf() }}&nbsp;{{ secondHalf() }}</span>
+
+  <svg class="countdown" viewBox="0 0 10 10" aria-hidden="true">
+    <circle cx="5" cy="5" r="4" class="track" />
+    <circle cx="5" cy="5" r="4" [style.stroke-dashoffset]="dashOffset()" />
+  </svg>
+}

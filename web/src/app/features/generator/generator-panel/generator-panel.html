@@ -1,0 +1,151 @@
+<div hlmCard class="w-full">
+  <div hlmCardContent class="flex flex-col gap-5">
+    <!--
+      Two kinds of secret, not two pages: the mode picker is a toggle group, the same
+      control the generator dialog uses so the two read as one feature.
+    -->
+    <hlm-toggle-group [value]="mode()" (valueChange)="setMode($event)" class="w-full">
+      <button hlmToggleGroupItem value="words" class="flex-1">Passphrase</button>
+      <button hlmToggleGroupItem value="chars" class="flex-1">Random string</button>
+    </hlm-toggle-group>
+
+    @if (mode() === 'words') {
+      <div class="flex flex-col gap-4">
+        <div hlmField>
+          <label hlmFieldLabel for="generator-separator">Word separator</label>
+          <hlm-select
+            id="generator-separator"
+            [value]="separator()"
+            [itemToString]="separatorLabel"
+            (valueChange)="onSeparatorPicked($event)"
+          >
+            <hlm-select-trigger class="w-full">
+              <hlm-select-value placeholder="Separator" />
+            </hlm-select-trigger>
+            <hlm-select-content *hlmSelectPortal>
+              @for (option of separatorOptions; track option.value) {
+                <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
+              }
+            </hlm-select-content>
+          </hlm-select>
+        </div>
+
+        <div hlmField>
+          <label hlmFieldLabel for="generator-language">Language</label>
+          <hlm-select
+            id="generator-language"
+            [value]="language()"
+            [itemToString]="languageLabel"
+            (valueChange)="onLanguagePicked($event)"
+          >
+            <hlm-select-trigger class="w-full">
+              <hlm-select-value placeholder="Language" />
+            </hlm-select-trigger>
+            <hlm-select-content *hlmSelectPortal>
+              @for (option of languageOptions; track option.value) {
+                <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
+              }
+            </hlm-select-content>
+          </hlm-select>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center justify-between gap-4">
+            <label hlmLabel for="generator-words">Words</label>
+            <span class="text-muted-foreground text-sm tabular-nums">{{ wordCount() }}</span>
+          </div>
+          <hlm-slider
+            id="generator-words"
+            [value]="[wordCount()]"
+            (valueChange)="onWordCountChange($event)"
+            min="3"
+            max="12"
+            step="1"
+            aria-label="Number of words"
+          />
+        </div>
+      </div>
+    } @else {
+      <div class="flex flex-col gap-4">
+        <div class="grid grid-cols-2 gap-2">
+          <label hlmLabel class="gap-2">
+            <hlm-checkbox [checked]="lower()" (checkedChange)="lower.set($event)" />
+            a–z
+          </label>
+          <label hlmLabel class="gap-2">
+            <hlm-checkbox [checked]="upper()" (checkedChange)="upper.set($event)" />
+            A–Z
+          </label>
+          <label hlmLabel class="gap-2">
+            <hlm-checkbox [checked]="numbers()" (checkedChange)="numbers.set($event)" />
+            0–9
+          </label>
+          <label hlmLabel class="gap-2">
+            <hlm-checkbox [checked]="other()" (checkedChange)="other.set($event)" />
+            ?()/%…
+          </label>
+        </div>
+
+        @if (charsetEmpty()) {
+          <p class="text-destructive text-xs">Pick at least one kind of character.</p>
+        }
+
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center justify-between gap-4">
+            <label hlmLabel for="generator-length">Length</label>
+            <span class="text-muted-foreground text-sm tabular-nums">{{ length() }}</span>
+          </div>
+          <hlm-slider
+            id="generator-length"
+            [value]="[length()]"
+            (valueChange)="onLengthChange($event)"
+            min="5"
+            max="150"
+            step="1"
+            aria-label="Password length"
+          />
+        </div>
+      </div>
+    }
+
+    <!--
+      The result. `select-text` because copying it by hand has to keep working, and
+      `break-all` so a 150-character string wraps inside the card instead of widening
+      it. The bounce on regenerate is the one thing here that is animation rather than
+      layout — it is what tells you a new value arrived when the old one looked similar.
+    -->
+    <!--
+      No `aria-live` here: the value is regenerated on every option change, so a live
+      region would read a fresh password out loud on each step of the slider. The
+      Regenerate and Copy buttons are the announcements that matter.
+    -->
+    <div #result class="generated bg-muted/40 rounded-lg border p-4">
+      @if (value()) {
+        <p class="text-foreground text-center font-mono text-base break-all select-text">
+          {{ value() }}
+        </p>
+      } @else {
+        <p class="text-muted-foreground text-center text-sm">Nothing to generate.</p>
+      }
+    </div>
+
+    <div class="flex gap-2">
+      <button hlmBtn variant="outline" class="flex-1" type="button" (click)="generate()">
+        <app-icon name="refresh" />
+        Regenerate
+      </button>
+
+      <button
+        hlmBtn
+        class="flex-1"
+        type="button"
+        [disabled]="!value()"
+        aria-label="Copy password"
+        (click)="copy()"
+      >
+        <app-icon [name]="copied() ? 'check' : 'copy'" />
+        {{ copied() ? 'Copied' : 'Copy' }}
+      </button>
+    </div>
+  </div>
+</div>
