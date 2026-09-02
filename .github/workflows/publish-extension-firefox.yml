@@ -15,6 +15,13 @@ name: Publish Extension to Firefox Add-ons
 # a JWT issuer and JWT secret. Add them as repo secrets:
 #   AMO_JWT_ISSUER
 #   AMO_JWT_SECRET
+#
+# AMO requires a license on an add-on's first-ever listed version (later
+# versions reuse whatever was set on the first one, so this only matters
+# once). --amo-metadata supplies it; "AGPL-3.0-only" is the predefined
+# license slug AMO's API expects for this project's license — see
+# https://mozilla.github.io/addons-server/topics/api/licenses.html for the
+# full list if that ever needs to change.
 on:
   workflow_dispatch: {}
 
@@ -43,6 +50,17 @@ jobs:
         working-directory: extention
         run: npm run build:mozilla
 
+      - name: Write AMO metadata
+        working-directory: extention
+        run: |
+          cat > amo-metadata.json <<'EOF'
+          {
+            "version": {
+              "license": "AGPL-3.0-only"
+            }
+          }
+          EOF
+
       - name: Sign and submit to AMO
         working-directory: extention
         env:
@@ -51,4 +69,5 @@ jobs:
         run: |
           npx --yes web-ext@8 sign \
             --source-dir=dist/extention/firefox \
-            --channel=listed
+            --channel=listed \
+            --amo-metadata=amo-metadata.json
