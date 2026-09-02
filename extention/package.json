@@ -6,6 +6,7 @@
     "start": "ng serve",
     "build": "ng build && npm run build:scripts",
     "build:scripts": "esbuild src/scripts/content.ts --bundle --platform=browser --target=es2020 --outfile=dist/extention/browser/content.js && esbuild src/scripts/background.ts --bundle --platform=browser --target=es2020 --outfile=dist/extention/browser/background.js",
+    "build:mozilla": "node scripts/build-firefox.mjs",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -35,6 +36,7 @@
     "@angular/cli": "^21.2.20",
     "@angular/compiler-cli": "^21.2.0",
     "@tailwindcss/postcss": "^4.3.3",
+    "archiver": "^8.0.0",
     "esbuild": "^0.21.0",
     "jsdom": "^28.0.0",
     "prettier": "^3.8.1",

@@ -1,0 +1,16 @@
+{
+  "name": "KeeperPass",
+  "short_name": "KeeperPass",
+  "description": "A free, open-source password manager that stores your encrypted vault in your own Google Drive.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#e7eaf1",
+  "theme_color": "#e7eaf1",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

@@ -24,7 +24,7 @@ describe('PoliciesPage', () => {
 
   it('shows Terms & Conditions by default', () => {
     const host = fixture.nativeElement as HTMLElement;
-    expect(host.textContent).toContain('Acceptance of Terms');
+    expect(host.textContent).toContain('keeperpass.com/terms-of-service');
   });
 
   it('switches to Privacy Policy when tab is clicked', () => {
@@ -36,7 +36,7 @@ describe('PoliciesPage', () => {
 
     expect(component.activeTab()).toBe('privacy');
     const host = fixture.nativeElement as HTMLElement;
-    expect(host.textContent).toContain('End-to-End Encryption');
+    expect(host.textContent).toContain('keeperpass.com/privacy-policy');
   });
 
   it('has correct tab active state', () => {
@@ -52,11 +52,11 @@ describe('PoliciesPage', () => {
   it('includes policy content when tabs are switched', () => {
     const host = fixture.nativeElement as HTMLElement;
     // Terms tab is default
-    expect(host.textContent).toContain('Acceptance of Terms');
+    expect(host.textContent).toContain('keeperpass.com/terms-of-service');
 
     // Switch to privacy tab
     component.selectTab('privacy');
     fixture.detectChanges();
-    expect(host.textContent).toContain('End-to-End Encryption');
+    expect(host.textContent).toContain('keeperpass.com/privacy-policy');
   });
 });

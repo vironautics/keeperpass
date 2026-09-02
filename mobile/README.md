@@ -56,16 +56,41 @@ access to files the app creates itself, nothing else already in your Drive.
 - Secrets that must persist (like the OAuth refresh token) use
   `expo-secure-store`, never plain storage.
 
-## Building
+## Build & install
 
-For a full native build (rather than the managed Expo Go flow), this project
-uses a development client:
+There's no App Store or Play Store listing yet, so getting the app onto a
+phone means building it yourself. A couple of options, from quickest to most
+"real":
 
-```bash
-npx expo run:android
-```
+**Fastest — Expo Go (for trying it out, not a standalone install):**
+install [Expo Go](https://expo.dev/go) from the Play Store or App Store,
+then run `npm run dev` in this folder and scan the QR code it prints. No
+build step, but the app runs inside Expo Go rather than as its own app.
 
-For production builds, use [EAS Build](https://docs.expo.dev/build/introduction/).
+**A real, standalone build:**
+
+1. Set up your own Google OAuth Client ID(s) first — see
+   [Google OAuth setup](#google-oauth-setup) above.
+2. Build with [EAS Build](https://docs.expo.dev/build/introduction/) (needs
+   a free Expo account; run `npx eas build:configure` the first time):
+
+   ```bash
+   npx eas build --platform android
+   ```
+
+   (or `--platform ios`, or `--platform all`).
+3. **Android:** download the `.apk` from the link EAS gives you, transfer it
+   to your phone, and open it — you'll need to allow "install unknown apps"
+   for whichever app you use to open it.
+
+   **iOS:** Apple doesn't allow installing signed builds outside the App
+   Store or TestFlight without a paid Apple Developer account. With one, use
+   `eas submit --platform ios` to send the build to TestFlight, or run
+   `npx expo run:ios` to install straight to a device connected to Xcode.
+
+Alternatively, `npx expo run:android` / `npx expo run:ios` builds and
+installs a development client directly onto a connected device or emulator,
+without going through EAS at all.
 
 ## Contributing
 

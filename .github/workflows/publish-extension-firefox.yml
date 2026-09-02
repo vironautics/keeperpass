@@ -1,0 +1,52 @@
+name: Publish Extension to Firefox Add-ons
+
+# Manual only, deliberately — this submits a real, reviewable version to
+# addons.mozilla.org. Bump `extention/public/manifest.json`'s `version` first
+# (AMO rejects a re-upload of a version number it's already seen), then run
+# this from the Actions tab.
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: extention/package-lock.json
+
+      - name: Install dependencies
+        working-directory: extention
+        run: npm ci
+
+      - name: Build Firefox package
+        working-directory: extention
+        run: npm run build:mozilla
+
+      - name: Find built package
+        id: package
+        working-directory: extention
+        run: |
+          FILE=$(ls dist/extention/keeperpass-firefox-v*.zip)
+          echo "path=extention/$FILE" >> "$GITHUB_OUTPUT"
+
+      # Official Mozilla action: signs the package and submits it to AMO as a
+      # new version of the listed add-on. Requires API credentials from
+      # https://addons.mozilla.org/developers/addon/api/key/ — see the repo
+      # secrets referenced below.
+      - name: Sign and submit to AMO
+        uses: mozilla-actions/sign-addon@v3
+        with:
+          xpi: ${{ steps.package.outputs.path }}
+          channel: listed
+          api-key: ${{ secrets.AMO_JWT_ISSUER }}
+          api-secret: ${{ secrets.AMO_JWT_SECRET }}
