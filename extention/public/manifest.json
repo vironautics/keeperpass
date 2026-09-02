@@ -1,5 +1,6 @@
 {
   "manifest_version": 3,
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuZmV430WYqrONQYAsb8hqyFV/7jfkaNrV7da2PiSMXr+Wpfrhgo4AxA0J2vKLa2Rtd6iNn1eyIqa988553Bhz0YE84L5Kwt0e2O09GVmkmhgSlXgEpNixzmHzbWlMu1xg5tK0sllMxJXb88h4mEJwPGoQl8nB8NfcqtlQROnRFbMHZF6JeYKVLJ9InUZGABoOhhEI7UU5NEPesX0ZritRkhrOU8JincL4Au4HZT7ZcQRC14B1tM/MtRDc+9aHwTdWArxfn2/t9yzffZg6l9O53ZkAIEH9QXlVpgrG4N4UU/CKgoRegzY43s5GLuTVkTp6ku9lRMRKZA0TmtVWJh8EwIDAQAB",
   "name": "KeeperPass",
   "description": "Browser extension for KeeperPass password manager",
   "version": "1.0.0",

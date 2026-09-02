@@ -28,6 +28,11 @@ name: Publish Extension to Firefox Add-ons
 #     (full list: https://mozilla.github.io/addons-server/topics/api/categories.html).
 #   - "summary" must be set explicitly here — unlike "name", AMO does not
 #     derive it from manifest.json's description.
+#
+# --approval-timeout=0 stops the sign command from blocking on AMO's review
+# (which can take anywhere from minutes to a few days per their own emails)
+# — without it, `web-ext sign` waits up to 15 minutes then fails the job
+# with a timeout even though the submission itself went through fine.
 on:
   workflow_dispatch: {}
 
@@ -82,4 +87,5 @@ jobs:
           npx --yes web-ext@8 sign \
             --source-dir=dist/extention/firefox \
             --channel=listed \
-            --amo-metadata=amo-metadata.json
+            --amo-metadata=amo-metadata.json \
+            --approval-timeout=0
