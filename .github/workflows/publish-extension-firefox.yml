@@ -16,12 +16,18 @@ name: Publish Extension to Firefox Add-ons
 #   AMO_JWT_ISSUER
 #   AMO_JWT_SECRET
 #
-# AMO requires a license on an add-on's first-ever listed version (later
-# versions reuse whatever was set on the first one, so this only matters
-# once). --amo-metadata supplies it; "AGPL-3.0-only" is the predefined
-# license slug AMO's API expects for this project's license — see
-# https://mozilla.github.io/addons-server/topics/api/licenses.html for the
-# full list if that ever needs to change.
+# AMO requires "categories", "summary", and a "license" on an add-on's
+# first-ever listed version (confirmed against Mozilla's own web-ext docs:
+# https://extensionworkshop.com/documentation/develop/getting-started-with-web-ext/#submitting-your-add-on).
+# All three are reused automatically on every later version, so this only
+# matters once. --amo-metadata supplies them:
+#   - "AGPL-3.0-only" is the predefined license slug AMO's API expects for
+#     this project's license (full list:
+#     https://mozilla.github.io/addons-server/topics/api/licenses.html).
+#   - "privacy-security" is AMO's category slug for a password manager
+#     (full list: https://mozilla.github.io/addons-server/topics/api/categories.html).
+#   - "summary" must be set explicitly here — unlike "name", AMO does not
+#     derive it from manifest.json's description.
 on:
   workflow_dispatch: {}
 
@@ -55,6 +61,12 @@ jobs:
         run: |
           cat > amo-metadata.json <<'EOF'
           {
+            "categories": {
+              "firefox": ["privacy-security"]
+            },
+            "summary": {
+              "en-US": "Browser extension for KeeperPass password manager"
+            },
             "version": {
               "license": "AGPL-3.0-only"
             }
