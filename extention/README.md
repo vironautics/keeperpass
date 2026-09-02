@@ -93,7 +93,10 @@ submits the result to addons.mozilla.org. It's manual (`workflow_dispatch`)
 rather than triggered by every push — a store submission goes to real users
 and isn't easily undone — and needs the version bumped in
 `public/manifest.json` first (AMO rejects a re-upload of a version number
-it's already seen). It uses Mozilla's official `mozilla-actions/sign-addon`.
+it's already seen). It uses Mozilla's own `web-ext sign` CLI (the `web-ext`
+npm package, v8+), which talks to the AMO submission API directly — there's
+no official GitHub Action for this, and no such thing as
+`mozilla-actions/sign-addon`.
 
 There's no Chrome workflow yet either — Chrome Web Store publishing needs a
 one-time $5 developer registration fee that hasn't been paid yet.

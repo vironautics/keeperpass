@@ -4,6 +4,17 @@ name: Publish Extension to Firefox Add-ons
 # addons.mozilla.org. Bump `extention/public/manifest.json`'s `version` first
 # (AMO rejects a re-upload of a version number it's already seen), then run
 # this from the Actions tab.
+#
+# Signing/submission uses Mozilla's own `web-ext sign` CLI (package `web-ext`,
+# v8+, which talks to the AMO submission API). There is no real
+# `mozilla-actions/sign-addon` GitHub Action — don't reintroduce that name.
+# `mozilla/sign-addon` is a related Mozilla package but it's archived and has
+# no action.yml, so it can't be used via `uses:` either.
+#
+# Credentials: https://addons.mozilla.org/developers/addon/api/key/ gives you
+# a JWT issuer and JWT secret. Add them as repo secrets:
+#   AMO_JWT_ISSUER
+#   AMO_JWT_SECRET
 on:
   workflow_dispatch: {}
 
@@ -32,21 +43,12 @@ jobs:
         working-directory: extention
         run: npm run build:mozilla
 
-      - name: Find built package
-        id: package
-        working-directory: extention
-        run: |
-          FILE=$(ls dist/extention/keeperpass-firefox-v*.zip)
-          echo "path=extention/$FILE" >> "$GITHUB_OUTPUT"
-
-      # Official Mozilla action: signs the package and submits it to AMO as a
-      # new version of the listed add-on. Requires API credentials from
-      # https://addons.mozilla.org/developers/addon/api/key/ — see the repo
-      # secrets referenced below.
       - name: Sign and submit to AMO
-        uses: mozilla-actions/sign-addon@v3
-        with:
-          xpi: ${{ steps.package.outputs.path }}
-          channel: listed
-          api-key: ${{ secrets.AMO_JWT_ISSUER }}
-          api-secret: ${{ secrets.AMO_JWT_SECRET }}
+        working-directory: extention
+        env:
+          WEB_EXT_API_KEY: ${{ secrets.AMO_JWT_ISSUER }}
+          WEB_EXT_API_SECRET: ${{ secrets.AMO_JWT_SECRET }}
+        run: |
+          npx --yes web-ext@8 sign \
+            --source-dir=dist/extention/firefox \
+            --channel=listed
