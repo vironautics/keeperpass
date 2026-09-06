@@ -41,6 +41,12 @@ export interface VaultItem {
   history: HistoryEntry[];
   /** Overrides the icon derived from the item's field types. */
   icon?: IconName;
+  /**
+   * A specific icon picked from the source app's full Font Awesome catalogue,
+   * as a raw hex code point. Takes priority over `icon` when set — the
+   * extension only ever displays this, it never lets the user pick one.
+   */
+  iconGlyph?: string;
 }
 
 export const AUDIT_LABELS: Record<AuditType, string> = {

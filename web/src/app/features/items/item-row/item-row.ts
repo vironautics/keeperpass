@@ -97,6 +97,7 @@ export class ItemRow {
    */
   protected readonly faviconUrl = computed(() => itemFaviconUrl(this.item()));
   protected readonly glyph = computed<IconName>(() => itemIconName(this.item()));
+  protected readonly iconGlyph = computed(() => this.item().iconGlyph);
 
   private readonly failedFaviconUrl = signal<string | undefined>(undefined);
   protected readonly showFavicon = computed(
@@ -113,6 +114,10 @@ export class ItemRow {
 
   protected fieldGlyph(field: Field): IconName {
     return fieldDefinition(field.type).icon;
+  }
+
+  protected fieldIconGlyph(field: Field): string | undefined {
+    return field.iconGlyph;
   }
 
   protected isTotp(field: Field): boolean {

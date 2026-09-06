@@ -5,7 +5,11 @@
 -->
 <div hlmItem size="sm" class="group/field rounded-none! border-transparent hover:bg-muted/40">
   <hlm-item-media variant="icon" class="text-accent-strong size-5 self-start">
-    <app-icon [name]="icon()" />
+    @if (iconGlyph()) {
+      <app-icon [codePoint]="iconGlyph()" />
+    } @else {
+      <app-icon [name]="icon()" />
+    }
   </hlm-item-media>
 
   <hlm-item-content class="min-w-0 gap-0.5">

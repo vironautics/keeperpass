@@ -6,10 +6,13 @@ import { Icon } from '../../../ui/icon/icon';
 import { IconName } from '../../../ui/icon/icon-glyphs';
 
 /**
- * The favicon or glyph that stands for an item. A favicon is preferred whenever
- * the item has a `Url` field — see `itemFaviconUrl` — falling back to the
- * FontAwesome glyph from `itemIconName` if there is none, or if it fails to load. There is no
- * setting to turn this off; it's always on.
+ * The favicon or glyph that stands for an item. A user-picked `iconGlyph` wins
+ * outright — picking an icon is a deliberate override, and hiding it behind an
+ * automatic favicon would make the picker pointless for anything with a URL
+ * field. Otherwise a favicon is preferred whenever the item has a `Url` field
+ * — see `itemFaviconUrl` — falling back to the FontAwesome glyph from
+ * `itemIconName` if there is none, or if it fails to load. There is no setting
+ * to turn the favicon off; short of picking an icon, it's always on.
  *
  * The caller sizes it (`class="size-8"`) and it fills that box either way, so a
  * favicon and a glyph occupy the same slot. `ItemRow` deliberately does not use
@@ -21,7 +24,9 @@ import { IconName } from '../../../ui/icon/icon-glyphs';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Icon],
   template: `
-    @if (showFavicon()) {
+    @if (iconGlyph()) {
+      <app-icon [codePoint]="iconGlyph()" />
+    } @else if (showFavicon()) {
       <!--
         White tile in both themes — see the note in \`item-row.html\`. It belongs to
         the image and not to the host, because the glyph below takes its colour from
@@ -43,6 +48,7 @@ export class ItemIcon {
   readonly item = input.required<VaultItem>();
 
   protected readonly glyph = computed<IconName>(() => itemIconName(this.item()));
+  protected readonly iconGlyph = computed(() => this.item().iconGlyph);
   protected readonly faviconUrl = computed(() => itemFaviconUrl(this.item()));
 
   private readonly failedFaviconUrl = signal<string | undefined>(undefined);

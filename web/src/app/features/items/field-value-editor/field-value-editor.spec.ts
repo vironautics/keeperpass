@@ -1,7 +1,7 @@
-import { Component, signal, viewChild } from '@angular/core';
+import { Component, computed, signal, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
-import { FieldType } from '../../../core/models';
+import { fieldDefinition, FieldType } from '../../../core/models';
 import { FieldValueEditor } from './field-value-editor';
 
 @Component({
@@ -10,17 +10,27 @@ import { FieldValueEditor } from './field-value-editor';
     [type]="type()"
     [nameControl]="nameControl()"
     [valueControl]="valueControl()"
+    [secret]="secret()"
+    [iconGlyph]="iconGlyph()"
     (changed)="changedCount = changedCount + 1"
     (remove)="removeCount = removeCount + 1"
+    (secretToggled)="secretToggledCount = secretToggledCount + 1"
+    (changeIcon)="changeIconCount = changeIconCount + 1"
   />`,
 })
 class Host {
   readonly type = signal(FieldType.Username);
   readonly nameControl = signal(new FormControl('Username', { nonNullable: true }));
   readonly valueControl = signal(new FormControl('', { nonNullable: true }));
+  /** `null` means "use the type's own default" — same as an unset `Field.secret`. */
+  readonly secretOverride = signal<boolean | null>(null);
+  readonly secret = computed(() => this.secretOverride() ?? fieldDefinition(this.type()).secret);
+  readonly iconGlyph = signal<string | undefined>(undefined);
   readonly editor = viewChild.required(FieldValueEditor);
   changedCount = 0;
   removeCount = 0;
+  secretToggledCount = 0;
+  changeIconCount = 0;
 }
 
 describe('FieldValueEditor', () => {
@@ -90,14 +100,84 @@ describe('FieldValueEditor', () => {
     expect(element().querySelector('input.name-input')).toBeTruthy();
   });
 
-  it('only Password fields get the reveal toggle', async () => {
+  it('gives every secret field a reveal toggle, not just Password', async () => {
     host.type.set(FieldType.Password);
+    await fixture.whenStable();
+    expect(element().querySelector('.reveal')).toBeTruthy();
+
+    // Pin is secret by default too, and previously had no reveal toggle at all.
+    host.type.set(FieldType.Pin);
     await fixture.whenStable();
     expect(element().querySelector('.reveal')).toBeTruthy();
 
     host.type.set(FieldType.Username);
     await fixture.whenStable();
     expect(element().querySelector('.reveal')).toBeFalsy();
+  });
+
+  it('masks any field toggled secret by hand, generic types included', async () => {
+    host.type.set(FieldType.Username);
+    host.secretOverride.set(true);
+    await fixture.whenStable();
+
+    expect(valueField().getAttribute('type')).toBe('password');
+    expect(element().querySelector('.reveal')).toBeTruthy();
+  });
+
+  it('renders IP / Host as a plain, non-secret text field with its own placeholder', async () => {
+    host.type.set(FieldType.IpHost);
+    await fixture.whenStable();
+
+    expect(valueField().getAttribute('type')).toBe('text');
+    expect(element().querySelector('.reveal')).toBeFalsy();
+    expect(valueField().placeholder).toContain('192.168.1.1');
+  });
+
+  it('keeps a hidden Certificate/SSH Key/Recovery Codes field editable and paste-able, masking only visually', async () => {
+    host.type.set(FieldType.Certificate);
+    await fixture.whenStable();
+
+    // The visual mask (`-webkit-text-security`, asserted for real in the browser —
+    // jsdom's CSS engine doesn't recognise the vendor property and silently drops
+    // it, so it can't be checked from here) is a style, not a swap to a different,
+    // read-only element: typing or pasting works immediately, with no detour
+    // through the reveal toggle first, which was exactly the bug this replaced.
+    const textarea = element().querySelector<HTMLTextAreaElement>('textarea.value-input')!;
+    expect(textarea.readOnly).toBe(false);
+
+    textarea.value = '-----BEGIN CERTIFICATE-----\nMIIB...\n-----END CERTIFICATE-----';
+    textarea.dispatchEvent(new Event('input'));
+    await fixture.whenStable();
+    expect(host.valueControl().value).toContain('MIIB');
+
+    expect(element().querySelector('.reveal')).toBeTruthy();
+  });
+
+  it('leaves Note (secret false by default) as a plain, unmasked textarea', async () => {
+    host.type.set(FieldType.Note);
+    await fixture.whenStable();
+
+    const textarea = element().querySelector<HTMLTextAreaElement>('textarea.value-input')!;
+    expect(textarea.readOnly).toBe(false);
+    expect(element().querySelector('.reveal')).toBeFalsy();
+  });
+
+  it('emits secretToggled and changeIcon from their own buttons', () => {
+    element().querySelector<HTMLButtonElement>('.field-secret-toggle')!.click();
+    expect(host.secretToggledCount).toBe(1);
+
+    element().querySelector<HTMLButtonElement>('[aria-label="Change icon"]')!.click();
+    expect(host.changeIconCount).toBe(1);
+  });
+
+  it('renders a picked catalogue icon instead of the type default', async () => {
+    host.iconGlyph.set('f023');
+    await fixture.whenStable();
+
+    // `Icon`'s glyph is the literal code point character, not a readable attribute —
+    // codepoint 0xf023 is what proves the override reached the icon, not the fallback.
+    const glyph = element().querySelector('hlm-item-media .glyph')!;
+    expect(glyph.textContent?.codePointAt(0)?.toString(16)).toBe('f023');
   });
 
   it('writes typed text through to the passed-in value control', async () => {

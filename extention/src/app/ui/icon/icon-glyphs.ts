@@ -54,6 +54,7 @@ export const ICON_GLYPHS = {
   warning: '\uf071',
   question: '\uf059',
   desktop: '\uf109',
+  computer: '\uf109', // fa-laptop
   group: '\ue594',
   members: '\ue533',
   vaults: '\uf5fd',
@@ -123,6 +124,7 @@ export const ICON_GLYPHS = {
   frozen: '\uf2dc',
   'audit-pass': '\uf2f7',
   'audit-fail': '\ue24c',
+  'audit-clean': '\uf2f7', // fa-shield-check
   weak: '\uf4bb',
   reused: '\uf1b8',
   compromised: '\uf21b',

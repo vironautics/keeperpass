@@ -31,6 +31,29 @@ import { IconName } from '../../../ui/icon/icon-glyphs';
 import { GeneratePasswordDialog } from '../generate-password-dialog/generate-password-dialog';
 import { STRENGTH_COLOURS, STRENGTH_LABELS, strengthPercent } from '../strength-scale';
 
+/**
+ * Types whose editor is a textarea, not a single-line input.
+ *
+ * Not driven by `FieldDefinition.multiline` — that flag is also `true` for
+ * `Text`, which has always rendered (and is tested) as a single-line input;
+ * changing that now would be an unrelated behaviour change. This list is its
+ * own, narrower truth for what the *editor* renders as multiline.
+ */
+const MULTILINE_TYPES = new Set([
+  FieldType.Note,
+  FieldType.Certificate,
+  FieldType.SshKey,
+  FieldType.RecoveryCodes,
+]);
+
+/** Type-specific placeholders; anything not listed falls back to a generic one. */
+const PLACEHOLDERS: Partial<Record<FieldType, string>> = {
+  [FieldType.IpHost]: 'e.g. 192.168.1.1, ::1, or db.example.com',
+  [FieldType.Certificate]: '-----BEGIN CERTIFICATE-----',
+  [FieldType.SshKey]: '-----BEGIN OPENSSH PRIVATE KEY-----',
+  [FieldType.RecoveryCodes]: 'One per line — any format works',
+};
+
 /** `yyyy-mm-dd` and `yyyy-mm`, the two shapes the model stores. */
 function parseFieldDate(value: string): Date | undefined {
   const match = /^(\d{4})-(\d{2})(?:-(\d{2}))?$/.exec(value.trim());
@@ -86,17 +109,29 @@ export class FieldValueEditor {
   readonly nameControl = input.required<FormControl<string>>();
   readonly valueControl = input.required<FormControl<string>>();
 
+  /** Whether this field is currently masked — the effective value, already resolved from `Field.secret ?? definition.secret` by `ItemView`. */
+  readonly secret = input.required<boolean>();
+
+  /** A catalogue icon overriding `definition.icon`, if one was picked. */
+  readonly iconGlyph = input<string>();
+
   /** Fires whenever either control's value changes, so a parent form can recompute dirty/valid state. */
   readonly changed = output<void>();
 
   /** The remove button was clicked — `ItemView` confirms before actually removing it. */
   readonly remove = output<void>();
 
+  /** The secret toggle was clicked — `ItemView` owns the actual flag. */
+  readonly secretToggled = output<void>();
+
+  /** The change-icon button was clicked — `ItemView` owns opening the picker. */
+  readonly changeIcon = output<void>();
+
   private readonly definition = computed(() => fieldDefinition(this.type()));
 
   protected readonly glyph = computed<IconName>(() => this.definition().icon);
-  protected readonly isNote = computed(() => this.type() === FieldType.Note);
-  protected readonly isRevealable = computed(() => this.type() === FieldType.Password);
+  protected readonly isMultiline = computed(() => MULTILINE_TYPES.has(this.type()));
+  protected readonly isPassword = computed(() => this.type() === FieldType.Password);
   protected readonly isPin = computed(() => this.type() === FieldType.Pin);
   protected readonly isCredit = computed(() => this.type() === FieldType.Credit);
   protected readonly isEmail = computed(() => this.type() === FieldType.Email);
@@ -104,8 +139,25 @@ export class FieldValueEditor {
   protected readonly isDate = computed(() => this.type() === FieldType.Date);
   protected readonly isMonth = computed(() => this.type() === FieldType.Month);
 
-  /** Whether a password value is currently shown in the clear. */
+  protected readonly placeholder = computed(() => PLACEHOLDERS[this.type()] ?? 'Enter value here');
+
+  /** Whether a secret value is currently shown in the clear. */
   protected readonly revealed = signal(false);
+
+  /**
+   * `-webkit-text-security` masks a textarea's rendered glyphs without
+   * touching the control's actual value, the same way `type="password"`
+   * works for a plain `<input>` — which is what let it stay in this app's
+   * `<input type="password">` branches, but a `<textarea>` has no such native
+   * type. It's fully typeable and paste-able either way: masking is purely
+   * visual, so pasting a certificate or key never has to detour through a
+   * reveal click first. Supported in Chrome, Edge, Safari, and Firefox 133+;
+   * elsewhere it's silently a no-op, so an old browser shows the value in the
+   * clear while editing — the read view's actual masking is unaffected.
+   */
+  protected readonly maskedTextSecurity = computed(() =>
+    this.secret() && !this.revealed() ? 'disc' : null,
+  );
 
   /** Whether the generator dialog is showing. */
   protected readonly generating = signal(false);
@@ -132,7 +184,7 @@ export class FieldValueEditor {
    * definition and a card PIN is four, so scoring them could only ever report a
    * problem the user cannot fix, next to a field they filled in correctly.
    */
-  protected readonly showsStrength = computed(() => this.isRevealable());
+  protected readonly showsStrength = computed(() => this.isPassword());
   protected readonly strengthPercent = computed(() => strengthPercent(this.strength()));
   protected readonly strengthColour = computed(() => STRENGTH_COLOURS[this.strength()]);
   protected readonly strengthLabel = computed(() => STRENGTH_LABELS[this.strength()]);

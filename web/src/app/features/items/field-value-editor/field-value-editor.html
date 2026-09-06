@@ -8,9 +8,25 @@
   how it is entered.
 -->
 <div hlmItem size="sm" class="rounded-none! border-transparent">
-  <hlm-item-media variant="icon" class="size-8 self-start">
-    <app-icon [name]="glyph()" />
-  </hlm-item-media>
+  <button
+    type="button"
+    class="group focus-visible:ring-ring/50 relative size-8 shrink-0 self-start rounded-md focus-visible:ring-2 focus-visible:outline-none"
+    aria-label="Change icon"
+    (click)="changeIcon.emit()"
+  >
+    <hlm-item-media variant="icon" class="size-8">
+      @if (iconGlyph()) {
+        <app-icon [codePoint]="iconGlyph()" />
+      } @else {
+        <app-icon [name]="glyph()" />
+      }
+    </hlm-item-media>
+    <span
+      class="absolute inset-0 flex items-center justify-center rounded-md bg-black/50 opacity-0 transition-opacity group-hover:opacity-100"
+    >
+      <app-icon name="edit" class="text-white" />
+    </span>
+  </button>
 
   <hlm-item-content class="min-w-0 gap-2">
     <input
@@ -22,17 +38,7 @@
       aria-label="Field name"
     />
 
-    @if (isNote()) {
-      <textarea
-        hlmTextarea
-        #valueTextarea
-        class="value-input text-foreground"
-        rows="3"
-        [formControl]="valueControl()"
-        placeholder="Enter value here"
-        aria-label="Field value"
-      ></textarea>
-    } @else if (isMonth()) {
+    @if (isMonth()) {
       <!--
         A calendar rather than a native date input: the native one renders however the
         browser feels like, ignores the app's theme entirely, and on some platforms is
@@ -119,10 +125,10 @@
           (input)="onPhoneTyped($event)"
         />
       </div>
-    } @else if (isRevealable()) {
+    } @else if (isPassword()) {
       <!--
-        A password is the one value worth revealing in place, and the one worth
-        generating, so it gets both buttons plus the strength bar below.
+        A password is the one value worth generating, so it alone gets that
+        button alongside the reveal toggle every other secret also gets below.
       -->
       <hlm-input-group class="w-full">
         <input
@@ -204,6 +210,71 @@
           </hlm-input-group-addon>
         }
       </hlm-input-group>
+    } @else if (isMultiline()) {
+      <!--
+        Note, Certificate, SSH/Private Key, Recovery Codes — and any other
+        multiline type — share this branch. One textarea, always the real,
+        live `formControl` — never a separate read-only view — so pasting a
+        certificate or key works immediately, with no detour through the
+        reveal toggle first. Masking while hidden is purely visual
+        (`maskedStyle`, via `-webkit-text-security`), the same trick
+        `type="password"` does natively for a plain `<input>`.
+      -->
+      <div class="relative">
+        <textarea
+          hlmTextarea
+          #valueTextarea
+          [class]="secret() ? 'value-input text-foreground pr-8 font-mono' : 'value-input text-foreground'"
+          [style.-webkit-text-security]="maskedTextSecurity()"
+          rows="3"
+          [formControl]="valueControl()"
+          [placeholder]="placeholder()"
+          aria-label="Field value"
+        ></textarea>
+        @if (secret()) {
+          <button
+            hlmBtn
+            variant="ghost"
+            size="icon-xs"
+            type="button"
+            class="reveal absolute top-1 right-1"
+            [attr.aria-label]="revealed() ? 'Hide value' : 'Reveal value'"
+            (click)="toggleRevealed()"
+          >
+            <app-icon [name]="revealed() ? 'hide' : 'show'" />
+          </button>
+        }
+      </div>
+    } @else if (secret()) {
+      <!--
+        Any other secret — Pin by default, or any type toggled secret by
+        hand — gets the same reveal treatment as Password, minus the
+        generate button and strength bar those get instead.
+      -->
+      <hlm-input-group class="w-full">
+        <input
+          hlmInputGroupInput
+          #valueInput
+          class="value-input text-foreground"
+          [type]="revealed() ? nativeType() : 'password'"
+          [attr.inputmode]="inputMode()"
+          [formControl]="valueControl()"
+          [placeholder]="placeholder()"
+          aria-label="Field value"
+        />
+        <hlm-input-group-addon align="inline-end">
+          <button
+            hlmInputGroupButton
+            size="icon-xs"
+            type="button"
+            class="reveal"
+            [attr.aria-label]="revealed() ? 'Hide value' : 'Reveal value'"
+            (click)="toggleRevealed()"
+          >
+            <app-icon [name]="revealed() ? 'hide' : 'show'" />
+          </button>
+        </hlm-input-group-addon>
+      </hlm-input-group>
     } @else {
       <input
         hlmInput
@@ -212,7 +283,7 @@
         [type]="nativeType()"
         [attr.inputmode]="inputMode()"
         [formControl]="valueControl()"
-        placeholder="Enter value here"
+        [placeholder]="placeholder()"
         aria-label="Field value"
       />
     }
@@ -248,6 +319,19 @@
       variant="ghost"
       size="icon-sm"
       type="button"
+      class="field-secret-toggle"
+      [attr.aria-pressed]="secret()"
+      [attr.aria-label]="secret() ? 'Make this field not secret' : 'Make this field secret'"
+      (click)="secretToggled.emit()"
+    >
+      <app-icon [name]="secret() ? 'lock' : 'unlock'" />
+    </button>
+
+    <button
+      hlmBtn
+      variant="ghost"
+      size="icon-sm"
+      type="button"
       class="field-remove"
       aria-label="Remove field"
       (click)="remove.emit()"
@@ -257,6 +341,6 @@
   </hlm-item-actions>
 </div>
 
-@if (isRevealable()) {
+@if (isPassword()) {
   <app-generate-password-dialog [(open)]="generating" (confirmed)="onGenerated($event)" />
 }

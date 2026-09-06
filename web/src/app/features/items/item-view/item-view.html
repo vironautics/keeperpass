@@ -32,7 +32,23 @@
         </a>
       }
 
-      <app-item-icon [item]="item()!" class="mt-1.5 size-8 shrink-0 max-[700px]:hidden" />
+      @if (edit()) {
+        <button
+          type="button"
+          class="group focus-visible:ring-ring/50 relative mt-1.5 size-8 shrink-0 rounded-md max-[700px]:hidden focus-visible:ring-2 focus-visible:outline-none"
+          aria-label="Change icon"
+          (click)="openIconPicker()"
+        >
+          <app-item-icon [item]="previewIconItem()!" class="size-8" />
+          <span
+            class="absolute inset-0 flex items-center justify-center rounded-md bg-black/50 opacity-0 transition-opacity group-hover:opacity-100"
+          >
+            <app-icon name="edit" class="text-white" />
+          </span>
+        </button>
+      } @else {
+        <app-item-icon [item]="previewIconItem()!" class="mt-1.5 size-8 shrink-0 max-[700px]:hidden" />
+      }
 
       <div class="min-w-0 flex-1 px-1">
         <p class="text-muted-foreground truncate text-xs">{{ vaultLabel() }}</p>
@@ -112,7 +128,8 @@
             <div class="tags flex flex-wrap items-center gap-2 p-2">
               @if (edit()) {
                 @for (tag of editableTags(); track tag) {
-                  <span hlmBadge variant="secondary" [style.color]="tagColor(tag)">
+                  <!-- `h-9!` matches the "Add tag" trigger beside it — badges are `h-5` by default. -->
+                  <span hlmBadge variant="secondary" class="h-9!" [style.color]="tagColor(tag)">
                     <app-icon name="tag" />
                     {{ tag }}
                     <button
@@ -213,8 +230,12 @@
                   [type]="entry.type"
                   [nameControl]="entry.nameControl"
                   [valueControl]="entry.valueControl"
+                  [secret]="entry.secret"
+                  [iconGlyph]="entry.iconGlyph"
                   (changed)="bumpFieldsChanged()"
                   (remove)="requestRemoveField(i)"
+                  (secretToggled)="toggleFieldSecret(i)"
+                  (changeIcon)="openFieldIconPicker(i)"
                 />
               } @empty {
                 <p class="text-muted-foreground p-3 text-sm">This item has no fields.</p>
@@ -624,4 +645,7 @@
       </hlm-alert-dialog-footer>
     </hlm-alert-dialog-content>
   </hlm-alert-dialog>
+
+  <app-icon-picker-dialog [(open)]="iconPickerOpen" (picked)="onIconPicked($event)" />
+  <app-icon-picker-dialog [(open)]="fieldIconPickerOpen" (picked)="onFieldIconPicked($event)" />
 }

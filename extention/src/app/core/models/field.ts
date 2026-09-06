@@ -6,12 +6,16 @@ export enum FieldType {
   Password = 'password',
   Email = 'email',
   Url = 'url',
+  IpHost = 'ip_host',
   Date = 'date',
   Month = 'month',
   Credit = 'credit',
   Phone = 'phone',
   Pin = 'pin',
   Totp = 'totp',
+  Certificate = 'certificate',
+  SshKey = 'ssh_key',
+  RecoveryCodes = 'recovery_codes',
   Note = 'note',
   Text = 'text',
 }
@@ -20,6 +24,18 @@ export interface Field {
   name: string;
   value: string;
   type: FieldType;
+  /**
+   * Overrides `FieldDefinition.masked` for this one field — the source app's
+   * "make this field ***-style" toggle. `undefined` means "use the type's
+   * own default"; see `fieldIsSecret`.
+   */
+  secret?: boolean;
+  /**
+   * A specific icon picked from the source app's full Font Awesome catalogue,
+   * as a raw hex code point. Overrides `FieldDefinition.icon` when set — the
+   * extension only ever displays this, it never lets the user pick one.
+   */
+  iconGlyph?: string;
 }
 
 export interface FieldDefinition {
@@ -65,6 +81,13 @@ export const FIELD_DEFINITIONS: Record<FieldType, FieldDefinition> = {
     masked: false,
     multiline: false,
   },
+  [FieldType.IpHost]: {
+    type: FieldType.IpHost,
+    name: 'IP / Host',
+    icon: 'computer',
+    masked: false,
+    multiline: false,
+  },
   [FieldType.Date]: {
     type: FieldType.Date,
     name: 'Date',
@@ -107,6 +130,27 @@ export const FIELD_DEFINITIONS: Record<FieldType, FieldDefinition> = {
     masked: false,
     multiline: false,
   },
+  [FieldType.Certificate]: {
+    type: FieldType.Certificate,
+    name: 'Certificate',
+    icon: 'audit-clean',
+    masked: true,
+    multiline: true,
+  },
+  [FieldType.SshKey]: {
+    type: FieldType.SshKey,
+    name: 'SSH / Private Key',
+    icon: 'lock',
+    masked: true,
+    multiline: true,
+  },
+  [FieldType.RecoveryCodes]: {
+    type: FieldType.RecoveryCodes,
+    name: 'Recovery Codes',
+    icon: 'list-check',
+    masked: true,
+    multiline: true,
+  },
   [FieldType.Note]: {
     type: FieldType.Note,
     name: 'Richtext / Markdown',
@@ -127,6 +171,11 @@ export function fieldDefinition(type: FieldType): FieldDefinition {
   return FIELD_DEFINITIONS[type] ?? FIELD_DEFINITIONS[FieldType.Text];
 }
 
+/** Whether a field should be masked — its own override, or its type's default. */
+export function fieldIsSecret(field: Field): boolean {
+  return field.secret ?? fieldDefinition(field.type).masked;
+}
+
 const MASK_CHARACTER = '•';
 
 /** Replaces every character except line breaks, matching the original's `mask()`. */
@@ -136,9 +185,7 @@ export function maskValue(value: string): string {
 
 /** Formats a field for display, masking it when it is a secret that stays hidden. */
 export function formatFieldValue(field: Field, masked: boolean): string {
-  const definition = fieldDefinition(field.type);
-
-  if (definition.masked && masked) {
+  if (fieldIsSecret(field) && masked) {
     return maskValue(field.value);
   }
 

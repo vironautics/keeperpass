@@ -351,7 +351,10 @@ export class VaultStore {
    * first, then history in the same order), bumps `updated`, and clears
    * any audit findings, since they may no longer describe the new values.
    */
-  updateItem(id: string, patch: Partial<Pick<VaultItem, 'name' | 'fields' | 'tags'>>): void {
+  updateItem(
+    id: string,
+    patch: Partial<Pick<VaultItem, 'name' | 'fields' | 'tags' | 'iconGlyph'>>,
+  ): void {
     this._items.update((items) =>
       items.map((item) => (item.id === id ? this.withHistorySnapshot(item, patch) : item)),
     );
@@ -520,7 +523,7 @@ export class VaultStore {
    */
   private withHistorySnapshot(
     item: VaultItem,
-    patch: Partial<Pick<VaultItem, 'name' | 'fields' | 'tags'>>,
+    patch: Partial<Pick<VaultItem, 'name' | 'fields' | 'tags' | 'iconGlyph'>>,
   ): VaultItem {
     const snapshot: HistoryEntry = {
       updated: item.updated,

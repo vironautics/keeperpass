@@ -11,6 +11,7 @@ import {
   Field,
   FieldType,
   fieldDefinition,
+  fieldIsSecret,
   formatFieldValue,
 } from '../../../core/models';
 import { generateTotp } from '../../../core/otp/totp';
@@ -54,9 +55,10 @@ export class ItemField {
   private readonly definition = computed(() => fieldDefinition(this.field().type));
 
   protected readonly icon = computed(() => this.definition().icon);
+  protected readonly iconGlyph = computed(() => this.field().iconGlyph);
   protected readonly displayName = computed(() => this.field().name || 'Unnamed');
-  protected readonly isMaskable = computed(() => this.definition().masked);
-  protected readonly isSecret = computed(() => this.definition().masked);
+  protected readonly isMaskable = computed(() => fieldIsSecret(this.field()));
+  protected readonly isSecret = computed(() => fieldIsSecret(this.field()));
   protected readonly isTotp = computed(() => this.field().type === FieldType.Totp);
   protected readonly isNote = computed(() => this.field().type === FieldType.Note);
 

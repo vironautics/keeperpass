@@ -41,6 +41,15 @@ export interface VaultItem {
   history: HistoryEntry[];
   /** Overrides the icon derived from the item's field types. */
   icon?: IconName;
+  /**
+   * A specific icon the user picked from the full Font Awesome catalogue
+   * (`icon-catalog.ts`), as a raw Solid-face hex code point. Takes priority
+   * over `icon` when set — see `itemIconGlyph`. A separate field from `icon`
+   * rather than widening `IconName`, since the catalogue and this app's own
+   * icon vocabulary aren't the same namespace (e.g. the app's own `lock` key
+   * already means a different glyph than Font Awesome's `lock` icon).
+   */
+  iconGlyph?: string;
 }
 
 export const AUDIT_LABELS: Record<AuditType, string> = {

@@ -5,10 +5,12 @@ import { itemFaviconUrl } from './item-favicon-url';
 import { itemIconName } from './item-icon-name';
 
 /**
- * The favicon or glyph that stands for an item. A favicon is preferred
- * whenever the item has a `Url` field — see `itemFaviconUrl` — falling back
- * to the glyph from `itemIconName` if there is none, or if it fails to load.
- * There is no setting to turn this off; it's always on.
+ * The favicon or glyph that stands for an item. A user-picked `iconGlyph`
+ * (set in the source app's icon picker) wins outright, otherwise a favicon is
+ * preferred whenever the item has a `Url` field — see `itemFaviconUrl` —
+ * falling back to the glyph from `itemIconName` if there is none, or if it
+ * fails to load. There is no setting to turn the favicon off; short of a
+ * picked icon, it's always on.
  */
 @Component({
   selector: 'app-item-icon',
@@ -21,6 +23,7 @@ export class ItemIcon {
   readonly item = input.required<VaultItem>();
 
   protected readonly icon = computed(() => itemIconName(this.item()));
+  protected readonly iconGlyph = computed(() => this.item().iconGlyph);
   protected readonly faviconUrl = computed(() => itemFaviconUrl(this.item()));
 
   private readonly failedFaviconUrl = signal<string | undefined>(undefined);

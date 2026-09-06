@@ -463,12 +463,16 @@ describe('ItemView', () => {
         'Password',
         'Email',
         'URL',
+        'IP / Host',
         'Date',
         'Month',
         'Card Number',
         'Phone',
         'PIN',
         'Authenticator Code',
+        'Certificate',
+        'SSH / Private Key',
+        'Recovery Codes',
         'Formatted Note',
         'Text',
       ]);
@@ -879,6 +883,173 @@ describe('ItemView', () => {
       await fixture.whenStable();
 
       expect(store.itemById(itemId)!.history).toHaveLength(1);
+    });
+  });
+
+  describe('Field secret & icon', () => {
+    const fieldSecretToggle = (index: number) =>
+      fieldRows()[index].querySelector<HTMLButtonElement>('.field-secret-toggle')!;
+    const fieldChangeIconButton = (index: number) =>
+      fieldRows()[index].querySelector<HTMLButtonElement>('[aria-label="Change icon"]')!;
+    const fieldValueInput = (index: number) =>
+      fieldRows()[index].querySelector<HTMLInputElement>('input.value-input');
+    const iconPickerResult = (label: string) =>
+      [...dialog('Choose Icon').querySelectorAll<HTMLButtonElement>('button[title]')].find(
+        (b) => b.getAttribute('title') === label,
+      )!;
+
+    // createTestItem uses the "website" template: Username, Password, URL, in that order.
+
+    it('toggling a normally non-secret field masks it like a password, and persists on Save', async () => {
+      await enterEdit();
+      expect(fieldValueInput(0)?.getAttribute('type')).not.toBe('password');
+
+      fieldSecretToggle(0).click(); // Username
+      await fixture.whenStable();
+      expect(fieldValueInput(0)?.getAttribute('type')).toBe('password');
+
+      saveButton().click();
+      await fixture.whenStable();
+
+      expect(store.itemById(itemId)?.fields[0].secret).toBe(true);
+    });
+
+    it('toggling Password (secret by default) off unmasks it, and persists on Save', async () => {
+      await enterEdit();
+      fieldSecretToggle(1).click(); // Password
+      await fixture.whenStable();
+
+      saveButton().click();
+      await fixture.whenStable();
+
+      expect(store.itemById(itemId)?.fields[1].secret).toBe(false);
+    });
+
+    it('leaving every field untouched saves no secret override at all', async () => {
+      await enterEdit();
+      await typeInto(nameInput()!, 'Renamed');
+
+      saveButton().click();
+      await fixture.whenStable();
+
+      const fields = store.itemById(itemId)?.fields ?? [];
+      expect(fields.every((field) => field.secret === undefined)).toBe(true);
+    });
+
+    it('picks a catalogue icon for one field and persists it on Save', async () => {
+      await enterEdit();
+      fieldChangeIconButton(0).click();
+      await fixture.whenStable();
+      expect(dialogIsOpen('Choose Icon')).toBe(true);
+
+      await typeInto(dialog('Choose Icon').querySelector('input')!, 'lock');
+      iconPickerResult('Lock').click();
+      await fixture.whenStable();
+
+      saveButton().click();
+      await fixture.whenStable();
+
+      expect(store.itemById(itemId)?.fields[0].iconGlyph).toBe('f023');
+    });
+  });
+
+  describe('Icon picker', () => {
+    const changeIconButton = () =>
+      [...host().querySelectorAll<HTMLButtonElement>('button')].find(
+        (b) => b.getAttribute('aria-label') === 'Change icon',
+      )!;
+    const iconPickerDialogOpen = () => dialogIsOpen('Choose Icon');
+    const iconPickerSearchInput = () =>
+      dialog('Choose Icon').querySelector<HTMLInputElement>('input')!;
+    const iconPickerResultButtons = () => [
+      ...dialog('Choose Icon').querySelectorAll<HTMLButtonElement>('button[title]'),
+    ];
+    const iconPickerResult = (label: string) =>
+      iconPickerResultButtons().find((b) => b.getAttribute('title') === label)!;
+    const useDefaultIconButton = () =>
+      buttonsIn('Choose Icon').find((b) => b.textContent?.includes('Use default icon'))!;
+    /** The raw code point an `app-icon` is currently rendering, read off its glyph span. */
+    const headerGlyphCodePoint = () =>
+      host()
+        .querySelector('app-item-icon app-icon .glyph')
+        ?.textContent?.codePointAt(0)
+        ?.toString(16);
+
+    it('opens from the header icon while editing, and searches like fontawesome.com does', async () => {
+      await enterEdit();
+      expect(iconPickerDialogOpen()).toBe(false);
+
+      changeIconButton().click();
+      await fixture.whenStable();
+      expect(iconPickerDialogOpen()).toBe(true);
+
+      await typeInto(iconPickerSearchInput(), 'padlock');
+      expect(iconPickerResult('Lock')).toBeTruthy();
+    });
+
+    it('picks an icon, previews it immediately, and persists it on Save', async () => {
+      await enterEdit();
+      changeIconButton().click();
+      await fixture.whenStable();
+
+      await typeInto(iconPickerSearchInput(), 'lock');
+      iconPickerResult('Lock').click();
+      await fixture.whenStable();
+
+      expect(iconPickerDialogOpen()).toBe(false);
+      expect(headerGlyphCodePoint()).toBe('f023');
+
+      saveButton().click();
+      await fixture.whenStable();
+
+      expect(store.itemById(itemId)?.iconGlyph).toBe('f023');
+    });
+
+    it('overrides the favicon this item would otherwise show — picking an icon is a deliberate choice', async () => {
+      // `createTestItem` uses the "website" template, whose URL field would
+      // otherwise put a favicon in this exact slot ahead of any glyph.
+      await enterEdit();
+      changeIconButton().click();
+      await fixture.whenStable();
+      await typeInto(iconPickerSearchInput(), 'lock');
+      iconPickerResult('Lock').click();
+      await fixture.whenStable();
+      saveButton().click();
+      await fixture.whenStable();
+
+      expect(host().querySelector('app-item-icon img')).toBeNull();
+      expect(headerGlyphCodePoint()).toBe('f023');
+    });
+
+    it('"Use default icon" clears a previously picked icon on Save', async () => {
+      store.updateItem(itemId, { iconGlyph: 'f023' });
+      await enterEdit();
+
+      changeIconButton().click();
+      await fixture.whenStable();
+      useDefaultIconButton().click();
+      await fixture.whenStable();
+
+      expect(iconPickerDialogOpen()).toBe(false);
+
+      saveButton().click();
+      await fixture.whenStable();
+
+      expect(store.itemById(itemId)?.iconGlyph).toBeUndefined();
+    });
+
+    it('Cancel discards a picked icon without touching the store', async () => {
+      await enterEdit();
+      changeIconButton().click();
+      await fixture.whenStable();
+      await typeInto(iconPickerSearchInput(), 'lock');
+      iconPickerResult('Lock').click();
+      await fixture.whenStable();
+
+      cancelButton().click();
+      await fixture.whenStable();
+
+      expect(store.itemById(itemId)?.iconGlyph).toBeUndefined();
     });
   });
 });

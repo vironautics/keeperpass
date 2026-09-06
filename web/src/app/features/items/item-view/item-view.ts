@@ -31,6 +31,7 @@ import {
   FIELD_DEFINITIONS,
   FieldDefinition,
   fieldDefinition,
+  fieldIsSecret,
   FieldType,
   formatFieldValue,
   HistoryEntry,
@@ -52,6 +53,7 @@ import { VaultStore } from '../../../core/vault/vault.store';
 import { FieldValueEditor } from '../field-value-editor/field-value-editor';
 import { formatDateTime, formatRelativeToNow } from '../format-date';
 import { ItemField } from '../item-field/item-field';
+import { IconPickerDialog } from '../item-icon/icon-picker-dialog/icon-picker-dialog';
 import { ItemIcon } from '../item-icon/item-icon';
 import { Icon } from '../../../ui/icon/icon';
 import { IconName } from '../../../ui/icon/icon-glyphs';
@@ -68,6 +70,10 @@ interface EditableField {
   type: FieldType;
   nameControl: FormControl<string>;
   valueControl: FormControl<string>;
+  /** Effective secret flag — `field.secret ?? fieldDefinition(type).secret`, toggleable. */
+  secret: boolean;
+  /** A catalogue icon overriding the type's default, if one was picked. */
+  iconGlyph?: string;
 }
 
 /** One choice in the "Move To Vault" select. */
@@ -160,8 +166,18 @@ function editableFieldFrom(field: Field): EditableField {
       nonNullable: true,
       validators: fieldValueValidators(field.type),
     }),
+    secret: fieldIsSecret(field),
+    iconGlyph: field.iconGlyph,
   };
 }
+
+/** Types whose value can run long enough to need the generous "note" length cap and line breaks. */
+const LONG_TEXT_TYPES = new Set([
+  FieldType.Note,
+  FieldType.Certificate,
+  FieldType.SshKey,
+  FieldType.RecoveryCodes,
+]);
 
 /**
  * Validators for a field's value control, by type.
@@ -170,10 +186,11 @@ function editableFieldFrom(field: Field): EditableField {
  * trust decision — only their length is capped (see `text-safety.ts`'s doc
  * comment on why "dangerous-looking" characters are legitimate password
  * content). Everything else gets the same bidi/control-character guard as
- * the item name; Note additionally allows line breaks.
+ * the item name; Note and the other long-text types additionally allow line
+ * breaks.
  */
 function fieldValueValidators(type: FieldType): ValidatorFn[] {
-  const lengthCap = maxLength(type === FieldType.Note ? 'noteValue' : 'fieldValue');
+  const lengthCap = maxLength(LONG_TEXT_TYPES.has(type) ? 'noteValue' : 'fieldValue');
 
   switch (type) {
     case FieldType.Password:
@@ -181,6 +198,9 @@ function fieldValueValidators(type: FieldType): ValidatorFn[] {
     case FieldType.Credit:
       return [lengthCap];
     case FieldType.Note:
+    case FieldType.Certificate:
+    case FieldType.SshKey:
+    case FieldType.RecoveryCodes:
       return [lengthCap, displaySafeValidator()];
     default:
       return [lengthCap, singleLineValidator()];
@@ -224,6 +244,7 @@ function fieldValueValidators(type: FieldType): ValidatorFn[] {
     HlmInput,
     HlmItemImports,
     HlmSelectImports,
+    IconPickerDialog,
     ItemField,
     ItemIcon,
     Icon,
@@ -267,6 +288,17 @@ export class ItemView {
   });
 
   protected readonly found = computed(() => !!this.item());
+
+  /**
+   * The item's icon as it should render right now — the stored `iconGlyph`
+   * while just viewing, but the staged `editableIconGlyph` while editing, so
+   * picking a new icon in `IconPickerDialog` previews immediately instead of
+   * waiting for Save.
+   */
+  protected readonly previewIconItem = computed<VaultItem | undefined>(() => {
+    const item = this.item();
+    return item ? { ...item, iconGlyph: this.editableIconGlyph() } : undefined;
+  });
   protected readonly name = computed(() => this.item()?.name ?? '');
   protected readonly tags = computed(() => this.item()?.tags ?? []);
   protected readonly fields = computed<readonly Field[]>(() => this.item()?.fields ?? []);
@@ -463,6 +495,12 @@ export class ItemView {
   /** Source of truth for tags while editing — see `editableFields` above. */
   protected readonly editableTags = signal<string[]>([]);
 
+  /** Staged icon override while editing — see `previewIconItem`. `undefined` means "use the default icon". */
+  protected readonly editableIconGlyph = signal<string | undefined>(undefined);
+
+  /** Whether `IconPickerDialog` is showing. */
+  protected readonly iconPickerOpen = signal(false);
+
   protected readonly tagDraftControl = new FormControl('', {
     nonNullable: true,
     validators: [maxLength('tagName'), singleLineValidator()],
@@ -535,6 +573,12 @@ export class ItemView {
   /** Index into `editableFields()` pending remove confirmation, or `null` when there isn't one. */
   protected readonly removingFieldIndex = signal<number | null>(null);
 
+  /** Whether `IconPickerDialog` is showing for a field (as opposed to the item itself). */
+  protected readonly fieldIconPickerOpen = signal(false);
+
+  /** Index into `editableFields()` currently having its icon picked. */
+  protected readonly fieldIconPickerIndex = signal<number | null>(null);
+
   // --- Move to vault / Delete -----------------------------------------------
 
   protected readonly movingItem = signal(false);
@@ -587,6 +631,9 @@ export class ItemView {
     if (!sameTags(this.editableTags(), item.tags)) {
       return true;
     }
+    if (this.editableIconGlyph() !== item.iconGlyph) {
+      return true;
+    }
     const staged = this.editableFields();
     if (staged.length !== item.fields.length) {
       return true;
@@ -594,7 +641,10 @@ export class ItemView {
     return staged.some((entry, i) => {
       const original = item.fields[i];
       return (
-        entry.nameControl.value !== original.name || entry.valueControl.value !== original.value
+        entry.nameControl.value !== original.name ||
+        entry.valueControl.value !== original.value ||
+        entry.secret !== fieldIsSecret(original) ||
+        entry.iconGlyph !== original.iconGlyph
       );
     });
   });
@@ -707,6 +757,39 @@ export class ItemView {
   }
 
   /**
+   * Flips whether one staged field masks its value — the "***-style" toggle.
+   *
+   * Mutates the entry in place rather than replacing it in the array: `@for`
+   * tracks `editableFields()` by entry identity (see `item-view.html`), so a
+   * new object at the same index would tear down and rebuild that row's
+   * `FieldValueEditor`, losing its own local reveal state. Same reason
+   * `bumpFieldsChanged()` exists for the form controls below.
+   */
+  protected toggleFieldSecret(index: number): void {
+    const entry = this.editableFields()[index];
+    if (!entry) {
+      return;
+    }
+    entry.secret = !entry.secret;
+    this.bumpFieldsChanged();
+  }
+
+  protected openFieldIconPicker(index: number): void {
+    this.fieldIconPickerIndex.set(index);
+    this.fieldIconPickerOpen.set(true);
+  }
+
+  protected onFieldIconPicked(glyph: string | undefined): void {
+    const index = this.fieldIconPickerIndex();
+    const entry = index === null ? undefined : this.editableFields()[index];
+    if (!entry) {
+      return;
+    }
+    entry.iconGlyph = glyph;
+    this.bumpFieldsChanged();
+  }
+
+  /**
    * Commits a tag — the typed draft by default, or one picked straight from
    * `tagSuggestions()`. A picked tag skips the draft's own validators: it was
    * already validated when it was first added to some item, so re-checking
@@ -763,6 +846,10 @@ export class ItemView {
       name: entry.nameControl.value.trim(),
       type: entry.type,
       value: entry.valueControl.value,
+      // Only stored when it overrides the type's own default — keeps an
+      // un-toggled field's vault entry identical to what it always was.
+      secret: entry.secret === fieldDefinition(entry.type).secret ? undefined : entry.secret,
+      iconGlyph: entry.iconGlyph,
     }));
     const tags = this.editableTags();
 
@@ -777,6 +864,7 @@ export class ItemView {
         vaultId: draft.vaultId,
         name,
         icon: draft.template.icon,
+        iconGlyph: this.editableIconGlyph(),
         fields,
         tags,
       });
@@ -793,7 +881,7 @@ export class ItemView {
       return;
     }
 
-    this.store.updateItem(item.id, { name, fields, tags });
+    this.store.updateItem(item.id, { name, fields, tags, iconGlyph: this.editableIconGlyph() });
     void this.auditService.runAuditForItem(item.id);
     void this.vaultSync.syncNow();
     void this.router.navigate(['/items', item.id]);
@@ -856,7 +944,16 @@ export class ItemView {
     this.nameControl.setValue(item?.name ?? '');
     this.editableFields.set((item?.fields ?? []).map(editableFieldFrom));
     this.editableTags.set([...(item?.tags ?? [])]);
+    this.editableIconGlyph.set(item?.iconGlyph);
     this.tagDraftControl.setValue('');
+  }
+
+  protected openIconPicker(): void {
+    this.iconPickerOpen.set(true);
+  }
+
+  protected onIconPicked(glyph: string | undefined): void {
+    this.editableIconGlyph.set(glyph);
   }
 
   /** A brand-new, not-yet-saved item — same shape a real one would have, seeded from the draft's template. */

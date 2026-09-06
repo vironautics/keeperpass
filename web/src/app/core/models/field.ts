@@ -14,12 +14,16 @@ export enum FieldType {
   Password = 'password',
   Email = 'email',
   Url = 'url',
+  IpHost = 'ip_host',
   Date = 'date',
   Month = 'month',
   Credit = 'credit',
   Phone = 'phone',
   Pin = 'pin',
   Totp = 'totp',
+  Certificate = 'certificate',
+  SshKey = 'ssh_key',
+  RecoveryCodes = 'recovery_codes',
   Note = 'note',
   Text = 'text',
 }
@@ -29,6 +33,21 @@ export interface Field {
   name: string;
   value: string;
   type: FieldType;
+  /**
+   * Overrides `FieldDefinition.secret` for this one field — the "make this
+   * field ***-style" toggle. `undefined` means "use the type's own default";
+   * see `fieldIsSecret`.
+   */
+  secret?: boolean;
+  /**
+   * A specific icon picked from the full Font Awesome catalogue
+   * (`icon-catalog.ts`), as a raw hex code point. Overrides
+   * `FieldDefinition.icon` when set — same two-tier pattern as
+   * `VaultItem.iconGlyph`, and for the same reason: the catalogue is a much
+   * larger vocabulary than this app's own curated icon names, so a per-field
+   * pick is kept out of `FieldDefinition.icon`'s `IconName` union entirely.
+   */
+  iconGlyph?: string;
 }
 
 /**
@@ -89,6 +108,13 @@ export const FIELD_DEFINITIONS: Record<FieldType, FieldDefinition> = {
     secret: false,
     multiline: false,
   },
+  [FieldType.IpHost]: {
+    type: FieldType.IpHost,
+    label: 'IP / Host',
+    icon: 'computer',
+    secret: false,
+    multiline: false,
+  },
   [FieldType.Date]: {
     type: FieldType.Date,
     label: 'Date',
@@ -133,6 +159,29 @@ export const FIELD_DEFINITIONS: Record<FieldType, FieldDefinition> = {
     secret: false,
     multiline: false,
   },
+  [FieldType.Certificate]: {
+    type: FieldType.Certificate,
+    label: 'Certificate',
+    icon: 'audit-clean',
+    // On by default: a certificate is often paired with a private key. Toggle
+    // it off per-field for a public certificate that doesn't need masking.
+    secret: true,
+    multiline: true,
+  },
+  [FieldType.SshKey]: {
+    type: FieldType.SshKey,
+    label: 'SSH / Private Key',
+    icon: 'lock',
+    secret: true,
+    multiline: true,
+  },
+  [FieldType.RecoveryCodes]: {
+    type: FieldType.RecoveryCodes,
+    label: 'Recovery Codes',
+    icon: 'list-check',
+    secret: true,
+    multiline: true,
+  },
   [FieldType.Note]: {
     type: FieldType.Note,
     label: 'Formatted Note',
@@ -160,6 +209,11 @@ export function fieldDefinition(type: FieldType): FieldDefinition {
   return FIELD_DEFINITIONS[type] ?? FIELD_DEFINITIONS[FieldType.Text];
 }
 
+/** Whether a field should be masked — its own override, or its type's default. */
+export function fieldIsSecret(field: Field): boolean {
+  return field.secret ?? fieldDefinition(field.type).secret;
+}
+
 const MASK_CHARACTER = '•';
 
 /**
@@ -182,9 +236,7 @@ export function maskValue(value: string): string {
  * reads `2026-08` as a month.
  */
 export function formatFieldValue(field: Field, hidden: boolean): string {
-  const definition = fieldDefinition(field.type);
-
-  if (definition.secret && hidden) {
+  if (fieldIsSecret(field) && hidden) {
     return maskValue(field.value);
   }
 

@@ -1,0 +1,49 @@
+<hlm-dialog [state]="open() ? 'open' : 'closed'" (stateChanged)="open.set($event === 'open')">
+  <hlm-dialog-content *hlmDialogPortal class="sm:max-w-lg" aria-label="Choose Icon">
+    <hlm-dialog-header>
+      <h3 hlmDialogTitle>Choose Icon</h3>
+      <p hlmDialogDescription>Search Font Awesome's icon set by name, or by what it's used for.</p>
+    </hlm-dialog-header>
+
+    <input
+      hlmInput
+      #searchInput
+      class="w-full"
+      placeholder="Search icons — try &quot;bank&quot; or &quot;padlock&quot;"
+      autocomplete="off"
+      [value]="search()"
+      (input)="onSearch($any($event.target).value)"
+    />
+
+    <!--
+      Tiles rather than a list, same reasoning as the create-item template
+      picker: this is a grid of visual choices, not text rows.
+    -->
+    <div
+      class="grid max-h-[50vh] grid-cols-4 gap-2 overflow-y-auto p-0.5 sm:grid-cols-6"
+      role="listbox"
+      aria-label="Search results"
+    >
+      @for (icon of results(); track icon.name) {
+        <button
+          type="button"
+          class="border-input bg-card hover:bg-accent hover:text-accent-strong focus-visible:ring-ring/50 flex cursor-pointer flex-col items-center gap-1 rounded-lg border px-1 py-2 text-center transition-colors focus-visible:ring-2 focus-visible:outline-none"
+          [attr.title]="icon.label"
+          (click)="select(icon)"
+        >
+          <app-icon [codePoint]="icon.unicode" class="text-lg" />
+          <span class="w-full truncate text-[0.65rem] leading-tight">{{ icon.label }}</span>
+        </button>
+      } @empty {
+        <p class="text-muted-foreground col-span-full py-8 text-center text-sm">
+          No icons match "{{ search() }}".
+        </p>
+      }
+    </div>
+
+    <hlm-dialog-footer>
+      <button hlmBtn variant="ghost" (click)="useDefault()">Use default icon</button>
+      <button hlmBtn variant="outline" (click)="cancel()">Cancel</button>
+    </hlm-dialog-footer>
+  </hlm-dialog-content>
+</hlm-dialog>

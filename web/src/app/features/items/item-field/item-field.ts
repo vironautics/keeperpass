@@ -13,6 +13,7 @@ import {
   Field,
   FieldType,
   fieldDefinition,
+  fieldIsSecret,
   formatFieldValue,
 } from '../../../core/models';
 import { generateTotp } from '../../../core/otp/totp';
@@ -61,10 +62,11 @@ export class ItemField {
   private readonly definition = computed(() => fieldDefinition(this.field().type));
 
   protected readonly glyph = computed<IconName>(() => this.definition().icon);
+  protected readonly iconGlyph = computed(() => this.field().iconGlyph);
   protected readonly displayName = computed(() => this.field().name || 'Unnamed');
 
   /** Drives both the reveal toggle and the monospace face: one property, one flag. */
-  protected readonly isSecret = computed(() => this.definition().secret);
+  protected readonly isSecret = computed(() => fieldIsSecret(this.field()));
 
   protected readonly isTotp = computed(() => this.field().type === FieldType.Totp);
   protected readonly isNote = computed(() => this.field().type === FieldType.Note);

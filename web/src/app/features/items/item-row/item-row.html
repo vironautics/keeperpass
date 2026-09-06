@@ -28,6 +28,11 @@
       [aria-label]="'Select ' + displayName()"
       (checkedChange)="selectionToggled.emit()"
     />
+  } @else if (iconGlyph()) {
+    <!-- A user-picked icon wins outright — see the note in `item-icon.ts`. -->
+    <hlm-item-media variant="icon" class="size-8">
+      <app-icon [codePoint]="iconGlyph()" />
+    </hlm-item-media>
   } @else if (showFavicon()) {
     <!--
       The tile is white in both themes, on purpose. A favicon is someone else's
@@ -183,7 +188,11 @@
             <span
               class="text-accent-strong flex min-w-0 items-center gap-1 text-[0.7rem] font-normal tracking-wide uppercase"
             >
-              <app-icon [name]="fieldGlyph(field)" />
+              @if (fieldIconGlyph(field); as codePoint) {
+                <app-icon [codePoint]="codePoint" />
+              } @else {
+                <app-icon [name]="fieldGlyph(field)" />
+              }
               <span class="min-w-0 truncate">{{ field.name || 'Unnamed' }}</span>
             </span>
           </hlm-item-title>
