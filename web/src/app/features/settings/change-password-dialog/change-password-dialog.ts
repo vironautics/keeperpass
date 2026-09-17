@@ -11,6 +11,7 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MasterPasswordService } from '../../../core/account/master-password.service';
+import { I18nService, TranslatePipe } from '../../../core/i18n';
 import {
   estimatePasswordStrength,
   MIN_MASTER_PASSWORD_SCORE,
@@ -63,6 +64,7 @@ import { STRENGTH_COLOURS, STRENGTH_LABELS, strengthPercent } from '../../items/
     HlmInputGroupImports,
     HlmProgressImports,
     HlmSpinnerImports,
+    TranslatePipe,
   ],
   templateUrl: './change-password-dialog.html',
   /** The dialog lives in an overlay, so this host renders nothing. */
@@ -97,6 +99,7 @@ export class ChangePasswordDialog {
   );
 
   private readonly masterPassword = inject(MasterPasswordService);
+  private readonly i18n = inject(I18nService);
 
   private readonly value = toSignal(this.form.valueChanges, {
     initialValue: this.form.getRawValue(),
@@ -124,7 +127,7 @@ export class ChangePasswordDialog {
   );
   protected readonly strengthPercent = computed(() => strengthPercent(this.strengthScore()));
   protected readonly strengthColour = computed(() => STRENGTH_COLOURS[this.strengthScore()]);
-  protected readonly strengthLabel = computed(() => STRENGTH_LABELS[this.strengthScore()]);
+  protected readonly strengthLabel = computed(() => this.i18n.translate(STRENGTH_LABELS[this.strengthScore()]));
 
   protected toggleRevealed(): void {
     this.revealed.update((revealed) => !revealed);
@@ -165,7 +168,7 @@ export class ChangePasswordDialog {
       this.errorMessage.set(
         error instanceof Error
           ? error.message
-          : 'Could not change your master password. Please try again.',
+          : this.i18n.translate('settings.changePassword.genericError'),
       );
     } finally {
       this.submitting.set(false);

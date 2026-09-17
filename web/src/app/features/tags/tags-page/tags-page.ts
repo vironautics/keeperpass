@@ -12,6 +12,7 @@ import { HlmItemImports } from '@spartan-ng/helm/item';
 import { HlmSidebarTrigger } from '@spartan-ng/helm/sidebar';
 import { HlmTooltip } from '@spartan-ng/helm/tooltip';
 import { maxLength, singleLineValidator } from '../../../core/validation';
+import { TranslatePipe } from '../../../core/i18n';
 import { TagInfo } from '../../../core/models';
 import { VaultSyncService } from '../../../core/vault/vault-sync.service';
 import { VaultStore } from '../../../core/vault/vault.store';
@@ -46,6 +47,7 @@ import { Icon } from '../../../ui/icon/icon';
     HlmItemImports,
     HlmSidebarTrigger,
     HlmTooltip,
+    TranslatePipe,
   ],
   templateUrl: './tags-page.html',
   /** Fills the shell's view area — see `ItemsPage` for why routed views position themselves. */

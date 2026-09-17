@@ -4,6 +4,7 @@ import {
   computed,
   effect,
   ElementRef,
+  inject,
   input,
   output,
   signal,
@@ -18,9 +19,16 @@ import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
 import { HlmItemImports } from '@spartan-ng/helm/item';
 import { HlmProgressImports } from '@spartan-ng/helm/progress';
 import { HlmTextarea } from '@spartan-ng/helm/textarea';
+import { I18nService, TranslatePipe } from '../../../core/i18n';
 import { fieldDefinition, FieldType } from '../../../core/models';
 import { foldText } from '../../../core/text/fold';
-import { COUNTRY_CODES, countryByIso, countryFromNumber } from '../../../core/models/country-codes';
+import {
+  Country,
+  COUNTRY_CODES,
+  countryByIso,
+  countryFromNumber,
+  countryName,
+} from '../../../core/models/country-codes';
 import {
   estimatePasswordStrength,
   inspectCardNumber,
@@ -46,12 +54,13 @@ const MULTILINE_TYPES = new Set([
   FieldType.RecoveryCodes,
 ]);
 
-/** Type-specific placeholders; anything not listed falls back to a generic one. */
+/**
+ * Type-specific placeholders; anything not listed falls back to a generic one.
+ * Certificate/SshKey placeholders are literal PEM headers, not language text.
+ */
 const PLACEHOLDERS: Partial<Record<FieldType, string>> = {
-  [FieldType.IpHost]: 'e.g. 192.168.1.1, ::1, or db.example.com',
   [FieldType.Certificate]: '-----BEGIN CERTIFICATE-----',
   [FieldType.SshKey]: '-----BEGIN OPENSSH PRIVATE KEY-----',
-  [FieldType.RecoveryCodes]: 'One per line — any format works',
 };
 
 /** `yyyy-mm-dd` and `yyyy-mm`, the two shapes the model stores. */
@@ -100,6 +109,7 @@ function formatFieldDate(date: Date, monthOnly: boolean): string {
     HlmTextarea,
     Icon,
     ReactiveFormsModule,
+    TranslatePipe,
   ],
   templateUrl: './field-value-editor.html',
   host: { class: 'block' },
@@ -139,7 +149,17 @@ export class FieldValueEditor {
   protected readonly isDate = computed(() => this.type() === FieldType.Date);
   protected readonly isMonth = computed(() => this.type() === FieldType.Month);
 
-  protected readonly placeholder = computed(() => PLACEHOLDERS[this.type()] ?? 'Enter value here');
+  private readonly i18n = inject(I18nService);
+
+  protected readonly placeholder = computed(() => {
+    if (this.type() === FieldType.IpHost) {
+      return this.i18n.translate('items.field.ipHostPlaceholder');
+    }
+    if (this.type() === FieldType.RecoveryCodes) {
+      return this.i18n.translate('items.field.recoveryCodesPlaceholder');
+    }
+    return PLACEHOLDERS[this.type()] ?? this.i18n.translate('items.field.defaultPlaceholder');
+  });
 
   /** Whether a secret value is currently shown in the clear. */
   protected readonly revealed = signal(false);
@@ -171,7 +191,11 @@ export class FieldValueEditor {
    */
   protected readonly value = signal('');
 
-  protected readonly countries = COUNTRY_CODES;
+  /** Localized display names, kept in step with the interface language. */
+  protected readonly countries = computed<readonly Country[]>(() => {
+    const locale = this.i18n.locale();
+    return COUNTRY_CODES.map((country) => ({ ...country, name: countryName(country, locale) }));
+  });
 
   // --- derived, per type ----------------------------------------------------
 
@@ -187,7 +211,7 @@ export class FieldValueEditor {
   protected readonly showsStrength = computed(() => this.isPassword());
   protected readonly strengthPercent = computed(() => strengthPercent(this.strength()));
   protected readonly strengthColour = computed(() => STRENGTH_COLOURS[this.strength()]);
-  protected readonly strengthLabel = computed(() => STRENGTH_LABELS[this.strength()]);
+  protected readonly strengthLabel = computed(() => this.i18n.translate(STRENGTH_LABELS[this.strength()]));
 
   protected readonly card = computed(() => inspectCardNumber(this.value()));
   protected readonly emailValid = computed(() => isValidEmail(this.value()));
@@ -233,8 +257,9 @@ export class FieldValueEditor {
   /**
    * What the search box matches. The default filter compares the search against
    * `itemToString`, which here is a flag and a dial code — so typing "germ" would find
-   * nothing. This matches the country's name, its dial code and its ISO code instead,
-   * ignoring accents so "reunion" finds Réunion.
+   * nothing. This matches the country's name — in the interface language, and in
+   * English, so "Allemagne" and "Germany" both find it on a French interface — its
+   * dial code and its ISO code, ignoring accents so "reunion" finds Réunion.
    */
   protected readonly countryFilter = (iso: string, search: string): boolean => {
     const query = foldText(search);
@@ -245,8 +270,10 @@ export class FieldValueEditor {
     if (!country) {
       return false;
     }
+    const localizedName = this.countries().find((c) => c.iso === iso)?.name ?? country.name;
     return (
       foldText(country.name).includes(query) ||
+      foldText(localizedName).includes(query) ||
       country.dial.replace('+', '').startsWith(query.replace('+', '')) ||
       foldText(country.iso) === query
     );

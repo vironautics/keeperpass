@@ -13,6 +13,7 @@ import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmDialogImports } from '@spartan-ng/helm/dialog';
 import { HlmFieldImports } from '@spartan-ng/helm/field';
 import { HlmInput } from '@spartan-ng/helm/input';
+import { TranslatePipe } from '../../../core/i18n';
 import { maxLength, singleLineValidator } from '../../../core/validation';
 import { VaultSyncService } from '../../../core/vault/vault-sync.service';
 import { VaultStore } from '../../../core/vault/vault.store';
@@ -24,7 +25,7 @@ import { VaultStore } from '../../../core/vault/vault.store';
 @Component({
   selector: 'app-create-vault-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, HlmButton, HlmDialogImports, HlmFieldImports, HlmInput],
+  imports: [ReactiveFormsModule, HlmButton, HlmDialogImports, HlmFieldImports, HlmInput, TranslatePipe],
   templateUrl: './create-vault-dialog.html',
   /** The dialog lives in an overlay, so this host renders nothing. */
   host: { class: 'contents' },

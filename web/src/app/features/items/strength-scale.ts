@@ -1,7 +1,14 @@
+import { TranslationKey } from '../../core/i18n';
 import { StrengthScore } from '../../core/validation';
 
 /** What each score is called, wherever a strength meter is drawn. */
-export const STRENGTH_LABELS = ['Very weak', 'Weak', 'Fair', 'Strong', 'Very strong'] as const;
+export const STRENGTH_LABELS: readonly TranslationKey[] = [
+  'strength.veryWeak',
+  'strength.weak',
+  'strength.fair',
+  'strength.strong',
+  'strength.veryStrong',
+];
 
 /**
  * Red below "fair", then the accent — a bar that is always one colour says nothing.

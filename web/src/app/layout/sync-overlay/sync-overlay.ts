@@ -4,6 +4,7 @@ import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmDialogImports } from '@spartan-ng/helm/dialog';
 import { HlmProgressImports } from '@spartan-ng/helm/progress';
 import { HlmSpinnerImports } from '@spartan-ng/helm/spinner';
+import { TranslatePipe } from '../../core/i18n';
 import { VaultSyncService } from '../../core/vault/vault-sync.service';
 import { Icon } from '../../ui/icon/icon';
 
@@ -36,6 +37,7 @@ import { Icon } from '../../ui/icon/icon';
     HlmDialogImports,
     HlmProgressImports,
     HlmSpinnerImports,
+    TranslatePipe,
   ],
   templateUrl: './sync-overlay.html',
   /** The dialog lives in an overlay, so this host renders nothing. */

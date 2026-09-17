@@ -1,3 +1,4 @@
+import { TranslationKey } from '../i18n/translations';
 import { IconName } from '../../ui/icon/icon-glyphs';
 import { Field } from './field';
 
@@ -52,10 +53,10 @@ export interface VaultItem {
   iconGlyph?: string;
 }
 
-export const AUDIT_LABELS: Record<AuditType, string> = {
-  [AuditType.WeakPassword]: 'Weak Passwords',
-  [AuditType.ReusedPassword]: 'Reused Passwords',
-  [AuditType.CompromisedPassword]: 'Compromised Passwords',
+export const AUDIT_LABEL_KEYS: Record<AuditType, TranslationKey> = {
+  [AuditType.WeakPassword]: 'audit.weakPassword.label',
+  [AuditType.ReusedPassword]: 'audit.reusedPassword.label',
+  [AuditType.CompromisedPassword]: 'audit.compromisedPassword.label',
 };
 
 export const AUDIT_ICONS: Record<AuditType, IconName> = {
@@ -71,13 +72,10 @@ export const AUDIT_ICONS: Record<AuditType, IconName> = {
  * a user deciding whether to spend ten minutes rotating a password deserves
  * the reason, not just the verdict.
  */
-export const AUDIT_DESCRIPTIONS: Record<AuditType, string> = {
-  [AuditType.WeakPassword]:
-    'A password is weak when the space an attacker has to search is small: it is short, it draws on a narrow set of characters, or it is built from a word, name or keyboard run that sits in every cracking dictionary. Offline guessing runs at billions of attempts per second, so anything in that class falls quickly. Replace it with a long, randomly generated one.',
-  [AuditType.ReusedPassword]:
-    'One password used in several places means a single breach anywhere unlocks all of them — and you have no say in which of those services will be the one to leak. Give every item its own generated password so a leak stays contained to the account it came from.',
-  [AuditType.CompromisedPassword]:
-    'This password appears in a public record of breached credentials, which puts it on the lists attackers try first no matter how strong it looks. Change it everywhere it is used: a password only has to leak once to stay leaked.',
+export const AUDIT_DESCRIPTION_KEYS: Record<AuditType, TranslationKey> = {
+  [AuditType.WeakPassword]: 'audit.weakPassword.description',
+  [AuditType.ReusedPassword]: 'audit.reusedPassword.description',
+  [AuditType.CompromisedPassword]: 'audit.compromisedPassword.description',
 };
 
 /**
@@ -86,10 +84,10 @@ export const AUDIT_DESCRIPTIONS: Record<AuditType, string> = {
  * Phrased as the good news it is, and specific about which check came back
  * clean — "nothing found" alone reads like the scan failed.
  */
-export const AUDIT_EMPTY_MESSAGES: Record<AuditType, string> = {
-  [AuditType.WeakPassword]: 'Every password in your vault is strong enough.',
-  [AuditType.ReusedPassword]: 'Every password in your vault is used exactly once.',
-  [AuditType.CompromisedPassword]: 'None of your passwords turned up in a known breach.',
+export const AUDIT_EMPTY_MESSAGE_KEYS: Record<AuditType, TranslationKey> = {
+  [AuditType.WeakPassword]: 'audit.weakPassword.empty',
+  [AuditType.ReusedPassword]: 'audit.reusedPassword.empty',
+  [AuditType.CompromisedPassword]: 'audit.compromisedPassword.empty',
 };
 
 /**

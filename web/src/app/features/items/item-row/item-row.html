@@ -25,7 +25,7 @@
     <hlm-checkbox
       class="before:absolute before:inset-0 before:content-['']"
       [checked]="selected()"
-      [aria-label]="'Select ' + displayName()"
+      [aria-label]="('items.row.selectItemAria' | t: { name: displayName() })"
       (checkedChange)="selectionToggled.emit()"
     />
   } @else if (iconGlyph()) {
@@ -90,7 +90,7 @@
     @if (flagged()) {
       <span hlmBadge variant="destructive">
         <app-icon name="alert" />
-        <span class="sr-only">Security issue</span>
+        <span class="sr-only">{{ 'items.row.securityIssue' | t }}</span>
       </span>
     }
 
@@ -119,7 +119,7 @@
           variant="secondary"
           type="button"
           class="relative z-10 cursor-default"
-          [attr.aria-label]="extraTagCount() + ' more tags'"
+          [attr.aria-label]="'items.row.moreTagsAria' | t: { count: extraTagCount() }"
         >
           <app-icon name="tags" />
           +{{ extraTagCount() }}
@@ -127,7 +127,7 @@
 
         <hlm-hover-card-content *hlmHoverCardPortal class="w-auto max-w-64">
           <p class="text-muted-foreground mb-2 text-xs font-semibold tracking-wide uppercase">
-            Tags
+            {{ 'common.tags' | t }}
           </p>
           <div class="flex flex-wrap gap-1.5">
             @for (tag of item().tags; track tag) {
@@ -144,7 +144,7 @@
     @if (favourite()) {
       <!-- `font-black` selects FontAwesome's Solid face, the only one drawn filled. -->
       <app-icon name="favourite" class="text-accent-strong text-[0.6875rem] font-black" />
-      <span class="sr-only">Favorite</span>
+      <span class="sr-only">{{ 'common.favorite' | t }}</span>
     }
   </hlm-item-actions>
 
@@ -172,7 +172,7 @@
         type="button"
         class="group/chip relative min-w-32 max-w-[60%] only:max-w-full flex-1 cursor-pointer text-start hover:bg-accent"
         [attr.data-copied]="copiedFieldIndex() === $index"
-        [attr.aria-label]="'Copy ' + (field.name || 'field')"
+        [attr.aria-label]="'items.field.copyFieldAria' | t: { field: field.name || fieldFallback() }"
         (click)="copyField(field, $index)"
       >
         <!--
@@ -193,7 +193,7 @@
               } @else {
                 <app-icon [name]="fieldGlyph(field)" />
               }
-              <span class="min-w-0 truncate">{{ field.name || 'Unnamed' }}</span>
+              <span class="min-w-0 truncate">{{ field.name || ('common.unnamed' | t) }}</span>
             </span>
           </hlm-item-title>
 
@@ -205,7 +205,7 @@
                 displayValue(field)
               }}</span>
             } @else {
-              <span class="text-xs opacity-50">[empty]</span>
+              <span class="text-xs opacity-50">{{ 'items.field.empty' | t }}</span>
             }
           </hlm-item-description>
         </hlm-item-content>
@@ -223,11 +223,11 @@
         <hlm-item-content class="min-w-0">
           <hlm-item-title class="min-w-0 max-w-full">
             <span class="text-muted-foreground text-[0.7rem] font-normal tracking-wide uppercase">
-              No Fields
+              {{ 'items.row.noFields' | t }}
             </span>
           </hlm-item-title>
           <hlm-item-description>
-            <span class="text-xs">This item has no fields.</span>
+            <span class="text-xs">{{ 'items.noFieldsMessage' | t }}</span>
           </hlm-item-description>
         </hlm-item-content>
       </div>

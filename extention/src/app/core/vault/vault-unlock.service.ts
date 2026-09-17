@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { GoogleDriveService } from '../drive/google-drive.service';
+import { I18nService } from '../i18n';
 import { decryptVault } from './vault-crypto';
 import { VaultSnapshot } from './vault.store';
 
@@ -10,6 +11,7 @@ import { VaultSnapshot } from './vault.store';
 @Injectable({ providedIn: 'root' })
 export class VaultUnlockService {
   private readonly drive = inject(GoogleDriveService);
+  private readonly i18n = inject(I18nService);
 
   /**
    * Fetch vault from Google Drive and decrypt it with the master secret
@@ -24,9 +26,7 @@ export class VaultUnlockService {
     const encryptedVaultJson = await this.drive.loadVault(accessToken);
 
     if (!encryptedVaultJson) {
-      throw new Error(
-        'Vault not found on Google Drive. Please ensure your vault is synced from the main KeeperPass app.',
-      );
+      throw new Error(this.i18n.translate('vault.unlock.notFound'));
     }
 
     // Parse the encrypted vault
@@ -34,7 +34,7 @@ export class VaultUnlockService {
     try {
       encryptedVault = JSON.parse(encryptedVaultJson);
     } catch (error) {
-      throw new Error('Failed to parse vault data. The vault file may be corrupted.');
+      throw new Error(this.i18n.translate('vault.unlock.parseFailed'));
     }
 
     // Decrypt the vault
@@ -43,14 +43,14 @@ export class VaultUnlockService {
     // The decrypted data should be a VaultSnapshot
     // ngkeeper's core uses this structure
     if (!decrypted || typeof decrypted !== 'object') {
-      throw new Error('Invalid vault data structure after decryption.');
+      throw new Error(this.i18n.translate('vault.unlock.invalidStructure'));
     }
 
     const snapshot = decrypted as VaultSnapshot;
 
     // Ensure required fields exist
     if (!Array.isArray(snapshot.vaults) || !Array.isArray(snapshot.items)) {
-      throw new Error('Vault data is missing required fields.');
+      throw new Error(this.i18n.translate('vault.unlock.missingFields'));
     }
 
     return snapshot;

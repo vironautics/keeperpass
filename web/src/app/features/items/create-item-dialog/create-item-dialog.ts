@@ -15,6 +15,7 @@ import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmDialogImports } from '@spartan-ng/helm/dialog';
 import { HlmFieldImports } from '@spartan-ng/helm/field';
 import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { TranslatePipe } from '../../../core/i18n';
 import { DEFAULT_ITEM_TEMPLATE, ITEM_TEMPLATES, ItemTemplate } from '../../../core/models';
 import { ItemDraftStore } from '../../../core/vault/item-draft.store';
 import { VaultStore } from '../../../core/vault/vault.store';
@@ -38,6 +39,7 @@ import { IconName } from '../../../ui/icon/icon-glyphs';
     HlmSelectImports,
     Icon,
     ReactiveFormsModule,
+    TranslatePipe,
   ],
   templateUrl: './create-item-dialog.html',
   /** The dialog itself lives in an overlay, so this host renders nothing. */

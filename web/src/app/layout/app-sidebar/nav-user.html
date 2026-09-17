@@ -48,7 +48,7 @@
       <!-- Cycles auto -> dark -> light -> auto, same as the legacy menu's theme button. -->
       <button hlmDropdownMenuItem (click)="nextTheme()">
         <app-icon [name]="themeIcon()" />
-        Theme: {{ themePreference() }}
+        {{ 'layout.sidebar.themePrefix' | t: { theme: themePreference() } }}
       </button>
     </hlm-dropdown-menu-group>
 
@@ -58,12 +58,12 @@
       <!-- Lock: forget the secret and the decrypted vault, keep the Google session. -->
       <button hlmDropdownMenuItem (click)="lockRequested.emit()">
         <app-icon name="lock" />
-        Lock app
+        {{ 'layout.sidebar.lockApp' | t }}
       </button>
       <!-- Disconnect: end the Google session too, so signing back in needs consent. -->
       <button hlmDropdownMenuItem (click)="signOutRequested.emit()">
         <app-icon name="disconnect" />
-        Disconnect
+        {{ 'common.disconnect' | t }}
       </button>
     </hlm-dropdown-menu-group>
   </hlm-dropdown-menu>

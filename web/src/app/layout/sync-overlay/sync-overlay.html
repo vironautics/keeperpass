@@ -13,7 +13,7 @@
     *hlmDialogPortal
     [showCloseButton]="false"
     class="sm:max-w-sm"
-    aria-label="Saving your vault"
+    [attr.aria-label]="'layout.sync.savingTitle' | t"
   >
     @if (syncing()) {
       <div class="flex flex-col items-center gap-4 py-2 text-center">
@@ -35,15 +35,15 @@
             <hlm-progress [value]="percent()" class="h-1.5">
               <hlm-progress-indicator />
             </hlm-progress>
-            <p class="text-muted-foreground text-xs">Saving to Google Drive… {{ percent() }}%</p>
+            <p class="text-muted-foreground text-xs">{{ 'settings.changePassword.uploadingProgress' | t: { percent: percent() } }}</p>
           </div>
         } @else {
-          <p class="text-muted-foreground text-xs">Encrypting your vault…</p>
+          <p class="text-muted-foreground text-xs">{{ 'layout.sync.encrypting' | t }}</p>
         }
       </div>
     } @else if (error()) {
       <hlm-dialog-header>
-        <h3 hlmDialogTitle>Your vault was not saved</h3>
+        <h3 hlmDialogTitle>{{ 'layout.sync.notSavedTitle' | t }}</h3>
       </hlm-dialog-header>
 
       <!-- Two columns by hand: see the note on the same alert in `start-page.html`. -->
@@ -57,10 +57,10 @@
         auto-close is indistinguishable from a successful save.
       -->
       <hlm-dialog-footer>
-        <button hlmBtn variant="outline" class="dismiss-sync" (click)="dismiss()">Dismiss</button>
+        <button hlmBtn variant="outline" class="dismiss-sync" (click)="dismiss()">{{ 'layout.sync.dismiss' | t }}</button>
         <button hlmBtn class="retry-sync" (click)="retry()">
           <app-icon name="refresh" />
-          Retry
+          {{ 'layout.sync.retry' | t }}
         </button>
       </hlm-dialog-footer>
     }

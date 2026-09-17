@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { en } from '../i18n/translations/en';
 import { AuditType, FieldType, ITEM_TEMPLATES } from '../models';
 import {
   createEmptyVaultSnapshot,
@@ -10,7 +11,7 @@ import {
 function websiteFields() {
   const template = ITEM_TEMPLATES.find((t) => t.id === 'website')!;
   return template.fields.map((field) => ({
-    name: field.name,
+    name: en[field.nameKey],
     type: field.type,
     value: field.value ?? '',
   }));

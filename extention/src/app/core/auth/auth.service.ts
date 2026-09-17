@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
+import { I18nService } from '../i18n';
 import { GoogleIdentityServices } from './google-identity-services';
 
 export interface GoogleProfile {
@@ -44,6 +45,7 @@ const GOOGLE_SCOPE = 'openid email profile https://www.googleapis.com/auth/drive
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly googleIdentity = inject(GoogleIdentityServices);
+  private readonly i18n = inject(I18nService);
 
   async signInWithGoogle(): Promise<AuthRequestResult> {
     const accessToken = await this.googleIdentity.requestAccessToken(
@@ -69,7 +71,7 @@ export class AuthService {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     if (!response.ok) {
-      throw new Error('Could not read your Google profile. Please try again.');
+      throw new Error(this.i18n.translate('errors.auth.profileFailed'));
     }
     return (await response.json()) as GoogleProfile;
   }

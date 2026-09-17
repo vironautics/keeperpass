@@ -11,13 +11,13 @@
   novalidate
 >
   <div hlmCardHeader>
-    <h1 hlmCardTitle>Unlock your vault</h1>
-    <p hlmCardDescription>Enter your secret to unlock your vault.</p>
+    <h1 hlmCardTitle>{{ 'auth.unlock.title' | t }}</h1>
+    <p hlmCardDescription>{{ 'auth.unlock.description' | t }}</p>
   </div>
 
   <div hlmCardContent class="flex flex-col gap-4">
     <hlm-field>
-      <label hlmFieldLabel for="unlock-email">Email address</label>
+      <label hlmFieldLabel for="unlock-email">{{ 'auth.unlock.emailLabel' | t }}</label>
       <hlm-input-group>
         <input
           hlmInputGroupInput
@@ -32,7 +32,7 @@
             hlmInputGroupButton
             type="button"
             size="icon-xs"
-            aria-label="Disconnect"
+            [attr.aria-label]="'common.disconnect' | t"
             (click)="disconnect()"
           >
             <app-icon name="disconnect" />
@@ -42,7 +42,7 @@
     </hlm-field>
 
     <div hlmField>
-      <label hlmFieldLabel for="unlock-secret">Secret</label>
+      <label hlmFieldLabel for="unlock-secret">{{ 'auth.unlock.secretLabel' | t }}</label>
 
       <hlm-input-group>
         <input
@@ -58,7 +58,7 @@
           <button
             hlmInputGroupButton
             size="icon-xs"
-            [attr.aria-label]="revealed() ? 'Hide secret' : 'Show secret'"
+            [attr.aria-label]="(revealed() ? 'common.hideSecret' : 'common.showSecret') | t"
             [attr.aria-pressed]="revealed()"
             (click)="toggleRevealed()"
           >
@@ -90,7 +90,7 @@
       } @else {
         <app-icon name="unlock" />
       }
-      Unlock
+      {{ 'auth.unlock.unlock' | t }}
     </button>
 
     <button
@@ -101,7 +101,7 @@
       class="text-muted-foreground w-full"
       (click)="openReset()"
     >
-      Forgot your secret?
+      {{ 'auth.unlock.forgotSecret' | t }}
     </button>
   </div>
 </form>

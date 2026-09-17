@@ -4,11 +4,11 @@
   read one line at a time, and a 150-character string across a 1440px page is not.
 -->
 <header class="flex shrink-0 items-center gap-1 border-b p-2">
-  <button hlmSidebarTrigger class="md:hidden" srOnlyText="Open navigation menu"></button>
+  <button hlmSidebarTrigger class="md:hidden" [srOnlyText]="'common.openNavMenu' | t"></button>
 
   <h1 class="flex min-w-0 flex-1 items-center gap-2 px-1 text-sm font-semibold">
     <app-icon name="generate" class="text-accent-strong text-[0.8125rem]" />
-    <span class="min-w-0 truncate">Password Generator</span>
+    <span class="min-w-0 truncate">{{ 'generator.pageTitle' | t }}</span>
   </h1>
 </header>
 

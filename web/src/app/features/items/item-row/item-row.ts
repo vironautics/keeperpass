@@ -13,6 +13,7 @@ import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
 import { HlmHoverCardImports } from '@spartan-ng/helm/hover-card';
 import { HlmItemImports } from '@spartan-ng/helm/item';
 import { ClipboardService } from '../../../core/clipboard/clipboard.service';
+import { I18nService, TranslatePipe } from '../../../core/i18n';
 import {
   Field,
   FieldType,
@@ -57,6 +58,7 @@ export const ITEM_ROW_HEIGHT_ESTIMATE = 121;
     RouterLink,
     RouterLinkActive,
     Totp,
+    TranslatePipe,
   ],
   templateUrl: './item-row.html',
   /** The row is the block the viewport measures; nothing else styles the host. */
@@ -80,10 +82,16 @@ export class ItemRow {
   protected readonly copiedFieldIndex = signal<number | null>(null);
 
   private readonly clipboard = inject(ClipboardService);
+  private readonly i18n = inject(I18nService);
 
   /** An item with no name yet still needs something to click and to announce. */
   protected readonly unnamed = computed(() => !this.item().name);
-  protected readonly displayName = computed(() => this.item().name || 'New Item');
+  protected readonly displayName = computed(
+    () => this.item().name || this.i18n.translate('items.row.newItemFallback'),
+  );
+
+  /** Used as the field-name fallback in the copy-chip aria-label. */
+  protected readonly fieldFallback = computed(() => this.i18n.translate('items.field.fieldFallback'));
 
   /** The first tag is shown in full; the rest collapse into a `+n` badge. */
   protected readonly firstTag = computed(() => this.item().tags[0] ?? '');
@@ -151,7 +159,7 @@ export class ItemRow {
     }
 
     await this.clipboard.copy(value, {
-      field: field.name || 'Field',
+      field: field.name || this.i18n.translate('items.field.fieldFallback'),
       item: this.displayName(),
     });
 

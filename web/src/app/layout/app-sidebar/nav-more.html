@@ -1,5 +1,5 @@
 <hlm-sidebar-group>
-  <div hlmSidebarGroupLabel>More</div>
+  <div hlmSidebarGroupLabel>{{ 'layout.sidebar.more' | t }}</div>
 
   <div hlmSidebarGroupContent>
     <ul hlmSidebarMenu>
@@ -7,14 +7,14 @@
         <a
           hlmSidebarMenuButton
           size="sm"
-          tooltip="Security Report"
+          [tooltip]="'report.title' | t"
           routerLink="/report"
           routerLinkActive
           #report="routerLinkActive"
           [isActive]="report.isActive"
         >
           <app-icon name="audit-clean" />
-          <span>Security Report</span>
+          <span>{{ 'report.title' | t }}</span>
         </a>
         @if (flaggedCount()) {
           <div hlmSidebarMenuBadge class="text-destructive">{{ flaggedCount() }}</div>
@@ -26,14 +26,14 @@
           <a
             hlmSidebarMenuButton
             size="sm"
-            [tooltip]="destination.label"
+            [tooltip]="destination.label | t"
             [routerLink]="destination.route"
             routerLinkActive
             #link="routerLinkActive"
             [isActive]="link.isActive"
           >
             <app-icon [name]="destination.icon" />
-            <span>{{ destination.label }}</span>
+            <span>{{ destination.label | t }}</span>
           </a>
         </li>
       }

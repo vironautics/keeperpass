@@ -30,6 +30,7 @@ import {
   randomString,
   SEPARATOR_OPTIONS,
 } from '../../../core/generator/generator';
+import { I18nService, TranslatePipe } from '../../../core/i18n';
 import { estimatePasswordStrength } from '../../../core/validation';
 import { Icon } from '../../../ui/icon/icon';
 import { STRENGTH_COLOURS, STRENGTH_LABELS, strengthPercent } from '../strength-scale';
@@ -72,6 +73,7 @@ const BOUNCE_DURATION_MS = 500;
     HlmSlider,
     HlmToggleGroupImports,
     Icon,
+    TranslatePipe,
   ],
   templateUrl: './generate-password-dialog.html',
   /** The dialog itself lives in an overlay, so this host renders nothing. */
@@ -107,9 +109,10 @@ export class GeneratePasswordDialog {
   private readonly resultRef = viewChild<ElementRef<HTMLElement>>('result');
 
   private readonly clipboard = inject(ClipboardService);
+  private readonly i18n = inject(I18nService);
 
   protected readonly score = computed(() => estimatePasswordStrength(this.value()).score);
-  protected readonly strengthLabel = computed(() => STRENGTH_LABELS[this.score()]);
+  protected readonly strengthLabel = computed(() => this.i18n.translate(STRENGTH_LABELS[this.score()]));
   protected readonly strengthPercent = computed(() => strengthPercent(this.score()));
   protected readonly strengthColour = computed(() => STRENGTH_COLOURS[this.score()]);
 

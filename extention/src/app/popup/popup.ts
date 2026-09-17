@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { HlmAlertImports } from '@spartan-ng/helm/alert';
@@ -85,7 +85,12 @@ export class PopupComponent {
   /** True while the popup re-downloads and decrypts the vault on open. */
   protected readonly loading = this.store.loading;
   protected readonly autoFillStatus = signal('');
-  protected readonly sortedItems = signal<VaultItem[]>([]);
+
+  /**
+   * Newest first by default, which is what you want right after adding
+   * something — same toggle and default as the web app's item list.
+   */
+  protected readonly newestFirst = signal(true);
 
   protected readonly searchControl = new FormControl('', { nonNullable: true });
   protected readonly tagControl = new FormControl('', { nonNullable: true });
@@ -180,12 +185,19 @@ export class PopupComponent {
     filterItems(this.items(), this.filter(), { favouriteIds: new Set() }),
   );
 
-  constructor() {
-    effect(() => {
-      const items = this.filteredItems();
-      this.updateSortedItems(items);
-    });
+  /** Same comparator as the web app's item list: sort by `updated`, direction from `newestFirst`. */
+  protected readonly sortedItems = computed(() => {
+    const direction = this.newestFirst() ? -1 : 1;
+    return [...this.filteredItems()].sort(
+      (a, b) => direction * (a.updated.getTime() - b.updated.getTime()),
+    );
+  });
 
+  protected toggleSortOrder(): void {
+    this.newestFirst.update((newest) => !newest);
+  }
+
+  constructor() {
     // Subscribed rather than mirrored into an effect: an effect would also
     // fire on init and persist the browser-detected locale, pinning the user
     // to whatever their browser reported the first time they opened the popup.
@@ -194,51 +206,6 @@ export class PopupComponent {
         this.i18n.setLocale(locale);
       }
     });
-  }
-
-  /**
-   * Update sorted items based on URL matching
-   * Synchronous effect-compatible wrapper that triggers async sorting
-   */
-  private updateSortedItems(items: VaultItem[]): void {
-    if (items.length === 0) {
-      this.sortedItems.set([]);
-      return;
-    }
-
-    this.sortByUrlMatch(items).catch((error) => {
-      console.error('Failed to sort by URL match, using unordered items:', error);
-      this.sortedItems.set(items);
-    });
-  }
-
-  /**
-   * Sort items by URL domain matching
-   * Updates sortedItems signal when complete
-   */
-  private async sortByUrlMatch(items: VaultItem[]): Promise<void> {
-    try {
-      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-
-      if (!tab?.id) {
-        this.sortedItems.set(items);
-        return;
-      }
-
-      const matched = await this.autoFillService.sortByUrlMatch(items, tab.id);
-
-      // Combine matched items first (sorted by relevance), then remaining items
-      const matchedIds = new Set(matched.map((m) => m.item.id));
-      const sorted = [
-        ...matched.map((m) => m.item),
-        ...items.filter((item) => !matchedIds.has(item.id)),
-      ];
-
-      this.sortedItems.set(sorted);
-    } catch (error) {
-      console.error('URL matching error, using unordered items:', error);
-      this.sortedItems.set(items);
-    }
   }
 
   protected copyToClipboard(text: string): void {

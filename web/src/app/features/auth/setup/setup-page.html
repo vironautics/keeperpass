@@ -10,9 +10,9 @@
   novalidate
 >
   <div hlmCardHeader>
-    <h1 hlmCardTitle>Create your vault</h1>
+    <h1 hlmCardTitle>{{ 'auth.setup.title' | t }}</h1>
     <p hlmCardDescription>
-      Choose the secret that will encrypt your vault. Everything you save is locked with it.
+      {{ 'auth.setup.description' | t }}
     </p>
   </div>
 
@@ -20,12 +20,13 @@
     @if (email()) {
       <!-- Which Google account this vault will belong to: the wrong one is worth catching now. -->
       <p class="text-muted-foreground text-xs">
-        Setting up for <strong class="text-foreground font-medium">{{ email() }}</strong>
+        {{ 'auth.setup.settingUpFor' | t }}
+        <strong class="text-foreground font-medium">{{ email() }}</strong>
       </p>
     }
 
     <hlm-field>
-      <label hlmFieldLabel for="setup-secret">Secret</label>
+      <label hlmFieldLabel for="setup-secret">{{ 'auth.setup.secretLabel' | t }}</label>
 
       <hlm-input-group>
         <input
@@ -41,7 +42,7 @@
             hlmInputGroupButton
             type="button"
             size="icon-xs"
-            aria-label="Generate a secret"
+            [attr.aria-label]="'common.generateSecret' | t"
             (click)="generating.set(true)"
           >
             <app-icon name="generate" />
@@ -50,7 +51,7 @@
             hlmInputGroupButton
             type="button"
             size="icon-xs"
-            [attr.aria-label]="revealed() ? 'Hide secret' : 'Show secret'"
+            [attr.aria-label]="(revealed() ? 'common.hideSecret' : 'common.showSecret') | t"
             [attr.aria-pressed]="revealed()"
             (click)="toggleRevealed()"
           >
@@ -72,8 +73,7 @@
       @if (weak()) {
         <!-- A native output element: the same announcement as a status role, without the role. -->
         <output hlmFieldDescription>
-          This secret is weak, which makes the encryption around your vault easier to break. You can
-          continue, but a longer passphrase is strongly recommended.
+          {{ 'auth.setup.weakWarning' | t }}
         </output>
       }
     </hlm-field>
@@ -85,7 +85,7 @@
       exposes for exactly that case.
     -->
     <hlm-field [forceInvalid]="mismatch()">
-      <label hlmFieldLabel for="setup-confirmation">Repeat secret</label>
+      <label hlmFieldLabel for="setup-confirmation">{{ 'auth.setup.repeatSecret' | t }}</label>
 
       <!--
         The reveal toggle covers both fields from one signal: this field exists to be
@@ -104,7 +104,7 @@
             hlmInputGroupButton
             type="button"
             size="icon-xs"
-            [attr.aria-label]="revealed() ? 'Hide secret' : 'Show secret'"
+            [attr.aria-label]="(revealed() ? 'common.hideSecret' : 'common.showSecret') | t"
             [attr.aria-pressed]="revealed()"
             (click)="toggleRevealed()"
           >
@@ -114,7 +114,7 @@
       </hlm-input-group>
 
       @if (mismatch()) {
-        <hlm-field-error forceShow>The two secrets do not match.</hlm-field-error>
+        <hlm-field-error forceShow>{{ 'auth.setup.mismatch' | t }}</hlm-field-error>
       }
     </hlm-field>
 
@@ -132,25 +132,20 @@
     -->
     <div hlmAlert class="bg-destructive/10! border-destructive/30 grid-cols-[auto_1fr] gap-x-2.5!">
       <app-icon name="alert" class="text-destructive row-span-2 translate-y-0.5" />
-      <h2 hlmAlertTitle class="col-start-2">Please read this before you continue</h2>
+      <h2 hlmAlertTitle class="col-start-2">{{ 'auth.setup.readBeforeContinue' | t }}</h2>
       <!-- No gap of its own: the description already spaces a `p` that isn't last. -->
       <div hlmAlertDescription class="text-foreground! col-start-2">
         <p>
-          Your vault is encrypted on this device with a key made from the secret you choose here.
-          KeeperPass never receives that secret, so we could not read your vault even if we were
-          asked to. That is the point — and it comes with three consequences worth knowing now
-          rather than later:
+          {{ 'auth.setup.warningIntro' | t }}
         </p>
         <ul class="flex list-disc flex-col gap-1 ps-4">
           <li>
-            Your secret is never sent anywhere and is never stored. Nobody — not us, not Google —
-            can look it up or reset it for you.
+            {{ 'auth.setup.warningBullet1' | t }}
           </li>
           <li>
-            If you forget it, your vault cannot be recovered. There is no reset link and no support
-            request that can open it.
+            {{ 'auth.setup.warningBullet2' | t }}
           </li>
-          <li>Write it down and keep it somewhere safe before you continue.</li>
+          <li>{{ 'auth.setup.warningBullet3' | t }}</li>
         </ul>
       </div>
     </div>
@@ -175,7 +170,7 @@
       } @else {
         <app-icon name="vault" />
       }
-      Create vault
+      {{ 'auth.setup.createVault' | t }}
     </button>
 
     <button
@@ -187,7 +182,7 @@
       (click)="disconnect()"
     >
       <app-icon name="disconnect" />
-      Disconnect
+      {{ 'common.disconnect' | t }}
     </button>
   </div>
 </form>

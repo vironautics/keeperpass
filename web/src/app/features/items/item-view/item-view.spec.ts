@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
+import { en } from '../../../core/i18n/translations/en';
 import { FieldType, ITEM_TEMPLATES } from '../../../core/models';
 import { ItemDraftStore } from '../../../core/vault/item-draft.store';
 import { PERSONAL_VAULT_ID, VaultStore } from '../../../core/vault/vault.store';
@@ -131,7 +132,7 @@ describe('ItemView', () => {
       name,
       icon: template.icon,
       fields: template.fields.map((field) => ({
-        name: field.name,
+        name: en[field.nameKey],
         type: field.type,
         value: field.value ?? '',
       })),

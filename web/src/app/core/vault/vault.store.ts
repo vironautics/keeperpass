@@ -76,9 +76,16 @@ export const ITEM_HISTORY_LIMIT = 5;
  */
 export const EXPORT_HISTORY_LIMIT = 10;
 
-export function createEmptyVaultSnapshot(): VaultSnapshot {
+/**
+ * `vaultName` is a parameter rather than translated in here because this
+ * function has no component/service context of its own to `inject()`
+ * `I18nService` from — callers that actually persist the result to Drive
+ * pass the translated name; the English default only reaches `lockSession`'s
+ * transient in-memory placeholder, cleared again on the next unlock.
+ */
+export function createEmptyVaultSnapshot(vaultName = 'My Vault'): VaultSnapshot {
   return {
-    vaults: [{ id: PERSONAL_VAULT_ID, name: 'My Vault', created: new Date() }],
+    vaults: [{ id: PERSONAL_VAULT_ID, name: vaultName, created: new Date() }],
     items: [],
     organizations: [],
     favouriteIds: [],

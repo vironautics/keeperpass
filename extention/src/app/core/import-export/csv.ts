@@ -1,4 +1,4 @@
-import { Field, FieldType, FIELD_DEFINITIONS, VaultItem } from '../models';
+import { Field, FieldType, VaultItem } from '../models';
 
 /**
  * CSV encoding and decoding for vault data.
@@ -111,13 +111,34 @@ export interface ItemDraft {
   fields: Field[];
 }
 
-/** Column name to field type, so an imported password is not treated as text. */
-const TYPES_BY_COLUMN_NAME = new Map<string, FieldType>(
-  Object.values(FIELD_DEFINITIONS).map((definition) => [
-    definition.name.toLowerCase(),
-    definition.type,
-  ]),
-);
+/**
+ * Column name to field type, so an imported password is not treated as text.
+ *
+ * Deliberately spelled out here in plain English rather than derived from
+ * `FIELD_DEFINITIONS`' (translated) `labelKey`s: a CSV's column headings are
+ * part of the file format, not UI copy, so they don't change with the active
+ * locale — an export made while reading the popup in French still has to
+ * import cleanly after switching to German. See `TYPE_ALIASES` below for the
+ * further, non-canonical spellings this also accepts.
+ */
+const TYPES_BY_COLUMN_NAME = new Map<string, FieldType>([
+  ['username', FieldType.Username],
+  ['password', FieldType.Password],
+  ['email address', FieldType.Email],
+  ['url', FieldType.Url],
+  ['ip / host', FieldType.IpHost],
+  ['date', FieldType.Date],
+  ['month', FieldType.Month],
+  ['credit card number', FieldType.Credit],
+  ['phone number', FieldType.Phone],
+  ['pin', FieldType.Pin],
+  ['one-time password', FieldType.Totp],
+  ['certificate', FieldType.Certificate],
+  ['ssh / private key', FieldType.SshKey],
+  ['recovery codes', FieldType.RecoveryCodes],
+  ['richtext / markdown', FieldType.Note],
+  ['plain text', FieldType.Text],
+]);
 
 const TYPE_ALIASES = new Map<string, FieldType>([
   ['url', FieldType.Url],

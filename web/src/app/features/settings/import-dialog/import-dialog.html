@@ -1,19 +1,19 @@
 <hlm-dialog [state]="open() ? 'open' : 'closed'" (stateChanged)="open.set($event === 'open')">
-  <hlm-dialog-content *hlmDialogPortal class="sm:max-w-md" aria-label="Import Data">
+  <hlm-dialog-content *hlmDialogPortal class="sm:max-w-md" [attr.aria-label]="'settings.import.title' | t">
     <hlm-dialog-header>
-      <h3 hlmDialogTitle>Import Data</h3>
+      <h3 hlmDialogTitle>{{ 'settings.import.title' | t }}</h3>
       @if (fileName()) {
         <p hlmDialogDescription class="truncate">{{ fileName() }}</p>
       } @else {
-        <p hlmDialogDescription>Items are added to the vault you pick. Nothing is replaced.</p>
+        <p hlmDialogDescription>{{ 'settings.import.description' | t }}</p>
       }
     </hlm-dialog-header>
 
     <hlm-field>
-      <label hlmFieldLabel for="import-vault">Target vault</label>
+      <label hlmFieldLabel for="import-vault">{{ 'settings.import.targetVaultLabel' | t }}</label>
       <hlm-select id="import-vault" [formControl]="vaultControl" [itemToString]="vaultLabel">
         <hlm-select-trigger class="w-full">
-          <hlm-select-value placeholder="My Vault" />
+          <hlm-select-value [placeholder]="'settings.import.myVaultPlaceholder' | t" />
         </hlm-select-trigger>
         <hlm-select-content *hlmSelectPortal>
           @for (option of vaultOptions(); track option.value) {
@@ -33,17 +33,17 @@
       <div hlmAlert class="grid-cols-[auto_1fr] gap-x-2.5!" role="status">
         <app-icon name="success" class="text-accent-strong translate-y-0.5" />
         <p hlmAlertDescription class="col-start-2">
-          Found <strong>{{ previewCount() }}</strong>
-          {{ previewCount() === 1 ? 'item' : 'items' }} to import.
+          {{ 'settings.import.foundPrefix' | t }} <strong>{{ previewCount() }}</strong>
+          {{ (previewCount() === 1 ? 'settings.import.foundSuffixOne' : 'settings.import.foundSuffixMany') | t }}
         </p>
       </div>
     }
 
     <hlm-dialog-footer>
-      <button hlmBtn variant="outline" (click)="cancel()">Cancel</button>
+      <button hlmBtn variant="outline" (click)="cancel()">{{ 'common.cancel' | t }}</button>
       <button hlmBtn class="confirm-import" [disabled]="!canImport()" (click)="importData()">
         <app-icon name="import" />
-        Import {{ previewCount() }} {{ previewCount() === 1 ? 'item' : 'items' }}
+        {{ (previewCount() === 1 ? 'settings.import.importOne' : 'settings.import.importMany') | t: { count: previewCount() } }}
       </button>
     </hlm-dialog-footer>
   </hlm-dialog-content>

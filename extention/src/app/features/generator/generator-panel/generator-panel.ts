@@ -18,6 +18,7 @@ import { HlmSelectImports } from '@spartan-ng/helm/select';
 import { HlmSlider } from '@spartan-ng/helm/slider';
 import { HlmToggleGroupImports } from '@spartan-ng/helm/toggle-group';
 import { ClipboardService } from '../../../core/clipboard/clipboard.service';
+import { TranslatePipe } from '../../../core/i18n';
 import {
   AVAILABLE_LANGUAGES,
   CHARS,
@@ -57,6 +58,7 @@ const SEPARATOR_OPTIONS: readonly SelectOption[] = [
   imports: [
     Icon,
     ReactiveFormsModule,
+    TranslatePipe,
     HlmButton,
     HlmCardImports,
     HlmCheckbox,

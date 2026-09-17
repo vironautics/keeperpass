@@ -7,9 +7,9 @@
   class="animate-in fade-in slide-in-from-bottom-4 mx-auto w-full max-w-100 duration-700"
 >
   <div hlmCardHeader>
-    <h1 hlmCardTitle>Welcome to KeeperPass</h1>
+    <h1 hlmCardTitle>{{ 'auth.start.title' | t }}</h1>
     <p hlmCardDescription>
-      Your vault is a single encrypted file in your own Google Drive. Sign in to open it.
+      {{ 'auth.start.description' | t }}
     </p>
   </div>
 
@@ -23,7 +23,7 @@
       -->
       <div hlmAlert variant="destructive" class="grid-cols-[auto_1fr] gap-x-2.5!">
         <app-icon name="alert" class="row-span-2 translate-y-0.5" />
-        <p hlmAlertTitle class="col-start-2">Sign-in failed</p>
+        <p hlmAlertTitle class="col-start-2">{{ 'auth.start.signInFailed' | t }}</p>
         <p hlmAlertDescription class="col-start-2">{{ errorMessage() }}</p>
       </div>
     }
@@ -41,7 +41,7 @@
       } @else {
         <app-google-logo class="size-4" />
       }
-      Continue with Google
+      {{ 'auth.start.continueWithGoogle' | t }}
     </button>
 
     <!--
@@ -52,27 +52,25 @@
       <li class="flex items-start gap-2">
         <app-icon name="file" class="text-accent-strong mt-0.5 shrink-0" />
         <span>
-          Access is limited to the files KeeperPass creates. The rest of your Drive stays out of
-          reach.
+          {{ 'auth.start.accessNote' | t }}
         </span>
       </li>
       <li class="flex items-start gap-2">
         <app-icon name="lock" class="text-accent-strong mt-0.5 shrink-0" />
         <span>
-          Your vault is encrypted in this browser with a secret you choose next. Google stores the
-          file; it cannot read it.
+          {{ 'auth.start.encryptionNote' | t }}
         </span>
       </li>
       <li class="flex items-start gap-2">
         <app-icon name="cloud" class="text-accent-strong mt-0.5 shrink-0" />
-        <span>There is no KeeperPass server. Nothing is sent anywhere else.</span>
+        <span>{{ 'auth.start.noServerNote' | t }}</span>
       </li>
     </ul>
   </div>
 
   <div hlmCardFooter>
     <p class="text-muted-foreground text-xs">
-      Signing in creates the vault file if you do not have one yet.
+      {{ 'auth.start.footerNote' | t }}
     </p>
   </div>
 </div>

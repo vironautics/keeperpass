@@ -5,6 +5,7 @@ import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmSpinnerImports } from '@spartan-ng/helm/spinner';
 import { GoogleOAuthService } from '../../../core/auth/google-oauth.service';
 import { SessionStore } from '../../../core/auth/session.store';
+import { I18nService, TranslatePipe } from '../../../core/i18n';
 import { Icon } from '../../../ui/icon/icon';
 import { GoogleLogo } from '../../../ui/google-logo/google-logo';
 
@@ -20,12 +21,21 @@ import { GoogleLogo } from '../../../ui/google-logo/google-logo';
 @Component({
   selector: 'app-start-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Icon, GoogleLogo, HlmAlertImports, HlmButtonImports, HlmCardImports, HlmSpinnerImports],
+  imports: [
+    Icon,
+    GoogleLogo,
+    TranslatePipe,
+    HlmAlertImports,
+    HlmButtonImports,
+    HlmCardImports,
+    HlmSpinnerImports,
+  ],
   templateUrl: './start-page.html',
 })
 export class StartPage {
   private readonly googleOAuth = inject(GoogleOAuthService);
   private readonly session = inject(SessionStore);
+  private readonly i18n = inject(I18nService);
 
   /**
    * Drives the button's spinner. No success state to show — a flash of a
@@ -50,7 +60,7 @@ export class StartPage {
       this.session.signIn(accessToken);
     } catch (error) {
       this.errorMessage.set(
-        error instanceof Error ? error.message : 'Something went wrong. Please try again.',
+        error instanceof Error ? error.message : this.i18n.translate('common.genericError'),
       );
     } finally {
       this.submitting.set(false);

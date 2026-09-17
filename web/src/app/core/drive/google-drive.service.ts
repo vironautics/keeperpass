@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { I18nService } from '../i18n';
 
 const FOLDER_NAME = 'keeperpass';
 const FILE_NAME = 'vault.json.enc';
@@ -39,8 +40,8 @@ function detachedFileName(now: Date): string {
  * `disconnectExpiredSession()`.
  */
 export class GoogleAuthExpiredError extends Error {
-  constructor() {
-    super('Your Google session has expired. Please reconnect.');
+  constructor(message = 'Your Google session has expired. Please reconnect.') {
+    super(message);
     this.name = 'GoogleAuthExpiredError';
   }
 }
@@ -63,6 +64,8 @@ export type UploadProgressHandler = (fraction: number) => void;
  */
 @Injectable({ providedIn: 'root' })
 export class GoogleDriveService {
+  private readonly i18n = inject(I18nService);
+
   /** The encrypted vault's contents, or `null` if this is the first time (no folder/file yet). */
   async loadVault(accessToken: string): Promise<string | null> {
     const folderId = await this.findFolder(accessToken);
@@ -131,7 +134,7 @@ export class GoogleDriveService {
         accessToken,
         file.id,
         `vault.backup-${Date.now()}.json.enc`,
-        'Could not back up your existing vault in Google Drive. Please try again.',
+        this.i18n.translate('errors.drive.backupFailed'),
       );
     }
 
@@ -168,7 +171,7 @@ export class GoogleDriveService {
       accessToken,
       file.id,
       detachedFileName(new Date()),
-      'Could not rename your vault file in Google Drive. Nothing was changed — please try again.',
+      this.i18n.translate('errors.drive.renameFailed'),
     );
     return true;
   }
@@ -176,7 +179,7 @@ export class GoogleDriveService {
   /** Throws `GoogleAuthExpiredError` for a 401, or a plain `Error` for any other non-OK response. */
   private assertOk(response: Response, message: string): void {
     if (response.status === 401) {
-      throw new GoogleAuthExpiredError();
+      throw new GoogleAuthExpiredError(this.i18n.translate('errors.drive.authExpired'));
     }
     if (!response.ok) {
       throw new Error(message);
@@ -209,10 +212,7 @@ export class GoogleDriveService {
       headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: FOLDER_NAME, mimeType: FOLDER_MIME_TYPE }),
     });
-    this.assertOk(
-      response,
-      'Could not create the keeperpass folder in Google Drive. Please try again.',
-    );
+    this.assertOk(response, this.i18n.translate('errors.drive.createFolderFailed'));
     return ((await response.json()) as DriveFileRef).id;
   }
 
@@ -226,7 +226,7 @@ export class GoogleDriveService {
     const response = await fetch(`${FILES_URL}/${fileId}?alt=media`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
-    this.assertOk(response, 'Could not read your vault from Google Drive. Please try again.');
+    this.assertOk(response, this.i18n.translate('errors.drive.readFailed'));
     return response.text();
   }
 
@@ -298,11 +298,11 @@ export class GoogleDriveService {
       body: JSON.stringify(metadata),
     });
 
-    this.assertOk(initiate, 'Could not save your vault to Google Drive. Please try again.');
+    this.assertOk(initiate, this.i18n.translate('errors.drive.saveFailed'));
 
     const sessionUri = initiate.headers.get('Location');
     if (!sessionUri) {
-      throw new Error('Could not save your vault to Google Drive. Please try again.');
+      throw new Error(this.i18n.translate('errors.drive.saveFailed'));
     }
 
     onProgress?.(0);
@@ -328,7 +328,7 @@ export class GoogleDriveService {
       }
 
       if (response.status !== 308) {
-        this.assertOk(response, 'Could not save your vault to Google Drive. Please try again.');
+        this.assertOk(response, this.i18n.translate('errors.drive.saveFailed'));
       }
 
       // "bytes=0-262143" — the upper bound is what the server has confirmed
@@ -345,7 +345,7 @@ export class GoogleDriveService {
   private async driveGet(accessToken: string, query: string): Promise<{ files: DriveFileRef[] }> {
     const url = `${FILES_URL}?q=${encodeURIComponent(query)}&fields=${encodeURIComponent('files(id)')}`;
     const response = await fetch(url, { headers: { Authorization: `Bearer ${accessToken}` } });
-    this.assertOk(response, 'Could not reach Google Drive. Please try again.');
+    this.assertOk(response, this.i18n.translate('errors.drive.unreachable'));
     return (await response.json()) as { files: DriveFileRef[] };
   }
 }

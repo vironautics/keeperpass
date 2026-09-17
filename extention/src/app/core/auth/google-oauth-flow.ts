@@ -114,6 +114,15 @@ export async function launchInteractiveAuth(authUrl: string): Promise<TokenResul
 
   const accessToken = fragment.get('access_token');
   if (!accessToken) {
+    // `error` is Google's own OAuth error code when present — left as-is,
+    // same as every other place in this app that passes Google's raw text
+    // through untranslated. The 'No access token returned.' fallback is this
+    // app's own copy, but this module can't reach `I18nService` to translate
+    // it (see the file's own doc comment: framework-agnostic on purpose, so
+    // `background.ts` can import it too, and that context has no Angular
+    // injector). It can still reach a user via `GoogleOAuthService.signIn()`'s
+    // `response.error` path, so this is a deliberate, narrow i18n gap rather
+    // than an oversight.
     const error = fragment.get('error') ?? redirected.searchParams.get('error');
     throw new Error(error ?? 'No access token returned.');
   }

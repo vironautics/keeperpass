@@ -12,6 +12,7 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { I18nService, TranslatePipe } from '../../../core/i18n';
 import { csvToItemDrafts, ItemDraft, parseCsv } from '../../../core/import-export';
 import { HlmAlertImports } from '@spartan-ng/helm/alert';
 import { HlmButton } from '@spartan-ng/helm/button';
@@ -45,6 +46,7 @@ interface Option {
     HlmDialogImports,
     HlmFieldImports,
     HlmSelectImports,
+    TranslatePipe,
   ],
   templateUrl: './import-dialog.html',
   /** The dialog lives in an overlay, so this host renders nothing. */
@@ -66,6 +68,7 @@ export class ImportDialog {
   private readonly store = inject(VaultStore);
   private readonly router = inject(Router);
   private readonly vaultSync = inject(VaultSyncService);
+  private readonly i18n = inject(I18nService);
 
   private readonly drafts = signal<readonly ItemDraft[]>([]);
 
@@ -132,12 +135,12 @@ export class ImportDialog {
       const drafts = csvToItemDrafts(parseCsv(await file.text()));
 
       if (drafts.length === 0) {
-        this.parseError.set('No items found in this file.');
+        this.parseError.set(this.i18n.translate('settings.import.noItemsFound'));
       }
 
       this.drafts.set(drafts);
     } catch {
-      this.parseError.set('This file could not be read as CSV.');
+      this.parseError.set(this.i18n.translate('settings.import.invalidCsv'));
     }
   }
 

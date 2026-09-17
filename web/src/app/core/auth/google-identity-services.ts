@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { I18nService, TranslationKey } from '../i18n';
 
 /**
  * Thin wrapper around Google Identity Services' OAuth 2.0 token client
@@ -27,11 +28,10 @@ interface GoogleTokenClientError {
   type: 'popup_failed_to_open' | 'popup_closed' | 'unknown';
 }
 
-const TOKEN_CLIENT_ERROR_MESSAGES: Record<GoogleTokenClientError['type'], string> = {
-  popup_failed_to_open:
-    'Your browser blocked the Google sign-in popup. Please allow popups for this site and try again.',
-  popup_closed: 'The Google sign-in window was closed before finishing. Please try again.',
-  unknown: 'Something went wrong while contacting Google. Please try again.',
+const TOKEN_CLIENT_ERROR_KEYS: Record<GoogleTokenClientError['type'], TranslationKey> = {
+  popup_failed_to_open: 'errors.auth.popupBlocked',
+  popup_closed: 'errors.auth.popupClosed',
+  unknown: 'errors.auth.unknown',
 };
 
 /** An access token and the moment it stops being usable. */
@@ -75,6 +75,7 @@ const SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
  */
 @Injectable({ providedIn: 'root' })
 export class GoogleIdentityServices {
+  private readonly i18n = inject(I18nService);
   private scriptLoadPromise: Promise<void> | null = null;
 
   /**
@@ -161,7 +162,7 @@ export class GoogleIdentityServices {
       // response. Clear the cache so the next attempt refetches rather than
       // failing the same way forever.
       this.scriptLoadPromise = null;
-      throw new Error('Failed to load Google Identity Services.');
+      throw new Error(this.i18n.translate('errors.auth.gisLoadFailed'));
     }
 
     return new Promise<AccessTokenGrant>((resolve, reject) => {
@@ -180,7 +181,8 @@ export class GoogleIdentityServices {
           });
         },
         error_callback: (error) => {
-          reject(new Error(TOKEN_CLIENT_ERROR_MESSAGES[error.type] ?? TOKEN_CLIENT_ERROR_MESSAGES.unknown));
+          const key = TOKEN_CLIENT_ERROR_KEYS[error.type] ?? TOKEN_CLIENT_ERROR_KEYS.unknown;
+          reject(new Error(this.i18n.translate(key)));
         },
       });
       client.requestAccessToken(prompt === undefined ? undefined : { prompt });

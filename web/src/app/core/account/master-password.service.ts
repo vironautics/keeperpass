@@ -8,11 +8,12 @@ import {
   GoogleDriveService,
   UploadProgressHandler,
 } from '../drive/google-drive.service';
+import { I18nService } from '../i18n';
 import { decryptVault, encryptVault } from '../vault/vault-crypto';
 
 export class WrongMasterPasswordError extends Error {
-  constructor() {
-    super('That is not your current master password.');
+  constructor(message = 'That is not your current master password.') {
+    super(message);
     this.name = 'WrongMasterPasswordError';
   }
 }
@@ -35,6 +36,7 @@ export class MasterPasswordService {
   private readonly auth = inject(AuthService);
   private readonly drive = inject(GoogleDriveService);
   private readonly router = inject(Router);
+  private readonly i18n = inject(I18nService);
 
   async change(
     currentPassword: string,
@@ -43,13 +45,13 @@ export class MasterPasswordService {
   ): Promise<void> {
     const accessToken = await ensureFreshTokenOrDisconnect(this.auth, this.session, this.router);
     if (!accessToken) {
-      throw new Error('Your Google session has expired. Please reconnect.');
+      throw new Error(this.i18n.translate('errors.drive.authExpired'));
     }
 
     try {
       const stored = await this.drive.loadVault(accessToken);
       if (!stored) {
-        throw new Error('Could not find your vault in Google Drive.');
+        throw new Error(this.i18n.translate('errors.masterPassword.vaultNotFound'));
       }
 
       const parsed = JSON.parse(stored);
@@ -60,7 +62,7 @@ export class MasterPasswordService {
         // See `unlock-page.ts`'s `describeError` for why `name` rather than
         // `instanceof` — same cross-realm DOMException concern.
         if ((error as { name?: string } | null)?.name === 'OperationError') {
-          throw new WrongMasterPasswordError();
+          throw new WrongMasterPasswordError(this.i18n.translate('errors.masterPassword.wrongPassword'));
         }
         throw error;
       }

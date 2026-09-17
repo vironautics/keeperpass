@@ -3,21 +3,21 @@
   this is the list header's "New item" action, which lives in another component.
 -->
 <hlm-dialog [state]="open() ? 'open' : 'closed'" (stateChanged)="open.set($event === 'open')">
-  <hlm-dialog-content *hlmDialogPortal class="sm:max-w-lg" aria-label="New Vault Item">
+  <hlm-dialog-content *hlmDialogPortal class="sm:max-w-lg" [attr.aria-label]="'items.createItem.title' | t">
     <hlm-dialog-header>
-      <h3 hlmDialogTitle>New Vault Item</h3>
-      <p hlmDialogDescription>Pick the vault it belongs in and the kind of item you want to add.</p>
+      <h3 hlmDialogTitle>{{ 'items.createItem.title' | t }}</h3>
+      <p hlmDialogDescription>{{ 'items.createItem.description' | t }}</p>
     </hlm-dialog-header>
 
     <hlm-field>
-      <label hlmFieldLabel for="create-item-vault">Vault</label>
+      <label hlmFieldLabel for="create-item-vault">{{ 'items.createItem.vaultLabel' | t }}</label>
       <hlm-select
         id="create-item-vault"
         [formControl]="vaultControl"
         [itemToString]="vaultOptionLabel"
       >
         <hlm-select-trigger class="w-full">
-          <hlm-select-value placeholder="Select a vault" />
+          <hlm-select-value [placeholder]="'items.selectVaultPlaceholder' | t" />
         </hlm-select-trigger>
         <hlm-select-content *hlmSelectPortal>
           @for (option of vaultOptions(); track option.value) {
@@ -37,7 +37,7 @@
       stylesheet order. `aria-pressed` is both the state and what styles it.
     -->
     <hlm-field>
-      <span hlmFieldLabel id="create-item-type">Item type</span>
+      <span hlmFieldLabel id="create-item-type">{{ 'items.createItem.itemType' | t }}</span>
       <div
         class="template-grid grid max-h-[45vh] grid-cols-2 gap-2 overflow-y-auto p-0.5 sm:grid-cols-3"
         role="group"
@@ -51,15 +51,15 @@
             (click)="selectTemplate(template)"
           >
             <app-icon [name]="glyphFor(template)" class="text-xl" />
-            <span class="text-xs leading-tight">{{ template.label }}</span>
+            <span class="text-xs leading-tight">{{ template.labelKey | t }}</span>
           </button>
         }
       </div>
     </hlm-field>
 
     <hlm-dialog-footer>
-      <button hlmBtn variant="outline" (click)="cancel()">Cancel</button>
-      <button hlmBtn [disabled]="!canCreate()" (click)="create()">Create</button>
+      <button hlmBtn variant="outline" (click)="cancel()">{{ 'common.cancel' | t }}</button>
+      <button hlmBtn [disabled]="!canCreate()" (click)="create()">{{ 'common.create' | t }}</button>
     </hlm-dialog-footer>
   </hlm-dialog-content>
 </hlm-dialog>

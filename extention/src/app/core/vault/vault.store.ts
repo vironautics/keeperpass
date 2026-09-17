@@ -37,9 +37,17 @@ export interface VaultSnapshot {
  */
 export const ITEM_HISTORY_LIMIT = 5;
 
-export function createEmptyVaultSnapshot(): VaultSnapshot {
+/**
+ * `vaultName` defaults to English rather than requiring every caller to pass
+ * a translated one: `lock-session.ts` and `auto-lock.service.ts` call this to
+ * reset the store to a transient, never-persisted placeholder while the vault
+ * is locked — nobody ever sees that name on screen — so there is nothing to
+ * translate there. `unlock-page.ts`, whose call *can* create a real, saved
+ * vault the first time someone signs in, passes `i18n.translate('vaults.defaultName')`.
+ */
+export function createEmptyVaultSnapshot(vaultName = 'My Vault'): VaultSnapshot {
   return {
-    vaults: [{ id: PERSONAL_VAULT_ID, name: 'My Vault' }],
+    vaults: [{ id: PERSONAL_VAULT_ID, name: vaultName }],
     items: [],
     organizations: [],
     favouriteIds: [],

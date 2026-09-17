@@ -9,6 +9,7 @@ import {
   signal,
   untracked,
 } from '@angular/core';
+import { TranslatePipe } from '../../../core/i18n';
 import {
   DEFAULT_TOTP_PERIOD_SECONDS,
   generateTotp,
@@ -31,6 +32,7 @@ const RING_LENGTH = 25;
 @Component({
   selector: 'app-totp',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [TranslatePipe],
   templateUrl: './totp.html',
   styleUrl: './totp.scss',
 })

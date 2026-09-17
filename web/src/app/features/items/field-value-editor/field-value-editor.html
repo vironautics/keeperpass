@@ -11,7 +11,7 @@
   <button
     type="button"
     class="group focus-visible:ring-ring/50 relative size-8 shrink-0 self-start rounded-md focus-visible:ring-2 focus-visible:outline-none"
-    aria-label="Change icon"
+    [attr.aria-label]="'items.field.changeIcon' | t"
     (click)="changeIcon.emit()"
   >
     <hlm-item-media variant="icon" class="size-8">
@@ -34,8 +34,8 @@
       #nameInput
       class="name-input text-accent-strong"
       [formControl]="nameControl()"
-      placeholder="Field name"
-      aria-label="Field name"
+      [placeholder]="'items.field.namePlaceholder' | t"
+      [attr.aria-label]="'items.field.namePlaceholder' | t"
     />
 
     @if (isMonth()) {
@@ -50,7 +50,7 @@
         (dateChange)="onDatePicked($event)"
       >
         <hlm-date-picker-trigger class="value-input w-full">
-          {{ dateLabel() || 'Pick a month' }}
+          {{ dateLabel() || ('items.field.pickMonth' | t) }}
         </hlm-date-picker-trigger>
       </hlm-month-year-picker>
     } @else if (isDate()) {
@@ -60,7 +60,7 @@
         (dateChange)="onDatePicked($event)"
       >
         <hlm-date-picker-trigger class="value-input w-full">
-          {{ dateLabel() || 'Pick a date' }}
+          {{ dateLabel() || ('items.field.pickDate' | t) }}
         </hlm-date-picker-trigger>
       </hlm-date-picker>
     } @else if (isPhone()) {
@@ -95,15 +95,15 @@
           -->
           <hlm-combobox-trigger
             class="flex w-full justify-between! [&>button]:w-full [&>button]:px-2.5!"
-            aria-label="Country code"
+            [attr.aria-label]="'items.field.countryCodeAria' | t"
           >
-            <hlm-combobox-value placeholder="Code" />
+            <hlm-combobox-value [placeholder]="'items.field.countryCodeAria' | t" />
           </hlm-combobox-trigger>
           <hlm-combobox-content *hlmComboboxPortal class="w-72!">
-            <hlm-combobox-input placeholder="Search countries" />
-            <div hlmComboboxList aria-label="Country codes">
-              <hlm-combobox-empty>No country matches that.</hlm-combobox-empty>
-              @for (country of countries; track country.iso) {
+            <hlm-combobox-input [placeholder]="'items.field.searchCountries' | t" />
+            <div hlmComboboxList [attr.aria-label]="'items.field.countryCodeAria' | t">
+              <hlm-combobox-empty>{{ 'items.field.noCountryMatch' | t }}</hlm-combobox-empty>
+              @for (country of countries(); track country.iso) {
                 <hlm-combobox-item [value]="country.iso" class="whitespace-nowrap">
                   <span aria-hidden="true">{{ country.flag }}</span>
                   <span class="text-muted-foreground tabular-nums">{{ country.dial }}</span>
@@ -120,8 +120,8 @@
           class="value-input text-foreground"
           type="tel"
           [value]="phoneNational()"
-          placeholder="Phone number"
-          aria-label="Phone number"
+          [placeholder]="'items.field.phoneNumber' | t"
+          [attr.aria-label]="'items.field.phoneNumber' | t"
           (input)="onPhoneTyped($event)"
         />
       </div>
@@ -137,15 +137,15 @@
           class="value-input text-foreground"
           [type]="revealed() ? 'text' : 'password'"
           [formControl]="valueControl()"
-          placeholder="Enter value here"
-          aria-label="Field value"
+          [placeholder]="'items.field.defaultPlaceholder' | t"
+          [attr.aria-label]="'items.field.valueAria' | t"
         />
         <hlm-input-group-addon align="inline-end">
           <button
             hlmInputGroupButton
             size="icon-xs"
             type="button"
-            aria-label="Generate a password"
+            [attr.aria-label]="'items.field.generatePasswordAria' | t"
             (click)="generating.set(true)"
           >
             <app-icon name="generate" />
@@ -155,7 +155,7 @@
             size="icon-xs"
             type="button"
             class="reveal"
-            [attr.aria-label]="revealed() ? 'Hide value' : 'Reveal value'"
+            [attr.aria-label]="(revealed() ? 'common.hideValue' : 'common.revealValue') | t"
             (click)="toggleRevealed()"
           >
             <app-icon [name]="revealed() ? 'hide' : 'show'" />
@@ -175,8 +175,8 @@
           class="value-input text-foreground font-mono"
           inputmode="numeric"
           [formControl]="valueControl()"
-          placeholder="Card number"
-          aria-label="Card number"
+          [placeholder]="'items.field.cardNumber' | t"
+          [attr.aria-label]="'items.field.cardNumber' | t"
         />
         @if (card().brand) {
           <hlm-input-group-addon align="inline-end">
@@ -199,7 +199,7 @@
           spellcheck="false"
           [formControl]="valueControl()"
           placeholder="name@example.com"
-          aria-label="Email address"
+          [attr.aria-label]="'items.field.emailAddress' | t"
         />
         @if (value()) {
           <hlm-input-group-addon align="inline-end">
@@ -229,7 +229,7 @@
           rows="3"
           [formControl]="valueControl()"
           [placeholder]="placeholder()"
-          aria-label="Field value"
+          [attr.aria-label]="'items.field.valueAria' | t"
         ></textarea>
         @if (secret()) {
           <button
@@ -238,7 +238,7 @@
             size="icon-xs"
             type="button"
             class="reveal absolute top-1 right-1"
-            [attr.aria-label]="revealed() ? 'Hide value' : 'Reveal value'"
+            [attr.aria-label]="(revealed() ? 'common.hideValue' : 'common.revealValue') | t"
             (click)="toggleRevealed()"
           >
             <app-icon [name]="revealed() ? 'hide' : 'show'" />
@@ -260,7 +260,7 @@
           [attr.inputmode]="inputMode()"
           [formControl]="valueControl()"
           [placeholder]="placeholder()"
-          aria-label="Field value"
+          [attr.aria-label]="'items.field.valueAria' | t"
         />
         <hlm-input-group-addon align="inline-end">
           <button
@@ -268,7 +268,7 @@
             size="icon-xs"
             type="button"
             class="reveal"
-            [attr.aria-label]="revealed() ? 'Hide value' : 'Reveal value'"
+            [attr.aria-label]="(revealed() ? 'common.hideValue' : 'common.revealValue') | t"
             (click)="toggleRevealed()"
           >
             <app-icon [name]="revealed() ? 'hide' : 'show'" />
@@ -284,7 +284,7 @@
         [attr.inputmode]="inputMode()"
         [formControl]="valueControl()"
         [placeholder]="placeholder()"
-        aria-label="Field value"
+        [attr.aria-label]="'items.field.valueAria' | t"
       />
     }
 
@@ -304,12 +304,12 @@
 
     @if (isCredit() && value() && card().complete && !card().valid) {
       <p class="text-destructive text-[0.7rem]">
-        That number fails its checksum — one of the digits is probably wrong.
+        {{ 'items.field.checksumFail' | t }}
       </p>
     }
 
     @if (isEmail() && value() && !emailValid()) {
-      <p class="text-destructive text-[0.7rem]">That does not look like an email address.</p>
+      <p class="text-destructive text-[0.7rem]">{{ 'items.field.notEmail' | t }}</p>
     }
   </hlm-item-content>
 
@@ -321,7 +321,7 @@
       type="button"
       class="field-secret-toggle"
       [attr.aria-pressed]="secret()"
-      [attr.aria-label]="secret() ? 'Make this field not secret' : 'Make this field secret'"
+      [attr.aria-label]="(secret() ? 'items.field.makeNotSecret' : 'items.field.makeSecret') | t"
       (click)="secretToggled.emit()"
     >
       <app-icon [name]="secret() ? 'lock' : 'unlock'" />
@@ -333,7 +333,7 @@
       size="icon-sm"
       type="button"
       class="field-remove"
-      aria-label="Remove field"
+      [attr.aria-label]="'items.field.remove' | t"
       (click)="remove.emit()"
     >
       <app-icon name="delete" />

@@ -1,3 +1,4 @@
+import { TranslationKey } from '../i18n/translations';
 import { IconName } from '../../ui/icon/icon-glyphs';
 
 /**
@@ -62,7 +63,7 @@ export interface Field {
 export interface FieldDefinition {
   type: FieldType;
   /** What the "Add Field" menu calls this kind of value. */
-  label: string;
+  labelKey: TranslationKey;
   icon: IconName;
   /** Held back behind a reveal toggle, and set in a monospace face when shown. */
   secret: boolean;
@@ -81,14 +82,14 @@ export interface FieldDefinition {
 export const FIELD_DEFINITIONS: Record<FieldType, FieldDefinition> = {
   [FieldType.Username]: {
     type: FieldType.Username,
-    label: 'Username',
+    labelKey: 'field.type.username',
     icon: 'user',
     secret: false,
     multiline: false,
   },
   [FieldType.Password]: {
     type: FieldType.Password,
-    label: 'Password',
+    labelKey: 'field.type.password',
     icon: 'lock',
     secret: true,
     // Long generated passwords need to wrap rather than scroll out of sight.
@@ -96,56 +97,56 @@ export const FIELD_DEFINITIONS: Record<FieldType, FieldDefinition> = {
   },
   [FieldType.Email]: {
     type: FieldType.Email,
-    label: 'Email',
+    labelKey: 'field.type.email',
     icon: 'email',
     secret: false,
     multiline: false,
   },
   [FieldType.Url]: {
     type: FieldType.Url,
-    label: 'URL',
+    labelKey: 'field.type.url',
     icon: 'web',
     secret: false,
     multiline: false,
   },
   [FieldType.IpHost]: {
     type: FieldType.IpHost,
-    label: 'IP / Host',
+    labelKey: 'field.type.ipHost',
     icon: 'computer',
     secret: false,
     multiline: false,
   },
   [FieldType.Date]: {
     type: FieldType.Date,
-    label: 'Date',
+    labelKey: 'field.type.date',
     icon: 'date',
     secret: false,
     multiline: false,
   },
   [FieldType.Month]: {
     type: FieldType.Month,
-    label: 'Month',
+    labelKey: 'field.type.month',
     icon: 'month',
     secret: false,
     multiline: false,
   },
   [FieldType.Credit]: {
     type: FieldType.Credit,
-    label: 'Card Number',
+    labelKey: 'field.type.credit',
     icon: 'credit',
     secret: true,
     multiline: false,
   },
   [FieldType.Phone]: {
     type: FieldType.Phone,
-    label: 'Phone',
+    labelKey: 'field.type.phone',
     icon: 'phone',
     secret: false,
     multiline: false,
   },
   [FieldType.Pin]: {
     type: FieldType.Pin,
-    label: 'PIN',
+    labelKey: 'field.type.pin',
     icon: 'lock',
     secret: true,
     multiline: false,
@@ -154,14 +155,14 @@ export const FIELD_DEFINITIONS: Record<FieldType, FieldDefinition> = {
     // Not a secret in the reveal-toggle sense: what the item shows is the
     // rolling six-digit code, and `<app-totp>` never puts the seed on screen.
     type: FieldType.Totp,
-    label: 'Authenticator Code',
+    labelKey: 'field.type.totp',
     icon: 'totp',
     secret: false,
     multiline: false,
   },
   [FieldType.Certificate]: {
     type: FieldType.Certificate,
-    label: 'Certificate',
+    labelKey: 'field.type.certificate',
     icon: 'audit-clean',
     // On by default: a certificate is often paired with a private key. Toggle
     // it off per-field for a public certificate that doesn't need masking.
@@ -170,28 +171,28 @@ export const FIELD_DEFINITIONS: Record<FieldType, FieldDefinition> = {
   },
   [FieldType.SshKey]: {
     type: FieldType.SshKey,
-    label: 'SSH / Private Key',
+    labelKey: 'field.type.sshKey',
     icon: 'lock',
     secret: true,
     multiline: true,
   },
   [FieldType.RecoveryCodes]: {
     type: FieldType.RecoveryCodes,
-    label: 'Recovery Codes',
+    labelKey: 'field.type.recoveryCodes',
     icon: 'list-check',
     secret: true,
     multiline: true,
   },
   [FieldType.Note]: {
     type: FieldType.Note,
-    label: 'Formatted Note',
+    labelKey: 'field.type.note',
     icon: 'note',
     secret: false,
     multiline: true,
   },
   [FieldType.Text]: {
     type: FieldType.Text,
-    label: 'Text',
+    labelKey: 'field.type.text',
     icon: 'text',
     secret: false,
     multiline: true,

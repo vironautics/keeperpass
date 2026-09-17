@@ -1,6 +1,6 @@
 <div hlmCard class="mx-auto w-full max-w-100">
   <div hlmCardContent class="flex flex-col gap-4">
-    <p class="text-muted-foreground text-sm">Welcome! Please sign in with Google to continue.</p>
+    <p class="text-muted-foreground text-sm">{{ 'auth.start.description' | t }}</p>
 
     @if (errorMessage()) {
       <!--
@@ -28,7 +28,7 @@
       } @else {
         <app-google-logo class="size-4" />
       }
-      Continue with Google
+      {{ 'auth.start.continueWithGoogle' | t }}
     </button>
   </div>
 </div>

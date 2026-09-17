@@ -1,3 +1,4 @@
+import { TestBed } from '@angular/core/testing';
 import { GoogleIdentityServices } from './google-identity-services';
 
 interface StubTokenClientConfig {
@@ -26,7 +27,10 @@ describe('GoogleIdentityServices', () => {
     // window.google is already present, so the constructor's preload resolves
     // immediately instead of appending a real <script> tag.
     stubGoogleIdentityServices(() => {});
-    service = new GoogleIdentityServices();
+    // `TestBed.inject`, not `new`: the constructor now injects `I18nService`
+    // for translated rejection messages, which needs a real injection
+    // context to resolve.
+    service = TestBed.inject(GoogleIdentityServices);
   });
 
   afterEach(() => {

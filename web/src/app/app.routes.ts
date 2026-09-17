@@ -3,6 +3,10 @@ import { authGuard, homeGuard } from './core/auth/auth.guard';
 import { AppShell } from './layout/app-shell/app-shell';
 
 export const routes: Routes = [
+  // Every `title` below is a `TranslationKey`, not literal copy — resolved
+  // (and kept current across a language switch) by `LocalizedTitleStrategy`,
+  // which stands in for Angular's own string-only default.
+  //
   // Fully signed-in application, framed by the navigation shell.
   {
     path: '',
@@ -11,45 +15,45 @@ export const routes: Routes = [
     children: [
       {
         path: 'items',
-        title: 'Vault',
+        title: 'items.pageTitle',
         loadChildren: () => import('./features/items/items.routes').then((m) => m.itemsRoutes),
       },
       {
         path: 'settings',
-        title: 'Settings',
+        title: 'settings.title',
         loadChildren: () =>
           import('./features/settings/settings.routes').then((m) => m.settingsRoutes),
       },
       {
         path: 'generator',
-        title: 'Password Generator',
+        title: 'generator.pageTitle',
         loadChildren: () =>
           import('./features/generator/generator.routes').then((m) => m.generatorRoutes),
       },
       {
         path: 'tags',
-        title: 'Tags',
+        title: 'tags.title',
         loadChildren: () => import('./features/tags/tags.routes').then((m) => m.tagsRoutes),
       },
       {
         path: 'vaults',
-        title: 'My Vaults',
+        title: 'vaults.title',
         loadChildren: () => import('./features/vaults/vaults.routes').then((m) => m.vaultsRoutes),
       },
       {
         path: 'report',
-        title: 'Security Report',
+        title: 'report.title',
         loadChildren: () => import('./features/report/report.routes').then((m) => m.reportRoutes),
       },
       {
         path: 'support',
-        title: 'Support',
+        title: 'support.title',
         loadChildren: () =>
           import('./features/support/support.routes').then((m) => m.supportRoutes),
       },
       {
         path: 'policies',
-        title: 'Policies',
+        title: 'policies.title',
         loadChildren: () =>
           import('./features/policies/policies.routes').then((m) => m.policiesRoutes),
       },

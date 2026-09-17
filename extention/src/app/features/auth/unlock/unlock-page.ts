@@ -11,6 +11,7 @@ import { AuditService } from '../../../core/audit/audit.service';
 import { SessionStore } from '../../../core/auth/session.store';
 import { SESSION_KEYS, sessionSet } from '../../../core/storage/extension-session-storage';
 import { GoogleAuthExpiredError, GoogleDriveService } from '../../../core/drive/google-drive.service';
+import { I18nService, TranslatePipe } from '../../../core/i18n';
 import { decryptVault, encryptVault } from '../../../core/vault/vault-crypto';
 import { createEmptyVaultSnapshot, VaultSnapshot, VaultStore } from '../../../core/vault/vault.store';
 import { Icon } from '../../../ui/icon/icon';
@@ -31,6 +32,7 @@ import { Icon } from '../../../ui/icon/icon';
   imports: [
     ReactiveFormsModule,
     Icon,
+    TranslatePipe,
     HlmAlertImports,
     HlmButtonImports,
     HlmCardImports,
@@ -45,6 +47,7 @@ export class UnlockPage {
   private readonly vault = inject(VaultStore);
   private readonly drive = inject(GoogleDriveService);
   private readonly auditService = inject(AuditService);
+  private readonly i18n = inject(I18nService);
 
   protected readonly form = new FormGroup({
     secret: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
@@ -74,7 +77,7 @@ export class UnlockPage {
   /** "Forgot your secret?" — the account-recovery page, see `RecoverPage`. */
   protected openReset(): void {
     // `/recover` isn't part of the popup — recovery happens in the web app.
-    this.errorMessage.set('Open the KeeperPass web app to reset your secret.');
+    this.errorMessage.set(this.i18n.translate('auth.unlock.resetInWebApp'));
   }
 
   /** Abandons this sign-in — back to `/start`, same as the sidebar's "Disconnect". */
@@ -99,7 +102,7 @@ export class UnlockPage {
       const stored = await this.drive.loadVault(accessToken);
       const data = stored
         ? await decryptVault(secret, JSON.parse(stored))
-        : createEmptyVaultSnapshot();
+        : createEmptyVaultSnapshot(this.i18n.translate('vaults.defaultName'));
 
       // DEV ONLY — prints the whole decrypted vault, passwords included, so
       // keep it off any shared screen or recording. `isDevMode()` is a
@@ -144,8 +147,8 @@ export class UnlockPage {
     // cross-realm oddities between jsdom's globals and the ones
     // `crypto.subtle` throws with.
     if ((error as { name?: string } | null)?.name === 'OperationError') {
-      return 'Incorrect secret. Please try again.';
+      return this.i18n.translate('auth.unlock.incorrectSecret');
     }
-    return error instanceof Error ? error.message : 'Something went wrong. Please try again.';
+    return error instanceof Error ? error.message : this.i18n.translate('common.genericError');
   }
 }

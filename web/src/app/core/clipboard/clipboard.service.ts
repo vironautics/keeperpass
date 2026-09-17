@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { toast } from '@spartan-ng/brain/sonner';
+import { I18nService } from '../i18n';
 
 /** What was copied, for the confirmation toast. */
 export interface CopiedFrom {
@@ -30,11 +31,15 @@ export interface CopiedFrom {
  */
 @Injectable({ providedIn: 'root' })
 export class ClipboardService {
+  private readonly i18n = inject(I18nService);
+
   async copy(value: string, from?: CopiedFrom): Promise<void> {
     await navigator.clipboard.writeText(value);
 
     if (from) {
-      toast.success(`${from.field} copied`, { description: `From ${from.item}` });
+      toast.success(this.i18n.translate('common.fieldCopied', { field: from.field }), {
+        description: this.i18n.translate('common.copiedFromItem', { item: from.item }),
+      });
     }
   }
 }

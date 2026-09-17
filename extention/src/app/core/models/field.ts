@@ -1,3 +1,4 @@
+import { TranslationKey } from '../i18n/translations';
 import { IconName } from '../../ui/icon/icon-glyphs';
 
 /** The kinds of value a vault item can hold. */
@@ -41,7 +42,7 @@ export interface Field {
 export interface FieldDefinition {
   type: FieldType;
   /** Label shown in the "add field" menu. */
-  name: string;
+  labelKey: TranslationKey;
   icon: IconName;
   /** Whether the value is hidden until the user reveals it. */
   masked: boolean;
@@ -55,112 +56,112 @@ export interface FieldDefinition {
 export const FIELD_DEFINITIONS: Record<FieldType, FieldDefinition> = {
   [FieldType.Username]: {
     type: FieldType.Username,
-    name: 'Username',
+    labelKey: 'field.type.username',
     icon: 'user',
     masked: false,
     multiline: false,
   },
   [FieldType.Password]: {
     type: FieldType.Password,
-    name: 'Password',
+    labelKey: 'field.type.password',
     icon: 'lock',
     masked: true,
     multiline: true,
   },
   [FieldType.Email]: {
     type: FieldType.Email,
-    name: 'Email Address',
+    labelKey: 'field.type.email',
     icon: 'email',
     masked: false,
     multiline: false,
   },
   [FieldType.Url]: {
     type: FieldType.Url,
-    name: 'URL',
+    labelKey: 'field.type.url',
     icon: 'web',
     masked: false,
     multiline: false,
   },
   [FieldType.IpHost]: {
     type: FieldType.IpHost,
-    name: 'IP / Host',
+    labelKey: 'field.type.ipHost',
     icon: 'computer',
     masked: false,
     multiline: false,
   },
   [FieldType.Date]: {
     type: FieldType.Date,
-    name: 'Date',
+    labelKey: 'field.type.date',
     icon: 'date',
     masked: false,
     multiline: false,
   },
   [FieldType.Month]: {
     type: FieldType.Month,
-    name: 'Month',
+    labelKey: 'field.type.month',
     icon: 'month',
     masked: false,
     multiline: false,
   },
   [FieldType.Credit]: {
     type: FieldType.Credit,
-    name: 'Credit Card Number',
+    labelKey: 'field.type.credit',
     icon: 'credit',
     masked: true,
     multiline: false,
   },
   [FieldType.Phone]: {
     type: FieldType.Phone,
-    name: 'Phone Number',
+    labelKey: 'field.type.phone',
     icon: 'phone',
     masked: false,
     multiline: false,
   },
   [FieldType.Pin]: {
     type: FieldType.Pin,
-    name: 'PIN',
+    labelKey: 'field.type.pin',
     icon: 'lock',
     masked: true,
     multiline: false,
   },
   [FieldType.Totp]: {
     type: FieldType.Totp,
-    name: 'One-Time Password',
+    labelKey: 'field.type.totp',
     icon: 'totp',
     masked: false,
     multiline: false,
   },
   [FieldType.Certificate]: {
     type: FieldType.Certificate,
-    name: 'Certificate',
+    labelKey: 'field.type.certificate',
     icon: 'audit-clean',
     masked: true,
     multiline: true,
   },
   [FieldType.SshKey]: {
     type: FieldType.SshKey,
-    name: 'SSH / Private Key',
+    labelKey: 'field.type.sshKey',
     icon: 'lock',
     masked: true,
     multiline: true,
   },
   [FieldType.RecoveryCodes]: {
     type: FieldType.RecoveryCodes,
-    name: 'Recovery Codes',
+    labelKey: 'field.type.recoveryCodes',
     icon: 'list-check',
     masked: true,
     multiline: true,
   },
   [FieldType.Note]: {
     type: FieldType.Note,
-    name: 'Richtext / Markdown',
+    labelKey: 'field.type.note',
     icon: 'note',
     masked: false,
     multiline: true,
   },
   [FieldType.Text]: {
     type: FieldType.Text,
-    name: 'Plain Text',
+    labelKey: 'field.type.text',
     icon: 'text',
     masked: false,
     multiline: true,

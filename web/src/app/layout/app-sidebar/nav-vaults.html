@@ -1,7 +1,7 @@
 <hlm-sidebar-group>
-  <div hlmSidebarGroupLabel>Vaults &amp; Items</div>
+  <div hlmSidebarGroupLabel>{{ 'layout.sidebar.vaultsAndItems' | t }}</div>
 
-  <button hlmSidebarGroupAction aria-label="New vault" (click)="createVault()">
+  <button hlmSidebarGroupAction [attr.aria-label]="'vaults.newVaultAria' | t" (click)="createVault()">
     <app-icon name="add" />
   </button>
 
@@ -16,7 +16,7 @@
       <li hlmSidebarMenuItem>
         <a
           hlmSidebarMenuButton
-          tooltip="All Vaults"
+          [tooltip]="'items.list.allVaults' | t"
           routerLink="/items"
           [queryParams]="{}"
           routerLinkActive
@@ -25,7 +25,7 @@
           [isActive]="allVaults.isActive"
         >
           <app-icon name="vaults" />
-          <span>All Vaults</span>
+          <span>{{ 'items.list.allVaults' | t }}</span>
         </a>
         <div hlmSidebarMenuBadge>{{ counts().total }}</div>
       </li>
@@ -33,7 +33,7 @@
       <li hlmSidebarMenuItem>
         <a
           hlmSidebarMenuButton
-          tooltip="Recently Used"
+          [tooltip]="'items.list.recentlyUsed' | t"
           routerLink="/items"
           [queryParams]="{ recent: true }"
           routerLinkActive
@@ -42,7 +42,7 @@
           [isActive]="recent.isActive"
         >
           <app-icon name="history" />
-          <span>Recently Used</span>
+          <span>{{ 'items.list.recentlyUsed' | t }}</span>
         </a>
         <div hlmSidebarMenuBadge>{{ recentCount() }}</div>
       </li>
@@ -50,7 +50,7 @@
       <li hlmSidebarMenuItem>
         <a
           hlmSidebarMenuButton
-          tooltip="Favorites"
+          [tooltip]="'layout.sidebar.favoritesTooltip' | t"
           routerLink="/items"
           [queryParams]="{ favourites: true }"
           routerLinkActive
@@ -59,7 +59,7 @@
           [isActive]="favourites.isActive"
         >
           <app-icon name="favourite" />
-          <span>Favorites</span>
+          <span>{{ 'layout.sidebar.favoritesTooltip' | t }}</span>
         </a>
         <div hlmSidebarMenuBadge>{{ counts().favourites }}</div>
       </li>
@@ -75,9 +75,9 @@
         [expanded]="isExpanded('vaults')"
         (expandedChange)="setExpanded('vaults', $event)"
       >
-        <button hlmSidebarMenuButton hlmCollapsibleTrigger tooltip="My Vaults" class="pe-14">
+        <button hlmSidebarMenuButton hlmCollapsibleTrigger [tooltip]="'layout.sidebar.myVaultsTooltip' | t" class="pe-14">
           <app-icon name="vault" />
-          <span>My Vaults</span>
+          <span>{{ 'layout.sidebar.myVaultsTooltip' | t }}</span>
         </button>
 
         <!--
@@ -86,7 +86,7 @@
           stack. `routerLink` on a <button> works — RouterLink is not anchor-only,
           and the directive only matches buttons.
         -->
-        <button hlmSidebarMenuAction class="end-7" routerLink="/vaults" aria-label="Manage vaults">
+        <button hlmSidebarMenuAction class="end-7" routerLink="/vaults" [attr.aria-label]="'layout.sidebar.manageVaultsAria' | t">
           <app-icon name="settings" />
         </button>
 
@@ -94,7 +94,7 @@
         <button
           hlmSidebarMenuAction
           hlmCollapsibleTrigger
-          aria-label="Toggle vaults list"
+          [attr.aria-label]="'layout.sidebar.toggleVaultsListAria' | t"
           class="data-[state=open]:rotate-90"
         >
           <app-icon name="chevron-right" />
@@ -139,7 +139,7 @@
           <button
             hlmSidebarMenuAction
             hlmCollapsibleTrigger
-            [attr.aria-label]="'Toggle ' + organization.name"
+            [attr.aria-label]="'layout.sidebar.toggleOrgAria' | t: { name: organization.name }"
             class="data-[state=open]:rotate-90"
           >
             <app-icon name="chevron-right" />
@@ -176,19 +176,19 @@
         [expanded]="isExpanded('tags')"
         (expandedChange)="setExpanded('tags', $event)"
       >
-        <button hlmSidebarMenuButton hlmCollapsibleTrigger tooltip="Tags" class="pe-14">
+        <button hlmSidebarMenuButton hlmCollapsibleTrigger [tooltip]="'common.tags' | t" class="pe-14">
           <app-icon name="tags" />
-          <span>Tags</span>
+          <span>{{ 'common.tags' | t }}</span>
         </button>
 
-        <button hlmSidebarMenuAction class="end-7" routerLink="/tags" aria-label="Manage tags">
+        <button hlmSidebarMenuAction class="end-7" routerLink="/tags" [attr.aria-label]="'layout.sidebar.manageTagsAria' | t">
           <app-icon name="settings" />
         </button>
 
         <button
           hlmSidebarMenuAction
           hlmCollapsibleTrigger
-          aria-label="Toggle tags list"
+          [attr.aria-label]="'layout.sidebar.toggleTagsListAria' | t"
           class="data-[state=open]:rotate-90"
         >
           <app-icon name="chevron-right" />
@@ -214,7 +214,7 @@
               </li>
             } @empty {
               <li hlmSidebarMenuSubItem>
-                <span class="text-sidebar-foreground/60 block px-2 py-1 text-xs">No tags yet.</span>
+                <span class="text-sidebar-foreground/60 block px-2 py-1 text-xs">{{ 'layout.sidebar.noTagsYet' | t }}</span>
               </li>
             }
           </ul>
@@ -224,14 +224,14 @@
       <li hlmSidebarMenuItem>
         <a
           hlmSidebarMenuButton
-          tooltip="Password Generator"
+          [tooltip]="'generator.pageTitle' | t"
           routerLink="/generator"
           routerLinkActive
           #generator="routerLinkActive"
           [isActive]="generator.isActive"
         >
           <app-icon name="generate" />
-          <span>Password Generator</span>
+          <span>{{ 'generator.pageTitle' | t }}</span>
         </a>
       </li>
     </ul>

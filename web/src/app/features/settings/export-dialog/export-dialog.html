@@ -1,18 +1,17 @@
 <hlm-dialog [state]="open() ? 'open' : 'closed'" (stateChanged)="open.set($event === 'open')">
-  <hlm-dialog-content *hlmDialogPortal class="sm:max-w-md" aria-label="Export Data">
+  <hlm-dialog-content *hlmDialogPortal class="sm:max-w-md" [attr.aria-label]="'settings.export.title' | t">
     <hlm-dialog-header>
-      <h3 hlmDialogTitle>Export Data</h3>
+      <h3 hlmDialogTitle>{{ 'settings.export.title' | t }}</h3>
       <p hlmDialogDescription>
-        Writes a CSV of the chosen vault. Exported items leave the vault's encryption behind — what
-        you do with the file is up to you.
+        {{ 'settings.export.description' | t }}
       </p>
     </hlm-dialog-header>
 
     <hlm-field>
-      <label hlmFieldLabel for="export-vault">Source vault</label>
+      <label hlmFieldLabel for="export-vault">{{ 'settings.export.sourceVaultLabel' | t }}</label>
       <hlm-select id="export-vault" [formControl]="vaultControl" [itemToString]="vaultLabel">
         <hlm-select-trigger class="w-full">
-          <hlm-select-value placeholder="All Vaults" />
+          <hlm-select-value [placeholder]="'settings.export.allVaultsPlaceholder' | t" />
         </hlm-select-trigger>
         <hlm-select-content *hlmSelectPortal>
           @for (option of vaultOptions(); track option.value) {
@@ -30,18 +29,17 @@
     -->
     <div hlmAlert variant="destructive" class="grid-cols-[auto_1fr] gap-x-2.5!">
       <app-icon name="alert" class="translate-y-0.5" />
-      <p hlmAlertTitle class="col-start-2">A CSV file is not encrypted</p>
+      <p hlmAlertTitle class="col-start-2">{{ 'settings.export.notEncryptedTitle' | t }}</p>
       <p hlmAlertDescription class="col-start-2">
-        Anyone who opens it can read every password in it. Keep it somewhere safe and delete it when
-        you are done.
+        {{ 'settings.export.notEncryptedDescription' | t }}
       </p>
     </div>
 
     <hlm-dialog-footer>
-      <button hlmBtn variant="outline" (click)="cancel()">Cancel</button>
+      <button hlmBtn variant="outline" (click)="cancel()">{{ 'common.cancel' | t }}</button>
       <button hlmBtn class="confirm-export" [disabled]="!canExport()" (click)="exportData()">
         <app-icon name="export" />
-        Export {{ itemCount() }} {{ itemCount() === 1 ? 'item' : 'items' }}
+        {{ (itemCount() === 1 ? 'settings.export.exportOne' : 'settings.export.exportMany') | t: { count: itemCount() } }}
       </button>
     </hlm-dialog-footer>
   </hlm-dialog-content>

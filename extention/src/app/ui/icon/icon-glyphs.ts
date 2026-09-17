@@ -25,6 +25,8 @@ export const ICON_GLYPHS = {
   'chevron-down': '\uf078',
   settings: '\uf013',
   cloud: '\uf0c2',
+  'sort-asc': '\uf885', // fa-arrow-up-short-wide
+  'sort-desc': '\uf884', // fa-arrow-down-short-wide
   lock: '\uf30d',
   unlock: '\uf13e',
   refresh: '\uf2f1',

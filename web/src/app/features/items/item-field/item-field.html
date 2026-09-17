@@ -44,7 +44,7 @@
       @if (isTotp()) {
         <app-totp class="text-foreground font-mono text-sm" [secret]="field().value" />
       } @else if (!field().value) {
-        <span class="text-sm italic opacity-50">[empty]</span>
+        <span class="text-sm italic opacity-50">{{ 'items.field.empty' | t }}</span>
       } @else {
         <!--
           A `<p>` rather than the `<pre>` this used to be: Tailwind's preflight
@@ -76,7 +76,7 @@
         />
         {{ brand.label }}
         @if (card()!.complete && !card()!.valid) {
-          <span class="text-destructive">— fails its checksum</span>
+          <span class="text-destructive">{{ 'items.field.failsChecksumInline' | t }}</span>
         }
       </span>
     }
@@ -104,8 +104,8 @@
         hlmBtn
         variant="ghost"
         size="icon-sm"
-        [hlmTooltip]="masked() ? 'Reveal value' : 'Hide value'"
-        [attr.aria-label]="masked() ? 'Reveal value' : 'Hide value'"
+        [hlmTooltip]="(masked() ? 'common.revealValue' : 'common.hideValue') | t"
+        [attr.aria-label]="(masked() ? 'common.revealValue' : 'common.hideValue') | t"
         (click)="toggleMasked()"
       >
         <app-icon [name]="masked() ? 'show' : 'hide'" />
@@ -118,8 +118,8 @@
       size="icon-sm"
       class="data-[copied=true]:text-accent-strong"
       [attr.data-copied]="copied()"
-      [hlmTooltip]="copied() ? 'Copied' : 'Copy value'"
-      aria-label="Copy value"
+      [hlmTooltip]="(copied() ? 'common.copied' : 'items.field.copyValueAria') | t"
+      [attr.aria-label]="'items.field.copyValueAria' | t"
       (click)="copy()"
     >
       <app-icon [name]="copied() ? 'check' : 'copy'" />

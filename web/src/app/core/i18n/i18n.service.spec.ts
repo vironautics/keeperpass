@@ -147,6 +147,30 @@ describe('translation tables', () => {
       'common.cancel',
       'settings.profile.email',
       'settings.profile.deleteTypeSuffix',
+      // Cognates, acronyms and loanwords that legitimately read the same across
+      // the shipped locales rather than forgotten translations.
+      'common.name',
+      'common.tags',
+      'generator.passphrase',
+      'items.templates.computer',
+      'items.templates.note',
+      'field.type.url',
+      'field.type.ipHost',
+      'field.type.pin',
+      'field.type.text',
+      'field.type.date',
+      'items.templates.fields.cvc',
+      'items.templates.fields.iban',
+      'items.templates.fields.bic',
+      'tags.title',
+      'tags.itemsCountOne',
+      'vaults.itemsCountOne',
+      'layout.sidebar.support',
+      'support.title',
+      'support.terms.tagTermSingular',
+      'support.faq.title',
+      'auth.unlock.secretLabel',
+      'auth.setup.secretLabel',
     ]);
 
     for (const locale of locales.filter((l) => l !== 'en')) {

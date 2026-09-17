@@ -13,6 +13,7 @@ import {
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmDialogImports } from '@spartan-ng/helm/dialog';
 import { HlmInput } from '@spartan-ng/helm/input';
+import { TranslatePipe } from '../../../../core/i18n';
 import { CatalogIcon } from '../../../../ui/icon/icon-catalog';
 import { searchIconCatalog } from '../../../../ui/icon/icon-catalog-search';
 import { Icon } from '../../../../ui/icon/icon';
@@ -29,7 +30,7 @@ import { Icon } from '../../../../ui/icon/icon';
 @Component({
   selector: 'app-icon-picker-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [HlmButton, HlmDialogImports, HlmInput, Icon],
+  imports: [HlmButton, HlmDialogImports, HlmInput, Icon, TranslatePipe],
   templateUrl: './icon-picker-dialog.html',
   /** The dialog itself lives in an overlay, so this host renders nothing. */
   host: { class: 'contents' },

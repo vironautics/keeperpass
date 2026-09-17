@@ -33,6 +33,7 @@ import {
   matchesValidator,
   MIN_MASTER_PASSWORD_SCORE,
 } from '../../../core/validation';
+import { I18nService, TranslatePipe } from '../../../core/i18n';
 import { encryptVault } from '../../../core/vault/vault-crypto';
 import { createEmptyVaultSnapshot, VaultStore } from '../../../core/vault/vault.store';
 import { Icon } from '../../../ui/icon/icon';
@@ -62,6 +63,7 @@ import { STRENGTH_COLOURS, STRENGTH_LABELS, strengthPercent } from '../../items/
   imports: [
     ReactiveFormsModule,
     Icon,
+    TranslatePipe,
     GeneratePasswordDialog,
     HlmAlertImports,
     HlmButtonImports,
@@ -83,6 +85,7 @@ export class RecoverPage {
   private readonly vault = inject(VaultStore);
   private readonly drive = inject(GoogleDriveService);
   private readonly router = inject(Router);
+  private readonly i18n = inject(I18nService);
 
   /** Drives the submit button's spinner and keeps a second submit out. */
   protected readonly submitting = signal(false);
@@ -128,7 +131,7 @@ export class RecoverPage {
 
   protected readonly strengthPercent = computed(() => strengthPercent(this.strength()));
   protected readonly strengthColour = computed(() => STRENGTH_COLOURS[this.strength()]);
-  protected readonly strengthLabel = computed(() => STRENGTH_LABELS[this.strength()]);
+  protected readonly strengthLabel = computed(() => this.i18n.translate(STRENGTH_LABELS[this.strength()]));
 
   protected readonly weak = computed(
     () => !!this.newSecret() && this.strength() < MIN_MASTER_PASSWORD_SCORE,
@@ -177,7 +180,7 @@ export class RecoverPage {
     }
 
     try {
-      const empty = createEmptyVaultSnapshot();
+      const empty = createEmptyVaultSnapshot(this.i18n.translate('vaults.defaultName'));
       const encrypted = await encryptVault(secret, empty);
       await this.drive.resetVault(accessToken, JSON.stringify(encrypted));
 
@@ -191,9 +194,7 @@ export class RecoverPage {
       }
 
       this.errorMessage.set(
-        error instanceof Error
-          ? error.message
-          : 'Could not recover your account. Please try again.',
+        error instanceof Error ? error.message : this.i18n.translate('auth.recover.genericError'),
       );
     } finally {
       // Reached on the success path too — the navigation has already resolved by

@@ -3,6 +3,7 @@ import { HlmAvatarImports } from '@spartan-ng/helm/avatar';
 import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
 import { HlmSidebarImports, HlmSidebarService } from '@spartan-ng/helm/sidebar';
 import { AccountStore } from '../../core/account/account.store';
+import { I18nService, TranslatePipe } from '../../core/i18n';
 import { ThemePreference, ThemeService } from '../../core/theme/theme.service';
 import { Icon } from '../../ui/icon/icon';
 import { IconName } from '../../ui/icon/icon-glyphs';
@@ -25,7 +26,7 @@ const THEME_ICONS: Record<ThemePreference, IconName> = {
 @Component({
   selector: 'app-nav-user',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [HlmSidebarImports, HlmAvatarImports, HlmDropdownMenuImports, Icon],
+  imports: [HlmSidebarImports, HlmAvatarImports, HlmDropdownMenuImports, Icon, TranslatePipe],
   templateUrl: './nav-user.html',
 })
 export class NavUser {
@@ -38,6 +39,7 @@ export class NavUser {
   private readonly accounts = inject(AccountStore);
   private readonly themeService = inject(ThemeService);
   private readonly sidebarService = inject(HlmSidebarService);
+  private readonly i18n = inject(I18nService);
 
   protected readonly email = this.accounts.email;
 
@@ -46,7 +48,9 @@ export class NavUser {
    * `/start` and `/unlock` fetch but `/setup` does not — so a first-run session can
    * reach here with nothing known. Better a neutral label than a blank row.
    */
-  protected readonly label = computed(() => this.accounts.displayName() || 'Signed in');
+  protected readonly label = computed(
+    () => this.accounts.displayName() || this.i18n.translate('common.signedIn'),
+  );
 
   /**
    * No avatar image: the Google profile picture is not fetched, so the fallback is

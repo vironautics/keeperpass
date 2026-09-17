@@ -21,16 +21,16 @@
       (click)="back()"
     >
       <app-icon name="chevron-left" />
-      Back to unlock
+      {{ 'auth.recover.backToUnlock' | t }}
     </button>
 
-    <h1 hlmCardTitle>Recover account</h1>
-    <p hlmCardDescription>Please confirm your account and choose a new secret.</p>
+    <h1 hlmCardTitle>{{ 'auth.recover.title' | t }}</h1>
+    <p hlmCardDescription>{{ 'auth.recover.description' | t }}</p>
   </div>
 
   <div hlmCardContent class="flex flex-col gap-4">
     <hlm-field>
-      <label hlmFieldLabel for="recover-email">Email address</label>
+      <label hlmFieldLabel for="recover-email">{{ 'auth.recover.emailLabel' | t }}</label>
       <input
         hlmInput
         id="recover-email"
@@ -42,7 +42,7 @@
     </hlm-field>
 
     <hlm-field>
-      <label hlmFieldLabel for="recover-secret">New secret</label>
+      <label hlmFieldLabel for="recover-secret">{{ 'auth.recover.newSecretLabel' | t }}</label>
 
       <hlm-input-group>
         <input
@@ -57,7 +57,7 @@
             hlmInputGroupButton
             type="button"
             size="icon-xs"
-            aria-label="Generate a secret"
+            [attr.aria-label]="'common.generateSecret' | t"
             (click)="generating.set(true)"
           >
             <app-icon name="generate" />
@@ -66,7 +66,7 @@
             hlmInputGroupButton
             type="button"
             size="icon-xs"
-            [attr.aria-label]="revealed() ? 'Hide secret' : 'Show secret'"
+            [attr.aria-label]="(revealed() ? 'common.hideSecret' : 'common.showSecret') | t"
             [attr.aria-pressed]="revealed()"
             (click)="toggleRevealed()"
           >
@@ -88,8 +88,7 @@
       @if (weak()) {
         <!-- A native output element: the same announcement as a status role, without the role. -->
         <output hlmFieldDescription>
-          This secret is weak, which makes the encryption around your vaults easier to break. You
-          can continue, but a longer passphrase is strongly recommended.
+          {{ 'auth.recover.weakWarning' | t }}
         </output>
       }
     </hlm-field>
@@ -101,7 +100,7 @@
       exposes for exactly that case.
     -->
     <hlm-field [forceInvalid]="mismatch()">
-      <label hlmFieldLabel for="recover-confirmation">Repeat new secret</label>
+      <label hlmFieldLabel for="recover-confirmation">{{ 'auth.recover.repeatSecretLabel' | t }}</label>
 
       <!-- One reveal for both fields — see the note in `setup-page.html`. -->
       <hlm-input-group>
@@ -117,7 +116,7 @@
             hlmInputGroupButton
             type="button"
             size="icon-xs"
-            [attr.aria-label]="revealed() ? 'Hide secret' : 'Show secret'"
+            [attr.aria-label]="(revealed() ? 'common.hideSecret' : 'common.showSecret') | t"
             [attr.aria-pressed]="revealed()"
             (click)="toggleRevealed()"
           >
@@ -127,7 +126,7 @@
       </hlm-input-group>
 
       @if (mismatch()) {
-        <hlm-field-error forceShow>The two secrets do not match.</hlm-field-error>
+        <hlm-field-error forceShow>{{ 'auth.setup.mismatch' | t }}</hlm-field-error>
       }
     </hlm-field>
 
@@ -138,24 +137,20 @@
     -->
     <div hlmAlert class="bg-destructive/10! border-destructive/30 grid-cols-[auto_1fr] gap-x-2.5!">
       <app-icon name="alert" class="text-destructive row-span-2 translate-y-0.5" />
-      <h2 hlmAlertTitle class="col-start-2">Please read this before you continue</h2>
+      <h2 hlmAlertTitle class="col-start-2">{{ 'auth.setup.readBeforeContinue' | t }}</h2>
       <!-- No gap of its own: the description already spaces a `p` that isn't last. -->
       <div hlmAlertDescription class="text-foreground! col-start-2">
         <p>
-          Your vault is encrypted with a key that only your secret can produce. Nobody else holds a
-          copy — not us, not Google — which is what keeps your data yours, and it also means a
-          forgotten secret cannot be reset. Continuing here does not recover your vault. It does
-          this:
+          {{ 'auth.recover.warningIntro' | t }}
         </p>
         <ul class="flex list-disc flex-col gap-1 ps-4">
           <li>
-            Your current vault becomes inaccessible under this new secret — you'll start again with
-            a brand new, empty vault.
+            {{ 'auth.recover.bullet1' | t }}
           </li>
           <li>
-            Your existing vault file isn't deleted. It's kept as a timestamped backup in your
-            <strong>keeperpass</strong> folder in Google Drive, in case the old secret ever comes
-            back to you.
+            {{ 'auth.recover.bullet2Prefix' | t }}
+            <strong>keeperpass</strong>
+            {{ 'auth.recover.bullet2Suffix' | t }}
           </li>
         </ul>
       </div>
@@ -188,7 +183,7 @@
       } @else {
         <app-icon name="refresh" />
       }
-      Recover account
+      {{ 'auth.recover.submit' | t }}
     </button>
   </div>
 </form>

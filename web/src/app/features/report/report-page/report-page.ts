@@ -7,13 +7,14 @@ import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmPopoverImports } from '@spartan-ng/helm/popover';
 import { HlmSidebarTrigger } from '@spartan-ng/helm/sidebar';
 import {
-  AUDIT_DESCRIPTIONS,
+  AUDIT_DESCRIPTION_KEYS,
   AUDIT_ICONS,
-  AUDIT_LABELS,
+  AUDIT_LABEL_KEYS,
   AuditType,
   VaultItem,
 } from '../../../core/models';
 import { AuditService } from '../../../core/audit/audit.service';
+import { I18nService, TranslatePipe } from '../../../core/i18n';
 import { VaultStore } from '../../../core/vault/vault.store';
 import { Icon } from '../../../ui/icon/icon';
 import { IconName } from '../../../ui/icon/icon-glyphs';
@@ -71,6 +72,7 @@ interface AuditSection {
     HlmCardImports,
     HlmPopoverImports,
     HlmSidebarTrigger,
+    TranslatePipe,
   ],
   templateUrl: './report-page.html',
   /** Fills the shell's view area — see `ItemsPage` for why routed views position themselves. */
@@ -80,13 +82,14 @@ export class ReportPage {
   private readonly store = inject(VaultStore);
   private readonly auditService = inject(AuditService);
   private readonly router = inject(Router);
+  private readonly i18n = inject(I18nService);
 
   protected readonly sections = computed<AuditSection[]>(() =>
     AUDIT_ORDER.map((type) => ({
       type,
       icon: AUDIT_ICONS[type],
-      title: AUDIT_LABELS[type],
-      description: AUDIT_DESCRIPTIONS[type],
+      title: this.i18n.translate(AUDIT_LABEL_KEYS[type]),
+      description: this.i18n.translate(AUDIT_DESCRIPTION_KEYS[type]),
       items: this.auditService.itemsWithFinding(type).map((item) => ({
         item,
         vaultLabel: this.store.labelForVault(item.vaultId),

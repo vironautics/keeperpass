@@ -1,15 +1,15 @@
 <hlm-dialog [state]="open() ? 'open' : 'closed'" (stateChanged)="open.set($event === 'open')">
-  <hlm-dialog-content *hlmDialogPortal class="sm:max-w-lg" aria-label="Choose Icon">
+  <hlm-dialog-content *hlmDialogPortal class="sm:max-w-lg" [attr.aria-label]="'items.iconPicker.title' | t">
     <hlm-dialog-header>
-      <h3 hlmDialogTitle>Choose Icon</h3>
-      <p hlmDialogDescription>Search Font Awesome's icon set by name, or by what it's used for.</p>
+      <h3 hlmDialogTitle>{{ 'items.iconPicker.title' | t }}</h3>
+      <p hlmDialogDescription>{{ 'items.iconPicker.description' | t }}</p>
     </hlm-dialog-header>
 
     <input
       hlmInput
       #searchInput
       class="w-full"
-      placeholder="Search icons — try &quot;bank&quot; or &quot;padlock&quot;"
+      [placeholder]="'items.iconPicker.searchPlaceholder' | t"
       autocomplete="off"
       [value]="search()"
       (input)="onSearch($any($event.target).value)"
@@ -22,7 +22,7 @@
     <div
       class="grid max-h-[50vh] grid-cols-4 gap-2 overflow-y-auto p-0.5 sm:grid-cols-6"
       role="listbox"
-      aria-label="Search results"
+      [attr.aria-label]="'items.list.searchItemsAria' | t"
     >
       @for (icon of results(); track icon.name) {
         <button
@@ -36,14 +36,14 @@
         </button>
       } @empty {
         <p class="text-muted-foreground col-span-full py-8 text-center text-sm">
-          No icons match "{{ search() }}".
+          {{ 'items.iconPicker.noResults' | t: { search: search() } }}
         </p>
       }
     </div>
 
     <hlm-dialog-footer>
-      <button hlmBtn variant="ghost" (click)="useDefault()">Use default icon</button>
-      <button hlmBtn variant="outline" (click)="cancel()">Cancel</button>
+      <button hlmBtn variant="ghost" (click)="useDefault()">{{ 'items.iconPicker.useDefault' | t }}</button>
+      <button hlmBtn variant="outline" (click)="cancel()">{{ 'common.cancel' | t }}</button>
     </hlm-dialog-footer>
   </hlm-dialog-content>
 </hlm-dialog>

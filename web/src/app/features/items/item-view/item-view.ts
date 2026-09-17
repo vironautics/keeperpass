@@ -38,6 +38,7 @@ import {
   VaultItem,
 } from '../../../core/models';
 import { AuditService } from '../../../core/audit/audit.service';
+import { I18nService, TranslatePipe } from '../../../core/i18n';
 import { RecentItemsService } from '../../../core/recent/recent-items.service';
 import { foldText } from '../../../core/text/fold';
 import {
@@ -120,6 +121,7 @@ interface HistoryTagDiff {
 function historyFieldRows(
   currentFields: readonly Field[],
   historyFields: readonly Field[],
+  unnamed: string,
 ): HistoryFieldRow[] {
   return currentFields.map((field, index) => {
     const historyField = historyFields[index];
@@ -128,9 +130,9 @@ function historyFieldRows(
 
     return {
       glyph: fieldDefinition((historyField ?? field).type).icon,
-      currentName: nameChanged ? field.name || 'Unnamed' : undefined,
+      currentName: nameChanged ? field.name || unnamed : undefined,
       currentValue: valueChanged ? field.value : undefined,
-      historyName: historyField ? historyField.name || 'Unnamed' : undefined,
+      historyName: historyField ? historyField.name || unnamed : undefined,
       historyValue: historyField ? historyField.value : undefined,
     };
   });
@@ -250,6 +252,7 @@ function fieldValueValidators(type: FieldType): ValidatorFn[] {
     Icon,
     ReactiveFormsModule,
     RouterLink,
+    TranslatePipe,
   ],
   templateUrl: './item-view.html',
   /** Fills the detail pane. See `ItemsPage` for why routed views position themselves. */
@@ -276,6 +279,7 @@ export class ItemView {
   private readonly recentItems = inject(RecentItemsService);
   private readonly auditService = inject(AuditService);
   private readonly host = inject(ElementRef<HTMLElement>);
+  private readonly i18n = inject(I18nService);
 
   protected readonly item = computed<VaultItem | undefined>(() => {
     const stored = this.store.itemById(this.itemId());
@@ -339,7 +343,7 @@ export class ItemView {
   /** One row per *current* field, diffed against the entry at the same index. */
   protected readonly viewingHistoryFieldRows = computed<HistoryFieldRow[]>(() => {
     const entry = this.viewingHistoryEntry();
-    return entry ? historyFieldRows(this.fields(), entry.fields) : [];
+    return entry ? historyFieldRows(this.fields(), entry.fields, this.i18n.translate('common.unnamed')) : [];
   });
 
   /** Fields the history entry has beyond the current item's field count — existed then, doesn't as a current slot now. */
@@ -723,7 +727,11 @@ export class ItemView {
   protected addField(definition: FieldDefinition): void {
     this.editableFields.update((fields) => [
       ...fields,
-      editableFieldFrom({ name: definition.label, type: definition.type, value: '' }),
+      editableFieldFrom({
+        name: this.i18n.translate(definition.labelKey),
+        type: definition.type,
+        value: '',
+      }),
     ]);
     this.bumpFieldsChanged();
     this.addingField.set(false);
@@ -964,7 +972,7 @@ export class ItemView {
       name: '',
       icon: draft.template.icon,
       fields: draft.template.fields.map((field) => ({
-        name: field.name,
+        name: this.i18n.translate(field.nameKey),
         type: field.type,
         value: field.value ?? '',
       })),

@@ -7,6 +7,7 @@ import { HlmSpinnerImports } from '@spartan-ng/helm/spinner';
 import { AccountStore } from '../../../core/account/account.store';
 import { AuthService } from '../../../core/auth/auth.service';
 import { SessionStore } from '../../../core/auth/session.store';
+import { I18nService, TranslatePipe } from '../../../core/i18n';
 import { GoogleLogo } from '../../../ui/google-logo/google-logo';
 import { Icon } from '../../../ui/icon/icon';
 
@@ -19,7 +20,15 @@ import { Icon } from '../../../ui/icon/icon';
 @Component({
   selector: 'app-start-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [GoogleLogo, Icon, HlmAlertImports, HlmButtonImports, HlmCardImports, HlmSpinnerImports],
+  imports: [
+    GoogleLogo,
+    Icon,
+    TranslatePipe,
+    HlmAlertImports,
+    HlmButtonImports,
+    HlmCardImports,
+    HlmSpinnerImports,
+  ],
   templateUrl: './start-page.html',
   /** Fills the layout's column, so the card's `max-w-*` is not measured against its own copy — see `UnlockPage`. */
   host: { class: 'block self-stretch' },
@@ -29,6 +38,7 @@ export class StartPage {
   private readonly accounts = inject(AccountStore);
   private readonly session = inject(SessionStore);
   private readonly router = inject(Router);
+  private readonly i18n = inject(I18nService);
 
   /**
    * Drives the button's spinner and keeps a second popup out.
@@ -56,7 +66,7 @@ export class StartPage {
       await this.router.navigate(['/unlock']);
     } catch (error) {
       this.errorMessage.set(
-        error instanceof Error ? error.message : 'Something went wrong. Please try again.',
+        error instanceof Error ? error.message : this.i18n.translate('common.genericError'),
       );
     } finally {
       this.submitting.set(false);

@@ -3,11 +3,11 @@
     The sidebar is a sheet below `md`, so it needs one obvious way in. From `md` up the
     sidebar column is permanently on screen and its own header owns the toggle.
   -->
-  <button hlmSidebarTrigger class="md:hidden" srOnlyText="Open navigation menu"></button>
+  <button hlmSidebarTrigger class="md:hidden" [srOnlyText]="'common.openNavMenu' | t"></button>
 
   <h1 class="flex min-w-0 flex-1 items-center gap-2 px-1 text-sm font-semibold">
     <app-icon name="policies" class="text-accent-strong text-[0.8125rem]" />
-    <span class="min-w-0 truncate">Policies</span>
+    <span class="min-w-0 truncate">{{ 'policies.title' | t }}</span>
   </h1>
 </header>
 
@@ -22,24 +22,23 @@
 <main class="min-h-0 flex-1 overflow-y-auto">
   <div class="mx-auto w-full max-w-3xl p-4 sm:p-6">
     <hlm-tabs [tab]="activeTab()" (tabActivated)="onTabActivated($event)">
-      <hlm-tabs-list class="tab-nav w-full" aria-label="Policies">
-        <button hlmTabsTrigger="terms" class="tab-button flex-1">Terms &amp; Conditions</button>
-        <button hlmTabsTrigger="privacy" class="tab-button flex-1">Privacy Policy</button>
+      <hlm-tabs-list class="tab-nav w-full" [attr.aria-label]="'policies.title' | t">
+        <button hlmTabsTrigger="terms" class="tab-button flex-1">{{ 'policies.termsTab' | t }}</button>
+        <button hlmTabsTrigger="privacy" class="tab-button flex-1">{{ 'policies.privacyTab' | t }}</button>
       </hlm-tabs-list>
 
       <div hlmTabsContent="terms" class="tab-content">
         <div hlmCard class="mt-4">
           <div hlmCardHeader>
-            <h2 hlmCardTitle class="text-base">Terms &amp; Conditions</h2>
+            <h2 hlmCardTitle class="text-base">{{ 'policies.termsTab' | t }}</h2>
           </div>
 
           <div hlmCardContent class="text-muted-foreground flex flex-col gap-4 text-sm leading-relaxed">
             <p>
-              The Terms of Service are kept up to date in one place, outside the app, so they stay
-              consistent no matter where you read them.
+              {{ 'policies.termsBody' | t }}
             </p>
             <p>
-              Read the current version at
+              {{ 'policies.linkPrefix' | t }}
               <a
                 href="https://keeperpass.com/terms-of-service"
                 target="_blank"
@@ -55,16 +54,15 @@
       <div hlmTabsContent="privacy" class="tab-content">
         <div hlmCard class="mt-4">
           <div hlmCardHeader>
-            <h2 hlmCardTitle class="text-base">Privacy Policy</h2>
+            <h2 hlmCardTitle class="text-base">{{ 'policies.privacyTab' | t }}</h2>
           </div>
 
           <div hlmCardContent class="text-muted-foreground flex flex-col gap-4 text-sm leading-relaxed">
             <p>
-              The Privacy Policy is kept up to date in one place, outside the app, so it stays
-              consistent no matter where you read it.
+              {{ 'policies.privacyBody' | t }}
             </p>
             <p>
-              Read the current version at
+              {{ 'policies.linkPrefix' | t }}
               <a
                 href="https://keeperpass.com/privacy-policy"
                 target="_blank"

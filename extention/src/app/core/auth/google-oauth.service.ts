@@ -1,4 +1,5 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
+import { I18nService } from '../i18n';
 import { SESSION_KEYS, sessionGet } from '../storage/extension-session-storage';
 
 declare const chrome: any;
@@ -17,20 +18,20 @@ export class GoogleAuthError extends Error {
 }
 
 export class GoogleAuthExpiredError extends GoogleAuthError {
-  constructor() {
-    super('auth_expired', 'Google authentication token has expired. Please sign in again.');
+  constructor(message = 'Google authentication token has expired. Please sign in again.') {
+    super('auth_expired', message);
   }
 }
 
 export class GoogleAuthCancelledError extends GoogleAuthError {
-  constructor() {
-    super('auth_cancelled', 'Google sign-in was cancelled.');
+  constructor(message = 'Google sign-in was cancelled.') {
+    super('auth_cancelled', message);
   }
 }
 
 export class GoogleAuthNetworkError extends GoogleAuthError {
   constructor(details: string) {
-    super('auth_network_error', `Network error during authentication: ${details}`);
+    super('auth_network_error', details);
   }
 }
 
@@ -39,14 +40,20 @@ interface OAuthMessageResponse {
   error?: string;
 }
 
-function sendToBackground(action: string): Promise<OAuthMessageResponse> {
+/**
+ * `noResponseMessage` is passed in rather than looked up here: this is a
+ * plain function (no Angular DI), so it can't reach `I18nService` itself.
+ */
+function sendToBackground(action: string, noResponseMessage: string): Promise<OAuthMessageResponse> {
   return new Promise((resolve, reject) => {
     chrome.runtime.sendMessage({ action }, (response: OAuthMessageResponse | undefined) => {
       if (chrome.runtime.lastError) {
+        // Chrome's own error text — left untranslated, same as Google's own
+        // OAuth error codes elsewhere in this file.
         reject(new GoogleAuthError('messaging_error', chrome.runtime.lastError.message));
         return;
       }
-      resolve(response ?? { error: 'No response from the extension background script.' });
+      resolve(response ?? { error: noResponseMessage });
     });
   });
 }
@@ -72,6 +79,8 @@ function sendToBackground(action: string): Promise<OAuthMessageResponse> {
  */
 @Injectable({ providedIn: 'root' })
 export class GoogleOAuthService {
+  private readonly i18n = inject(I18nService);
+
   private readonly _isLoading = signal(false);
 
   readonly isLoading = this._isLoading.asReadonly();
@@ -86,18 +95,25 @@ export class GoogleOAuthService {
    */
   async signIn(): Promise<string> {
     if (this._isLoading()) {
-      throw new GoogleAuthError('already_signing_in', 'Sign-in is already in progress.');
+      throw new GoogleAuthError('already_signing_in', this.i18n.translate('auth.oauth.signInInProgress'));
     }
 
     this._isLoading.set(true);
 
     try {
-      const response = await sendToBackground('googleSignIn');
+      const response = await sendToBackground(
+        'googleSignIn',
+        this.i18n.translate('auth.oauth.noBackgroundResponse'),
+      );
 
       if (!response.accessToken) {
-        const message = response.error ?? 'Unknown error';
+        // `response.error` can be a raw OAuth error code straight from
+        // Google's redirect (see `google-oauth-flow.ts`) — left as-is rather
+        // than translated, same as `google-identity-services.ts` leaves
+        // Google's own error text alone.
+        const message = response.error ?? this.i18n.translate('auth.oauth.unknownError');
         if (message.includes('user_cancelled_popup_flow') || message.includes('popup_closed')) {
-          throw new GoogleAuthCancelledError();
+          throw new GoogleAuthCancelledError(this.i18n.translate('auth.oauth.cancelled'));
         }
         throw new GoogleAuthError('token_error', message);
       }
@@ -119,7 +135,7 @@ export class GoogleOAuthService {
    * (see `disconnect-session.ts`), so this just goes straight there.
    */
   async renewToken(_staleToken: string): Promise<never> {
-    throw new GoogleAuthExpiredError();
+    throw new GoogleAuthExpiredError(this.i18n.translate('auth.oauth.tokenExpired'));
   }
 
   /**
@@ -132,9 +148,11 @@ export class GoogleOAuthService {
 
       if (!response.ok) {
         if (response.status === 400 || response.status === 401) {
-          throw new GoogleAuthExpiredError();
+          throw new GoogleAuthExpiredError(this.i18n.translate('auth.oauth.tokenExpired'));
         }
-        throw new GoogleAuthNetworkError(`HTTP ${response.status}`);
+        throw new GoogleAuthNetworkError(
+          this.i18n.translate('auth.oauth.networkError', { details: `HTTP ${response.status}` }),
+        );
       }
 
       const data = await response.json();
@@ -142,17 +160,16 @@ export class GoogleOAuthService {
       // Check if token has drive.file scope
       const scopes = (data.scope || '').split(' ');
       if (!scopes.includes('https://www.googleapis.com/auth/drive.file')) {
-        throw new GoogleAuthError(
-          'insufficient_scope',
-          'Token does not have the required drive.file scope.',
-        );
+        throw new GoogleAuthError('insufficient_scope', this.i18n.translate('auth.oauth.insufficientScope'));
       }
     } catch (error) {
       if (error instanceof GoogleAuthError) {
         throw error;
       }
       throw new GoogleAuthNetworkError(
-        error instanceof Error ? error.message : 'Failed to verify token',
+        this.i18n.translate('auth.oauth.networkError', {
+          details: error instanceof Error ? error.message : this.i18n.translate('auth.oauth.verifyTokenFailed'),
+        }),
       );
     }
   }

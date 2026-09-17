@@ -9,7 +9,7 @@
       The sidebar is a sheet below `md`, so it needs one obvious way in. From `md` up
       the sidebar column is permanently on screen and its own header owns the toggle.
     -->
-    <button hlmSidebarTrigger class="md:hidden" srOnlyText="Open navigation menu"></button>
+    <button hlmSidebarTrigger class="md:hidden" [srOnlyText]="'common.openNavMenu' | t"></button>
 
     <h1 class="flex min-w-0 flex-1 items-center gap-2 px-1 text-sm font-semibold">
       <app-icon [name]="headingIcon()" class="text-accent-strong text-[0.8125rem]" />
@@ -26,13 +26,13 @@
         hlmBtn
         variant="ghost"
         size="icon-sm"
-        aria-label="Select multiple items"
+        [attr.aria-label]="'items.list.selectMultipleAria' | t"
         (click)="startSelecting()"
       >
         <app-icon name="checkbox-checked" />
       </button>
 
-      <button hlmBtn variant="ghost" size="icon-sm" aria-label="New item" (click)="createItem()">
+      <button hlmBtn variant="ghost" size="icon-sm" [attr.aria-label]="'items.list.newItemAria' | t" (click)="createItem()">
         <app-icon name="add" />
       </button>
 
@@ -40,7 +40,7 @@
         hlmBtn
         variant="ghost"
         size="icon-sm"
-        aria-label="Search items"
+        [attr.aria-label]="'items.list.searchItemsAria' | t"
         (click)="startSearch()"
       >
         <app-icon name="search" />
@@ -55,8 +55,8 @@
         hlmBtn
         variant="ghost"
         size="icon-sm"
-        [attr.aria-label]="newestFirst() ? 'Sort oldest first' : 'Sort newest first'"
-        [hlmTooltip]="newestFirst() ? 'Newest first' : 'Oldest first'"
+        [attr.aria-label]="(newestFirst() ? 'items.list.sortOldestFirstAria' : 'items.list.sortNewestFirstAria') | t"
+        [hlmTooltip]="(newestFirst() ? 'items.list.newestFirst' : 'items.list.oldestFirst') | t"
         (click)="toggleSortOrder()"
       >
         <app-icon [name]="newestFirst() ? 'sort-desc' : 'sort-asc'" />
@@ -77,8 +77,8 @@
         #searchInput
         class="text-foreground"
         [formControl]="searchControl"
-        placeholder="Type to search"
-        aria-label="Search items"
+        [placeholder]="'items.list.typeToSearch' | t"
+        [attr.aria-label]="'items.list.searchItemsAria' | t"
         (keydown.escape)="cancelSearch()"
       />
 
@@ -87,7 +87,7 @@
           hlmInputGroupButton
           size="icon-xs"
           type="button"
-          aria-label="Cancel search"
+          [attr.aria-label]="'items.list.cancelSearchAria' | t"
           (click)="cancelSearch()"
         >
           <app-icon name="cancel" />
@@ -103,7 +103,7 @@
       hlmBtn
       variant="ghost"
       size="icon-sm"
-      aria-label="Leave selection mode"
+      [attr.aria-label]="'common.leaveSelectionMode' | t"
       (click)="cancelSelecting()"
     >
       <app-icon name="cancel" />
@@ -113,21 +113,21 @@
       hlmBtn
       variant="ghost"
       size="icon-sm"
-      aria-label="Select or deselect all"
+      [attr.aria-label]="'common.selectOrDeselectAll' | t"
       (click)="toggleSelectAll()"
     >
       <app-icon name="list-check" />
     </button>
 
     <span class="min-w-0 flex-1 truncate text-center text-sm">
-      {{ selectedCount() }} {{ selectedCount() === 1 ? 'item' : 'items' }} selected
+      {{ (selectedCount() === 1 ? 'items.list.itemSelectedOne' : 'items.list.itemSelectedMany') | t: { count: selectedCount() } }}
     </span>
 
     <button
       hlmBtn
       variant="ghost"
       size="icon-sm"
-      aria-label="Move selected items"
+      [attr.aria-label]="'items.list.moveSelectedAria' | t"
       [disabled]="!selectedCount()"
       (click)="openMove()"
     >
@@ -138,7 +138,7 @@
       hlmBtn
       variant="ghost"
       size="icon-sm"
-      aria-label="Delete selected items"
+      [attr.aria-label]="'items.list.deleteSelectedAria' | t"
       [disabled]="!selectedCount()"
       (click)="requestDelete()"
     >
@@ -161,7 +161,7 @@
         <hlm-empty-content>
           <button hlmBtn variant="outline" size="sm" (click)="createItem()">
             <app-icon name="add" />
-            New Vault Item
+            {{ 'items.list.newVaultItem' | t }}
           </button>
         </hlm-empty-content>
       </div>
@@ -213,17 +213,17 @@
   [state]="movingItems() ? 'open' : 'closed'"
   (stateChanged)="movingItems.set($event === 'open')"
 >
-  <hlm-dialog-content *hlmDialogPortal class="sm:max-w-sm" aria-label="Move To Vault">
+  <hlm-dialog-content *hlmDialogPortal class="sm:max-w-sm" [attr.aria-label]="'items.view.moveToVaultTitle' | t">
     <hlm-dialog-header>
       <h2 hlmDialogTitle>
-        Move {{ selectedCount() }} {{ selectedCount() === 1 ? 'item' : 'items' }}
+        {{ (selectedCount() === 1 ? 'items.list.moveOne' : 'items.list.moveMany') | t: { count: selectedCount() } }}
       </h2>
-      <p hlmDialogDescription>Pick the vault they should live in.</p>
+      <p hlmDialogDescription>{{ 'items.list.pickVaultTheyLiveIn' | t }}</p>
     </hlm-dialog-header>
 
     <hlm-select [formControl]="moveVaultControl" [itemToString]="vaultOptionLabel">
       <hlm-select-trigger class="w-full">
-        <hlm-select-value placeholder="Select a vault" />
+        <hlm-select-value [placeholder]="'items.selectVaultPlaceholder' | t" />
       </hlm-select-trigger>
       <hlm-select-content *hlmSelectPortal>
         @for (option of moveVaultOptions(); track option.value) {
@@ -233,8 +233,8 @@
     </hlm-select>
 
     <hlm-dialog-footer>
-      <button hlmBtn variant="outline" (click)="cancelMove()">Cancel</button>
-      <button hlmBtn [disabled]="!canMove()" (click)="confirmMove()">Move</button>
+      <button hlmBtn variant="outline" (click)="cancelMove()">{{ 'common.cancel' | t }}</button>
+      <button hlmBtn [disabled]="!canMove()" (click)="confirmMove()">{{ 'common.move' | t }}</button>
     </hlm-dialog-footer>
   </hlm-dialog-content>
 </hlm-dialog>
@@ -243,19 +243,18 @@
   [state]="deleteRequested() ? 'open' : 'closed'"
   (stateChanged)="deleteRequested.set($event === 'open')"
 >
-  <hlm-alert-dialog-content *hlmAlertDialogPortal aria-label="Delete Items">
+  <hlm-alert-dialog-content *hlmAlertDialogPortal [attr.aria-label]="'items.list.deleteDialogAriaLabel' | t">
     <hlm-alert-dialog-header>
       <h2 hlmAlertDialogTitle>
-        Delete {{ selectedCount() }} {{ selectedCount() === 1 ? 'item' : 'items' }}
+        {{ (selectedCount() === 1 ? 'items.list.deleteOneTitle' : 'items.list.deleteManyTitle') | t: { count: selectedCount() } }}
       </h2>
       <p hlmAlertDialogDescription>
-        Are you sure you want to delete
-        {{ selectedCount() === 1 ? 'this item' : 'these items' }}? This cannot be undone.
+        {{ (selectedCount() === 1 ? 'items.list.deleteConfirmOne' : 'items.list.deleteConfirmMany') | t }}
       </p>
     </hlm-alert-dialog-header>
     <hlm-alert-dialog-footer>
-      <button hlmAlertDialogCancel (click)="cancelDelete()">Cancel</button>
-      <button hlmAlertDialogAction variant="destructive" (click)="confirmDelete()">Delete</button>
+      <button hlmAlertDialogCancel (click)="cancelDelete()">{{ 'common.cancel' | t }}</button>
+      <button hlmAlertDialogAction variant="destructive" (click)="confirmDelete()">{{ 'common.delete' | t }}</button>
     </hlm-alert-dialog-footer>
   </hlm-alert-dialog-content>
 </hlm-alert-dialog>

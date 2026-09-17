@@ -2,7 +2,12 @@ import { Routes } from '@angular/router';
 import { homeGuard, setupGuard, startGuard, unlockGuard } from '../../core/auth/auth.guard';
 import { AuthLayout } from './auth-layout/auth-layout';
 
-/** Unauthenticated screens. All share the `AuthLayout` chrome. */
+/**
+ * Unauthenticated screens. All share the `AuthLayout` chrome.
+ *
+ * Each `title` below is a `TranslationKey`, not literal copy — see the note
+ * atop `app.routes.ts`.
+ */
 export const authRoutes: Routes = [
   {
     path: '',
@@ -10,25 +15,25 @@ export const authRoutes: Routes = [
     children: [
       {
         path: 'start',
-        title: 'Welcome',
+        title: 'auth.start.title',
         canMatch: [startGuard],
         loadComponent: () => import('./start/start-page').then((m) => m.StartPage),
       },
       {
         path: 'unlock',
-        title: 'Unlock your vault',
+        title: 'auth.unlock.title',
         canMatch: [unlockGuard],
         loadComponent: () => import('./unlock/unlock-page').then((m) => m.UnlockPage),
       },
       {
         path: 'setup',
-        title: 'Create your vault',
+        title: 'auth.setup.title',
         canMatch: [setupGuard],
         loadComponent: () => import('./setup/setup-page').then((m) => m.SetupPage),
       },
       {
         path: 'recover',
-        title: 'Recover Account',
+        title: 'auth.recover.title',
         // Same phase gate as /unlock — this is the only place it's reachable from.
         canMatch: [unlockGuard],
         loadComponent: () => import('./recover/recover-page').then((m) => m.RecoverPage),

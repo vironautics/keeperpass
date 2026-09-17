@@ -3,6 +3,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { HlmCollapsibleImports } from '@spartan-ng/helm/collapsible';
 import { HlmSidebarImports } from '@spartan-ng/helm/sidebar';
 import { Vault } from '../../core/models';
+import { TranslatePipe } from '../../core/i18n';
 import { RecentItemsService } from '../../core/recent/recent-items.service';
 import { VaultStore } from '../../core/vault/vault.store';
 import { CreateVaultDialog } from '../../features/items/create-vault-dialog/create-vault-dialog';
@@ -26,6 +27,7 @@ import { Icon } from '../../ui/icon/icon';
     RouterLink,
     RouterLinkActive,
     CreateVaultDialog,
+    TranslatePipe,
   ],
   templateUrl: './nav-vaults.html',
 })

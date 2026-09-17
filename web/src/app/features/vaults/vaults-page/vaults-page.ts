@@ -12,6 +12,7 @@ import { HlmItemImports } from '@spartan-ng/helm/item';
 import { HlmSidebarTrigger } from '@spartan-ng/helm/sidebar';
 import { HlmTooltip } from '@spartan-ng/helm/tooltip';
 import { maxLength, singleLineValidator } from '../../../core/validation';
+import { I18nService, TranslatePipe } from '../../../core/i18n';
 import { PERSONAL_VAULT_ID, VaultStore } from '../../../core/vault/vault.store';
 import { VaultSyncService } from '../../../core/vault/vault-sync.service';
 import { CreateVaultDialog } from '../../items/create-vault-dialog/create-vault-dialog';
@@ -40,6 +41,7 @@ import { Icon } from '../../../ui/icon/icon';
     HlmItemImports,
     HlmSidebarTrigger,
     HlmTooltip,
+    TranslatePipe,
   ],
   templateUrl: './vaults-page.html',
   /** Fills the shell's view area — see `ItemsPage` for why routed views position themselves. */
@@ -48,6 +50,7 @@ import { Icon } from '../../../ui/icon/icon';
 export class VaultsPage {
   private readonly store = inject(VaultStore);
   private readonly vaultSync = inject(VaultSyncService);
+  private readonly i18n = inject(I18nService);
 
   protected readonly ownVaults = this.store.ownVaults;
 
@@ -84,7 +87,10 @@ export class VaultsPage {
       return '';
     }
     const count = this.store.itemsInVault(personal.id).length;
-    return `${personal.name} holds ${count} ${count === 1 ? 'item' : 'items'} and cannot be renamed or deleted.`;
+    return this.i18n.translate(
+      count === 1 ? 'vaults.personalSummaryOne' : 'vaults.personalSummaryMany',
+      { name: personal.name, count },
+    );
   });
 
   /** Opens the shared "New Vault" dialog — the same one the sidebar's + opens. */
@@ -218,6 +224,11 @@ export class VaultsPage {
     const vault = this.deletingVault();
     return vault ? this.store.itemsInVault(vault.id).length : 0;
   });
+
+  /** Named in the delete-confirmation copy — where those items actually land. */
+  protected readonly personalVaultName = computed(
+    () => this.store.personalVault()?.name ?? this.store.labelForVault(PERSONAL_VAULT_ID),
+  );
 
   protected requestDelete(vaultId: string, vaultName: string): void {
     if (vaultId === PERSONAL_VAULT_ID) {

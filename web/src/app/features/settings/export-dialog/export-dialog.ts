@@ -14,6 +14,7 @@ import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmDialogImports } from '@spartan-ng/helm/dialog';
 import { HlmFieldImports } from '@spartan-ng/helm/field';
 import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { I18nService, TranslatePipe } from '../../../core/i18n';
 import { CSV_FORMAT, downloadTextFile, itemsToCsv } from '../../../core/import-export';
 import { VaultStore } from '../../../core/vault/vault.store';
 import { VaultSyncService } from '../../../core/vault/vault-sync.service';
@@ -46,6 +47,7 @@ const ALL_VAULTS = 'all';
     HlmDialogImports,
     HlmFieldImports,
     HlmSelectImports,
+    TranslatePipe,
   ],
   templateUrl: './export-dialog.html',
   /** The dialog lives in an overlay, so this host renders nothing. */
@@ -58,13 +60,14 @@ export class ExportDialog {
 
   private readonly store = inject(VaultStore);
   private readonly vaultSync = inject(VaultSyncService);
+  private readonly i18n = inject(I18nService);
 
   private readonly selectedVault = toSignal(this.vaultControl.valueChanges, {
     initialValue: this.vaultControl.value,
   });
 
   protected readonly vaultOptions = computed<Option[]>(() => [
-    { value: ALL_VAULTS, label: 'All Vaults' },
+    { value: ALL_VAULTS, label: this.i18n.translate('settings.export.allVaultsFallback') },
     ...this.store.vaults().map((vault) => ({
       value: vault.id,
       label: this.store.labelForVault(vault.id),
@@ -124,7 +127,9 @@ export class ExportDialog {
   /** What was exported, in words — "All Vaults", or the vault's own name. */
   private scopeLabel(): string {
     const vaultId = this.selectedVault();
-    return vaultId === ALL_VAULTS ? 'All Vaults' : (this.store.labelForVault(vaultId) ?? 'Vault');
+    return vaultId === ALL_VAULTS
+      ? this.i18n.translate('settings.export.allVaultsFallback')
+      : (this.store.labelForVault(vaultId) ?? this.i18n.translate('settings.export.vaultFallback'));
   }
 
   private fileName(): string {

@@ -15,6 +15,7 @@ import {
   totpCounter,
   totpProgress,
 } from '../../../core/otp/totp';
+import { TranslatePipe } from '../../../core/i18n';
 
 /** How often the countdown ring is redrawn. */
 const TICK_INTERVAL_MS = 1000;
@@ -31,6 +32,7 @@ const RING_LENGTH = 25;
 @Component({
   selector: 'app-totp',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [TranslatePipe],
   templateUrl: './totp.html',
   styleUrl: './totp.scss',
 })

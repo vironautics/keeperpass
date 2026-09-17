@@ -19,7 +19,7 @@
         [itemToString]="localeLabel"
       >
         <hlm-select-trigger class="w-full sm:w-64">
-          <hlm-select-value placeholder="Language" />
+          <hlm-select-value [placeholder]="'generator.language' | t" />
         </hlm-select-trigger>
         <hlm-select-content *hlmSelectPortal>
           @for (option of localeOptions; track option.value) {

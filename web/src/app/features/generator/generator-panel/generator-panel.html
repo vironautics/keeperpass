@@ -5,14 +5,14 @@
       control the generator dialog uses so the two read as one feature.
     -->
     <hlm-toggle-group [value]="mode()" (valueChange)="setMode($event)" class="w-full">
-      <button hlmToggleGroupItem value="words" class="flex-1">Passphrase</button>
-      <button hlmToggleGroupItem value="chars" class="flex-1">Random string</button>
+      <button hlmToggleGroupItem value="words" class="flex-1">{{ 'generator.passphrase' | t }}</button>
+      <button hlmToggleGroupItem value="chars" class="flex-1">{{ 'generator.randomString' | t }}</button>
     </hlm-toggle-group>
 
     @if (mode() === 'words') {
       <div class="flex flex-col gap-4">
         <div hlmField>
-          <label hlmFieldLabel for="generator-separator">Word separator</label>
+          <label hlmFieldLabel for="generator-separator">{{ 'generator.wordSeparator' | t }}</label>
           <hlm-select
             id="generator-separator"
             [value]="separator()"
@@ -20,7 +20,7 @@
             (valueChange)="onSeparatorPicked($event)"
           >
             <hlm-select-trigger class="w-full">
-              <hlm-select-value placeholder="Separator" />
+              <hlm-select-value [placeholder]="'generator.separatorPlaceholder' | t" />
             </hlm-select-trigger>
             <hlm-select-content *hlmSelectPortal>
               @for (option of separatorOptions; track option.value) {
@@ -31,7 +31,7 @@
         </div>
 
         <div hlmField>
-          <label hlmFieldLabel for="generator-language">Language</label>
+          <label hlmFieldLabel for="generator-language">{{ 'generator.language' | t }}</label>
           <hlm-select
             id="generator-language"
             [value]="language()"
@@ -39,7 +39,7 @@
             (valueChange)="onLanguagePicked($event)"
           >
             <hlm-select-trigger class="w-full">
-              <hlm-select-value placeholder="Language" />
+              <hlm-select-value [placeholder]="'generator.languagePlaceholder' | t" />
             </hlm-select-trigger>
             <hlm-select-content *hlmSelectPortal>
               @for (option of languageOptions; track option.value) {
@@ -51,7 +51,7 @@
 
         <div class="flex flex-col gap-3">
           <div class="flex items-center justify-between gap-4">
-            <label hlmLabel for="generator-words">Words</label>
+            <label hlmLabel for="generator-words">{{ 'generator.words' | t }}</label>
             <span class="text-muted-foreground text-sm tabular-nums">{{ wordCount() }}</span>
           </div>
           <hlm-slider
@@ -61,7 +61,7 @@
             min="3"
             max="12"
             step="1"
-            aria-label="Number of words"
+            [attr.aria-label]="'generator.numberOfWordsAria' | t"
           />
         </div>
       </div>
@@ -87,12 +87,12 @@
         </div>
 
         @if (charsetEmpty()) {
-          <p class="text-destructive text-xs">Pick at least one kind of character.</p>
+          <p class="text-destructive text-xs">{{ 'generator.pickAtLeastOneChar' | t }}</p>
         }
 
         <div class="flex flex-col gap-3">
           <div class="flex items-center justify-between gap-4">
-            <label hlmLabel for="generator-length">Length</label>
+            <label hlmLabel for="generator-length">{{ 'generator.length' | t }}</label>
             <span class="text-muted-foreground text-sm tabular-nums">{{ length() }}</span>
           </div>
           <hlm-slider
@@ -102,7 +102,7 @@
             min="5"
             max="150"
             step="1"
-            aria-label="Password length"
+            [attr.aria-label]="'generator.passwordLengthAria' | t"
           />
         </div>
       </div>
@@ -125,14 +125,14 @@
           {{ value() }}
         </p>
       } @else {
-        <p class="text-muted-foreground text-center text-sm">Nothing to generate.</p>
+        <p class="text-muted-foreground text-center text-sm">{{ 'generator.nothingToGenerate' | t }}</p>
       }
     </div>
 
     <div class="flex gap-2">
       <button hlmBtn variant="outline" class="flex-1" type="button" (click)="generate()">
         <app-icon name="refresh" />
-        Regenerate
+        {{ 'generator.regenerate' | t }}
       </button>
 
       <button
@@ -140,11 +140,11 @@
         class="flex-1"
         type="button"
         [disabled]="!value()"
-        aria-label="Copy password"
+        [attr.aria-label]="'generator.copyPasswordAria' | t"
         (click)="copy()"
       >
         <app-icon [name]="copied() ? 'check' : 'copy'" />
-        {{ copied() ? 'Copied' : 'Copy' }}
+        {{ (copied() ? 'common.copied' : 'common.copy') | t }}
       </button>
     </div>
   </div>

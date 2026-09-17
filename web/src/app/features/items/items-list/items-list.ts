@@ -22,9 +22,15 @@ import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
 import { HlmSelectImports } from '@spartan-ng/helm/select';
 import { HlmSidebarTrigger } from '@spartan-ng/helm/sidebar';
 import { HlmTooltip } from '@spartan-ng/helm/tooltip';
-import { AUDIT_EMPTY_MESSAGES, AUDIT_ICONS, AUDIT_LABELS, VaultItem } from '../../../core/models';
+import {
+  AUDIT_EMPTY_MESSAGE_KEYS,
+  AUDIT_ICONS,
+  AUDIT_LABEL_KEYS,
+  VaultItem,
+} from '../../../core/models';
 import { RecentItemsService } from '../../../core/recent/recent-items.service';
 import { AuditService } from '../../../core/audit/audit.service';
+import { I18nService, TranslatePipe } from '../../../core/i18n';
 import { VaultSyncService } from '../../../core/vault/vault-sync.service';
 import { VaultStore } from '../../../core/vault/vault.store';
 import { Icon } from '../../../ui/icon/icon';
@@ -76,6 +82,7 @@ interface ItemRowModel {
     HlmTooltip,
     Icon,
     ItemRow,
+    TranslatePipe,
   ],
   templateUrl: './items-list.html',
   /** A column that fills the pane `ItemsPage` gives it, and never scrolls itself. */
@@ -118,6 +125,7 @@ export class ItemsList {
   private readonly vaultSync = inject(VaultSyncService);
   private readonly recentItems = inject(RecentItemsService);
   private readonly auditService = inject(AuditService);
+  private readonly i18n = inject(I18nService);
 
   private readonly selectedIds = signal<ReadonlySet<string>>(new Set());
   private readonly queryParams = toSignal(this.route.queryParams, { initialValue: {} });
@@ -198,23 +206,31 @@ export class ItemsList {
     const filter = this.filter();
 
     if (filter.favourites) {
-      return { icon: 'favourite', title: 'Favorites', context: '' };
+      return { icon: 'favourite', title: this.i18n.translate('items.list.favorites'), context: '' };
     }
     if (filter.recent) {
-      return { icon: 'time', title: 'Recently Used', context: '' };
+      return { icon: 'time', title: this.i18n.translate('items.list.recentlyUsed'), context: '' };
     }
     if (filter.tag) {
       return { icon: 'tags', title: filter.tag, context: '' };
     }
     if (filter.report) {
-      return { icon: AUDIT_ICONS[filter.report], title: AUDIT_LABELS[filter.report], context: '' };
+      return {
+        icon: AUDIT_ICONS[filter.report],
+        title: this.i18n.translate(AUDIT_LABEL_KEYS[filter.report]),
+        context: '',
+      };
     }
     if (filter.vaultId) {
       const vault = this.store.vaultById(filter.vaultId);
       const organization = this.store.organizationById(vault?.organizationId);
-      return { icon: 'vaults', title: vault?.name ?? 'Vault', context: organization?.name ?? '' };
+      return {
+        icon: 'vaults',
+        title: vault?.name ?? this.i18n.translate('items.list.vaultFallback'),
+        context: organization?.name ?? '',
+      };
     }
-    return { icon: 'vaults', title: 'All Vaults', context: '' };
+    return { icon: 'vaults', title: this.i18n.translate('items.list.allVaults'), context: '' };
   });
 
   protected readonly headingIcon = computed(() => this.heading().icon);
@@ -225,21 +241,24 @@ export class ItemsList {
     const filter = this.filter();
 
     if (filter.search) {
-      return { icon: 'search', message: 'Your search did not match any items.' };
+      return { icon: 'search', message: this.i18n.translate('items.list.searchNoResults') };
     }
     if (filter.vaultId) {
-      return { icon: 'vault', message: 'This vault does not have any items yet.' };
+      return { icon: 'vault', message: this.i18n.translate('items.list.vaultEmpty') };
     }
     if (filter.favourites) {
-      return { icon: 'favourite', message: "You don't have any favorites yet." };
+      return { icon: 'favourite', message: this.i18n.translate('items.list.noFavourites') };
     }
     if (filter.recent) {
-      return { icon: 'time', message: "You don't have any recently used items!" };
+      return { icon: 'time', message: this.i18n.translate('items.list.noRecent') };
     }
     if (filter.report) {
-      return { icon: 'audit-clean', message: AUDIT_EMPTY_MESSAGES[filter.report] };
+      return {
+        icon: 'audit-clean',
+        message: this.i18n.translate(AUDIT_EMPTY_MESSAGE_KEYS[filter.report]),
+      };
     }
-    return { icon: 'vaults', message: "You don't have any items yet." };
+    return { icon: 'vaults', message: this.i18n.translate('items.list.noItems') };
   });
 
   protected readonly emptyStateIcon = computed(() => this.emptyState().icon);

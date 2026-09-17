@@ -262,6 +262,7 @@ export interface Country {
   iso: string;
   /** E.164 calling code, with the leading `+`. */
   dial: string;
+  /** English name — kept as the universal fallback; see `countryName()` for the shown one. */
   name: string;
   /** `🇫🇷` — derived from the ISO code's regional indicator symbols. */
   flag: string;
@@ -282,6 +283,43 @@ export const COUNTRY_CODES: readonly Country[] = COUNTRIES.map(([iso, dial, name
 /** Looks a country up by its ISO code. */
 export function countryByIso(iso: string): Country | undefined {
   return COUNTRY_CODES.find((country) => country.iso === iso);
+}
+
+/**
+ * `Intl.DisplayNames` instances, one per locale — building one does its own
+ * (non-trivial) locale-data lookup, so it is worth keeping around rather than
+ * constructing it fresh for every country the picker renders.
+ */
+const regionDisplayNamesCache = new Map<string, Intl.DisplayNames>();
+
+function regionDisplayNames(locale: string): Intl.DisplayNames | undefined {
+  let names = regionDisplayNamesCache.get(locale);
+  if (!names) {
+    try {
+      names = new Intl.DisplayNames([locale], { type: 'region' });
+      regionDisplayNamesCache.set(locale, names);
+    } catch {
+      // A locale/environment `Intl.DisplayNames` doesn't recognise — falls
+      // through to `country.name` (English) at the call site.
+      return undefined;
+    }
+  }
+  return names;
+}
+
+/**
+ * A country's name in the interface's current language.
+ *
+ * Sourced from the browser's own CLDR data via `Intl.DisplayNames` rather
+ * than a hand-maintained translation table: it is the same data a phone or a
+ * desktop OS's own region picker draws from, already covers every locale this
+ * app ships (and any it adds later) for free, and needing ~240 entries × 5
+ * languages by hand is exactly the kind of dataset that data source exists to
+ * avoid. Falls back to `country.name` (English) for the rare code it doesn't
+ * recognise, or in an environment without `Intl.DisplayNames` at all.
+ */
+export function countryName(country: Country, locale: string): string {
+  return regionDisplayNames(locale)?.of(country.iso) ?? country.name;
 }
 
 /**

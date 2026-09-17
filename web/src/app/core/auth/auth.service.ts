@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
+import { I18nService } from '../i18n';
 import { SessionStore } from './session.store';
 import { GoogleIdentityServices } from './google-identity-services';
 
@@ -65,6 +66,7 @@ const RENEWAL_TIMEOUT_MS = 8_000;
 export class AuthService {
   private readonly googleIdentity = inject(GoogleIdentityServices);
   private readonly session = inject(SessionStore);
+  private readonly i18n = inject(I18nService);
 
   /** In-flight renewal, so concurrent Drive calls share one popup-free request. */
   private renewal: Promise<string> | null = null;
@@ -140,7 +142,7 @@ export class AuthService {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     if (!response.ok) {
-      throw new Error('Could not read your Google profile. Please try again.');
+      throw new Error(this.i18n.translate('errors.auth.profileFailed'));
     }
     return (await response.json()) as GoogleProfile;
   }

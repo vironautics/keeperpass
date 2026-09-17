@@ -36,7 +36,12 @@
   </script>
 
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-G2HHD6E3VL"></script>
-  <script> window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', 'G-G2HHD6E3VL'); </script>
+  <script>
+    // send_page_view is off here because this is an SPA: gtag.js only sees the
+    // one document load. AnalyticsService sends a page_view per route change
+    // instead (including the first), so leaving this on would double-count it.
+    window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', 'G-G2HHD6E3VL', { send_page_view: false });
+  </script>
 
   <style>
     /* The backdrop, before the stylesheet has a chance to paint it. Keep in step with

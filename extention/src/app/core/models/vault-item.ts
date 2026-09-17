@@ -1,3 +1,4 @@
+import { TranslationKey } from '../i18n/translations';
 import { IconName } from '../../ui/icon/icon-glyphs';
 import { Field } from './field';
 
@@ -49,10 +50,10 @@ export interface VaultItem {
   iconGlyph?: string;
 }
 
-export const AUDIT_LABELS: Record<AuditType, string> = {
-  [AuditType.WeakPassword]: 'Weak Passwords',
-  [AuditType.ReusedPassword]: 'Reused Passwords',
-  [AuditType.CompromisedPassword]: 'Compromised Passwords',
+export const AUDIT_LABEL_KEYS: Record<AuditType, TranslationKey> = {
+  [AuditType.WeakPassword]: 'audit.weakPassword.label',
+  [AuditType.ReusedPassword]: 'audit.reusedPassword.label',
+  [AuditType.CompromisedPassword]: 'audit.compromisedPassword.label',
 };
 
 export const AUDIT_ICONS: Record<AuditType, IconName> = {
@@ -61,24 +62,23 @@ export const AUDIT_ICONS: Record<AuditType, IconName> = {
   [AuditType.CompromisedPassword]: 'compromised',
 };
 
-/** Verbatim from the source app's `descriptionForAudit()` — shown in the report page's per-section info popover. */
-export const AUDIT_DESCRIPTIONS: Record<AuditType, string> = {
-  [AuditType.WeakPassword]:
-    "Passwords are considered weak if they're too short, don't have a lot of variation or contain commonly used words or phrases. These passwords generally don't offer enough protection against automated guessing attempts and should be replaced with strong, randomly generated passwords.",
-  [AuditType.ReusedPassword]:
-    'Using the same password in multiple places is strongly discouraged as a data leak in one of those places will automatically compromise all other accounts/logins using the same password. We recommend generating strong, random and unique passwords for every single vault item.',
-  [AuditType.CompromisedPassword]:
-    'Compromised passwords are those that have been identified as having been leaked in the past by comparing them against a database of known data breaches. These passwords can no longer be considered secure and should be changed immediately.',
+/** Verbatim from the source app's `descriptionForAudit()` — shown as the finding badge's title/aria-label in `ItemField`. */
+export const AUDIT_DESCRIPTION_KEYS: Record<AuditType, TranslationKey> = {
+  [AuditType.WeakPassword]: 'audit.weakPassword.description',
+  [AuditType.ReusedPassword]: 'audit.reusedPassword.description',
+  [AuditType.CompromisedPassword]: 'audit.compromisedPassword.description',
 };
 
 /**
  * Verbatim from the source app's `noItemsTextForAudit()` — the items list's
- * empty state when a `?report=<type>` filter matches nothing.
+ * empty state when a `?report=<type>` filter matches nothing. Not currently
+ * rendered anywhere in the popup (there is no report page here), but kept in
+ * step with `AUDIT_LABEL_KEYS`/`AUDIT_DESCRIPTION_KEYS` for the same reason.
  */
-export const AUDIT_EMPTY_MESSAGES: Record<AuditType, string> = {
-  [AuditType.WeakPassword]: "You don't have any items with weak passwords!",
-  [AuditType.ReusedPassword]: "You don't have any items with reused passwords!",
-  [AuditType.CompromisedPassword]: "You don't have any items with compromised passwords!",
+export const AUDIT_EMPTY_MESSAGE_KEYS: Record<AuditType, TranslationKey> = {
+  [AuditType.WeakPassword]: 'audit.weakPassword.empty',
+  [AuditType.ReusedPassword]: 'audit.reusedPassword.empty',
+  [AuditType.CompromisedPassword]: 'audit.compromisedPassword.empty',
 };
 
 /**

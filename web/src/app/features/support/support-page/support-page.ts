@@ -3,6 +3,7 @@ import { HlmAccordionImports } from '@spartan-ng/helm/accordion';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmSidebarTrigger } from '@spartan-ng/helm/sidebar';
+import { TranslatePipe } from '../../../core/i18n';
 import { Icon } from '../../../ui/icon/icon';
 
 /**
@@ -14,7 +15,7 @@ import { Icon } from '../../../ui/icon/icon';
 @Component({
   selector: 'app-support-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Icon, HlmAccordionImports, HlmButton, HlmCardImports, HlmSidebarTrigger],
+  imports: [Icon, HlmAccordionImports, HlmButton, HlmCardImports, HlmSidebarTrigger, TranslatePipe],
   templateUrl: './support-page.html',
   /** Fills the shell's view area — see `ItemsPage` for why routed views position themselves. */
   host: { class: 'bg-card absolute inset-x-0 bottom-0 top-[var(--inset-top,0px)] flex flex-col' },

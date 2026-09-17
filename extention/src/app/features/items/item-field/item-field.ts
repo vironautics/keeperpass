@@ -3,10 +3,11 @@ import { HlmBadge } from '@spartan-ng/helm/badge';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmItemImports } from '@spartan-ng/helm/item';
 import { ClipboardService } from '../../../core/clipboard/clipboard.service';
+import { I18nService, TranslatePipe } from '../../../core/i18n';
 import {
-  AUDIT_DESCRIPTIONS,
+  AUDIT_DESCRIPTION_KEYS,
   AUDIT_ICONS,
-  AUDIT_LABELS,
+  AUDIT_LABEL_KEYS,
   AuditResult,
   Field,
   FieldType,
@@ -39,7 +40,7 @@ interface FieldFinding {
 @Component({
   selector: 'app-item-field',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [HlmBadge, HlmButton, HlmItemImports, Icon, Totp],
+  imports: [HlmBadge, HlmButton, HlmItemImports, Icon, TranslatePipe, Totp],
   templateUrl: './item-field.html',
   host: { class: 'block' },
 })
@@ -52,11 +53,15 @@ export class ItemField {
   protected readonly masked = signal(true);
   protected readonly copied = signal(false);
 
+  private readonly i18n = inject(I18nService);
+
   private readonly definition = computed(() => fieldDefinition(this.field().type));
 
   protected readonly icon = computed(() => this.definition().icon);
   protected readonly iconGlyph = computed(() => this.field().iconGlyph);
-  protected readonly displayName = computed(() => this.field().name || 'Unnamed');
+  protected readonly displayName = computed(
+    () => this.field().name || this.i18n.translate('common.unnamed'),
+  );
   protected readonly isMaskable = computed(() => fieldIsSecret(this.field()));
   protected readonly isSecret = computed(() => fieldIsSecret(this.field()));
   protected readonly isTotp = computed(() => this.field().type === FieldType.Totp);
@@ -70,8 +75,8 @@ export class ItemField {
     this.auditResults().map((result) => ({
       type: result.type,
       icon: AUDIT_ICONS[result.type],
-      label: AUDIT_LABELS[result.type],
-      description: AUDIT_DESCRIPTIONS[result.type],
+      label: this.i18n.translate(AUDIT_LABEL_KEYS[result.type]),
+      description: this.i18n.translate(AUDIT_DESCRIPTION_KEYS[result.type]),
     })),
   );
 

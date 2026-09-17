@@ -8,11 +8,11 @@
       The sidebar is a sheet below `md`, so it needs one obvious way in. From `md` up the
       sidebar column is permanently on screen and its own header owns the toggle.
     -->
-    <button hlmSidebarTrigger class="md:hidden" srOnlyText="Open navigation menu"></button>
+    <button hlmSidebarTrigger class="md:hidden" [srOnlyText]="'common.openNavMenu' | t"></button>
 
     <h1 class="flex min-w-0 flex-1 items-center gap-2 px-1 text-sm font-semibold">
       <app-icon name="vault" class="text-accent-strong text-[0.8125rem]" />
-      <span class="min-w-0 truncate">My Vaults</span>
+      <span class="min-w-0 truncate">{{ 'vaults.title' | t }}</span>
     </h1>
 
     <div class="flex shrink-0 items-center">
@@ -20,8 +20,8 @@
         hlmBtn
         variant="ghost"
         size="icon-sm"
-        hlmTooltip="Select multiple vaults"
-        aria-label="Select multiple vaults"
+        [hlmTooltip]="'vaults.selectMultipleAria' | t"
+        [attr.aria-label]="'vaults.selectMultipleAria' | t"
         [disabled]="isEmpty()"
         (click)="startSelecting()"
       >
@@ -32,8 +32,8 @@
         hlmBtn
         variant="ghost"
         size="icon-sm"
-        hlmTooltip="New vault"
-        aria-label="New vault"
+        [hlmTooltip]="'vaults.newVaultAria' | t"
+        [attr.aria-label]="'vaults.newVaultAria' | t"
         (click)="creatingVault.set(true)"
       >
         <app-icon name="add" />
@@ -46,7 +46,7 @@
       hlmBtn
       variant="ghost"
       size="icon-sm"
-      aria-label="Leave selection mode"
+      [attr.aria-label]="'common.leaveSelectionMode' | t"
       (click)="cancelSelecting()"
     >
       <app-icon name="cancel" />
@@ -56,15 +56,15 @@
       hlmBtn
       variant="ghost"
       size="icon-sm"
-      hlmTooltip="Select or deselect all"
-      aria-label="Select or deselect all"
+      [hlmTooltip]="'common.selectOrDeselectAll' | t"
+      [attr.aria-label]="'common.selectOrDeselectAll' | t"
       (click)="toggleSelectAll()"
     >
       <app-icon name="select-all" />
     </button>
 
     <span class="min-w-0 flex-1 truncate px-1 text-center text-sm font-semibold">
-      {{ selectedCount() }} {{ selectedCount() === 1 ? 'vault' : 'vaults' }} selected
+      {{ (selectedCount() === 1 ? 'vaults.selectedOne' : 'vaults.selectedMany') | t: { count: selectedCount() } }}
     </span>
 
     <button
@@ -72,8 +72,8 @@
       variant="ghost"
       size="icon-sm"
       class="text-destructive"
-      hlmTooltip="Delete selected vaults"
-      aria-label="Delete selected vaults"
+      [hlmTooltip]="'vaults.deleteSelectedAria' | t"
+      [attr.aria-label]="'vaults.deleteSelectedAria' | t"
       [disabled]="!selectedCount()"
       (click)="requestBulkDelete()"
     >
@@ -95,16 +95,16 @@
           <hlm-empty-media variant="icon">
             <app-icon name="vault" class="text-2xl" />
           </hlm-empty-media>
-          <div hlmEmptyTitle>You only have the default vault</div>
+          <div hlmEmptyTitle>{{ 'vaults.emptyTitle' | t }}</div>
           <div hlmEmptyDescription>
-            A second vault keeps a set of items apart — work from personal, or shared from private.
+            {{ 'vaults.emptyDescription' | t }}
           </div>
         </hlm-empty-header>
 
         <hlm-empty-content>
           <button hlmBtn variant="outline" size="sm" (click)="creatingVault.set(true)">
             <app-icon name="add" />
-            New Vault
+            {{ 'vaults.newVault' | t }}
           </button>
         </hlm-empty-content>
       </div>
@@ -126,7 +126,7 @@
                 <hlm-checkbox
                   class="before:absolute before:inset-0 before:content-['']"
                   [checked]="isSelected(vault.id)"
-                  [aria-label]="'Select ' + vault.name"
+                  [aria-label]="'vaults.selectAria' | t: { name: vault.name }"
                   (checkedChange)="toggleSelection(vault.id)"
                 />
               }
@@ -146,9 +146,9 @@
                 -->
                 <hlm-item-description class="min-w-0">
                   <span class="text-xs">
-                    {{ vault.itemCount }} {{ vault.itemCount === 1 ? 'item' : 'items' }}
+                    {{ (vault.itemCount === 1 ? 'vaults.itemsCountOne' : 'vaults.itemsCountMany') | t: { count: vault.itemCount } }}
                     @if (vault.created) {
-                      · created {{ vault.created }}
+                      · {{ 'vaults.createdOn' | t: { date: vault.created } }}
                     }
                   </span>
                 </hlm-item-description>
@@ -163,8 +163,8 @@
                     variant="ghost"
                     size="icon-sm"
                     class="rename-vault"
-                    [hlmTooltip]="'Rename ' + vault.name"
-                    [attr.aria-label]="'Rename ' + vault.name"
+                    [hlmTooltip]="'vaults.renameAria' | t: { name: vault.name }"
+                    [attr.aria-label]="'vaults.renameAria' | t: { name: vault.name }"
                     (click)="startRenaming(vault.id, vault.name)"
                   >
                     <app-icon name="edit" />
@@ -175,8 +175,8 @@
                     variant="ghost"
                     size="icon-sm"
                     class="delete-vault text-destructive"
-                    [hlmTooltip]="'Delete ' + vault.name"
-                    [attr.aria-label]="'Delete ' + vault.name"
+                    [hlmTooltip]="'vaults.deleteAria' | t: { name: vault.name }"
+                    [attr.aria-label]="'vaults.deleteAria' | t: { name: vault.name }"
                     (click)="requestDelete(vault.id, vault.name)"
                   >
                     <app-icon name="delete" />
@@ -192,9 +192,9 @@
         The personal vault is listed too, but as a footnote rather than a row: it cannot
         be renamed or deleted, so a row for it would carry two disabled buttons.
       -->
-      @if (personalSummary(); as personal) {
+      @if (personalSummary()) {
         <p class="text-muted-foreground mt-3 px-1 text-xs">
-          {{ personal }}
+          {{ personalSummary() }}
         </p>
       }
     }
@@ -212,14 +212,14 @@
   [state]="renamingVault() ? 'open' : 'closed'"
   (stateChanged)="$event === 'closed' && cancelRename()"
 >
-  <hlm-dialog-content *hlmDialogPortal class="sm:max-w-sm" aria-label="Rename Vault">
+  <hlm-dialog-content *hlmDialogPortal class="sm:max-w-sm" [attr.aria-label]="'vaults.renameVaultTitle' | t">
     <hlm-dialog-header>
-      <h3 hlmDialogTitle>Rename Vault</h3>
-      <p hlmDialogDescription>The items in it are not affected.</p>
+      <h3 hlmDialogTitle>{{ 'vaults.renameVaultTitle' | t }}</h3>
+      <p hlmDialogDescription>{{ 'vaults.renameVaultDescription' | t }}</p>
     </hlm-dialog-header>
 
     <hlm-field>
-      <label hlmFieldLabel for="rename-vault-name">Vault name</label>
+      <label hlmFieldLabel for="rename-vault-name">{{ 'vaults.nameLabel' | t }}</label>
       <input
         hlmInput
         id="rename-vault-name"
@@ -230,14 +230,14 @@
       />
       @if (renameIsDuplicate()) {
         <hlm-field-error forceShow>
-          A vault named “{{ renameControl.value.trim() }}” already exists.
+          {{ 'vaults.duplicateRenameError' | t: { name: renameControl.value.trim() } }}
         </hlm-field-error>
       }
     </hlm-field>
 
     <hlm-dialog-footer>
-      <button hlmBtn variant="outline" (click)="cancelRename()">Cancel</button>
-      <button hlmBtn [disabled]="!canRename()" (click)="confirmRename()">Save</button>
+      <button hlmBtn variant="outline" (click)="cancelRename()">{{ 'common.cancel' | t }}</button>
+      <button hlmBtn [disabled]="!canRename()" (click)="confirmRename()">{{ 'common.save' | t }}</button>
     </hlm-dialog-footer>
   </hlm-dialog-content>
 </hlm-dialog>
@@ -246,18 +246,20 @@
   [state]="deletingVault() ? 'open' : 'closed'"
   (stateChanged)="$event === 'closed' && cancelDelete()"
 >
-  <hlm-alert-dialog-content *hlmAlertDialogPortal aria-label="Delete Vault">
+  <hlm-alert-dialog-content *hlmAlertDialogPortal [attr.aria-label]="'vaults.deleteVaultTitle' | t: { name: deletingVault()?.name ?? '' }">
     <hlm-alert-dialog-header>
-      <h3 hlmAlertDialogTitle>Delete “{{ deletingVault()?.name }}”?</h3>
+      <h3 hlmAlertDialogTitle>{{ 'vaults.deleteVaultTitle' | t: { name: deletingVault()?.name ?? '' } }}</h3>
       <p hlmAlertDialogDescription>
-        Its {{ deletingCount() }} {{ deletingCount() === 1 ? 'item' : 'items' }}
-        {{ deletingCount() === 1 ? 'moves' : 'move' }} to My Vault. This cannot be undone.
+        {{
+          (deletingCount() === 1 ? 'vaults.deleteVaultConfirmOne' : 'vaults.deleteVaultConfirmMany')
+            | t: { count: deletingCount(), personalVaultName: personalVaultName() }
+        }}
       </p>
     </hlm-alert-dialog-header>
 
     <hlm-alert-dialog-footer>
-      <button hlmAlertDialogCancel (click)="cancelDelete()">Cancel</button>
-      <button hlmAlertDialogAction variant="destructive" (click)="confirmDelete()">Delete</button>
+      <button hlmAlertDialogCancel (click)="cancelDelete()">{{ 'common.cancel' | t }}</button>
+      <button hlmAlertDialogAction variant="destructive" (click)="confirmDelete()">{{ 'common.delete' | t }}</button>
     </hlm-alert-dialog-footer>
   </hlm-alert-dialog-content>
 </hlm-alert-dialog>
@@ -266,22 +268,23 @@
   [state]="bulkDeleteRequested() ? 'open' : 'closed'"
   (stateChanged)="$event === 'closed' && cancelBulkDelete()"
 >
-  <hlm-alert-dialog-content *hlmAlertDialogPortal aria-label="Delete Vaults">
+  <hlm-alert-dialog-content *hlmAlertDialogPortal [attr.aria-label]="(selectedCount() === 1 ? 'vaults.deleteSelectedTitleOne' : 'vaults.deleteSelectedTitleMany') | t: { count: selectedCount() }">
     <hlm-alert-dialog-header>
       <h3 hlmAlertDialogTitle>
-        Delete {{ selectedCount() }} {{ selectedCount() === 1 ? 'vault' : 'vaults' }}?
+        {{ (selectedCount() === 1 ? 'vaults.deleteSelectedTitleOne' : 'vaults.deleteSelectedTitleMany') | t: { count: selectedCount() } }}
       </h3>
       <p hlmAlertDialogDescription>
-        Everything in them — {{ selectedItemCount() }}
-        {{ selectedItemCount() === 1 ? 'item' : 'items' }} — moves to My Vault. This cannot be
-        undone.
+        {{
+          (selectedItemCount() === 1 ? 'vaults.deleteSelectedConfirmOne' : 'vaults.deleteSelectedConfirmMany')
+            | t: { count: selectedItemCount(), personalVaultName: personalVaultName() }
+        }}
       </p>
     </hlm-alert-dialog-header>
 
     <hlm-alert-dialog-footer>
-      <button hlmAlertDialogCancel (click)="cancelBulkDelete()">Cancel</button>
+      <button hlmAlertDialogCancel (click)="cancelBulkDelete()">{{ 'common.cancel' | t }}</button>
       <button hlmAlertDialogAction variant="destructive" (click)="confirmBulkDelete()">
-        Delete
+        {{ 'common.delete' | t }}
       </button>
     </hlm-alert-dialog-footer>
   </hlm-alert-dialog-content>

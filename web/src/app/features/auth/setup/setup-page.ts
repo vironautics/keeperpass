@@ -25,6 +25,7 @@ import {
   matchesValidator,
   MIN_MASTER_PASSWORD_SCORE,
 } from '../../../core/validation';
+import { I18nService, TranslatePipe } from '../../../core/i18n';
 import { encryptVault } from '../../../core/vault/vault-crypto';
 import { createEmptyVaultSnapshot, VaultStore } from '../../../core/vault/vault.store';
 import { Icon } from '../../../ui/icon/icon';
@@ -51,6 +52,7 @@ import { STRENGTH_COLOURS, STRENGTH_LABELS, strengthPercent } from '../../items/
   imports: [
     ReactiveFormsModule,
     Icon,
+    TranslatePipe,
     GeneratePasswordDialog,
     HlmAlertImports,
     HlmButtonImports,
@@ -71,6 +73,7 @@ export class SetupPage {
   private readonly drive = inject(GoogleDriveService);
   private readonly router = inject(Router);
   private readonly accounts = inject(AccountStore);
+  private readonly i18n = inject(I18nService);
 
   /** Drives the submit button's spinner and keeps a second submit out. */
   protected readonly submitting = signal(false);
@@ -104,7 +107,7 @@ export class SetupPage {
 
   protected readonly strengthPercent = computed(() => strengthPercent(this.strength()));
   protected readonly strengthColour = computed(() => STRENGTH_COLOURS[this.strength()]);
-  protected readonly strengthLabel = computed(() => STRENGTH_LABELS[this.strength()]);
+  protected readonly strengthLabel = computed(() => this.i18n.translate(STRENGTH_LABELS[this.strength()]));
 
   /** A warning, not a block — see the class doc. */
   protected readonly weak = computed(
@@ -154,7 +157,7 @@ export class SetupPage {
     }
 
     try {
-      const empty = createEmptyVaultSnapshot();
+      const empty = createEmptyVaultSnapshot(this.i18n.translate('vaults.defaultName'));
       await this.drive.saveVault(accessToken, JSON.stringify(await encryptVault(secret, empty)));
 
       this.vault.hydrate(empty);
@@ -170,7 +173,7 @@ export class SetupPage {
       }
 
       this.errorMessage.set(
-        error instanceof Error ? error.message : 'Could not create your vault. Please try again.',
+        error instanceof Error ? error.message : this.i18n.translate('auth.setup.genericError'),
       );
     } finally {
       // Reached on the success path too — the navigation has already resolved by

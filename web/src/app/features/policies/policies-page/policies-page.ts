@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmSidebarTrigger } from '@spartan-ng/helm/sidebar';
 import { HlmTabsImports } from '@spartan-ng/helm/tabs';
+import { TranslatePipe } from '../../../core/i18n';
 import { Icon } from '../../../ui/icon/icon';
 
 type PolicyTab = 'terms' | 'privacy';
@@ -16,7 +17,7 @@ type PolicyTab = 'terms' | 'privacy';
 @Component({
   selector: 'app-policies-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Icon, HlmCardImports, HlmSidebarTrigger, HlmTabsImports],
+  imports: [Icon, HlmCardImports, HlmSidebarTrigger, HlmTabsImports, TranslatePipe],
   templateUrl: './policies-page.html',
   /** Fills the shell's view area — see `ItemsPage` for why routed views position themselves. */
   host: { class: 'bg-card absolute inset-x-0 bottom-0 top-[var(--inset-top,0px)] flex flex-col' },

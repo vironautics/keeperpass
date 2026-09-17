@@ -4,6 +4,7 @@ import { disconnectSession, ensureFreshTokenOrDisconnect } from '../auth/disconn
 import { SessionStore } from '../auth/session.store';
 import { AuthService } from '../auth/auth.service';
 import { GoogleAuthExpiredError, GoogleDriveService } from '../drive/google-drive.service';
+import { I18nService } from '../i18n';
 import { encryptVault } from './vault-crypto';
 import { VaultSnapshot, VaultStore } from './vault.store';
 
@@ -47,6 +48,7 @@ export class VaultSyncService {
   private readonly drive = inject(GoogleDriveService);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly i18n = inject(I18nService);
 
   private pending: VaultSnapshot | undefined;
 
@@ -125,7 +127,7 @@ export class VaultSyncService {
 
       console.error('Could not save the vault to Google Drive.', error);
       this._lastError.set(
-        error instanceof Error ? error.message : 'Could not save your vault to Google Drive.',
+        error instanceof Error ? error.message : this.i18n.translate('errors.drive.saveFailed'),
       );
     } finally {
       this._syncing.set(false);

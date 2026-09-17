@@ -1,9 +1,9 @@
 <form hlmCard class="mx-auto w-full max-w-100" [formGroup]="form" (ngSubmit)="submit()" novalidate>
   <div hlmCardContent class="flex flex-col gap-4">
-    <p class="text-muted-foreground text-sm">Enter your secret to unlock your vault.</p>
+    <p class="text-muted-foreground text-sm">{{ 'auth.unlock.description' | t }}</p>
 
     <div hlmField>
-      <label hlmFieldLabel for="unlock-secret">Secret</label>
+      <label hlmFieldLabel for="unlock-secret">{{ 'auth.unlock.secretLabel' | t }}</label>
 
       <hlm-input-group>
         <input
@@ -20,7 +20,7 @@
             hlmInputGroupButton
             type="button"
             size="icon-xs"
-            [attr.aria-label]="revealed() ? 'Hide secret' : 'Show secret'"
+            [attr.aria-label]="(revealed() ? 'common.hideSecret' : 'common.showSecret') | t"
             [attr.aria-pressed]="revealed()"
             (click)="toggleRevealed()"
           >
@@ -52,11 +52,11 @@
       } @else {
         <app-icon name="unlock" />
       }
-      Unlock
+      {{ 'auth.unlock.unlock' | t }}
     </button>
 
     <button hlmBtn type="button" variant="ghost" size="sm" class="w-full" (click)="openReset()">
-      Forgot your secret?
+      {{ 'auth.unlock.forgotSecret' | t }}
     </button>
 
     <button
@@ -68,7 +68,7 @@
       (click)="disconnect()"
     >
       <app-icon name="disconnect" />
-      Disconnect
+      {{ 'popup.disconnect' | t }}
     </button>
   </div>
 </form>

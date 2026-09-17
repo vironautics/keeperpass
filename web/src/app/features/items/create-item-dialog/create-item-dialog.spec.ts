@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
+import { en } from '../../../core/i18n/translations/en';
 import { ITEM_TEMPLATES } from '../../../core/models';
 import { ItemDraftStore } from '../../../core/vault/item-draft.store';
 import { PERSONAL_VAULT_ID, VaultStore } from '../../../core/vault/vault.store';
@@ -83,7 +84,7 @@ describe('CreateItemDialog', () => {
   it('offers every template, in the order the model lists them', async () => {
     await open();
     const labels = templateButtons().map((b) => b.textContent?.replace(/[^\x20-\x7E]/g, '').trim());
-    expect(labels).toEqual(ITEM_TEMPLATES.map((t) => t.label));
+    expect(labels).toEqual(ITEM_TEMPLATES.map((t) => en[t.labelKey]));
   });
 
   it('defaults to the personal vault and the first template', async () => {

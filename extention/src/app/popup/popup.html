@@ -77,12 +77,34 @@
       }
 
       <div class="flex flex-col gap-2 p-3">
-        <input
-          hlmInput
-          [formControl]="searchControl"
-          [placeholder]="'popup.search' | t"
-          class="w-full"
-        />
+        <div class="flex gap-2">
+          <input
+            hlmInput
+            [formControl]="searchControl"
+            [placeholder]="'popup.search' | t"
+            class="w-full flex-1"
+          />
+
+          <!--
+            Newest first by default, which is what you want right after adding
+            something. One button rather than a menu, same as the web app's
+            item list: there are only two orders worth having, and the arrow
+            says which one is on.
+          -->
+          <button
+            hlmBtn
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            class="shrink-0"
+            [attr.aria-label]="
+              (newestFirst() ? 'items.list.sortOldestFirstAria' : 'items.list.sortNewestFirstAria') | t
+            "
+            (click)="toggleSortOrder()"
+          >
+            <app-icon [name]="newestFirst() ? 'sort-desc' : 'sort-asc'" />
+          </button>
+        </div>
 
         <!-- Vault and tag filters split the full width of the row, half each. -->
         <div class="grid grid-cols-2 gap-2">

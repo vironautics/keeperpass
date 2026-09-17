@@ -5,10 +5,11 @@ import { HlmItemImports } from '@spartan-ng/helm/item';
 import { HlmProgressImports } from '@spartan-ng/helm/progress';
 import { HlmTooltip } from '@spartan-ng/helm/tooltip';
 import { ClipboardService } from '../../../core/clipboard/clipboard.service';
+import { I18nService, TranslatePipe } from '../../../core/i18n';
 import {
-  AUDIT_DESCRIPTIONS,
+  AUDIT_DESCRIPTION_KEYS,
   AUDIT_ICONS,
-  AUDIT_LABELS,
+  AUDIT_LABEL_KEYS,
   AuditResult,
   Field,
   FieldType,
@@ -43,7 +44,16 @@ interface FieldFinding {
 @Component({
   selector: 'app-item-field',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [HlmBadge, HlmButton, HlmItemImports, HlmProgressImports, HlmTooltip, Icon, Totp],
+  imports: [
+    HlmBadge,
+    HlmButton,
+    HlmItemImports,
+    HlmProgressImports,
+    HlmTooltip,
+    Icon,
+    Totp,
+    TranslatePipe,
+  ],
   templateUrl: './item-field.html',
   host: { class: 'block' },
 })
@@ -61,9 +71,13 @@ export class ItemField {
 
   private readonly definition = computed(() => fieldDefinition(this.field().type));
 
+  private readonly i18n = inject(I18nService);
+
   protected readonly glyph = computed<IconName>(() => this.definition().icon);
   protected readonly iconGlyph = computed(() => this.field().iconGlyph);
-  protected readonly displayName = computed(() => this.field().name || 'Unnamed');
+  protected readonly displayName = computed(
+    () => this.field().name || this.i18n.translate('common.unnamed'),
+  );
 
   /** Drives both the reveal toggle and the monospace face: one property, one flag. */
   protected readonly isSecret = computed(() => fieldIsSecret(this.field()));
@@ -88,7 +102,7 @@ export class ItemField {
 
   protected readonly strengthPercent = computed(() => strengthPercent(this.strength()));
   protected readonly strengthColour = computed(() => STRENGTH_COLOURS[this.strength()]);
-  protected readonly strengthLabel = computed(() => STRENGTH_LABELS[this.strength()]);
+  protected readonly strengthLabel = computed(() => this.i18n.translate(STRENGTH_LABELS[this.strength()]));
 
   /** Brand and checksum, from the number itself — see `core/validation/card-number.ts`. */
   protected readonly card = computed(() =>
@@ -99,8 +113,8 @@ export class ItemField {
     this.auditResults().map((result) => ({
       type: result.type,
       glyph: AUDIT_ICONS[result.type],
-      label: AUDIT_LABELS[result.type],
-      description: AUDIT_DESCRIPTIONS[result.type],
+      label: this.i18n.translate(AUDIT_LABEL_KEYS[result.type]),
+      description: this.i18n.translate(AUDIT_DESCRIPTION_KEYS[result.type]),
     })),
   );
 

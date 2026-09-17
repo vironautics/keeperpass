@@ -1,9 +1,10 @@
+import { TranslationKey } from '../i18n/translations';
 import { IconName } from '../../ui/icon/icon-glyphs';
 import { FieldType } from './field';
 
 /** A field an item starts with when created from a template. */
 export interface ItemTemplateField {
-  name: string;
+  nameKey: TranslationKey;
   type: FieldType;
   /** Prefilled value; empty when the user is expected to supply it. */
   value?: string;
@@ -12,7 +13,7 @@ export interface ItemTemplateField {
 export interface ItemTemplate {
   id: string;
   /** Shown on the template's button in the create dialog. */
-  label: string;
+  labelKey: TranslationKey;
   icon: IconName;
   fields: readonly ItemTemplateField[];
 }
@@ -29,84 +30,84 @@ export interface ItemTemplate {
 export const ITEM_TEMPLATES: readonly ItemTemplate[] = [
   {
     id: 'website',
-    label: 'Website / App',
+    labelKey: 'items.templates.website',
     icon: 'web',
     fields: [
-      { name: 'Username', type: FieldType.Username },
-      { name: 'Password', type: FieldType.Password },
-      { name: 'URL', type: FieldType.Url },
+      { nameKey: 'field.type.username', type: FieldType.Username },
+      { nameKey: 'field.type.password', type: FieldType.Password },
+      { nameKey: 'field.type.url', type: FieldType.Url },
     ],
   },
   {
     id: 'computer',
-    label: 'Computer',
+    labelKey: 'items.templates.computer',
     icon: 'desktop',
     fields: [
-      { name: 'Username', type: FieldType.Username },
-      { name: 'Password', type: FieldType.Password },
+      { nameKey: 'field.type.username', type: FieldType.Username },
+      { nameKey: 'field.type.password', type: FieldType.Password },
     ],
   },
   {
     id: 'credit-card',
-    label: 'Credit Card',
+    labelKey: 'items.templates.creditCard',
     icon: 'credit',
     fields: [
-      { name: 'Card Number', type: FieldType.Credit },
-      { name: 'Card Owner', type: FieldType.Text },
-      { name: 'Valid Until', type: FieldType.Month },
-      { name: 'CVC', type: FieldType.Pin },
-      { name: 'PIN', type: FieldType.Pin },
+      { nameKey: 'items.templates.fields.cardNumber', type: FieldType.Credit },
+      { nameKey: 'items.templates.fields.cardOwner', type: FieldType.Text },
+      { nameKey: 'items.templates.fields.validUntil', type: FieldType.Month },
+      { nameKey: 'items.templates.fields.cvc', type: FieldType.Pin },
+      { nameKey: 'field.type.pin', type: FieldType.Pin },
     ],
   },
   {
     id: 'bank-account',
-    label: 'Bank Account',
+    labelKey: 'items.templates.bankAccount',
     icon: 'bank',
     fields: [
-      { name: 'Account Owner', type: FieldType.Text },
-      { name: 'IBAN', type: FieldType.Text },
-      { name: 'BIC', type: FieldType.Text },
-      { name: 'Card PIN', type: FieldType.Pin },
+      { nameKey: 'items.templates.fields.accountOwner', type: FieldType.Text },
+      { nameKey: 'items.templates.fields.iban', type: FieldType.Text },
+      { nameKey: 'items.templates.fields.bic', type: FieldType.Text },
+      { nameKey: 'items.templates.fields.cardPin', type: FieldType.Pin },
     ],
   },
   {
     id: 'wifi',
-    label: 'WIFI Password',
+    labelKey: 'items.templates.wifi',
     icon: 'wifi',
     fields: [
-      { name: 'Name', type: FieldType.Text },
-      { name: 'Password', type: FieldType.Password },
+      { nameKey: 'items.templates.fields.name', type: FieldType.Text },
+      { nameKey: 'field.type.password', type: FieldType.Password },
     ],
   },
   {
     id: 'passport',
-    label: 'Passport',
+    labelKey: 'items.templates.passport',
     icon: 'passport',
     fields: [
-      { name: 'Full Name', type: FieldType.Text },
-      { name: 'Passport Number', type: FieldType.Text },
-      { name: 'Country', type: FieldType.Text },
-      { name: 'Birthdate', type: FieldType.Date },
-      { name: 'Birthplace', type: FieldType.Text },
-      { name: 'Issued On', type: FieldType.Date },
-      { name: 'Expires', type: FieldType.Date },
+      { nameKey: 'items.templates.fields.fullName', type: FieldType.Text },
+      { nameKey: 'items.templates.fields.passportNumber', type: FieldType.Text },
+      { nameKey: 'items.templates.fields.country', type: FieldType.Text },
+      { nameKey: 'items.templates.fields.birthdate', type: FieldType.Date },
+      { nameKey: 'items.templates.fields.birthplace', type: FieldType.Text },
+      { nameKey: 'items.templates.fields.issuedOn', type: FieldType.Date },
+      { nameKey: 'items.templates.fields.expires', type: FieldType.Date },
     ],
   },
   {
     id: 'note',
-    label: 'Note',
+    labelKey: 'items.templates.note',
     icon: 'note',
-    fields: [{ name: 'Note', type: FieldType.Note }],
+    fields: [{ nameKey: 'items.templates.fields.note', type: FieldType.Note }],
   },
   {
     id: 'authenticator',
-    label: 'Authenticator',
+    labelKey: 'items.templates.authenticator',
     icon: 'totp',
-    fields: [{ name: 'One-Time Password', type: FieldType.Totp }],
+    fields: [{ nameKey: 'field.type.totp', type: FieldType.Totp }],
   },
   {
     id: 'custom',
-    label: 'Custom',
+    labelKey: 'items.templates.custom',
     icon: 'custom',
     fields: [],
   },

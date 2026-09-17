@@ -38,7 +38,7 @@
       @if (isTotp()) {
         <app-totp class="text-foreground font-mono text-sm" [secret]="field().value" />
       } @else if (!field().value) {
-        <span class="text-sm italic opacity-50">[empty]</span>
+        <span class="text-sm italic opacity-50">{{ 'items.field.empty' | t }}</span>
       } @else if (isNote()) {
         <p class="text-foreground min-w-0 text-sm break-words whitespace-pre-wrap select-text">
           {{ field().value }}
@@ -68,7 +68,7 @@
         type="button"
         variant="ghost"
         size="icon-sm"
-        [attr.aria-label]="masked() ? 'Reveal value' : 'Hide value'"
+        [attr.aria-label]="(masked() ? 'common.revealValue' : 'common.hideValue') | t"
         (click)="toggleMasked()"
       >
         <app-icon [name]="masked() ? 'show' : 'hide'" />
@@ -80,7 +80,7 @@
       type="button"
       variant="ghost"
       size="icon-sm"
-      [attr.aria-label]="'Copy value'"
+      [attr.aria-label]="'items.field.copyValueAria' | t"
       (click)="copy()"
     >
       <app-icon [name]="copied() ? 'check' : 'copy'" />

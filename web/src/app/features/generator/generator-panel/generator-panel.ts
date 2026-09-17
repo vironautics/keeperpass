@@ -27,6 +27,7 @@ import {
   randomString,
   SEPARATOR_OPTIONS,
 } from '../../../core/generator/generator';
+import { TranslatePipe } from '../../../core/i18n';
 import { Icon } from '../../../ui/icon/icon';
 
 type GeneratorMode = 'words' | 'chars';
@@ -66,6 +67,7 @@ const BOUNCE_DURATION_MS = 500;
     HlmSlider,
     HlmToggleGroupImports,
     Icon,
+    TranslatePipe,
   ],
   templateUrl: './generator-panel.html',
   host: { class: 'block' },
