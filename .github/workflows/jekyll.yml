@@ -43,7 +43,7 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Build
-        run: npm run build -- --base-href "${{ steps.pages.outputs.base_path }}/"
+        run: npm run build -- --base-href "/"   # served at the root of vault.keeperpass.com
 
       - name: SPA fallback for deep links
         run: cp dist/${{ env.APP_NAME }}/browser/index.html dist/${{ env.APP_NAME }}/browser/404.html
