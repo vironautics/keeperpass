@@ -1,0 +1,62 @@
+name: Deploy Angular app to Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+env:
+  # Folder under dist/ — matches "outputPath" in angular.json (usually the project name)
+  APP_NAME: ngkeeper
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Build
+        # base_path is "/<repo>" for project sites, "" for <user>.github.io — trailing slash is required
+        run: npm run build -- --base-href "${{ steps.pages.outputs.base_path }}/"
+
+      - name: SPA fallback for deep links
+        run: cp dist/${{ env.APP_NAME }}/browser/index.html dist/${{ env.APP_NAME }}/browser/404.html
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/${{ env.APP_NAME }}/browser
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
