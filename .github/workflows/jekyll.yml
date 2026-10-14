@@ -15,12 +15,15 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  # Folder under dist/ — matches "outputPath" in angular.json (usually the project name)
-  APP_NAME: ngkeeper
+  APP_DIR: web             # folder containing package.json / package-lock.json / Dockerfile
+  APP_NAME: ngkeeper       # dist/<APP_NAME>/browser
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.APP_DIR }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,6 +33,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: ${{ env.APP_DIR }}/package-lock.json
 
       - name: Install dependencies
         run: npm ci
@@ -39,7 +43,6 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Build
-        # base_path is "/<repo>" for project sites, "" for <user>.github.io — trailing slash is required
         run: npm run build -- --base-href "${{ steps.pages.outputs.base_path }}/"
 
       - name: SPA fallback for deep links
@@ -48,7 +51,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist/${{ env.APP_NAME }}/browser
+          path: ${{ env.APP_DIR }}/dist/${{ env.APP_NAME }}/browser
 
   deploy:
     environment:
