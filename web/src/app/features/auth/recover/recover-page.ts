@@ -24,10 +24,8 @@ import {
 } from '../../../core/auth/disconnect-session';
 import { AuthService } from '../../../core/auth/auth.service';
 import { SessionStore } from '../../../core/auth/session.store';
-import {
-  GoogleAuthExpiredError,
-  GoogleDriveService,
-} from '../../../core/drive/google-drive.service';
+import { StorageAuthExpiredError } from '../../../core/providers/storage-errors';
+import { VaultStorageService } from '../../../core/providers/vault-storage.service';
 import {
   estimatePasswordStrength,
   matchesValidator,
@@ -52,7 +50,7 @@ import { STRENGTH_COLOURS, STRENGTH_LABELS, strengthPercent } from '../../items/
  *
  * So submitting does the only honest thing available: the old encrypted file is
  * renamed to a timestamped backup rather than deleted (see
- * `GoogleDriveService.resetVault` — if the secret is ever remembered, that file
+ * `VaultStorage.resetVault` — if the secret is ever remembered, that file
  * is still openable), and a new empty vault is created under the secret entered
  * here. The page says so in as many words before the button, because "recover"
  * raises an expectation this cannot meet.
@@ -83,7 +81,7 @@ export class RecoverPage {
   private readonly session = inject(SessionStore);
   private readonly auth = inject(AuthService);
   private readonly vault = inject(VaultStore);
-  private readonly drive = inject(GoogleDriveService);
+  private readonly drive = inject(VaultStorageService);
   private readonly router = inject(Router);
   private readonly i18n = inject(I18nService);
 
@@ -188,7 +186,7 @@ export class RecoverPage {
       this.session.unlock(secret);
       await this.router.navigate(['/items']);
     } catch (error) {
-      if (error instanceof GoogleAuthExpiredError) {
+      if (error instanceof StorageAuthExpiredError) {
         disconnectSession(this.session, this.router);
         return;
       }

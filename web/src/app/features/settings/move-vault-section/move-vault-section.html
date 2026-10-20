@@ -1,0 +1,25 @@
+@if (targets.length > 0) {
+  <div hlmCard>
+    <div hlmCardHeader>
+      <h2 hlmCardTitle class="text-base">{{ 'settings.migrate.title' | t }}</h2>
+      <p hlmCardDescription>{{ 'settings.migrate.description' | t }}</p>
+    </div>
+
+    <div hlmCardContent class="flex flex-wrap gap-2">
+      @for (target of targets; track target.id) {
+        <button hlmBtn variant="outline" size="sm" class="move-vault" (click)="start(target.id)">
+          @if (target.id === 'dropbox') {
+            <app-dropbox-logo class="size-4" />
+          } @else {
+            <app-google-logo class="size-4" />
+          }
+          {{ 'settings.migrate.button' | t: { provider: target.storageName } }}
+        </button>
+      }
+    </div>
+  </div>
+
+  @if (targetId(); as id) {
+    <app-move-vault-dialog [(open)]="moving" [targetId]="id" />
+  }
+}

@@ -1,5 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { I18nService } from '../i18n';
+import { UploadProgressHandler, VaultStorage } from '../providers/provider';
+import { StorageAuthExpiredError } from '../providers/storage-errors';
 
 const FOLDER_NAME = 'keeperpass';
 const FILE_NAME = 'vault.json.enc';
@@ -39,15 +41,14 @@ function detachedFileName(now: Date): string {
  * to Drive catches this specifically and does exactly that — see
  * `disconnectExpiredSession()`.
  */
-export class GoogleAuthExpiredError extends Error {
+export class GoogleAuthExpiredError extends StorageAuthExpiredError {
   constructor(message = 'Your Google session has expired. Please reconnect.') {
     super(message);
     this.name = 'GoogleAuthExpiredError';
   }
 }
 
-/** Called with how much of the upload has been sent, from `0` to `1`. */
-export type UploadProgressHandler = (fraction: number) => void;
+export type { UploadProgressHandler };
 
 /**
  * Real Google Drive v3 REST calls, scoped around one invariant: there is
@@ -63,7 +64,7 @@ export type UploadProgressHandler = (fraction: number) => void;
  * alongside sign-in, so there's no separate consent popup here.
  */
 @Injectable({ providedIn: 'root' })
-export class GoogleDriveService {
+export class GoogleDriveService implements VaultStorage {
   private readonly i18n = inject(I18nService);
 
   /** The encrypted vault's contents, or `null` if this is the first time (no folder/file yet). */

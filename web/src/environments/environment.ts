@@ -5,4 +5,5 @@
  */
 export const environment = {
   googleClientId: '809926786421-2k9b0c71eut6q1da3ctpfdtfs4l0gpsu.apps.googleusercontent.com',
+  dropboxAppKey: '03g98hw8xu109v5',
 };

@@ -1,0 +1,168 @@
+<hlm-dialog [state]="open() ? 'open' : 'closed'" (stateChanged)="open.set($event === 'open')">
+  <hlm-dialog-content
+    *hlmDialogPortal
+    class="sm:max-w-md"
+    [attr.aria-label]="'settings.migrate.dialogTitle' | t: { provider: storageName() }"
+  >
+    <div class="flex flex-col gap-4">
+      <hlm-dialog-header>
+        <h3 hlmDialogTitle>{{ 'settings.migrate.dialogTitle' | t: { provider: storageName() } }}</h3>
+        <p hlmDialogDescription>{{ 'settings.migrate.dialogDescription' | t }}</p>
+      </hlm-dialog-header>
+
+      @if (errorMessage()) {
+        <!-- Two columns by hand: see the note on the same alert in `start-page.html`. -->
+        <div hlmAlert variant="destructive" class="grid-cols-[auto_1fr] gap-x-2.5!" role="alert">
+          <app-icon name="alert" class="translate-y-0.5" />
+          <p hlmAlertDescription class="col-start-2">{{ errorMessage() }}</p>
+        </div>
+      }
+
+      @switch (step()) {
+        @case ('connect') {
+          <p class="text-muted-foreground text-sm">
+            {{ 'settings.migrate.connectIntro' | t: { provider: storageName() } }}
+          </p>
+
+          <hlm-dialog-footer>
+            <button hlmBtn type="button" variant="outline" (click)="cancel()">
+              {{ 'common.cancel' | t }}
+            </button>
+            <button hlmBtn type="button" class="connect-target" [disabled]="busy()" (click)="connect()">
+              @if (busy()) {
+                <hlm-spinner />
+              } @else {
+                <app-icon name="cloud" />
+              }
+              {{ 'settings.migrate.connect' | t: { provider: storageName() } }}
+            </button>
+          </hlm-dialog-footer>
+        }
+
+        @case ('configure') {
+          <dl class="flex flex-col gap-1 text-sm">
+            <dt class="text-muted-foreground text-xs">{{ 'settings.migrate.targetAccount' | t }}</dt>
+            <dd class="target-account font-medium">{{ target()?.email }}</dd>
+          </dl>
+
+          @if (target()?.hasVault) {
+            <div hlmAlert variant="destructive" class="grid-cols-[auto_1fr] gap-x-2.5!">
+              <app-icon name="alert" class="translate-y-0.5" />
+              <p hlmAlertDescription class="col-start-2">
+                {{ 'settings.migrate.existingWarning' | t: { provider: storageName() } }}
+              </p>
+            </div>
+
+            <label class="flex items-start gap-2 text-sm">
+              <input
+                type="checkbox"
+                class="replace-existing mt-1"
+                [checked]="replaceConfirmed()"
+                (change)="toggleReplace()"
+              />
+              <span>{{ 'settings.migrate.existingConfirm' | t }}</span>
+            </label>
+          }
+
+          <fieldset class="flex flex-col gap-2 text-sm">
+            <label class="flex items-center gap-2">
+              <input
+                type="radio"
+                name="secret-mode"
+                class="keep-secret"
+                [checked]="!newSecret()"
+                (change)="setNewSecret(false)"
+              />
+              {{ 'settings.migrate.secretKeep' | t }}
+            </label>
+            <label class="flex items-center gap-2">
+              <input
+                type="radio"
+                name="secret-mode"
+                class="new-secret"
+                [checked]="newSecret()"
+                (change)="setNewSecret(true)"
+              />
+              {{ 'settings.migrate.secretNew' | t }}
+            </label>
+          </fieldset>
+
+          @if (newSecret()) {
+            <form [formGroup]="form" novalidate class="flex flex-col gap-3">
+              <hlm-field>
+                <label hlmFieldLabel for="move-next-secret">
+                  {{ 'settings.changePassword.newLabel' | t }}
+                </label>
+                <input
+                  hlmInput
+                  id="move-next-secret"
+                  class="move-next-secret w-full"
+                  type="password"
+                  autocomplete="new-password"
+                  formControlName="next"
+                />
+
+                @if (nextSecret()) {
+                  <div class="mt-1 space-y-1">
+                    <hlm-progress [value]="strengthPercent()" class="h-1">
+                      <hlm-progress-indicator [class]="strengthColour()" />
+                    </hlm-progress>
+                    <p class="text-muted-foreground text-[0.7rem]">{{ strengthLabel() }}</p>
+                  </div>
+                }
+
+                @if (weak()) {
+                  <p hlmFieldDescription>{{ 'settings.changePassword.weakWarning' | t }}</p>
+                }
+              </hlm-field>
+
+              <hlm-field [forceInvalid]="mismatch()">
+                <label hlmFieldLabel for="move-repeat-secret">
+                  {{ 'settings.changePassword.repeatLabel' | t }}
+                </label>
+                <input
+                  hlmInput
+                  id="move-repeat-secret"
+                  class="move-repeat-secret w-full"
+                  type="password"
+                  autocomplete="new-password"
+                  formControlName="confirmation"
+                />
+                @if (mismatch()) {
+                  <hlm-field-error forceShow>
+                    {{ 'settings.changePassword.mismatch' | t }}
+                  </hlm-field-error>
+                }
+              </hlm-field>
+            </form>
+          }
+
+          <hlm-dialog-footer>
+            <button hlmBtn type="button" variant="outline" (click)="cancel()">
+              {{ 'common.cancel' | t }}
+            </button>
+            <button
+              hlmBtn
+              type="button"
+              class="confirm-move"
+              [disabled]="!canMove()"
+              (click)="move()"
+            >
+              <app-icon name="cloud" />
+              {{ 'settings.migrate.submit' | t }}
+            </button>
+          </hlm-dialog-footer>
+        }
+
+        @case ('working') {
+          <output class="flex items-center gap-2 py-2">
+            <hlm-spinner />
+            <span class="text-muted-foreground text-sm">
+              {{ stageKey() | t: { provider: storageName() } }}
+            </span>
+          </output>
+        }
+      }
+    </div>
+  </hlm-dialog-content>
+</hlm-dialog>

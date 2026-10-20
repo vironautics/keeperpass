@@ -39,13 +39,17 @@ export const pt: TranslationTable = {
 
   'auth.start.title': 'Bem-vindo ao KeeperPass',
   'auth.start.description':
-    'O seu cofre é um único ficheiro cifrado no seu próprio Google Drive. Inicie sessão para o abrir.',
+    'O seu cofre é um único ficheiro cifrado no seu próprio armazenamento na nuvem. Inicie sessão para o abrir.',
   'auth.start.signInFailed': 'Falha ao iniciar sessão',
   'auth.start.continueWithGoogle': 'Continuar com o Google',
+  'auth.start.continueWithDropbox':
+    'Continuar com o Dropbox',
+  'auth.callback.closeWindow':
+    'Quase pronto — pode fechar esta janela.',
   'auth.start.accessNote':
-    'O acesso está limitado aos ficheiros criados pelo KeeperPass. O resto do seu Drive fica fora de alcance.',
+    'O acesso está limitado aos ficheiros criados pelo KeeperPass. O resto do seu armazenamento fica fora de alcance.',
   'auth.start.encryptionNote':
-    'O seu cofre é cifrado neste navegador com um segredo que escolherá a seguir. O Google guarda o ficheiro, mas não o consegue ler.',
+    'O seu cofre é cifrado neste navegador com um segredo que escolherá a seguir. O seu fornecedor de armazenamento guarda o ficheiro, mas não o consegue ler.',
   'auth.start.noServerNote': 'Não existe nenhum servidor KeeperPass. Nada é enviado para mais lado nenhum.',
   'auth.start.footerNote': 'Iniciar sessão cria o ficheiro do cofre caso ainda não tenha um.',
 
@@ -70,7 +74,7 @@ export const pt: TranslationTable = {
   'auth.setup.warningIntro':
     'O seu cofre é cifrado neste dispositivo com uma chave criada a partir do segredo que escolher aqui. O KeeperPass nunca recebe esse segredo, pelo que não conseguiríamos ler o seu cofre mesmo que nos pedissem para o fazer. É esse o objetivo — e traz consigo três consequências que vale a pena conhecer agora e não depois:',
   'auth.setup.warningBullet1':
-    'O seu segredo nunca é enviado para lado nenhum nem é armazenado. Ninguém — nem nós, nem o Google — o pode consultar ou repor por si.',
+    'O seu segredo nunca é enviado para lado nenhum nem é armazenado. Ninguém — nem nós, nem o seu fornecedor de armazenamento — o pode consultar ou repor por si.',
   'auth.setup.warningBullet2':
     'Se o esquecer, o seu cofre não pode ser recuperado. Não existe nenhuma ligação de reposição nem pedido de suporte capaz de o abrir.',
   'auth.setup.warningBullet3': 'Anote-o e guarde-o num local seguro antes de continuar.',
@@ -86,13 +90,13 @@ export const pt: TranslationTable = {
     'Este segredo é fraco, o que torna a cifra dos seus cofres mais fácil de quebrar. Pode continuar, mas recomenda-se vivamente uma frase mais longa.',
   'auth.recover.repeatSecretLabel': 'Repita o novo segredo',
   'auth.recover.warningIntro':
-    'O seu cofre é cifrado com uma chave que só o seu segredo consegue produzir. Mais ninguém tem uma cópia — nem nós, nem o Google — o que mantém os seus dados só seus, mas também significa que um segredo esquecido não pode ser reposto. Continuar aqui não recupera o seu cofre. Faz o seguinte:',
+    'O seu cofre é cifrado com uma chave que só o seu segredo consegue produzir. Mais ninguém tem uma cópia — nem nós, nem o seu fornecedor de armazenamento — o que mantém os seus dados só seus, mas também significa que um segredo esquecido não pode ser reposto. Continuar aqui não recupera o seu cofre. Faz o seguinte:',
   'auth.recover.bullet1':
     'O seu cofre atual torna-se inacessível com este novo segredo — vai começar de novo com um cofre novo e vazio.',
   'auth.recover.bullet2Prefix':
     'O seu ficheiro de cofre existente não é eliminado. É guardado como cópia de segurança datada na sua pasta',
   'auth.recover.bullet2Suffix':
-    'no Google Drive, caso o segredo antigo alguma vez lhe volte à memória.',
+    'no seu armazenamento na nuvem, caso o segredo antigo alguma vez lhe volte à memória.',
   'auth.recover.submit': 'Recuperar conta',
   'auth.recover.genericError': 'Não foi possível recuperar a sua conta. Tente novamente.',
 
@@ -394,7 +398,7 @@ export const pt: TranslationTable = {
     'Esta palavra-passe é fraca, o que torna a cifra dos seus cofres mais fácil de quebrar. Pode continuar, mas recomenda-se vivamente uma frase mais longa.',
   'settings.changePassword.repeatLabel': 'Repita a nova palavra-passe',
   'settings.changePassword.mismatch': 'As duas palavras-passe não coincidem.',
-  'settings.changePassword.uploadingProgress': 'A guardar no Google Drive… {percent}%',
+  'settings.changePassword.uploadingProgress': 'A guardar o seu cofre… {percent}%',
   'settings.changePassword.verifying': 'A verificar a sua palavra-passe atual…',
   'settings.changePassword.submit': 'Alterar Palavra-passe',
   'settings.changePassword.genericError':
@@ -549,18 +553,18 @@ export const pt: TranslationTable = {
   'settings.profile.title': 'Perfil',
   'settings.profile.email': 'E-mail',
   'settings.profile.displayName': 'Nome a apresentar',
-  'settings.profile.managedByGoogle':
-    'Obtido da conta Google com que iniciou sessão. Altere-o na sua conta Google.',
+  'settings.profile.managedByProvider':
+    'Obtido da conta com que iniciou sessão. Altere-o junto do seu fornecedor de início de sessão.',
   'settings.profile.logOut': 'Terminar sessão',
   'settings.profile.deleteAccount': 'Eliminar conta',
   'settings.profile.deleteWarning':
-    'Os seus dados são seus: estão num único ficheiro cifrado, no seu próprio Google Drive. Eliminar a sua conta muda o nome desse ficheiro para que esta aplicação já não o encontre e termina a sua sessão; nada é apagado. Para eliminar os dados em si, abra o Google Drive, vá à pasta keeperpass e apague o ficheiro aí.',
+    'Os seus dados são seus: estão num único ficheiro cifrado, no seu próprio armazenamento na nuvem. Eliminar a sua conta muda o nome desse ficheiro para que esta aplicação já não o encontre e termina a sua sessão; nada é apagado. Para eliminar os dados em si, abra o seu armazenamento na nuvem (Google Drive ou Dropbox), vá à pasta keeperpass (no Dropbox, dentro de Apps) e apague o ficheiro aí.',
   'settings.profile.deleteTypePrefix': 'Escreva',
   'settings.profile.deleteTypeSuffix': 'para confirmar.',
   'settings.profile.confirmation': 'Confirmação',
   'settings.profile.deleteDone': 'O nome do seu ficheiro de cofre foi alterado',
   'settings.profile.deleteDoneHint':
-    'Continua na pasta keeperpass do seu Google Drive. Apague-o aí quando quiser que os dados desapareçam definitivamente.',
+    'Continua na pasta keeperpass do seu armazenamento na nuvem (no Dropbox, dentro de Apps). Apague-o aí quando quiser que os dados desapareçam definitivamente.',
   'settings.profile.deleteError':
     'Não foi possível alterar o nome do ficheiro de cofre. Nada foi alterado.',
 
@@ -568,6 +572,56 @@ export const pt: TranslationTable = {
   'settings.masterPassword.description':
     'A sua palavra-passe principal cifra tudo o que está nos seus cofres e nunca sai deste dispositivo, pelo que não pode ser recuperada — apenas alterada.',
   'settings.masterPassword.change': 'Alterar palavra-passe mestra',
+  'settings.migrate.title':
+    'Mover cofre',
+  'settings.migrate.description':
+    'Mova o seu cofre cifrado para outro armazenamento na nuvem. O ficheiro de origem é mantido — renomeado, nunca eliminado.',
+  'settings.migrate.button':
+    'Mover para {provider}',
+  'settings.migrate.dialogTitle':
+    'Mover o cofre para {provider}',
+  'settings.migrate.dialogDescription':
+    'O seu cofre é copiado e verificado, e só depois o ficheiro antigo é renomeado. Se algo falhar, nada é alterado.',
+  'settings.migrate.connectIntro':
+    'Inicie sessão em {provider} para escolher o destino. Nada é alterado até confirmar no passo seguinte.',
+  'settings.migrate.connect':
+    'Ligar {provider}',
+  'settings.migrate.targetAccount':
+    'A mover para esta conta',
+  'settings.migrate.existingWarning':
+    'Esta conta {provider} já tem um cofre KeeperPass. Se continuar, ele é mantido como cópia de segurança com data e hora em {provider} e substituído pelo cofre que está a mover.',
+  'settings.migrate.existingConfirm':
+    'Substituí-lo — o cofre existente é mantido como cópia de segurança',
+  'settings.migrate.secretKeep':
+    'Manter o meu segredo atual',
+  'settings.migrate.secretNew':
+    'Escolher um segredo novo para o cofre movido',
+  'settings.migrate.submit':
+    'Mover cofre',
+  'settings.migrate.stage.encrypting':
+    'A cifrar o seu cofre…',
+  'settings.migrate.stage.uploading':
+    'A guardar em {provider}…',
+  'settings.migrate.stage.verifying':
+    'A verificar a cópia guardada…',
+  'settings.migrate.stage.finishing':
+    'A renomear o ficheiro antigo…',
+  'settings.migrate.done':
+    'O seu cofre está agora em {provider}',
+  'settings.migrate.doneHint':
+    'Inicie sessão com {provider} para o abrir. O ficheiro antigo foi mantido e renomeado em {from}.',
+  'settings.migrate.doneNotRenamed':
+    'O seu cofre foi copiado para {provider}, mas não foi possível renomear o ficheiro antigo em {from}. Renomeie-o ou elimine-o você mesmo para que as duas cópias não divirjam.',
+  'settings.migrate.error.sameProvider':
+    'O cofre já está nesse armazenamento.',
+  'settings.migrate.error.busy':
+    'Ainda há uma gravação em curso. Aguarde que termine e tente novamente.',
+  'settings.migrate.error.sourceExpired':
+    'A sua sessão atual expirou. Volte a iniciar sessão antes de mover o cofre.',
+  'settings.migrate.error.targetExpired':
+    'O seu início de sessão em {provider} expirou. Nada foi alterado — comece de novo.',
+  'settings.migrate.error.verifyFailed':
+    'A cópia guardada não correspondia ao seu cofre, por isso o ficheiro antigo ficou intacto. Nada se perdeu — tente novamente.',
 
   'settings.data.title': 'Importar / Exportar',
   'settings.data.import': 'Importar…',
@@ -595,6 +649,32 @@ export const pt: TranslationTable = {
   'errors.auth.popupClosed':
     'A janela de início de sessão do Google foi fechada antes de terminar. Tente novamente.',
   'errors.auth.unknown': 'Ocorreu um problema ao contactar o Google. Tente novamente.',
-  'errors.masterPassword.vaultNotFound': 'Não foi possível encontrar o seu cofre no Google Drive.',
+  'errors.dropbox.authExpired':
+    'A sua sessão do Dropbox expirou. Volte a ligar-se.',
+  'errors.dropbox.profileFailed':
+    'Não foi possível ler o seu perfil do Dropbox. Tente novamente.',
+  'errors.dropbox.popupBlocked':
+    'O seu navegador bloqueou a janela de início de sessão do Dropbox. Permita pop-ups para este site e tente novamente.',
+  'errors.dropbox.popupClosed':
+    'A janela de início de sessão do Dropbox foi fechada antes de terminar. Tente novamente.',
+  'errors.dropbox.unknown':
+    'Ocorreu um problema ao contactar o Dropbox. Tente novamente.',
+  'errors.dropbox.unreachable':
+    'Não foi possível contactar o Dropbox. Tente novamente.',
+  'errors.dropbox.readFailed':
+    'Não foi possível ler o seu cofre a partir do Dropbox. Tente novamente.',
+  'errors.dropbox.saveFailed':
+    'Não foi possível guardar o seu cofre no Dropbox. Tente novamente.',
+  'errors.dropbox.backupFailed':
+    'Não foi possível fazer uma cópia de segurança do seu cofre atual no Dropbox. Tente novamente.',
+  'errors.dropbox.renameFailed':
+    'Não foi possível mudar o nome do seu ficheiro de cofre no Dropbox. Nada foi alterado — tente novamente.',
+  'errors.dropbox.missingScope':
+    'Falta uma permissão do Dropbox ao KeeperPass. É um problema de configuração que iniciar sessão de novo não resolve.',
+  'errors.dropbox.rateLimited':
+    'O Dropbox pede para abrandarmos. Aguarde um momento e tente novamente.',
+  'errors.dropbox.conflict':
+    'O seu cofre foi alterado noutro dispositivo ou separador. Recarregue esta página para obter a versão mais recente antes de editar, para que nada seja substituído.',
+  'errors.masterPassword.vaultNotFound': 'Não foi possível encontrar o seu cofre.',
   'errors.masterPassword.wrongPassword': 'Essa não é a sua palavra-passe mestra atual.',
 };

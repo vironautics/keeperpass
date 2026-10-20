@@ -59,6 +59,16 @@ export const routes: Routes = [
       },
     ],
   },
+  // OAuth return page for Dropbox's consent popup. Outside every guard on
+  // purpose: it is visited mid-sign-in, in a phase no guard would let through,
+  // and the wildcard below would otherwise redirect it away with the code.
+  {
+    path: 'oauth/dropbox',
+    loadComponent: () =>
+      import('./features/auth/oauth-callback/dropbox-callback-page').then(
+        (m) => m.DropboxCallbackPage,
+      ),
+  },
   // The sign-in flow's steps (`/start`, `/unlock`), on their own full-bleed
   // backdrop. Each step guards itself — see auth.routes.ts.
   {

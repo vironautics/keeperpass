@@ -16,10 +16,8 @@ import {
 } from '../../../core/auth/disconnect-session';
 import { AuthService } from '../../../core/auth/auth.service';
 import { SessionStore } from '../../../core/auth/session.store';
-import {
-  GoogleAuthExpiredError,
-  GoogleDriveService,
-} from '../../../core/drive/google-drive.service';
+import { StorageAuthExpiredError } from '../../../core/providers/storage-errors';
+import { VaultStorageService } from '../../../core/providers/vault-storage.service';
 import {
   estimatePasswordStrength,
   matchesValidator,
@@ -70,7 +68,7 @@ export class SetupPage {
   private readonly session = inject(SessionStore);
   private readonly auth = inject(AuthService);
   private readonly vault = inject(VaultStore);
-  private readonly drive = inject(GoogleDriveService);
+  private readonly drive = inject(VaultStorageService);
   private readonly router = inject(Router);
   private readonly accounts = inject(AccountStore);
   private readonly i18n = inject(I18nService);
@@ -167,7 +165,7 @@ export class SetupPage {
       this.session.unlock(secret);
       await this.router.navigate(['/items']);
     } catch (error) {
-      if (error instanceof GoogleAuthExpiredError) {
+      if (error instanceof StorageAuthExpiredError) {
         this.disconnect();
         return;
       }

@@ -53,13 +53,17 @@ export const en = {
 
   'auth.start.title': 'Welcome to KeeperPass',
   'auth.start.description':
-    'Your vault is a single encrypted file in your own Google Drive. Sign in to open it.',
+    'Your vault is a single encrypted file in your own cloud storage. Sign in to open it.',
   'auth.start.signInFailed': 'Sign-in failed',
   'auth.start.continueWithGoogle': 'Continue with Google',
+  'auth.start.continueWithDropbox':
+    'Continue with Dropbox',
+  'auth.callback.closeWindow':
+    'Almost done — you can close this window.',
   'auth.start.accessNote':
-    'Access is limited to the files KeeperPass creates. The rest of your Drive stays out of reach.',
+    'Access is limited to the files KeeperPass creates. The rest of your storage stays out of reach.',
   'auth.start.encryptionNote':
-    'Your vault is encrypted in this browser with a secret you choose next. Google stores the file; it cannot read it.',
+    'Your vault is encrypted in this browser with a secret you choose next. Your storage provider keeps the file; it cannot read it.',
   'auth.start.noServerNote': 'There is no KeeperPass server. Nothing is sent anywhere else.',
   'auth.start.footerNote': 'Signing in creates the vault file if you do not have one yet.',
 
@@ -84,7 +88,7 @@ export const en = {
   'auth.setup.warningIntro':
     'Your vault is encrypted on this device with a key made from the secret you choose here. KeeperPass never receives that secret, so we could not read your vault even if we were asked to. That is the point — and it comes with three consequences worth knowing now rather than later:',
   'auth.setup.warningBullet1':
-    'Your secret is never sent anywhere and is never stored. Nobody — not us, not Google — can look it up or reset it for you.',
+    'Your secret is never sent anywhere and is never stored. Nobody — not us, not your storage provider — can look it up or reset it for you.',
   'auth.setup.warningBullet2':
     'If you forget it, your vault cannot be recovered. There is no reset link and no support request that can open it.',
   'auth.setup.warningBullet3': 'Write it down and keep it somewhere safe before you continue.',
@@ -100,13 +104,13 @@ export const en = {
     'This secret is weak, which makes the encryption around your vaults easier to break. You can continue, but a longer passphrase is strongly recommended.',
   'auth.recover.repeatSecretLabel': 'Repeat new secret',
   'auth.recover.warningIntro':
-    'Your vault is encrypted with a key that only your secret can produce. Nobody else holds a copy — not us, not Google — which is what keeps your data yours, and it also means a forgotten secret cannot be reset. Continuing here does not recover your vault. It does this:',
+    'Your vault is encrypted with a key that only your secret can produce. Nobody else holds a copy — not us, not your storage provider — which is what keeps your data yours, and it also means a forgotten secret cannot be reset. Continuing here does not recover your vault. It does this:',
   'auth.recover.bullet1':
     "Your current vault becomes inaccessible under this new secret — you'll start again with a brand new, empty vault.",
   'auth.recover.bullet2Prefix':
     "Your existing vault file isn't deleted. It's kept as a timestamped backup in your",
   'auth.recover.bullet2Suffix':
-    'folder in Google Drive, in case the old secret ever comes back to you.',
+    'folder in your cloud storage, in case the old secret ever comes back to you.',
   'auth.recover.submit': 'Recover account',
   'auth.recover.genericError': 'Could not recover your account. Please try again.',
 
@@ -399,7 +403,7 @@ export const en = {
     'This password is weak, which makes the encryption around your vaults easier to break. You can continue, but a longer passphrase is strongly recommended.',
   'settings.changePassword.repeatLabel': 'Repeat new password',
   'settings.changePassword.mismatch': 'The two passwords do not match.',
-  'settings.changePassword.uploadingProgress': 'Saving to Google Drive… {percent}%',
+  'settings.changePassword.uploadingProgress': 'Saving your vault… {percent}%',
   'settings.changePassword.verifying': 'Verifying your current password…',
   'settings.changePassword.submit': 'Change Password',
   'settings.changePassword.genericError': 'Could not change your master password. Please try again.',
@@ -551,12 +555,12 @@ export const en = {
   'settings.profile.title': 'Profile',
   'settings.profile.email': 'Email',
   'settings.profile.displayName': 'Display Name',
-  'settings.profile.managedByGoogle':
-    'Taken from the Google account you signed in with. Change it in your Google account.',
+  'settings.profile.managedByProvider':
+    'Taken from the account you signed in with. Change it with your sign-in provider.',
   'settings.profile.logOut': 'Log Out',
   'settings.profile.deleteAccount': 'Delete Account',
   'settings.profile.deleteWarning':
-    'Your data is yours: it lives as one encrypted file in your own Google Drive. Deleting your account renames that file so this app can no longer find it, and signs you out — nothing is erased. To delete the data itself, open Google Drive, go to the keeperpass folder, and delete the file there.',
+    'Your data is yours: it lives as one encrypted file in your own cloud storage. Deleting your account renames that file so this app can no longer find it, and signs you out — nothing is erased. To delete the data itself, open your cloud storage (Google Drive or Dropbox), find the keeperpass folder (in Dropbox it is under Apps), and delete the file there.',
   // Split around the literal token the user has to type, which is never
   // translated. All five locales can place that token mid-sentence, so a
   // prefix/suffix pair is enough and keeps the token emphasised in the markup.
@@ -565,13 +569,63 @@ export const en = {
   'settings.profile.confirmation': 'Confirmation',
   'settings.profile.deleteDone': 'Your vault file has been renamed',
   'settings.profile.deleteDoneHint':
-    'It is still in the keeperpass folder in your Google Drive. Delete it there whenever you want the data gone for good.',
+    'It is still in the keeperpass folder of your cloud storage (in Dropbox, under Apps). Delete it there whenever you want the data gone for good.',
   'settings.profile.deleteError': 'Could not rename your vault file. Nothing was changed.',
 
   'settings.masterPassword.title': 'Master Password',
   'settings.masterPassword.description':
     'Your master password encrypts everything in your vaults and never leaves this device, so it cannot be recovered — only changed.',
   'settings.masterPassword.change': 'Change Master Password',
+  'settings.migrate.title':
+    'Move Vault',
+  'settings.migrate.description':
+    'Move your encrypted vault to another cloud storage. The file you move from is kept — renamed, never deleted.',
+  'settings.migrate.button':
+    'Move to {provider}',
+  'settings.migrate.dialogTitle':
+    'Move vault to {provider}',
+  'settings.migrate.dialogDescription':
+    'Your vault is copied and checked, and only then is the old file renamed. If anything fails, nothing is changed.',
+  'settings.migrate.connectIntro':
+    'Sign in to {provider} to choose where the vault goes. Nothing is changed until you confirm on the next step.',
+  'settings.migrate.connect':
+    'Connect {provider}',
+  'settings.migrate.targetAccount':
+    'Moving to this account',
+  'settings.migrate.existingWarning':
+    'This {provider} account already has a KeeperPass vault. Continuing keeps it as a timestamped backup file in {provider} and replaces it with the vault you are moving.',
+  'settings.migrate.existingConfirm':
+    'Replace it — the existing vault is kept as a backup',
+  'settings.migrate.secretKeep':
+    'Keep my current secret',
+  'settings.migrate.secretNew':
+    'Choose a new secret for the moved vault',
+  'settings.migrate.submit':
+    'Move vault',
+  'settings.migrate.stage.encrypting':
+    'Encrypting your vault…',
+  'settings.migrate.stage.uploading':
+    'Saving to {provider}…',
+  'settings.migrate.stage.verifying':
+    'Checking the saved copy…',
+  'settings.migrate.stage.finishing':
+    'Renaming the old file…',
+  'settings.migrate.done':
+    'Your vault now lives in {provider}',
+  'settings.migrate.doneHint':
+    'Sign in with {provider} to open it. The old file was kept and renamed in {from}.',
+  'settings.migrate.doneNotRenamed':
+    'Your vault was copied to {provider}, but the old file in {from} could not be renamed. Rename or delete it yourself so the two copies do not drift apart.',
+  'settings.migrate.error.sameProvider':
+    'The vault is already in that storage.',
+  'settings.migrate.error.busy':
+    'A save is still in progress. Wait for it to finish and try again.',
+  'settings.migrate.error.sourceExpired':
+    'Your current session expired. Please sign in again before moving the vault.',
+  'settings.migrate.error.targetExpired':
+    'Your {provider} sign-in expired. Nothing was changed — please start again.',
+  'settings.migrate.error.verifyFailed':
+    'The saved copy did not match your vault, so the old file was left untouched. Nothing was lost — please try again.',
 
   'settings.data.title': 'Import / Export',
   'settings.data.import': 'Import…',
@@ -597,7 +651,33 @@ export const en = {
     'Your browser blocked the Google sign-in popup. Please allow popups for this site and try again.',
   'errors.auth.popupClosed': 'The Google sign-in window was closed before finishing. Please try again.',
   'errors.auth.unknown': 'Something went wrong while contacting Google. Please try again.',
-  'errors.masterPassword.vaultNotFound': 'Could not find your vault in Google Drive.',
+  'errors.dropbox.authExpired':
+    'Your Dropbox session has expired. Please reconnect.',
+  'errors.dropbox.profileFailed':
+    'Could not read your Dropbox profile. Please try again.',
+  'errors.dropbox.popupBlocked':
+    'Your browser blocked the Dropbox sign-in popup. Please allow popups for this site and try again.',
+  'errors.dropbox.popupClosed':
+    'The Dropbox sign-in window was closed before finishing. Please try again.',
+  'errors.dropbox.unknown':
+    'Something went wrong while contacting Dropbox. Please try again.',
+  'errors.dropbox.unreachable':
+    'Could not reach Dropbox. Please try again.',
+  'errors.dropbox.readFailed':
+    'Could not read your vault from Dropbox. Please try again.',
+  'errors.dropbox.saveFailed':
+    'Could not save your vault to Dropbox. Please try again.',
+  'errors.dropbox.backupFailed':
+    'Could not back up your existing vault in Dropbox. Please try again.',
+  'errors.dropbox.renameFailed':
+    'Could not rename your vault file in Dropbox. Nothing was changed — please try again.',
+  'errors.dropbox.missingScope':
+    'KeeperPass is missing a Dropbox permission. This is a configuration problem, not something signing in again will fix.',
+  'errors.dropbox.rateLimited':
+    'Dropbox is asking us to slow down. Please wait a moment and try again.',
+  'errors.dropbox.conflict':
+    'Your vault was changed on another device or tab. Reload this page to get the latest version before editing, so nothing is overwritten.',
+  'errors.masterPassword.vaultNotFound': 'Could not find your vault.',
   'errors.masterPassword.wrongPassword': 'That is not your current master password.',
 };
 

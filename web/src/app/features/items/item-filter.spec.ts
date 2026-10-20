@@ -157,10 +157,22 @@ describe('filterItems', () => {
     expect(search('production')).toEqual(['one', 'both']);
   });
 
-  it('searches across the whole vault set, ignoring the structural filter', () => {
-    const items = [item({ id: 'elsewhere', name: 'Target', vaultId: 'vault-b' })];
+  it('searches only the selected vault', () => {
+    const items = [
+      item({ id: 'here', name: 'Target', vaultId: 'vault-a' }),
+      item({ id: 'elsewhere', name: 'Target', vaultId: 'vault-b' }),
+    ];
     const filter = { ...parseItemFilter({ vault: 'vault-a' }), search: 'target' };
-    expect(filterItems(items, filter, context).map((i) => i.id)).toEqual(['elsewhere']);
+    expect(filterItems(items, filter, context).map((i) => i.id)).toEqual(['here']);
+  });
+
+  it('searches every vault when none is selected', () => {
+    const items = [
+      item({ id: 'a', name: 'Target', vaultId: 'vault-a' }),
+      item({ id: 'b', name: 'Target', vaultId: 'vault-b' }),
+    ];
+    const filter = { ...EMPTY_FILTER, search: 'target' };
+    expect(filterItems(items, filter, context).map((i) => i.id)).toEqual(['a', 'b']);
   });
 });
 

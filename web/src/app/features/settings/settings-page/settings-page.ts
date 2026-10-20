@@ -5,6 +5,7 @@ import { Icon } from '../../../ui/icon/icon';
 import { DataSection } from '../data-section/data-section';
 import { LanguageSection } from '../language-section/language-section';
 import { MasterPasswordSection } from '../master-password-section/master-password-section';
+import { MoveVaultSection } from '../move-vault-section/move-vault-section';
 import { ProfileSection } from '../profile-section/profile-section';
 
 /**
@@ -24,6 +25,7 @@ import { ProfileSection } from '../profile-section/profile-section';
     Icon,
     LanguageSection,
     MasterPasswordSection,
+    MoveVaultSection,
     ProfileSection,
     TranslatePipe,
     HlmSidebarTrigger,

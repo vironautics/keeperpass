@@ -34,13 +34,17 @@ export const fr: TranslationTable = {
 
   'auth.start.title': 'Bienvenue sur KeeperPass',
   'auth.start.description':
-    'Votre coffre-fort est un seul fichier chiffré dans votre propre Google Drive. Connectez-vous pour l’ouvrir.',
+    'Votre coffre-fort est un seul fichier chiffré dans votre propre espace de stockage cloud. Connectez-vous pour l’ouvrir.',
   'auth.start.signInFailed': 'Échec de la connexion',
   'auth.start.continueWithGoogle': 'Continuer avec Google',
+  'auth.start.continueWithDropbox':
+    'Continuer avec Dropbox',
+  'auth.callback.closeWindow':
+    'Presque terminé — vous pouvez fermer cette fenêtre.',
   'auth.start.accessNote':
-    'L’accès est limité aux fichiers créés par KeeperPass. Le reste de votre Drive reste hors de portée.',
+    'L’accès est limité aux fichiers créés par KeeperPass. Le reste de votre espace de stockage reste hors de portée.',
   'auth.start.encryptionNote':
-    'Votre coffre-fort est chiffré dans ce navigateur avec un secret que vous choisirez ensuite. Google stocke le fichier, mais ne peut pas le lire.',
+    'Votre coffre-fort est chiffré dans ce navigateur avec un secret que vous choisirez ensuite. Votre fournisseur de stockage conserve le fichier, mais ne peut pas le lire.',
   'auth.start.noServerNote': 'Il n’y a pas de serveur KeeperPass. Rien n’est envoyé ailleurs.',
   'auth.start.footerNote':
     'La connexion crée le fichier du coffre-fort si vous n’en avez pas encore un.',
@@ -66,7 +70,7 @@ export const fr: TranslationTable = {
   'auth.setup.warningIntro':
     'Votre coffre-fort est chiffré sur cet appareil avec une clé dérivée du secret que vous choisissez ici. KeeperPass ne reçoit jamais ce secret et ne pourrait donc pas lire votre coffre-fort même si on le lui demandait. C’est tout l’intérêt — et cela entraîne trois conséquences qu’il vaut mieux connaître maintenant plutôt que plus tard :',
   'auth.setup.warningBullet1':
-    'Votre secret n’est jamais envoyé nulle part et n’est jamais stocké. Personne — ni nous, ni Google — ne peut le consulter ni le réinitialiser à votre place.',
+    'Votre secret n’est jamais envoyé nulle part et n’est jamais stocké. Personne — ni nous, ni votre fournisseur de stockage — ne peut le consulter ni le réinitialiser à votre place.',
   'auth.setup.warningBullet2':
     'Si vous l’oubliez, votre coffre-fort ne peut pas être récupéré. Il n’existe aucun lien de réinitialisation ni aucune demande d’assistance capable de l’ouvrir.',
   'auth.setup.warningBullet3': 'Notez-le et conservez-le en lieu sûr avant de continuer.',
@@ -82,13 +86,13 @@ export const fr: TranslationTable = {
     'Ce secret est faible, ce qui facilite le contournement du chiffrement de vos coffres-forts. Vous pouvez continuer, mais une phrase plus longue est fortement recommandée.',
   'auth.recover.repeatSecretLabel': 'Répétez le nouveau secret',
   'auth.recover.warningIntro':
-    'Votre coffre-fort est chiffré avec une clé que seul votre secret peut produire. Personne d’autre n’en détient une copie — ni nous, ni Google — ce qui garde vos données pour vous seul, mais cela signifie aussi qu’un secret oublié ne peut pas être réinitialisé. Continuer ici ne récupère pas votre coffre-fort. Voici ce que cela fait :',
+    'Votre coffre-fort est chiffré avec une clé que seul votre secret peut produire. Personne d’autre n’en détient une copie — ni nous, ni votre fournisseur de stockage — ce qui garde vos données pour vous seul, mais cela signifie aussi qu’un secret oublié ne peut pas être réinitialisé. Continuer ici ne récupère pas votre coffre-fort. Voici ce que cela fait :',
   'auth.recover.bullet1':
     'Votre coffre-fort actuel devient inaccessible avec ce nouveau secret — vous repartirez de zéro avec un coffre-fort tout neuf et vide.',
   'auth.recover.bullet2Prefix':
     'Votre fichier de coffre-fort existant n’est pas supprimé. Il est conservé comme sauvegarde horodatée dans votre dossier',
   'auth.recover.bullet2Suffix':
-    'sur Google Drive, au cas où l’ancien secret vous reviendrait un jour.',
+    'dans votre stockage cloud, au cas où l’ancien secret vous reviendrait un jour.',
   'auth.recover.submit': 'Récupérer le compte',
   'auth.recover.genericError': 'Impossible de récupérer votre compte. Veuillez réessayer.',
 
@@ -389,7 +393,7 @@ export const fr: TranslationTable = {
     'Ce mot de passe est faible, ce qui facilite le contournement du chiffrement de vos coffres-forts. Vous pouvez continuer, mais une phrase plus longue est fortement recommandée.',
   'settings.changePassword.repeatLabel': 'Répétez le nouveau mot de passe',
   'settings.changePassword.mismatch': 'Les deux mots de passe ne correspondent pas.',
-  'settings.changePassword.uploadingProgress': 'Enregistrement sur Google Drive… {percent} %',
+  'settings.changePassword.uploadingProgress': 'Enregistrement de votre coffre-fort… {percent} %',
   'settings.changePassword.verifying': 'Vérification de votre mot de passe actuel…',
   'settings.changePassword.submit': 'Changer le mot de passe',
   'settings.changePassword.genericError':
@@ -545,18 +549,18 @@ export const fr: TranslationTable = {
   'settings.profile.title': 'Profil',
   'settings.profile.email': 'E-mail',
   'settings.profile.displayName': 'Nom affiché',
-  'settings.profile.managedByGoogle':
-    'Récupéré depuis le compte Google utilisé pour la connexion. Modifiez-le dans votre compte Google.',
+  'settings.profile.managedByProvider':
+    'Récupéré depuis le compte utilisé pour la connexion. Modifiez-le auprès de votre fournisseur de connexion.',
   'settings.profile.logOut': 'Se déconnecter',
   'settings.profile.deleteAccount': 'Supprimer le compte',
   'settings.profile.deleteWarning':
-    'Vos données sont les vôtres : elles tiennent dans un seul fichier chiffré, dans votre propre Google Drive. Supprimer votre compte renomme ce fichier pour que cette application ne le trouve plus, et vous déconnecte ; rien n’est effacé. Pour supprimer les données elles-mêmes, ouvrez Google Drive, allez dans le dossier keeperpass et supprimez le fichier depuis là.',
+    'Vos données sont les vôtres : elles tiennent dans un seul fichier chiffré, dans votre propre stockage cloud. Supprimer votre compte renomme ce fichier pour que cette application ne le trouve plus, et vous déconnecte ; rien n’est effacé. Pour supprimer les données elles-mêmes, ouvrez votre stockage cloud (Google Drive ou Dropbox), allez dans le dossier keeperpass (dans Dropbox, sous Apps) et supprimez le fichier depuis là.',
   'settings.profile.deleteTypePrefix': 'Saisissez',
   'settings.profile.deleteTypeSuffix': 'pour confirmer.',
   'settings.profile.confirmation': 'Confirmation',
   'settings.profile.deleteDone': 'Votre fichier de coffre-fort a été renommé',
   'settings.profile.deleteDoneHint':
-    'Il reste dans le dossier keeperpass de votre Google Drive. Supprimez-le là-bas quand vous voulez effacer définitivement les données.',
+    'Il reste dans le dossier keeperpass de votre stockage cloud (dans Dropbox, sous Apps). Supprimez-le là-bas quand vous voulez effacer définitivement les données.',
   'settings.profile.deleteError':
     'Impossible de renommer votre fichier de coffre-fort. Rien n’a été modifié.',
 
@@ -564,6 +568,56 @@ export const fr: TranslationTable = {
   'settings.masterPassword.description':
     'Votre mot de passe principal chiffre tout ce que contiennent vos coffres-forts et ne quitte jamais cet appareil : il ne peut donc pas être récupéré, seulement changé.',
   'settings.masterPassword.change': 'Changer le mot de passe maître',
+  'settings.migrate.title':
+    'Déplacer le coffre-fort',
+  'settings.migrate.description':
+    'Déplacez votre coffre-fort chiffré vers un autre stockage cloud. Le fichier d’origine est conservé — renommé, jamais supprimé.',
+  'settings.migrate.button':
+    'Déplacer vers {provider}',
+  'settings.migrate.dialogTitle':
+    'Déplacer le coffre-fort vers {provider}',
+  'settings.migrate.dialogDescription':
+    'Votre coffre-fort est copié et vérifié, et ce n’est qu’ensuite que l’ancien fichier est renommé. Si quelque chose échoue, rien n’est modifié.',
+  'settings.migrate.connectIntro':
+    'Connectez-vous à {provider} pour choisir la destination. Rien n’est modifié tant que vous ne confirmez pas à l’étape suivante.',
+  'settings.migrate.connect':
+    'Connecter {provider}',
+  'settings.migrate.targetAccount':
+    'Déplacement vers ce compte',
+  'settings.migrate.existingWarning':
+    'Ce compte {provider} contient déjà un coffre-fort KeeperPass. Si vous continuez, il est conservé comme fichier de sauvegarde horodaté dans {provider} et remplacé par le coffre-fort que vous déplacez.',
+  'settings.migrate.existingConfirm':
+    'Le remplacer — le coffre-fort existant est conservé comme sauvegarde',
+  'settings.migrate.secretKeep':
+    'Conserver mon secret actuel',
+  'settings.migrate.secretNew':
+    'Choisir un nouveau secret pour le coffre-fort déplacé',
+  'settings.migrate.submit':
+    'Déplacer le coffre-fort',
+  'settings.migrate.stage.encrypting':
+    'Chiffrement de votre coffre-fort…',
+  'settings.migrate.stage.uploading':
+    'Enregistrement dans {provider}…',
+  'settings.migrate.stage.verifying':
+    'Vérification de la copie enregistrée…',
+  'settings.migrate.stage.finishing':
+    'Renommage de l’ancien fichier…',
+  'settings.migrate.done':
+    'Votre coffre-fort se trouve maintenant dans {provider}',
+  'settings.migrate.doneHint':
+    'Connectez-vous avec {provider} pour l’ouvrir. L’ancien fichier a été conservé et renommé dans {from}.',
+  'settings.migrate.doneNotRenamed':
+    'Votre coffre-fort a été copié dans {provider}, mais l’ancien fichier dans {from} n’a pas pu être renommé. Renommez-le ou supprimez-le vous-même pour que les deux copies ne divergent pas.',
+  'settings.migrate.error.sameProvider':
+    'Le coffre-fort se trouve déjà dans ce stockage.',
+  'settings.migrate.error.busy':
+    'Un enregistrement est encore en cours. Attendez qu’il se termine puis réessayez.',
+  'settings.migrate.error.sourceExpired':
+    'Votre session actuelle a expiré. Reconnectez-vous avant de déplacer le coffre-fort.',
+  'settings.migrate.error.targetExpired':
+    'Votre connexion à {provider} a expiré. Rien n’a été modifié — veuillez recommencer.',
+  'settings.migrate.error.verifyFailed':
+    'La copie enregistrée ne correspondait pas à votre coffre-fort, l’ancien fichier est donc resté intact. Rien n’a été perdu — veuillez réessayer.',
 
   'settings.data.title': 'Importer / Exporter',
   'settings.data.import': 'Importer…',
@@ -592,6 +646,32 @@ export const fr: TranslationTable = {
   'errors.auth.popupClosed':
     'La fenêtre de connexion Google a été fermée avant la fin. Veuillez réessayer.',
   'errors.auth.unknown': 'Un problème est survenu lors de la connexion à Google. Veuillez réessayer.',
-  'errors.masterPassword.vaultNotFound': 'Votre coffre-fort est introuvable dans Google Drive.',
+  'errors.dropbox.authExpired':
+    'Votre session Dropbox a expiré. Veuillez vous reconnecter.',
+  'errors.dropbox.profileFailed':
+    'Impossible de lire votre profil Dropbox. Veuillez réessayer.',
+  'errors.dropbox.popupBlocked':
+    'Votre navigateur a bloqué la fenêtre de connexion Dropbox. Veuillez autoriser les fenêtres pop-up pour ce site et réessayer.',
+  'errors.dropbox.popupClosed':
+    'La fenêtre de connexion Dropbox a été fermée avant la fin. Veuillez réessayer.',
+  'errors.dropbox.unknown':
+    'Un problème est survenu lors de la connexion à Dropbox. Veuillez réessayer.',
+  'errors.dropbox.unreachable':
+    'Impossible de joindre Dropbox. Veuillez réessayer.',
+  'errors.dropbox.readFailed':
+    'Impossible de lire votre coffre-fort depuis Dropbox. Veuillez réessayer.',
+  'errors.dropbox.saveFailed':
+    'Impossible d’enregistrer votre coffre-fort dans Dropbox. Veuillez réessayer.',
+  'errors.dropbox.backupFailed':
+    'Impossible de sauvegarder votre coffre-fort existant dans Dropbox. Veuillez réessayer.',
+  'errors.dropbox.renameFailed':
+    'Impossible de renommer votre fichier de coffre-fort dans Dropbox. Rien n’a été modifié — veuillez réessayer.',
+  'errors.dropbox.missingScope':
+    'Il manque une autorisation Dropbox à KeeperPass. C’est un problème de configuration qu’une nouvelle connexion ne résoudra pas.',
+  'errors.dropbox.rateLimited':
+    'Dropbox nous demande de ralentir. Patientez un instant et réessayez.',
+  'errors.dropbox.conflict':
+    'Votre coffre-fort a été modifié sur un autre appareil ou onglet. Rechargez cette page pour obtenir la dernière version avant de modifier, afin que rien ne soit écrasé.',
+  'errors.masterPassword.vaultNotFound': 'Votre coffre-fort est introuvable.',
   'errors.masterPassword.wrongPassword': 'Ce n’est pas votre mot de passe principal actuel.',
 };

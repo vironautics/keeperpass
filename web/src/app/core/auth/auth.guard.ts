@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { CanMatchFn, Router } from '@angular/router';
-import { GoogleDriveService } from '../drive/google-drive.service';
+import { VaultStorageService } from '../providers/vault-storage.service';
 import { SessionPhase, SessionStore } from './session.store';
 
 /** Where a visitor in a given phase belongs. */
@@ -63,7 +63,7 @@ function vaultStepGuard(wantsVault: boolean): CanMatchFn {
     // everything below the first `await` has left the injection context.
     const session = inject(SessionStore);
     const router = inject(Router);
-    const drive = inject(GoogleDriveService);
+    const drive = inject(VaultStorageService);
 
     if (session.phase() !== 'awaiting-secret') {
       return router.createUrlTree([ROUTE_FOR_PHASE[session.phase()]]);

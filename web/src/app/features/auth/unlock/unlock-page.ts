@@ -24,10 +24,8 @@ import {
   ensureFreshTokenOrDisconnect,
 } from '../../../core/auth/disconnect-session';
 import { SessionStore } from '../../../core/auth/session.store';
-import {
-  GoogleAuthExpiredError,
-  GoogleDriveService,
-} from '../../../core/drive/google-drive.service';
+import { StorageAuthExpiredError } from '../../../core/providers/storage-errors';
+import { VaultStorageService } from '../../../core/providers/vault-storage.service';
 import { I18nService, TranslatePipe } from '../../../core/i18n';
 import { decryptVault, encryptVault } from '../../../core/vault/vault-crypto';
 import {
@@ -74,7 +72,7 @@ import { Icon } from '../../../ui/icon/icon';
 export class UnlockPage {
   private readonly session = inject(SessionStore);
   private readonly vault = inject(VaultStore);
-  private readonly drive = inject(GoogleDriveService);
+  private readonly drive = inject(VaultStorageService);
   private readonly router = inject(Router);
   private readonly auditService = inject(AuditService);
   private readonly auth = inject(AuthService);
@@ -188,7 +186,7 @@ export class UnlockPage {
       void this.auditService.runFullAudit();
       await this.router.navigate(['/items']);
     } catch (error) {
-      if (error instanceof GoogleAuthExpiredError) {
+      if (error instanceof StorageAuthExpiredError) {
         // A token restored from sessionStorage after a refresh (see
         // SessionStore) can be stale by the time it's actually used here.
         this.disconnect();

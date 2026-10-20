@@ -1,6 +1,6 @@
 <!--
-  First step of the sign-in flow, in spartan/ui. One action, so the card is mostly
-  explanation: what signing in gives the app access to, and what it does not.
+  First step of the sign-in flow, in spartan/ui. One action per provider, so the card is
+  mostly explanation: what signing in gives the app access to, and what it does not.
 -->
 <div
   hlmCard
@@ -28,21 +28,25 @@
       </div>
     }
 
-    <button
-      hlmBtn
-      type="button"
-      variant="outline"
-      class="w-full"
-      [disabled]="submitting()"
-      (click)="signInWithGoogle()"
-    >
-      @if (submitting()) {
-        <hlm-spinner />
-      } @else {
-        <app-google-logo class="size-4" />
-      }
-      {{ 'auth.start.continueWithGoogle' | t }}
-    </button>
+    @for (providerId of providers; track providerId) {
+      <button
+        hlmBtn
+        type="button"
+        variant="outline"
+        class="w-full"
+        [disabled]="submitting()"
+        (click)="signIn(providerId)"
+      >
+        @if (activeProvider() === providerId) {
+          <hlm-spinner />
+        } @else if (providerId === 'dropbox') {
+          <app-dropbox-logo class="size-4" />
+        } @else {
+          <app-google-logo class="size-4" />
+        }
+        {{ labelKeys[providerId] | t }}
+      </button>
+    }
 
     <!--
       The three things worth saying before someone hands over an account, each one

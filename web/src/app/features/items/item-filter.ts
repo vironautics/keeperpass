@@ -77,11 +77,9 @@ export interface FilterContext {
 /**
  * The items to show, in the order to show them.
  *
- * A search term replaces the other filters rather than narrowing them further.
- * Someone typing a search is looking for a thing they know they own, and they
- * are rarely thinking about which vault or tag was selected when they started
- * typing — a search that silently only looked inside the current selection
- * would report "no results" for an item sitting in the next vault.
+ * A search term replaces the tag, favourites, recent and report filters but stays
+ * inside the selected vault: someone searching while a vault is open expects hits
+ * from that vault only. With no vault selected it searches everything.
  *
  * Sorted by name, except under the "recent" filter, where the order *is* the
  * point: an alphabetised "Recently Used" answers a question nobody asked.
@@ -92,7 +90,10 @@ export function filterItems(
   context: FilterContext,
 ): VaultItem[] {
   const matches = filter.search
-    ? items.filter((item) => matchesSearch(item, filter.search))
+    ? items.filter(
+        (item) =>
+          (!filter.vaultId || item.vaultId === filter.vaultId) && matchesSearch(item, filter.search),
+      )
     : items.filter((item) => matchesFilter(item, filter, context));
 
   if (!filter.search && filter.recent) {

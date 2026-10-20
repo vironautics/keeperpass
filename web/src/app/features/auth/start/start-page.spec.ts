@@ -11,11 +11,13 @@ class FakeAuthService {
     return 'the-access-token';
   }
 
-  result: Awaited<ReturnType<AuthService['signInWithGoogle']>> | null = null;
+  result: Awaited<ReturnType<AuthService['signIn']>> | null = null;
   error: Error | null = null;
   callCount = 0;
+  lastProvider: string | null = null;
 
-  async signInWithGoogle() {
+  async signIn(providerId: string) {
+    this.lastProvider = providerId;
     this.callCount++;
     if (this.error) {
       throw this.error;
@@ -104,5 +106,53 @@ describe('StartPage', () => {
     await click();
 
     expect(alertText()).not.toContain('Service unreachable.');
+  });
+});
+
+describe('StartPage — providers', () => {
+  let fixture: ComponentFixture<StartPage>;
+  let auth: FakeAuthService;
+  let session: SessionStore;
+
+  const buttons = () => [...(fixture.nativeElement as HTMLElement).querySelectorAll('button')];
+
+  beforeEach(async () => {
+    sessionStorage.clear();
+    auth = new FakeAuthService();
+
+    await TestBed.configureTestingModule({
+      imports: [StartPage],
+      providers: [provideRouter([]), { provide: AuthService, useValue: auth }],
+    }).compileComponents();
+
+    session = TestBed.inject(SessionStore);
+    vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    fixture = TestBed.createComponent(StartPage);
+    await fixture.whenStable();
+  });
+
+  it('offers a button for every configured provider', () => {
+    expect(buttons().map((button) => button.textContent?.trim())).toEqual([
+      'Continue with Google',
+      'Continue with Dropbox',
+    ]);
+  });
+
+  it('signs in with the provider whose button was pressed, and remembers it on the session', async () => {
+    auth.result = {
+      email: 'd@example.com',
+      name: 'D',
+      accessToken: 'dropbox-token',
+      expiresAt: Date.now() + 3_600_000,
+      refreshToken: 'dropbox-refresh',
+    };
+
+    buttons()[1].dispatchEvent(new Event('click', { bubbles: true }));
+    await fixture.whenStable();
+
+    expect(auth.lastProvider).toBe('dropbox');
+    expect(session.providerId()).toBe('dropbox');
+    expect(session.accessToken()).toBe('dropbox-token');
+    expect(session.refreshToken()).toBe('dropbox-refresh');
   });
 });

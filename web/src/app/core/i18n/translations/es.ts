@@ -34,13 +34,17 @@ export const es: TranslationTable = {
 
   'auth.start.title': 'Bienvenido a KeeperPass',
   'auth.start.description':
-    'Tu caja fuerte es un único archivo cifrado en tu propio Google Drive. Inicia sesión para abrirla.',
+    'Tu caja fuerte es un único archivo cifrado en tu propio almacenamiento en la nube. Inicia sesión para abrirla.',
   'auth.start.signInFailed': 'Error al iniciar sesión',
   'auth.start.continueWithGoogle': 'Continuar con Google',
+  'auth.start.continueWithDropbox':
+    'Continuar con Dropbox',
+  'auth.callback.closeWindow':
+    'Casi listo: ya puedes cerrar esta ventana.',
   'auth.start.accessNote':
-    'El acceso se limita a los archivos que crea KeeperPass. El resto de tu Drive queda fuera de su alcance.',
+    'El acceso se limita a los archivos que crea KeeperPass. El resto de tu almacenamiento queda fuera de su alcance.',
   'auth.start.encryptionNote':
-    'Tu caja fuerte se cifra en este navegador con un secreto que elegirás a continuación. Google guarda el archivo, pero no puede leerlo.',
+    'Tu caja fuerte se cifra en este navegador con un secreto que elegirás a continuación. Tu proveedor de almacenamiento guarda el archivo, pero no puede leerlo.',
   'auth.start.noServerNote': 'No hay ningún servidor de KeeperPass. Nada se envía a ningún otro sitio.',
   'auth.start.footerNote': 'Al iniciar sesión se crea el archivo de la caja fuerte si aún no tienes uno.',
 
@@ -65,7 +69,7 @@ export const es: TranslationTable = {
   'auth.setup.warningIntro':
     'Tu caja fuerte se cifra en este dispositivo con una clave derivada del secreto que elijas aquí. KeeperPass nunca recibe ese secreto, así que no podríamos leer tu caja fuerte aunque nos lo pidieran. Ese es el objetivo, y trae consigo tres consecuencias que conviene conocer ahora y no después:',
   'auth.setup.warningBullet1':
-    'Tu secreto nunca se envía a ningún sitio ni se almacena. Nadie —ni nosotros ni Google— puede consultarlo ni restablecerlo por ti.',
+    'Tu secreto nunca se envía a ningún sitio ni se almacena. Nadie —ni nosotros ni tu proveedor de almacenamiento— puede consultarlo ni restablecerlo por ti.',
   'auth.setup.warningBullet2':
     'Si lo olvidas, tu caja fuerte no se puede recuperar. No existe enlace de restablecimiento ni solicitud de soporte que pueda abrirla.',
   'auth.setup.warningBullet3': 'Anótalo y guárdalo en un lugar seguro antes de continuar.',
@@ -81,13 +85,13 @@ export const es: TranslationTable = {
     'Este secreto es débil, lo que facilita romper el cifrado de tus cajas fuertes. Puedes continuar, pero se recomienda encarecidamente una frase más larga.',
   'auth.recover.repeatSecretLabel': 'Repite el nuevo secreto',
   'auth.recover.warningIntro':
-    'Tu caja fuerte está cifrada con una clave que solo tu secreto puede generar. Nadie más tiene una copia —ni nosotros ni Google—, lo que hace que tus datos sean tuyos, pero también significa que un secreto olvidado no se puede restablecer. Continuar aquí no recupera tu caja fuerte. Hace lo siguiente:',
+    'Tu caja fuerte está cifrada con una clave que solo tu secreto puede generar. Nadie más tiene una copia —ni nosotros ni tu proveedor de almacenamiento—, lo que hace que tus datos sean tuyos, pero también significa que un secreto olvidado no se puede restablecer. Continuar aquí no recupera tu caja fuerte. Hace lo siguiente:',
   'auth.recover.bullet1':
     'Tu caja fuerte actual quedará inaccesible con este nuevo secreto — empezarás de nuevo con una caja fuerte vacía.',
   'auth.recover.bullet2Prefix':
     'Tu archivo de caja fuerte actual no se elimina. Se guarda como copia de seguridad con fecha en tu carpeta',
   'auth.recover.bullet2Suffix':
-    'en Google Drive, por si algún día recuerdas el secreto anterior.',
+    'en tu almacenamiento en la nube, por si algún día recuerdas el secreto anterior.',
   'auth.recover.submit': 'Recuperar cuenta',
   'auth.recover.genericError': 'No se pudo recuperar tu cuenta. Inténtalo de nuevo.',
 
@@ -388,7 +392,7 @@ export const es: TranslationTable = {
     'Esta contraseña es débil, lo que facilita romper el cifrado de tus cajas fuertes. Puedes continuar, pero se recomienda encarecidamente una frase más larga.',
   'settings.changePassword.repeatLabel': 'Repite la nueva contraseña',
   'settings.changePassword.mismatch': 'Las dos contraseñas no coinciden.',
-  'settings.changePassword.uploadingProgress': 'Guardando en Google Drive… {percent}%',
+  'settings.changePassword.uploadingProgress': 'Guardando tu caja fuerte… {percent}%',
   'settings.changePassword.verifying': 'Verificando tu contraseña actual…',
   'settings.changePassword.submit': 'Cambiar contraseña',
   'settings.changePassword.genericError':
@@ -542,18 +546,18 @@ export const es: TranslationTable = {
   'settings.profile.title': 'Perfil',
   'settings.profile.email': 'Correo electrónico',
   'settings.profile.displayName': 'Nombre visible',
-  'settings.profile.managedByGoogle':
-    'Se toma de la cuenta de Google con la que has iniciado sesión. Cámbialo en tu cuenta de Google.',
+  'settings.profile.managedByProvider':
+    'Se toma de la cuenta con la que has iniciado sesión. Cámbialo con tu proveedor de inicio de sesión.',
   'settings.profile.logOut': 'Cerrar sesión',
   'settings.profile.deleteAccount': 'Eliminar cuenta',
   'settings.profile.deleteWarning':
-    'Tus datos son tuyos: están en un único archivo cifrado dentro de tu propio Google Drive. Al eliminar tu cuenta se cambia el nombre de ese archivo para que esta aplicación ya no lo encuentre y se cierra tu sesión; no se borra nada. Para eliminar los datos, abre Google Drive, entra en la carpeta keeperpass y borra el archivo allí.',
+    'Tus datos son tuyos: están en un único archivo cifrado dentro de tu propio almacenamiento en la nube. Al eliminar tu cuenta se cambia el nombre de ese archivo para que esta aplicación ya no lo encuentre y se cierra tu sesión; no se borra nada. Para eliminar los datos, abre tu almacenamiento en la nube (Google Drive o Dropbox), entra en la carpeta keeperpass (en Dropbox, dentro de Apps) y borra el archivo allí.',
   'settings.profile.deleteTypePrefix': 'Escribe',
   'settings.profile.deleteTypeSuffix': 'para confirmar.',
   'settings.profile.confirmation': 'Confirmación',
   'settings.profile.deleteDone': 'Se ha cambiado el nombre de tu archivo de caja fuerte',
   'settings.profile.deleteDoneHint':
-    'Sigue en la carpeta keeperpass de tu Google Drive. Bórralo allí cuando quieras que los datos desaparezcan definitivamente.',
+    'Sigue en la carpeta keeperpass de tu almacenamiento en la nube (en Dropbox, dentro de Apps). Bórralo allí cuando quieras que los datos desaparezcan definitivamente.',
   'settings.profile.deleteError':
     'No se ha podido cambiar el nombre del archivo. No se ha modificado nada.',
 
@@ -561,6 +565,56 @@ export const es: TranslationTable = {
   'settings.masterPassword.description':
     'Tu contraseña maestra cifra todo lo que hay en tus cajas fuertes y nunca sale de este dispositivo, por lo que no se puede recuperar: solo cambiar.',
   'settings.masterPassword.change': 'Cambiar contraseña maestra',
+  'settings.migrate.title':
+    'Mover caja fuerte',
+  'settings.migrate.description':
+    'Mueve tu caja fuerte cifrada a otro almacenamiento en la nube. El archivo de origen se conserva: se renombra, nunca se borra.',
+  'settings.migrate.button':
+    'Mover a {provider}',
+  'settings.migrate.dialogTitle':
+    'Mover la caja fuerte a {provider}',
+  'settings.migrate.dialogDescription':
+    'Tu caja fuerte se copia y se comprueba, y solo entonces se renombra el archivo antiguo. Si algo falla, no se cambia nada.',
+  'settings.migrate.connectIntro':
+    'Inicia sesión en {provider} para elegir el destino. No se cambia nada hasta que confirmes en el siguiente paso.',
+  'settings.migrate.connect':
+    'Conectar {provider}',
+  'settings.migrate.targetAccount':
+    'Se moverá a esta cuenta',
+  'settings.migrate.existingWarning':
+    'Esta cuenta de {provider} ya tiene una caja fuerte de KeeperPass. Si continúas, se conserva como copia de seguridad con marca de tiempo en {provider} y se sustituye por la caja fuerte que estás moviendo.',
+  'settings.migrate.existingConfirm':
+    'Sustituirla: la caja fuerte existente se conserva como copia de seguridad',
+  'settings.migrate.secretKeep':
+    'Mantener mi secreto actual',
+  'settings.migrate.secretNew':
+    'Elegir un secreto nuevo para la caja fuerte movida',
+  'settings.migrate.submit':
+    'Mover caja fuerte',
+  'settings.migrate.stage.encrypting':
+    'Cifrando tu caja fuerte…',
+  'settings.migrate.stage.uploading':
+    'Guardando en {provider}…',
+  'settings.migrate.stage.verifying':
+    'Comprobando la copia guardada…',
+  'settings.migrate.stage.finishing':
+    'Renombrando el archivo antiguo…',
+  'settings.migrate.done':
+    'Tu caja fuerte ahora está en {provider}',
+  'settings.migrate.doneHint':
+    'Inicia sesión con {provider} para abrirla. El archivo antiguo se conservó y se renombró en {from}.',
+  'settings.migrate.doneNotRenamed':
+    'Tu caja fuerte se copió a {provider}, pero no se pudo renombrar el archivo antiguo en {from}. Renómbralo o bórralo tú para que las dos copias no se desincronicen.',
+  'settings.migrate.error.sameProvider':
+    'La caja fuerte ya está en ese almacenamiento.',
+  'settings.migrate.error.busy':
+    'Todavía hay un guardado en curso. Espera a que termine e inténtalo de nuevo.',
+  'settings.migrate.error.sourceExpired':
+    'Tu sesión actual ha caducado. Vuelve a iniciar sesión antes de mover la caja fuerte.',
+  'settings.migrate.error.targetExpired':
+    'Tu inicio de sesión en {provider} ha caducado. No se cambió nada; empieza de nuevo.',
+  'settings.migrate.error.verifyFailed':
+    'La copia guardada no coincidía con tu caja fuerte, así que el archivo antiguo quedó intacto. No se perdió nada; inténtalo de nuevo.',
 
   'settings.data.title': 'Importar / Exportar',
   'settings.data.import': 'Importar…',
@@ -587,6 +641,32 @@ export const es: TranslationTable = {
   'errors.auth.popupClosed':
     'La ventana de inicio de sesión de Google se cerró antes de terminar. Inténtalo de nuevo.',
   'errors.auth.unknown': 'Algo salió mal al conectar con Google. Inténtalo de nuevo.',
-  'errors.masterPassword.vaultNotFound': 'No se encontró tu caja fuerte en Google Drive.',
+  'errors.dropbox.authExpired':
+    'Tu sesión de Dropbox ha caducado. Vuelve a conectarte.',
+  'errors.dropbox.profileFailed':
+    'No se pudo leer tu perfil de Dropbox. Inténtalo de nuevo.',
+  'errors.dropbox.popupBlocked':
+    'Tu navegador bloqueó la ventana de inicio de sesión de Dropbox. Permite las ventanas emergentes para este sitio e inténtalo de nuevo.',
+  'errors.dropbox.popupClosed':
+    'La ventana de inicio de sesión de Dropbox se cerró antes de terminar. Inténtalo de nuevo.',
+  'errors.dropbox.unknown':
+    'Algo salió mal al conectar con Dropbox. Inténtalo de nuevo.',
+  'errors.dropbox.unreachable':
+    'No se pudo conectar con Dropbox. Inténtalo de nuevo.',
+  'errors.dropbox.readFailed':
+    'No se pudo leer tu caja fuerte desde Dropbox. Inténtalo de nuevo.',
+  'errors.dropbox.saveFailed':
+    'No se pudo guardar tu caja fuerte en Dropbox. Inténtalo de nuevo.',
+  'errors.dropbox.backupFailed':
+    'No se pudo hacer una copia de seguridad de tu caja fuerte actual en Dropbox. Inténtalo de nuevo.',
+  'errors.dropbox.renameFailed':
+    'No se pudo renombrar tu archivo de caja fuerte en Dropbox. No se cambió nada; inténtalo de nuevo.',
+  'errors.dropbox.missingScope':
+    'A KeeperPass le falta un permiso de Dropbox. Es un problema de configuración que no se arregla iniciando sesión de nuevo.',
+  'errors.dropbox.rateLimited':
+    'Dropbox nos pide ir más despacio. Espera un momento e inténtalo de nuevo.',
+  'errors.dropbox.conflict':
+    'Tu caja fuerte se cambió en otro dispositivo o pestaña. Recarga esta página para obtener la última versión antes de editar y que no se sobrescriba nada.',
+  'errors.masterPassword.vaultNotFound': 'No se encontró tu caja fuerte.',
   'errors.masterPassword.wrongPassword': 'Esa no es tu contraseña maestra actual.',
 };

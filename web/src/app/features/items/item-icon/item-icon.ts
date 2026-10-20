@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
 import { VaultItem } from '../../../core/models';
-import { itemFaviconUrl } from './item-favicon-url';
+import { itemFaviconUrls } from './item-favicon-url';
 import { itemIconName } from './item-icon-name';
 import { Icon } from '../../../ui/icon/icon';
 import { IconName } from '../../../ui/icon/icon-glyphs';
@@ -10,7 +10,7 @@ import { IconName } from '../../../ui/icon/icon-glyphs';
  * outright — picking an icon is a deliberate override, and hiding it behind an
  * automatic favicon would make the picker pointless for anything with a URL
  * field. Otherwise a favicon is preferred whenever the item has a `Url` field
- * — see `itemFaviconUrl` — falling back to the FontAwesome glyph from
+ * — see `itemFaviconUrls` — falling back to the FontAwesome glyph from
  * `itemIconName` if there is none, or if it fails to load. There is no setting
  * to turn the favicon off; short of picking an icon, it's always on.
  *
@@ -49,14 +49,17 @@ export class ItemIcon {
 
   protected readonly glyph = computed<IconName>(() => itemIconName(this.item()));
   protected readonly iconGlyph = computed(() => this.item().iconGlyph);
-  protected readonly faviconUrl = computed(() => itemFaviconUrl(this.item()));
-
-  private readonly failedFaviconUrl = signal<string | undefined>(undefined);
-  protected readonly showFavicon = computed(
-    () => !!this.faviconUrl() && this.faviconUrl() !== this.failedFaviconUrl(),
+  protected readonly faviconUrl = computed(() =>
+    itemFaviconUrls(this.item()).find((url) => !this.failedFaviconUrls().includes(url)),
   );
 
+  private readonly failedFaviconUrls = signal<readonly string[]>([]);
+  protected readonly showFavicon = computed(() => !!this.faviconUrl());
+
   protected onFaviconError(): void {
-    this.failedFaviconUrl.set(this.faviconUrl());
+    const failed = this.faviconUrl();
+    if (failed) {
+      this.failedFaviconUrls.update((urls) => [...urls, failed]);
+    }
   }
 }

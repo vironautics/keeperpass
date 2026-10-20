@@ -17,10 +17,8 @@ import {
   ensureFreshTokenOrDisconnect,
 } from '../../../core/auth/disconnect-session';
 import { SessionStore } from '../../../core/auth/session.store';
-import {
-  GoogleAuthExpiredError,
-  GoogleDriveService,
-} from '../../../core/drive/google-drive.service';
+import { StorageAuthExpiredError } from '../../../core/providers/storage-errors';
+import { VaultStorageService } from '../../../core/providers/vault-storage.service';
 import { I18nService, TranslatePipe } from '../../../core/i18n';
 import { Icon } from '../../../ui/icon/icon';
 
@@ -75,7 +73,7 @@ export class ProfileSection {
   private readonly session = inject(SessionStore);
   private readonly router = inject(Router);
   private readonly auth = inject(AuthService);
-  private readonly drive = inject(GoogleDriveService);
+  private readonly drive = inject(VaultStorageService);
   private readonly i18n = inject(I18nService);
 
   /** Straight from the store, which `UnlockPage` keeps in step with Google. */
@@ -110,7 +108,7 @@ export class ProfileSection {
    *
    * Renaming is the whole of it: the encrypted file is the user's, sitting in
    * their own Drive, so this app takes itself out of the picture rather than
-   * destroying something it does not own. `GoogleDriveService.detachVault`
+   * destroying something it does not own. `VaultStorage.detachVault`
    * explains what that costs; the dialog tells the user where the file went and
    * that deleting it for real is theirs to do.
    *
@@ -146,7 +144,7 @@ export class ProfileSection {
       this.session.signOut();
       await this.router.navigate(['/start']);
     } catch (error) {
-      if (error instanceof GoogleAuthExpiredError) {
+      if (error instanceof StorageAuthExpiredError) {
         // Nothing was renamed, and there is no token left to retry with — the
         // vault is untouched and the next sign-in will find it as it was.
         disconnectSession(this.session, this.router);

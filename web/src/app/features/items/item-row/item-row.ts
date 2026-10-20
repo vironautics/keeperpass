@@ -23,7 +23,7 @@ import {
 } from '../../../core/models';
 import { generateTotp } from '../../../core/otp/totp';
 import { tagColor } from '../../../core/vault/tag-color';
-import { itemFaviconUrl } from '../item-icon/item-favicon-url';
+import { itemFaviconUrls } from '../item-icon/item-favicon-url';
 import { itemIconName } from '../item-icon/item-icon-name';
 import { Totp } from '../totp/totp';
 import { Icon } from '../../../ui/icon/icon';
@@ -103,17 +103,20 @@ export class ItemRow {
    * fails to load. Inlined here rather than nesting `<app-item-icon>`, which
    * draws with the legacy icon font.
    */
-  protected readonly faviconUrl = computed(() => itemFaviconUrl(this.item()));
+  protected readonly faviconUrl = computed(() =>
+    itemFaviconUrls(this.item()).find((url) => !this.failedFaviconUrls().includes(url)),
+  );
   protected readonly glyph = computed<IconName>(() => itemIconName(this.item()));
   protected readonly iconGlyph = computed(() => this.item().iconGlyph);
 
-  private readonly failedFaviconUrl = signal<string | undefined>(undefined);
-  protected readonly showFavicon = computed(
-    () => !!this.faviconUrl() && this.faviconUrl() !== this.failedFaviconUrl(),
-  );
+  private readonly failedFaviconUrls = signal<readonly string[]>([]);
+  protected readonly showFavicon = computed(() => !!this.faviconUrl());
 
   protected onFaviconError(): void {
-    this.failedFaviconUrl.set(this.faviconUrl());
+    const failed = this.faviconUrl();
+    if (failed) {
+      this.failedFaviconUrls.update((urls) => [...urls, failed]);
+    }
   }
 
   protected tagColor(tag: string): string {

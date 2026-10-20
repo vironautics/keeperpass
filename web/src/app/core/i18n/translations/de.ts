@@ -34,13 +34,17 @@ export const de: TranslationTable = {
 
   'auth.start.title': 'Willkommen bei KeeperPass',
   'auth.start.description':
-    'Ihr Tresor ist eine einzelne verschlüsselte Datei in Ihrem eigenen Google Drive. Melden Sie sich an, um ihn zu öffnen.',
+    'Ihr Tresor ist eine einzelne verschlüsselte Datei in Ihrem eigenen Cloud-Speicher. Melden Sie sich an, um ihn zu öffnen.',
   'auth.start.signInFailed': 'Anmeldung fehlgeschlagen',
   'auth.start.continueWithGoogle': 'Mit Google fortfahren',
+  'auth.start.continueWithDropbox':
+    'Mit Dropbox fortfahren',
+  'auth.callback.closeWindow':
+    'Fast geschafft – Sie können dieses Fenster schließen.',
   'auth.start.accessNote':
-    'Der Zugriff ist auf die von KeeperPass erstellten Dateien beschränkt. Der Rest Ihres Drive bleibt unberührt.',
+    'Der Zugriff ist auf die von KeeperPass erstellten Dateien beschränkt. Der Rest Ihres Speichers bleibt unberührt.',
   'auth.start.encryptionNote':
-    'Ihr Tresor wird in diesem Browser mit einem Geheimnis verschlüsselt, das Sie als Nächstes wählen. Google speichert die Datei, kann sie aber nicht lesen.',
+    'Ihr Tresor wird in diesem Browser mit einem Geheimnis verschlüsselt, das Sie als Nächstes wählen. Ihr Speicheranbieter bewahrt die Datei auf, kann sie aber nicht lesen.',
   'auth.start.noServerNote': 'Es gibt keinen KeeperPass-Server. Nichts wird sonst irgendwohin gesendet.',
   'auth.start.footerNote': 'Die Anmeldung legt die Tresordatei an, falls Sie noch keine haben.',
 
@@ -65,7 +69,7 @@ export const de: TranslationTable = {
   'auth.setup.warningIntro':
     'Ihr Tresor wird auf diesem Gerät mit einem Schlüssel verschlüsselt, der aus dem hier gewählten Geheimnis erzeugt wird. KeeperPass erhält dieses Geheimnis nie und könnte Ihren Tresor daher selbst auf Anfrage nicht lesen. Genau das ist der Punkt — und er bringt drei Konsequenzen mit sich, die Sie jetzt und nicht später kennen sollten:',
   'auth.setup.warningBullet1':
-    'Ihr Geheimnis wird nirgendwohin gesendet und niemals gespeichert. Niemand — weder wir noch Google — kann es nachschlagen oder für Sie zurücksetzen.',
+    'Ihr Geheimnis wird nirgendwohin gesendet und niemals gespeichert. Niemand — weder wir noch Ihr Speicheranbieter — kann es nachschlagen oder für Sie zurücksetzen.',
   'auth.setup.warningBullet2':
     'Wenn Sie es vergessen, kann Ihr Tresor nicht wiederhergestellt werden. Es gibt weder einen Reset-Link noch eine Support-Anfrage, die ihn öffnen könnte.',
   'auth.setup.warningBullet3':
@@ -82,13 +86,13 @@ export const de: TranslationTable = {
     'Dieses Geheimnis ist schwach, wodurch die Verschlüsselung Ihrer Tresore leichter zu knacken ist. Sie können fortfahren, aber eine längere Passphrase wird dringend empfohlen.',
   'auth.recover.repeatSecretLabel': 'Neues Geheimnis wiederholen',
   'auth.recover.warningIntro':
-    'Ihr Tresor ist mit einem Schlüssel verschlüsselt, den nur Ihr Geheimnis erzeugen kann. Niemand sonst besitzt eine Kopie — weder wir noch Google —, wodurch Ihre Daten Ihnen gehören, was aber auch bedeutet, dass ein vergessenes Geheimnis nicht zurückgesetzt werden kann. Ein Fortfahren hier stellt Ihren Tresor nicht wieder her. Es bewirkt Folgendes:',
+    'Ihr Tresor ist mit einem Schlüssel verschlüsselt, den nur Ihr Geheimnis erzeugen kann. Niemand sonst besitzt eine Kopie — weder wir noch Ihr Speicheranbieter —, wodurch Ihre Daten Ihnen gehören, was aber auch bedeutet, dass ein vergessenes Geheimnis nicht zurückgesetzt werden kann. Ein Fortfahren hier stellt Ihren Tresor nicht wieder her. Es bewirkt Folgendes:',
   'auth.recover.bullet1':
     'Ihr aktueller Tresor wird unter diesem neuen Geheimnis unzugänglich — Sie beginnen neu mit einem brandneuen, leeren Tresor.',
   'auth.recover.bullet2Prefix':
     'Ihre bestehende Tresordatei wird nicht gelöscht. Sie wird als zeitgestempeltes Backup in Ihrem',
   'auth.recover.bullet2Suffix':
-    '-Ordner in Google Drive aufbewahrt, falls Ihnen das alte Geheimnis wieder einfällt.',
+    '-Ordner in Ihrem Cloud-Speicher aufbewahrt, falls Ihnen das alte Geheimnis wieder einfällt.',
   'auth.recover.submit': 'Konto wiederherstellen',
   'auth.recover.genericError':
     'Ihr Konto konnte nicht wiederhergestellt werden. Bitte versuchen Sie es erneut.',
@@ -390,7 +394,7 @@ export const de: TranslationTable = {
     'Dieses Passwort ist schwach, wodurch die Verschlüsselung Ihrer Tresore leichter zu knacken ist. Sie können fortfahren, aber eine längere Passphrase wird dringend empfohlen.',
   'settings.changePassword.repeatLabel': 'Neues Passwort wiederholen',
   'settings.changePassword.mismatch': 'Die beiden Passwörter stimmen nicht überein.',
-  'settings.changePassword.uploadingProgress': 'Wird in Google Drive gespeichert… {percent}%',
+  'settings.changePassword.uploadingProgress': 'Ihr Tresor wird gespeichert… {percent}%',
   'settings.changePassword.verifying': 'Ihr aktuelles Passwort wird überprüft…',
   'settings.changePassword.submit': 'Passwort ändern',
   'settings.changePassword.genericError':
@@ -544,18 +548,18 @@ export const de: TranslationTable = {
   'settings.profile.title': 'Profil',
   'settings.profile.email': 'E-Mail',
   'settings.profile.displayName': 'Anzeigename',
-  'settings.profile.managedByGoogle':
-    'Übernommen aus dem Google-Konto, mit dem Sie angemeldet sind. Ändern Sie es in Ihrem Google-Konto.',
+  'settings.profile.managedByProvider':
+    'Übernommen aus dem Konto, mit dem Sie angemeldet sind. Ändern Sie es bei Ihrem Anmeldeanbieter.',
   'settings.profile.logOut': 'Abmelden',
   'settings.profile.deleteAccount': 'Konto löschen',
   'settings.profile.deleteWarning':
-    'Ihre Daten gehören Ihnen: Sie liegen als eine verschlüsselte Datei in Ihrem eigenen Google Drive. Beim Löschen des Kontos wird diese Datei umbenannt, sodass diese App sie nicht mehr findet, und Sie werden abgemeldet — gelöscht wird nichts. Um die Daten selbst zu löschen, öffnen Sie Google Drive, gehen Sie in den Ordner keeperpass und löschen Sie die Datei dort.',
+    'Ihre Daten gehören Ihnen: Sie liegen als eine verschlüsselte Datei in Ihrem eigenen Cloud-Speicher. Beim Löschen des Kontos wird diese Datei umbenannt, sodass diese App sie nicht mehr findet, und Sie werden abgemeldet — gelöscht wird nichts. Um die Daten selbst zu löschen, öffnen Sie Ihren Cloud-Speicher (Google Drive oder Dropbox), suchen Sie den Ordner keeperpass (bei Dropbox unter Apps) und löschen Sie die Datei dort.',
   'settings.profile.deleteTypePrefix': 'Geben Sie zur Bestätigung',
   'settings.profile.deleteTypeSuffix': 'ein.',
   'settings.profile.confirmation': 'Bestätigung',
   'settings.profile.deleteDone': 'Ihre Tresordatei wurde umbenannt',
   'settings.profile.deleteDoneHint':
-    'Sie liegt weiterhin im Ordner keeperpass in Ihrem Google Drive. Löschen Sie sie dort, wenn die Daten endgültig verschwinden sollen.',
+    'Sie liegt weiterhin im Ordner keeperpass in Ihrem Cloud-Speicher (bei Dropbox unter Apps). Löschen Sie sie dort, wenn die Daten endgültig verschwinden sollen.',
   'settings.profile.deleteError':
     'Die Tresordatei konnte nicht umbenannt werden. Es wurde nichts geändert.',
 
@@ -563,6 +567,56 @@ export const de: TranslationTable = {
   'settings.masterPassword.description':
     'Ihr Master-Passwort verschlüsselt alles in Ihren Tresoren und verlässt dieses Gerät nie. Es kann daher nicht wiederhergestellt, sondern nur geändert werden.',
   'settings.masterPassword.change': 'Master-Passwort ändern',
+  'settings.migrate.title':
+    'Tresor verschieben',
+  'settings.migrate.description':
+    'Verschieben Sie Ihren verschlüsselten Tresor in einen anderen Cloud-Speicher. Die ursprüngliche Datei bleibt erhalten — sie wird umbenannt, nie gelöscht.',
+  'settings.migrate.button':
+    'Nach {provider} verschieben',
+  'settings.migrate.dialogTitle':
+    'Tresor nach {provider} verschieben',
+  'settings.migrate.dialogDescription':
+    'Ihr Tresor wird kopiert und geprüft, und erst danach wird die alte Datei umbenannt. Schlägt etwas fehl, bleibt alles unverändert.',
+  'settings.migrate.connectIntro':
+    'Melden Sie sich bei {provider} an, um das Ziel zu wählen. Bis Sie im nächsten Schritt bestätigen, wird nichts verändert.',
+  'settings.migrate.connect':
+    '{provider} verbinden',
+  'settings.migrate.targetAccount':
+    'Verschieben in dieses Konto',
+  'settings.migrate.existingWarning':
+    'In diesem {provider}-Konto gibt es bereits einen KeeperPass-Tresor. Wenn Sie fortfahren, wird er als Sicherungsdatei mit Zeitstempel in {provider} aufbewahrt und durch den verschobenen Tresor ersetzt.',
+  'settings.migrate.existingConfirm':
+    'Ersetzen — der vorhandene Tresor bleibt als Sicherung erhalten',
+  'settings.migrate.secretKeep':
+    'Mein aktuelles Geheimnis behalten',
+  'settings.migrate.secretNew':
+    'Neues Geheimnis für den verschobenen Tresor wählen',
+  'settings.migrate.submit':
+    'Tresor verschieben',
+  'settings.migrate.stage.encrypting':
+    'Ihr Tresor wird verschlüsselt…',
+  'settings.migrate.stage.uploading':
+    'Wird in {provider} gespeichert…',
+  'settings.migrate.stage.verifying':
+    'Die gespeicherte Kopie wird geprüft…',
+  'settings.migrate.stage.finishing':
+    'Die alte Datei wird umbenannt…',
+  'settings.migrate.done':
+    'Ihr Tresor liegt jetzt in {provider}',
+  'settings.migrate.doneHint':
+    'Melden Sie sich mit {provider} an, um ihn zu öffnen. Die alte Datei wurde in {from} behalten und umbenannt.',
+  'settings.migrate.doneNotRenamed':
+    'Ihr Tresor wurde nach {provider} kopiert, aber die alte Datei in {from} konnte nicht umbenannt werden. Benennen Sie sie selbst um oder löschen Sie sie, damit die beiden Kopien nicht auseinanderlaufen.',
+  'settings.migrate.error.sameProvider':
+    'Der Tresor liegt bereits in diesem Speicher.',
+  'settings.migrate.error.busy':
+    'Ein Speichervorgang läuft noch. Warten Sie, bis er abgeschlossen ist, und versuchen Sie es erneut.',
+  'settings.migrate.error.sourceExpired':
+    'Ihre aktuelle Sitzung ist abgelaufen. Bitte melden Sie sich erneut an, bevor Sie den Tresor verschieben.',
+  'settings.migrate.error.targetExpired':
+    'Ihre {provider}-Anmeldung ist abgelaufen. Es wurde nichts verändert — bitte beginnen Sie von vorn.',
+  'settings.migrate.error.verifyFailed':
+    'Die gespeicherte Kopie stimmte nicht mit Ihrem Tresor überein, daher blieb die alte Datei unberührt. Es ging nichts verloren — bitte versuchen Sie es erneut.',
 
   'settings.data.title': 'Import / Export',
   'settings.data.import': 'Importieren…',
@@ -592,6 +646,32 @@ export const de: TranslationTable = {
   'errors.auth.popupClosed':
     'Das Google-Anmeldefenster wurde vorzeitig geschlossen. Bitte versuchen Sie es erneut.',
   'errors.auth.unknown': 'Bei der Verbindung mit Google ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
-  'errors.masterPassword.vaultNotFound': 'Ihr Tresor wurde in Google Drive nicht gefunden.',
+  'errors.dropbox.authExpired':
+    'Ihre Dropbox-Sitzung ist abgelaufen. Bitte verbinden Sie sich erneut.',
+  'errors.dropbox.profileFailed':
+    'Ihr Dropbox-Profil konnte nicht gelesen werden. Bitte versuchen Sie es erneut.',
+  'errors.dropbox.popupBlocked':
+    'Ihr Browser hat das Dropbox-Anmeldefenster blockiert. Bitte erlauben Sie Pop-ups für diese Seite und versuchen Sie es erneut.',
+  'errors.dropbox.popupClosed':
+    'Das Dropbox-Anmeldefenster wurde vorzeitig geschlossen. Bitte versuchen Sie es erneut.',
+  'errors.dropbox.unknown':
+    'Bei der Verbindung mit Dropbox ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
+  'errors.dropbox.unreachable':
+    'Dropbox konnte nicht erreicht werden. Bitte versuchen Sie es erneut.',
+  'errors.dropbox.readFailed':
+    'Ihr Tresor konnte nicht aus Dropbox gelesen werden. Bitte versuchen Sie es erneut.',
+  'errors.dropbox.saveFailed':
+    'Ihr Tresor konnte nicht in Dropbox gespeichert werden. Bitte versuchen Sie es erneut.',
+  'errors.dropbox.backupFailed':
+    'Ihr bestehender Tresor konnte nicht in Dropbox gesichert werden. Bitte versuchen Sie es erneut.',
+  'errors.dropbox.renameFailed':
+    'Ihre Tresordatei konnte in Dropbox nicht umbenannt werden. Es wurde nichts geändert – bitte versuchen Sie es erneut.',
+  'errors.dropbox.missingScope':
+    'KeeperPass fehlt eine Dropbox-Berechtigung. Das ist ein Konfigurationsproblem, das sich durch erneutes Anmelden nicht beheben lässt.',
+  'errors.dropbox.rateLimited':
+    'Dropbox bittet darum, langsamer vorzugehen. Bitte warten Sie einen Moment und versuchen Sie es erneut.',
+  'errors.dropbox.conflict':
+    'Ihr Tresor wurde auf einem anderen Gerät oder in einem anderen Tab geändert. Laden Sie diese Seite neu, um vor dem Bearbeiten die neueste Version zu erhalten, damit nichts überschrieben wird.',
+  'errors.masterPassword.vaultNotFound': 'Ihr Tresor wurde nicht gefunden.',
   'errors.masterPassword.wrongPassword': 'Das ist nicht Ihr aktuelles Master-Passwort.',
 };

@@ -3,11 +3,9 @@ import { Router } from '@angular/router';
 import { disconnectSession, ensureFreshTokenOrDisconnect } from '../auth/disconnect-session';
 import { AuthService } from '../auth/auth.service';
 import { SessionStore } from '../auth/session.store';
-import {
-  GoogleAuthExpiredError,
-  GoogleDriveService,
-  UploadProgressHandler,
-} from '../drive/google-drive.service';
+import { UploadProgressHandler } from '../providers/provider';
+import { StorageAuthExpiredError } from '../providers/storage-errors';
+import { VaultStorageService } from '../providers/vault-storage.service';
 import { I18nService } from '../i18n';
 import { decryptVault, encryptVault } from '../vault/vault-crypto';
 
@@ -34,7 +32,7 @@ export class WrongMasterPasswordError extends Error {
 export class MasterPasswordService {
   private readonly session = inject(SessionStore);
   private readonly auth = inject(AuthService);
-  private readonly drive = inject(GoogleDriveService);
+  private readonly drive = inject(VaultStorageService);
   private readonly router = inject(Router);
   private readonly i18n = inject(I18nService);
 
@@ -75,7 +73,7 @@ export class MasterPasswordService {
       // The access token is dead — no retry of this change will ever
       // succeed, so disconnect (same recovery as everywhere else that talks
       // to Drive) rather than surface it as "wrong password" or similar.
-      if (error instanceof GoogleAuthExpiredError) {
+      if (error instanceof StorageAuthExpiredError) {
         disconnectSession(this.session, this.router);
       }
       throw error;

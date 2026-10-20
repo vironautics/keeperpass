@@ -3,7 +3,8 @@ import { Router } from '@angular/router';
 import { disconnectSession, ensureFreshTokenOrDisconnect } from '../auth/disconnect-session';
 import { SessionStore } from '../auth/session.store';
 import { AuthService } from '../auth/auth.service';
-import { GoogleAuthExpiredError, GoogleDriveService } from '../drive/google-drive.service';
+import { StorageAuthExpiredError } from '../providers/storage-errors';
+import { VaultStorageService } from '../providers/vault-storage.service';
 import { I18nService } from '../i18n';
 import { encryptVault } from './vault-crypto';
 import { VaultSnapshot, VaultStore } from './vault.store';
@@ -35,7 +36,7 @@ import { VaultSnapshot, VaultStore } from './vault.store';
  * `SyncOverlay` blocks on this the same way it blocks on `syncing`, and only
  * clears once a later save actually succeeds (or the user dismisses it).
  *
- * A `401` (`GoogleAuthExpiredError`) is not a normal failure — it means the
+ * A `401` (`StorageAuthExpiredError`) is not a normal failure — it means the
  * access token is dead and no retry will ever succeed, so it skips
  * `lastError` entirely and disconnects the session instead (see
  * `disconnectSession()`), sending the user back to `/start` for a fresh
@@ -45,7 +46,7 @@ import { VaultSnapshot, VaultStore } from './vault.store';
 export class VaultSyncService {
   private readonly session = inject(SessionStore);
   private readonly vault = inject(VaultStore);
-  private readonly drive = inject(GoogleDriveService);
+  private readonly drive = inject(VaultStorageService);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly i18n = inject(I18nService);
@@ -119,7 +120,7 @@ export class VaultSyncService {
         this._progress.set(fraction);
       });
     } catch (error) {
-      if (error instanceof GoogleAuthExpiredError) {
+      if (error instanceof StorageAuthExpiredError) {
         this.saveAgain = false; // the session is over — nothing left to retry with
         disconnectSession(this.session, this.router);
         return;

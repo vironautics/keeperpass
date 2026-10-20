@@ -96,10 +96,10 @@ describe('MasterPasswordService', () => {
     expect(onProgress).toHaveBeenCalledWith(1);
   });
 
-  it('fails clearly when there is no vault in Drive yet', async () => {
+  it('fails clearly when there is no vault yet', async () => {
     drive.stored = null;
 
-    await expect(service.change('correct-secret', 'new-secret')).rejects.toThrow(/Drive/);
+    await expect(service.change('correct-secret', 'new-secret')).rejects.toThrow(/find your vault/);
     expect(drive.saved).toBeNull();
   });
 
