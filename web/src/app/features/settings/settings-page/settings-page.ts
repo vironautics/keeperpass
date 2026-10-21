@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideSettings } from '@ng-icons/lucide';
 import { HlmSidebarTrigger } from '@spartan-ng/helm/sidebar';
 import { TranslatePipe } from '../../../core/i18n';
-import { Icon } from '../../../ui/icon/icon';
+import { DangerZoneSection } from '../danger-zone-section/danger-zone-section';
 import { DataSection } from '../data-section/data-section';
 import { LanguageSection } from '../language-section/language-section';
 import { MasterPasswordSection } from '../master-password-section/master-password-section';
@@ -9,7 +11,7 @@ import { MoveVaultSection } from '../move-vault-section/move-vault-section';
 import { ProfileSection } from '../profile-section/profile-section';
 
 /**
- * Everything that configures the account, on one page.
+ * Everything that configures the account, on one page, grouped into labelled cards.
  *
  * One scrolling column of sections rather than a route per section. There are
  * four of them, they are all short, and settings is where people go when they
@@ -21,8 +23,9 @@ import { ProfileSection } from '../profile-section/profile-section';
   selector: 'app-settings-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    DangerZoneSection,
     DataSection,
-    Icon,
+    NgIcon,
     LanguageSection,
     MasterPasswordSection,
     MoveVaultSection,
@@ -30,6 +33,7 @@ import { ProfileSection } from '../profile-section/profile-section';
     TranslatePipe,
     HlmSidebarTrigger,
   ],
+  providers: [provideIcons({ lucideSettings })],
   templateUrl: './settings-page.html',
   /** Fills the shell's view area — see `ItemsPage` for why routed views position themselves. */
   host: { class: 'bg-card absolute inset-x-0 bottom-0 top-[var(--inset-top,0px)] flex flex-col' },

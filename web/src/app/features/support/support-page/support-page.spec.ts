@@ -31,11 +31,11 @@ describe('SupportPage', () => {
     expect(host.textContent).toContain('What does it cost?');
   });
 
-  it('describes the two-party storage model rather than a server', () => {
+  it('describes the two-party storage model, for any provider, rather than a server', () => {
     const host = fixture.nativeElement as HTMLElement;
     expect(host.textContent).toContain('Keeperpass has no server');
     expect(host.textContent).toContain('Your browser');
-    expect(host.textContent).toContain('Your Google Drive');
+    expect(host.textContent).toContain('Your cloud storage');
   });
 
   it('points at Settings for changing the secret, not the recovery flow', () => {

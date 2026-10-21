@@ -114,14 +114,32 @@ export const en = {
   'auth.recover.submit': 'Recover account',
   'auth.recover.genericError': 'Could not recover your account. Please try again.',
 
+  'auth.layout.badge': 'End-to-end encrypted',
+  'auth.layout.headline': 'Your passwords, sealed in your own cloud.',
+  'auth.layout.subline': 'KeeperPass encrypts everything in this browser before it reaches your storage. Only your secret can open it.',
+  'auth.layout.featureAccess': 'Scoped access',
+  'auth.layout.featureEncryption': 'Zero-knowledge encryption',
+  'auth.layout.featureNoServer': 'No server in between',
+  'auth.layout.footer': 'Encrypted in your browser. Stored in your cloud.',
+  'auth.layout.language': 'Language',
+
   'items.pageTitle': 'Vault',
+  'items.noSelection.title': 'No item selected',
+  'items.noSelection.description': 'Pick one from the list to see and edit it.',
   'generator.pageTitle': 'Password Generator',
+  'generator.subtitle': 'Random passwords and passphrases, made on this device',
+  'generator.options': 'Options',
+  'generator.charCount': '{count} characters',
   'generator.passphrase': 'Passphrase',
   'generator.randomString': 'Random string',
   'generator.dialogCharacters': 'Characters',
   'generator.dialogWords': 'Words',
   'generator.wordSeparator': 'Word separator',
   'generator.separatorPlaceholder': 'Separator',
+  'generator.separatorDash': 'Dash ( - )',
+  'generator.separatorUnderscore': 'Underscore ( _ )',
+  'generator.separatorSlash': 'Slash ( / )',
+  'generator.separatorSpace': 'Space',
   'generator.language': 'Language',
   'generator.languagePlaceholder': 'Language',
   'generator.words': 'Words',
@@ -315,6 +333,14 @@ export const en = {
   'report.aboutSectionAria': 'About {title}',
   'report.nothingFound': 'Nothing found',
   'report.showAll': 'Show all {count}',
+  'report.openItemAria': 'Open {name}',
+  'report.healthLabel': 'Vault health',
+  'report.healthGood': 'Strong',
+  'report.healthFair': 'Needs work',
+  'report.healthPoor': 'At risk',
+  'report.itemsCheckedOne': '{count} item with a password checked',
+  'report.itemsCheckedMany': '{count} items with a password checked',
+  'report.subtitle': 'How well your saved passwords hold up',
 
   'audit.weakPassword.label': 'Weak Passwords',
   'audit.weakPassword.description':
@@ -465,14 +491,15 @@ export const en = {
     'The Privacy Policy is kept up to date in one place, outside the app, so it stays consistent no matter where you read it.',
 
   'support.title': 'Support',
+  'support.subtitle': 'How KeeperPass works, and answers to common questions',
+  'support.contact.description': 'Questions, feedback or a problem to report? Send us an email.',
   'support.dataLives.title': 'Where your data lives',
-  'support.dataLives.description':
-    'Keeperpass has no server. Your vault is a single encrypted file in your own Google Drive, and your browser is the only place it is ever readable.',
+  'support.dataLives.description': 'Keeperpass has no server. Your vault is a single encrypted file in cloud storage you already own — such as Google Drive or Dropbox — and your browser is the only place it is ever readable.',
   'support.dataLives.browserTitle': 'Your browser',
   'support.dataLives.browserDescription':
     'Encrypts and decrypts everything. Your secret never leaves this device.',
   'support.dataLives.encryptedFile': 'encrypted file',
-  'support.dataLives.driveTitle': 'Your Google Drive',
+  'support.dataLives.driveTitle': 'Your cloud storage',
   'support.dataLives.driveDescriptionPrefix': 'Holds',
   'support.dataLives.driveDescriptionSuffix': '— unreadable ciphertext.',
   'support.dataLives.footer':
@@ -487,20 +514,15 @@ export const en = {
   'support.protects.encryptionTerm': 'Encryption',
   'support.protects.encryptionDescription':
     'AES-GCM, which detects tampering as well as preventing reading.',
-  'support.protects.driveAccessTerm': 'Drive access',
-  'support.protects.driveAccessDescriptionPrefix': 'Scoped to',
-  'support.protects.driveAccessDescriptionSuffix':
-    '— Keeperpass sees only the files it creates, nothing else in your Drive.',
+  'support.protects.storageAccessTerm': 'Storage access',
+  'support.protects.storageAccessDescription': 'Keeperpass can only reach the files it creates — a scoped permission on Google Drive, an app folder on Dropbox. Nothing else in your storage is visible to it.',
   'support.signingIn.title': 'Signing in',
   'support.signingIn.description': 'Two separate things, for two separate reasons.',
-  'support.signingIn.step1Title': 'Continue with Google',
-  'support.signingIn.step1Description':
-    'Grants permission to read and write your vault file. This proves who owns the Drive — it does not unlock anything.',
+  'support.signingIn.step1Title': 'Connect your cloud storage',
+  'support.signingIn.step1Description': 'Sign in with your storage provider — Google or Dropbox — to grant access to your vault file. This proves who owns the storage; it does not unlock anything.',
   'support.signingIn.step2Title': 'Enter your secret',
-  'support.signingIn.step2Description':
-    'Derives the key that decrypts the file, in your browser. Google never sees this, and neither do we.',
-  'support.signingIn.footer':
-    'Someone with your Google account still cannot read your vault. Someone with your secret still cannot reach the file. Both are needed.',
+  'support.signingIn.step2Description': 'Derives the key that decrypts the file, in your browser. Your storage provider never sees this, and neither do we.',
+  'support.signingIn.footer': 'Someone with access to your storage account still cannot read your vault. Someone with your secret still cannot reach the file. Both are needed.',
   'support.terms.title': 'Terms worth knowing',
   'support.terms.secretDescription': 'The one phrase that unlocks your vault. Not recoverable — see below.',
   'support.terms.vaultTerm': 'Vault',
@@ -508,6 +530,8 @@ export const en = {
   'support.terms.tagTermSingular': 'Tag',
   'support.terms.tagDescriptionPrefix': 'A label for filtering across vaults, like',
   'support.terms.tagDescriptionMiddle': 'or',
+  'support.terms.tagExampleWork': 'work',
+  'support.terms.tagExampleBanking': 'banking',
   'support.terms.reportTerm': 'Security report',
   'support.terms.reportDescription':
     'Flags weak, reused, and known-breached passwords. Runs entirely on your device.',
@@ -519,19 +543,15 @@ export const en = {
   'support.faq.forgetSecretA2Strong': 'Forgot your secret?',
   'support.faq.forgetSecretA2Middle':
     'on the unlock screen sets up a new, empty vault under a new secret. Your old file is not deleted — it is renamed to',
-  'support.faq.forgetSecretA2Suffix':
-    'and left in your Drive folder, so if the old secret ever comes back to you, the data is still there.',
+  'support.faq.forgetSecretA2Suffix': 'and left in your storage folder (in Dropbox, under Apps), so if the old secret ever comes back to you, the data is still there.',
   'support.faq.forgetSecretA3':
     'Write your secret down and keep it somewhere safe. It is the one thing in Keeperpass that cannot be replaced.',
   'support.faq.seeQ': 'Can Keeperpass see my passwords?',
-  'support.faq.seeA':
-    'No — and not as a promise, as a consequence of the design. Encryption happens in your browser and the ciphertext goes straight to your Drive. There is no Keeperpass server in the path to see anything.',
+  'support.faq.seeA': 'No — and not as a promise, as a consequence of the design. Encryption happens in your browser and the ciphertext goes straight to your own storage. There is no Keeperpass server in the path to see anything.',
   'support.faq.syncQ': 'Does it sync across devices?',
-  'support.faq.syncA':
-    'Yes. Every device reads the same file from your Drive. Sign in with the same Google account, enter the same secret, and your vault is there.',
-  'support.faq.googleQ': 'What if Google reads the file?',
-  'support.faq.googleA':
-    'They would see encrypted bytes. The key is never sent to Google, so the contents stay unreadable to them.',
+  'support.faq.syncA': 'Yes. Every device reads the same file from your storage. Sign in with the same account, enter the same secret, and your vault is there.',
+  'support.faq.providerQ': 'What if my storage provider reads the file?',
+  'support.faq.providerA': 'They would see encrypted bytes. The key never leaves your browser, so Google, Dropbox or any other provider cannot read the contents.',
   'support.faq.importQ': 'Can I import from another password manager?',
   'support.faq.importA': 'Yes — export to CSV there, then use Import in Settings.',
   'support.faq.changeSecretQ': 'How do I change my secret?',
@@ -540,12 +560,16 @@ export const en = {
   'support.faq.changeSecretASuffix':
     'You enter your current secret and the new one; your vault is decrypted, re-encrypted under the new secret, and saved back. Nothing is lost — every item comes with you, and the change applies on every device the next time it loads your vault.',
   'support.faq.costQ': 'What does it cost?',
-  'support.faq.costA':
-    'Nothing. Keeperpass is free and open-source, and it stores data in Drive space you already have.',
+  'support.faq.costA': 'Nothing. Keeperpass is free and open-source, and it stores data in cloud space you already have.',
   'support.contact.title': 'Still stuck?',
 
   'settings.title': 'Settings',
   'settings.openMenu': 'Open navigation menu',
+  'settings.subtitle': 'Account, language, security and data',
+  'settings.security': 'Security',
+  'settings.storage': 'Storage',
+  'settings.dangerZone': 'Danger zone',
+  'settings.profile.deleteHint': 'Rename your vault file so this app no longer finds it, and sign out. Nothing is erased.',
 
   'settings.language.title': 'Language',
   'settings.language.label': 'Display Language',

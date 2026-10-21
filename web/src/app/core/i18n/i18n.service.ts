@@ -6,6 +6,7 @@ import {
   isAppLocale,
   resolveBrowserLocale,
 } from './locales';
+import { setFormattingLocale } from './locale-format';
 import { TRANSLATIONS, TranslationKey } from './translations';
 
 /** `localStorage` key — see the class doc comment for why this is per-device, not per-account. */
@@ -73,11 +74,15 @@ export class I18nService {
     // Keeps `<html lang>` truthful, which is what screen readers and the
     // browser's own translation prompt read.
     effect(() => this.document.documentElement.setAttribute('lang', this._locale()));
+
+    // Dates and relative times follow the interface language, not the browser's.
+    setFormattingLocale(this._locale());
   }
 
   /** Switches language and remembers it on this device. */
   setLocale(locale: AppLocale): void {
     this._locale.set(locale);
+    setFormattingLocale(locale);
     try {
       localStorage.setItem(LOCALE_STORAGE_KEY, locale);
     } catch {

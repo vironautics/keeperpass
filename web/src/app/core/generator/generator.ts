@@ -1,3 +1,5 @@
+import { TranslationKey } from '../i18n/translations';
+
 /**
  * Client-side password and passphrase generation.
  *
@@ -136,7 +138,8 @@ export const AVAILABLE_LANGUAGES: readonly GeneratorLanguage[] = [
 
 export interface GeneratorSeparator {
   value: string;
-  label: string;
+  /** Translated where it is shown — the label is copy, the value is not. */
+  labelKey: TranslationKey;
 }
 
 /**
@@ -145,10 +148,10 @@ export interface GeneratorSeparator {
  * choices — and their labels — can't drift apart between them.
  */
 export const SEPARATOR_OPTIONS: readonly GeneratorSeparator[] = [
-  { value: '-', label: 'Dash ( - )' },
-  { value: '_', label: 'Underscore ( _ )' },
-  { value: '/', label: 'Slash ( / )' },
-  { value: ' ', label: 'Space (   )' },
+  { value: '-', labelKey: 'generator.separatorDash' },
+  { value: '_', labelKey: 'generator.separatorUnderscore' },
+  { value: '/', labelKey: 'generator.separatorSlash' },
+  { value: ' ', labelKey: 'generator.separatorSpace' },
 ];
 
 const wordListCache = new Map<string, Promise<readonly string[]>>();

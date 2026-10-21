@@ -8,6 +8,8 @@ import {
   signal,
   untracked,
 } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideKeyRound } from '@ng-icons/lucide';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MasterPasswordService } from '../../../core/account/master-password.service';
@@ -54,6 +56,7 @@ import { STRENGTH_COLOURS, STRENGTH_LABELS, strengthPercent } from '../../items/
   selector: 'app-change-password-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NgIcon,
     ReactiveFormsModule,
     Icon,
     HlmAlertImports,
@@ -66,6 +69,7 @@ import { STRENGTH_COLOURS, STRENGTH_LABELS, strengthPercent } from '../../items/
     HlmSpinnerImports,
     TranslatePipe,
   ],
+  providers: [provideIcons({ lucideKeyRound })],
   templateUrl: './change-password-dialog.html',
   /** The dialog lives in an overlay, so this host renders nothing. */
   host: { class: 'contents' },
@@ -127,7 +131,9 @@ export class ChangePasswordDialog {
   );
   protected readonly strengthPercent = computed(() => strengthPercent(this.strengthScore()));
   protected readonly strengthColour = computed(() => STRENGTH_COLOURS[this.strengthScore()]);
-  protected readonly strengthLabel = computed(() => this.i18n.translate(STRENGTH_LABELS[this.strengthScore()]));
+  protected readonly strengthLabel = computed(() =>
+    this.i18n.translate(STRENGTH_LABELS[this.strengthScore()]),
+  );
 
   protected toggleRevealed(): void {
     this.revealed.update((revealed) => !revealed);

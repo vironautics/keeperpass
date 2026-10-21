@@ -10,9 +10,19 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideCircleAlert,
+  lucideCircleUser,
+  lucideEye,
+  lucideEyeOff,
+  lucideKeyRound,
+  lucideLockKeyhole,
+  lucideLockKeyholeOpen,
+  lucideLogOut,
+} from '@ng-icons/lucide';
 import { HlmAlertImports } from '@spartan-ng/helm/alert';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
-import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmFieldImports } from '@spartan-ng/helm/field';
 import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
 import { HlmSpinnerImports } from '@spartan-ng/helm/spinner';
@@ -33,7 +43,7 @@ import {
   VaultSnapshot,
   VaultStore,
 } from '../../../core/vault/vault.store';
-import { Icon } from '../../../ui/icon/icon';
+import { AuthHeading } from '../auth-heading/auth-heading';
 
 /**
  * Second, final step of the sign-in flow: the secret that opens the vault.
@@ -50,24 +60,29 @@ import { Icon } from '../../../ui/icon/icon';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
-    Icon,
+    AuthHeading,
+    NgIcon,
     TranslatePipe,
     HlmAlertImports,
     HlmButtonImports,
-    HlmCardImports,
     HlmFieldImports,
     HlmInputGroupImports,
     HlmSpinnerImports,
   ],
+  providers: [
+    provideIcons({
+      lucideCircleAlert,
+      lucideCircleUser,
+      lucideEye,
+      lucideEyeOff,
+      lucideKeyRound,
+      lucideLockKeyhole,
+      lucideLockKeyholeOpen,
+      lucideLogOut,
+    }),
+  ],
   templateUrl: './unlock-page.html',
-  /**
-   * The card sizes itself against the layout column rather than its own
-   * content, so the host has to fill that column — `auth-layout` centres it
-   * with `align-items: center`, which would otherwise shrink-wrap the host to
-   * max-content and make the card's `max-w-*` resolve against a width that
-   * varies with the copy inside it.
-   */
-  host: { class: 'block self-stretch' },
+  host: { class: 'block' },
 })
 export class UnlockPage {
   private readonly session = inject(SessionStore);

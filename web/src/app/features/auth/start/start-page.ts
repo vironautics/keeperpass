@@ -1,8 +1,17 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideArrowRight,
+  lucideCircleAlert,
+  lucideCloudCheck,
+  lucideInfo,
+  lucideLockKeyhole,
+  lucideServerOff,
+  lucideShieldCheck,
+} from '@ng-icons/lucide';
 import { HlmAlertImports } from '@spartan-ng/helm/alert';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
-import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmSpinnerImports } from '@spartan-ng/helm/spinner';
 import { AccountStore } from '../../../core/account/account.store';
 import { AuthService } from '../../../core/auth/auth.service';
@@ -13,7 +22,7 @@ import { ProviderId } from '../../../core/providers/provider';
 import { ProviderRegistry } from '../../../core/providers/provider-registry';
 import { DropboxLogo } from '../../../ui/dropbox-logo/dropbox-logo';
 import { GoogleLogo } from '../../../ui/google-logo/google-logo';
-import { Icon } from '../../../ui/icon/icon';
+import { AuthHeading } from '../auth-heading/auth-heading';
 
 /**
  * Entry point of the app.
@@ -27,16 +36,26 @@ import { Icon } from '../../../ui/icon/icon';
   imports: [
     DropboxLogo,
     GoogleLogo,
-    Icon,
+    AuthHeading,
+    NgIcon,
     TranslatePipe,
     HlmAlertImports,
     HlmButtonImports,
-    HlmCardImports,
     HlmSpinnerImports,
   ],
+  providers: [
+    provideIcons({
+      lucideArrowRight,
+      lucideCircleAlert,
+      lucideCloudCheck,
+      lucideInfo,
+      lucideLockKeyhole,
+      lucideServerOff,
+      lucideShieldCheck,
+    }),
+  ],
   templateUrl: './start-page.html',
-  /** Fills the layout's column, so the card's `max-w-*` is not measured against its own copy — see `UnlockPage`. */
-  host: { class: 'block self-stretch' },
+  host: { class: 'block' },
 })
 export class StartPage {
   private readonly auth = inject(AuthService);
@@ -61,6 +80,21 @@ export class StartPage {
   protected readonly providers: readonly ProviderId[] = inject(ProviderRegistry)
     .available()
     .map((provider) => provider.auth.id);
+
+  /** The layout's brand-panel facts, repeated under the buttons where the panel is hidden. */
+  protected readonly features = [
+    {
+      icon: 'lucideLockKeyhole',
+      title: 'auth.layout.featureEncryption',
+      body: 'auth.start.encryptionNote',
+    },
+    { icon: 'lucideCloudCheck', title: 'auth.layout.featureAccess', body: 'auth.start.accessNote' },
+    {
+      icon: 'lucideServerOff',
+      title: 'auth.layout.featureNoServer',
+      body: 'auth.start.noServerNote',
+    },
+  ] as const satisfies readonly { icon: string; title: TranslationKey; body: TranslationKey }[];
 
   protected readonly labelKeys = {
     google: 'auth.start.continueWithGoogle',

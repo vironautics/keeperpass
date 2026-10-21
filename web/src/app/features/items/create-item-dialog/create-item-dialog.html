@@ -3,9 +3,15 @@
   this is the list header's "New item" action, which lives in another component.
 -->
 <hlm-dialog [state]="open() ? 'open' : 'closed'" (stateChanged)="open.set($event === 'open')">
-  <hlm-dialog-content *hlmDialogPortal class="sm:max-w-lg" [attr.aria-label]="'items.createItem.title' | t">
-    <hlm-dialog-header>
-      <h3 hlmDialogTitle>{{ 'items.createItem.title' | t }}</h3>
+  <hlm-dialog-content *hlmDialogPortal class="w-[min(32rem,calc(100vw-2rem))] gap-6 rounded-2xl sm:max-w-lg" [attr.aria-label]="'items.createItem.title' | t">
+    <hlm-dialog-header class="gap-1.5">
+      <span
+        class="bg-primary/15 text-accent-strong ring-primary/25 mb-2 inline-flex size-12 items-center justify-center rounded-2xl ring-1"
+        aria-hidden="true"
+      >
+        <ng-icon name="lucideFilePlus2" size="1.375rem" strokeWidth="1.75" />
+      </span>
+      <h3 hlmDialogTitle class="text-lg font-bold">{{ 'items.createItem.title' | t }}</h3>
       <p hlmDialogDescription>{{ 'items.createItem.description' | t }}</p>
     </hlm-dialog-header>
 
@@ -16,7 +22,7 @@
         [formControl]="vaultControl"
         [itemToString]="vaultOptionLabel"
       >
-        <hlm-select-trigger class="w-full">
+        <hlm-select-trigger class="bg-card h-11 w-full rounded-xl px-3.5">
           <hlm-select-value [placeholder]="'items.selectVaultPlaceholder' | t" />
         </hlm-select-trigger>
         <hlm-select-content *hlmSelectPortal>
@@ -46,7 +52,7 @@
         @for (template of templates; track template.id) {
           <button
             type="button"
-            class="template border-input bg-card hover:bg-accent focus-visible:ring-ring/50 aria-pressed:border-primary aria-pressed:bg-primary/5 aria-pressed:text-accent-strong flex cursor-pointer flex-col items-center gap-1.5 rounded-lg border px-2 py-3 text-center transition-colors focus-visible:ring-2 focus-visible:outline-none"
+            class="template border-border bg-card hover:bg-muted focus-visible:ring-ring/50 aria-pressed:border-primary aria-pressed:bg-primary/10 aria-pressed:text-accent-strong aria-pressed:ring-primary/30 flex cursor-pointer flex-col items-center gap-2 rounded-xl border px-2 py-3.5 text-center transition-colors aria-pressed:ring-1 focus-visible:ring-2 focus-visible:outline-none"
             [attr.aria-pressed]="isSelected(template)"
             (click)="selectTemplate(template)"
           >
@@ -57,9 +63,9 @@
       </div>
     </hlm-field>
 
-    <hlm-dialog-footer>
-      <button hlmBtn variant="outline" (click)="cancel()">{{ 'common.cancel' | t }}</button>
-      <button hlmBtn [disabled]="!canCreate()" (click)="create()">{{ 'common.create' | t }}</button>
+    <hlm-dialog-footer class="gap-2">
+      <button hlmBtn class="h-10 rounded-xl px-4 font-semibold" variant="outline" (click)="cancel()">{{ 'common.cancel' | t }}</button>
+      <button hlmBtn class="h-10 gap-2 rounded-xl px-4 font-bold" [disabled]="!canCreate()" (click)="create()">{{ 'common.create' | t }}</button>
     </hlm-dialog-footer>
   </hlm-dialog-content>
 </hlm-dialog>

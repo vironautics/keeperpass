@@ -1,131 +1,189 @@
 @if (!found()) {
   <div class="flex h-full items-center justify-center p-6">
-    <div hlmEmpty>
-      <hlm-empty-header>
-        <hlm-empty-media variant="icon">
-          <app-icon name="forbidden" />
-        </hlm-empty-media>
-        <div hlmEmptyTitle>{{ 'items.view.notFound' | t }}</div>
-        <div hlmEmptyDescription>{{ 'items.view.notFoundHint' | t }}</div>
-      </hlm-empty-header>
+    <div class="flex max-w-72 flex-col items-center gap-3 text-center">
+      <span
+        class="bg-muted text-muted-foreground inline-flex size-14 items-center justify-center rounded-2xl"
+        aria-hidden="true"
+      >
+        <ng-icon name="lucideSearchX" size="1.5rem" strokeWidth="1.75" />
+      </span>
+      <p class="text-foreground text-base font-bold">{{ 'items.view.notFound' | t }}</p>
+      <p class="text-muted-foreground text-sm">{{ 'items.view.notFoundHint' | t }}</p>
     </div>
   </div>
 } @else {
   <div class="flex h-full min-h-0 flex-col">
     <!--
-      `min-[701px]:hidden` / `max-[700px]:hidden` rather than `md:` — 700px is
-      where `.layout.pane` stops showing the list beside this pane, so that is the
-      width at which "back to list" starts meaning something and the glyph has to
-      give up its space.
+      A slim toolbar rather than a title band: where the item lives on the left, what you
+      can do with it on the right. The item itself is introduced by the hero at the top of
+      the scrolling column below, so the two never compete for the same job.
+
+      `min-[701px]:hidden` rather than `md:` — 700px is where `ItemsPage` stops showing
+      the list beside this pane, so that is where "back to list" starts meaning something.
     -->
-    <header class="bg-card flex shrink-0 items-start gap-1 border-b p-2">
-      @if (!edit()) {
-        <a
-          hlmBtn
-          variant="ghost"
-          size="icon"
-          class="min-[701px]:hidden"
-          routerLink="/items"
-          [attr.aria-label]="'items.view.backToListAria' | t"
-        >
-          <app-icon name="chevron-left" />
-        </a>
-      }
-
-      @if (edit()) {
-        <button
-          type="button"
-          class="group focus-visible:ring-ring/50 relative mt-1.5 size-8 shrink-0 rounded-md max-[700px]:hidden focus-visible:ring-2 focus-visible:outline-none"
-          [attr.aria-label]="'items.field.changeIcon' | t"
-          (click)="openIconPicker()"
-        >
-          <app-item-icon [item]="previewIconItem()!" class="size-8" />
-          <span
-            class="absolute inset-0 flex items-center justify-center rounded-md bg-black/50 opacity-0 transition-opacity group-hover:opacity-100"
+    <header class="bg-card shrink-0 border-b">
+      <div class="mx-auto flex h-14 w-full max-w-3xl items-center gap-2 px-4 sm:px-6">
+        @if (!edit()) {
+          <a
+            hlmBtn
+            variant="ghost"
+            size="icon"
+            class="-ms-2 size-9 shrink-0 rounded-lg min-[701px]:hidden"
+            routerLink="/items"
+            [attr.aria-label]="'items.view.backToListAria' | t"
           >
-            <app-icon name="edit" class="text-white" />
+            <ng-icon name="lucideChevronLeft" size="1.25rem" strokeWidth="2" class="rtl:-scale-x-100" />
+          </a>
+        }
+
+        <!-- Breadcrumb: vault, then the item. Not a heading — the hero below owns the `<h1>`. -->
+        <p class="flex min-w-0 flex-1 items-center gap-1.5 text-sm">
+          <span
+            class="bg-muted text-muted-foreground inline-flex min-w-0 shrink items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-semibold"
+          >
+            <ng-icon name="lucideFolderOpen" size="0.875rem" strokeWidth="2" class="shrink-0" />
+            <span class="truncate">{{ vaultLabel() }}</span>
           </span>
-        </button>
-      } @else {
-        <app-item-icon [item]="previewIconItem()!" class="mt-1.5 size-8 shrink-0 max-[700px]:hidden" />
-      }
-
-      <div class="min-w-0 flex-1 px-1">
-        <p class="text-muted-foreground truncate text-xs">{{ vaultLabel() }}</p>
-
-        @if (edit()) {
-          <input
-            hlmInput
-            #nameInput
-            class="name-input text-foreground mt-1"
-            [formControl]="nameControl"
-            [placeholder]="'items.view.namePlaceholder' | t"
-            [attr.aria-label]="'items.view.namePlaceholder' | t"
-            (keydown.enter)="save()"
+          <ng-icon
+            name="lucideChevronRight"
+            size="0.875rem"
+            strokeWidth="2"
+            class="text-muted-foreground/60 shrink-0 rtl:-scale-x-100"
           />
-        } @else {
-          <h1 class="truncate text-lg font-semibold">{{ name() }}</h1>
+          <span class="text-foreground min-w-0 truncate font-semibold">
+            {{ edit() ? ('items.view.editItemAria' | t) : name() || ('common.unnamed' | t) }}
+          </span>
+        </p>
+
+        @if (!edit()) {
+          <div class="flex shrink-0 items-center gap-1">
+            <!--
+              A toggle button, so `aria-pressed` carries the state, and both the colour
+              and the fill are driven off that attribute rather than a class binding —
+              `classes()` owns the class list on a helm host.
+            -->
+            <button
+              hlmBtn
+              variant="ghost"
+              size="icon"
+              class="text-muted-foreground hover:text-foreground aria-pressed:text-accent-strong size-9 rounded-lg aria-pressed:[&_svg]:fill-current"
+              [attr.aria-label]="'common.favorite' | t"
+              [hlmTooltip]="'common.favorite' | t"
+              [attr.aria-pressed]="isFavourite()"
+              (click)="toggleFavourite()"
+            >
+              <ng-icon name="lucideStar" size="1.125rem" strokeWidth="1.75" />
+            </button>
+
+            <button
+              hlmBtn
+              variant="ghost"
+              size="icon"
+              class="text-muted-foreground hover:text-foreground size-9 rounded-lg"
+              [attr.aria-label]="'items.view.moreOptionsAria' | t"
+              [hlmTooltip]="'items.view.moreOptionsAria' | t"
+              align="end"
+              [hlmDropdownMenuTrigger]="moreMenu"
+            >
+              <ng-icon name="lucideEllipsis" size="1.25rem" strokeWidth="2" />
+            </button>
+
+            <span class="bg-border mx-1 h-5 w-px" aria-hidden="true"></span>
+
+            <!-- The one primary action on a resting item, so it is the one filled button. -->
+            <button
+              hlmBtn
+              class="h-9 gap-2 rounded-lg px-3.5 font-semibold shadow-xs max-sm:w-9 max-sm:px-0"
+              [attr.aria-label]="'items.view.editItemAria' | t"
+              (click)="startEditing()"
+            >
+              <ng-icon name="lucidePencil" size="0.9375rem" strokeWidth="2" />
+              <span class="max-sm:hidden">{{ 'common.edit' | t }}</span>
+            </button>
+          </div>
         }
       </div>
-
-      @if (!edit()) {
-        <div class="flex shrink-0 items-center">
-          <!--
-            A toggle button, so `aria-pressed` carries the state, and both the colour
-            and the fill are driven off that attribute rather than a class binding —
-            `classes()` owns the class list on a helm host. `font-black` is what fills
-            the star: weight 900 selects FontAwesome's Solid face (see `_fonts.scss`),
-            where the same codepoint is drawn filled.
-          -->
-          <button
-            hlmBtn
-            variant="ghost"
-            size="icon"
-            [attr.aria-label]="'common.favorite' | t"
-            class="aria-pressed:text-accent-strong aria-pressed:[&_app-icon]:font-black"
-            [attr.aria-pressed]="isFavourite()"
-            (click)="toggleFavourite()"
-          >
-            <app-icon name="favourite" />
-          </button>
-
-          <button
-            hlmBtn
-            variant="ghost"
-            size="icon"
-            [attr.aria-label]="'items.view.editItemAria' | t"
-            (click)="startEditing()"
-          >
-            <app-icon name="edit" />
-          </button>
-
-          <button
-            hlmBtn
-            variant="ghost"
-            size="icon"
-            [attr.aria-label]="'items.view.moreOptionsAria' | t"
-            align="end"
-            [hlmDropdownMenuTrigger]="moreMenu"
-          >
-            <app-icon name="more" />
-          </button>
-        </div>
-      }
     </header>
 
-    <div class="min-h-0 flex-1 overflow-y-auto">
-      <div class="flex flex-col gap-4 p-3">
+    <div class="bg-background min-h-0 flex-1 overflow-y-auto">
+      <div class="mx-auto flex w-full max-w-3xl flex-col gap-7 px-4 py-6 sm:px-6 sm:py-8">
+        <!--
+          The item's hero: its icon, its name, and the two facts worth having at a glance.
+          In edit mode the same slot holds the icon picker and the name field, so starting
+          an edit changes the controls in place instead of moving the page around.
+        -->
+        <section class="flex items-center gap-4 sm:gap-5">
+          @if (edit()) {
+            <button
+              type="button"
+              class="group focus-visible:ring-ring/50 relative size-16 shrink-0 rounded-[1.125rem] focus-visible:ring-3 focus-visible:outline-none sm:size-[4.5rem]"
+              [attr.aria-label]="'items.field.changeIcon' | t"
+              (click)="openIconPicker()"
+            >
+              <app-item-icon
+                [item]="previewIconItem()!"
+                class="bg-card text-accent-strong ring-border size-full rounded-[inherit]! p-3 text-[1.75rem] shadow-xs ring-1"
+              />
+              <span
+                class="bg-foreground/55 absolute inset-0 flex items-center justify-center rounded-[inherit] text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
+              >
+                <ng-icon name="lucidePencil" size="1.25rem" strokeWidth="2" />
+              </span>
+            </button>
+          } @else {
+            <app-item-icon
+              [item]="previewIconItem()!"
+              class="bg-card text-accent-strong ring-border size-16 shrink-0 rounded-[1.125rem]! p-3 text-[1.75rem] shadow-xs ring-1 sm:size-[4.5rem]"
+            />
+          }
+
+          <div class="flex min-w-0 flex-1 flex-col gap-2">
+            @if (edit()) {
+              <input
+                hlmInput
+                #nameInput
+                class="name-input text-foreground bg-card h-12 rounded-xl px-3.5 text-xl font-extrabold tracking-tight"
+                [formControl]="nameControl"
+                [placeholder]="'items.view.namePlaceholder' | t"
+                [attr.aria-label]="'items.view.namePlaceholder' | t"
+                (keydown.enter)="save()"
+              />
+            } @else {
+              <h1
+                class="text-foreground truncate text-2xl leading-tight font-extrabold tracking-tight sm:text-[2rem]"
+              >
+                {{ name() }}
+              </h1>
+
+              <div class="text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-medium">
+                @if (!isNew()) {
+                  <span class="inline-flex items-center gap-1.5">
+                    <ng-icon name="lucideClock" size="0.875rem" strokeWidth="2" />
+                    {{ updatedAgo() }}
+                  </span>
+                }
+                @if (isFavourite()) {
+                  <span class="text-accent-strong inline-flex items-center gap-1.5">
+                    <ng-icon name="lucideStar" size="0.875rem" strokeWidth="2" class="[&_svg]:fill-current" />
+                    {{ 'common.favorite' | t }}
+                  </span>
+                }
+              </div>
+            }
+          </div>
+        </section>
+
         <!-- TAGS -->
         <section>
           <h2
-            class="text-muted-foreground mb-1.5 flex items-center gap-1.5 text-sm font-semibold tracking-[0.08em] [font-variant-caps:all-small-caps]"
+            class="text-muted-foreground mb-2.5 flex items-center gap-2 px-1 text-xs font-bold tracking-wider uppercase"
           >
             <app-icon name="tags" class="text-[0.6875rem]" />
             {{ 'common.tags' | t }}
           </h2>
 
-          <div class="bg-card divide-y overflow-hidden rounded-lg border">
-            <div class="tags flex flex-wrap items-center gap-2 p-2">
+          <div class="bg-card divide-y overflow-hidden rounded-2xl border shadow-xs">
+            <div class="tags flex flex-wrap items-center gap-2 p-3">
               @if (edit()) {
                 @for (tag of editableTags(); track tag) {
                   <!-- `h-9!` matches the "Add tag" trigger beside it — badges are `h-5` by default. -->
@@ -204,12 +262,12 @@
                 </hlm-combobox>
               } @else {
                 @for (tag of tags(); track tag) {
-                  <span hlmBadge variant="secondary" [style.color]="tagColor(tag)">
+                  <span hlmBadge variant="secondary" class="h-7 rounded-full px-3" [style.color]="tagColor(tag)">
                     <app-icon name="tag" />
                     {{ tag }}
                   </span>
                 } @empty {
-                  <span class="text-muted-foreground text-sm">{{ 'items.view.noTags' | t }}</span>
+                  <span class="text-muted-foreground px-1 text-sm">{{ 'items.view.noTags' | t }}</span>
                 }
               }
             </div>
@@ -219,13 +277,13 @@
         <!-- FIELDS -->
         <section>
           <h2
-            class="text-muted-foreground mb-1.5 flex items-center gap-1.5 text-sm font-semibold tracking-[0.08em] [font-variant-caps:all-small-caps]"
+            class="text-muted-foreground mb-2.5 flex items-center gap-2 px-1 text-xs font-bold tracking-wider uppercase"
           >
             <app-icon name="field" class="text-[0.6875rem]" />
             {{ 'common.fields' | t }}
           </h2>
 
-          <div class="bg-card divide-y overflow-hidden rounded-lg border">
+          <div class="bg-card divide-y overflow-hidden rounded-2xl border shadow-xs">
             @if (edit()) {
               @for (entry of editableFields(); track entry; let i = $index) {
                 <app-field-value-editor
@@ -284,13 +342,13 @@
         @if (!isNew()) {
           <section>
             <h2
-              class="text-muted-foreground mb-1.5 flex items-center gap-1.5 text-sm font-semibold tracking-[0.08em] [font-variant-caps:all-small-caps]"
+              class="text-muted-foreground mb-2.5 flex items-center gap-2 px-1 text-xs font-bold tracking-wider uppercase"
             >
               <app-icon name="history" class="text-[0.6875rem]" />
               {{ 'items.view.historyTitle' | t }}
             </h2>
 
-            <div class="bg-card divide-y overflow-hidden rounded-lg border">
+            <div class="bg-card divide-y overflow-hidden rounded-2xl border shadow-xs">
               <div hlmItem size="sm" class="rounded-none! border-transparent">
                 <hlm-item-media variant="icon" class="size-8">
                   <app-icon name="time" />
@@ -350,33 +408,48 @@
     </div>
 
     @if (edit()) {
-      <footer class="save-cancel-row bg-card flex shrink-0 gap-2 border-t p-3">
-        <button hlmBtn class="flex-1" [disabled]="!canSave()" (click)="save()">
-          <app-icon name="check" />
-          {{ 'common.save' | t }}
-        </button>
-        <button hlmBtn variant="outline" class="flex-1" (click)="cancel()">
-          <app-icon name="cancel" />
-          {{ 'common.cancel' | t }}
-        </button>
+      <footer class="save-cancel-row bg-card shrink-0 border-t pb-[max(0.75rem,var(--inset-bottom,0px))]">
+        <div class="mx-auto flex w-full max-w-3xl flex-row-reverse gap-2 px-4 pt-3 sm:px-6">
+          <button
+            hlmBtn
+            class="h-11 flex-1 gap-2 rounded-xl font-bold shadow-xs sm:flex-none sm:px-6"
+            [disabled]="!canSave()"
+            (click)="save()"
+          >
+            <ng-icon name="lucideCheck" size="1.125rem" strokeWidth="2.25" />
+            {{ 'common.save' | t }}
+          </button>
+          <button
+            hlmBtn
+            variant="outline"
+            class="h-11 flex-1 gap-2 rounded-xl font-semibold sm:flex-none sm:px-5"
+            (click)="cancel()"
+          >
+            {{ 'common.cancel' | t }}
+          </button>
+        </div>
       </footer>
     }
   </div>
 
   <ng-template #moreMenu>
-    <hlm-dropdown-menu>
-      <button hlmDropdownMenuItem (click)="openMove()">
-        <app-icon name="move" />
+    <hlm-dropdown-menu class="min-w-56 rounded-xl p-1.5">
+      <button hlmDropdownMenuItem class="h-9 gap-2.5 rounded-lg px-2.5" (click)="openMove()">
+        <ng-icon name="lucideFolderInput" size="1rem" strokeWidth="1.75" />
         {{ 'items.view.moveToVaultAction' | t }}
       </button>
-      <hlm-dropdown-menu-separator />
-      <button hlmDropdownMenuItem variant="destructive" (click)="requestDelete()">
-        <app-icon name="delete" />
+      <hlm-dropdown-menu-separator class="-mx-1.5 my-1.5" />
+      <button
+        hlmDropdownMenuItem
+        variant="destructive"
+        class="h-9 gap-2.5 rounded-lg px-2.5"
+        (click)="requestDelete()"
+      >
+        <ng-icon name="lucideTrash2" size="1rem" strokeWidth="1.75" />
         {{ 'items.view.deleteItemAction' | t }}
       </button>
     </hlm-dropdown-menu>
   </ng-template>
-
   <!--
     Every dialog is driven from a signal rather than a trigger button, so the
     `state`/`stateChanged` pair is the whole contract. `aria-label` names each one
@@ -392,9 +465,15 @@
       clipped by the dialog's rounded corner: `hlm-dialog-content` is a `grid gap-6
       p-6`, so anything short of that left a dead 1.5rem strip below the last row.
     -->
-    <hlm-dialog-content *hlmDialogPortal class="overflow-hidden sm:max-w-sm" [attr.aria-label]="'items.view.addField' | t">
-      <hlm-dialog-header>
-        <h3 hlmDialogTitle>{{ 'items.view.addField' | t }}</h3>
+    <hlm-dialog-content *hlmDialogPortal class="w-[min(28rem,calc(100vw-2rem))] gap-6 rounded-2xl overflow-hidden sm:max-w-sm" [attr.aria-label]="'items.view.addField' | t">
+      <hlm-dialog-header class="gap-1.5">
+        <span
+          class="bg-primary/15 text-accent-strong ring-primary/25 mb-2 inline-flex size-12 items-center justify-center rounded-2xl ring-1"
+          aria-hidden="true"
+        >
+          <ng-icon name="lucideListPlus" size="1.375rem" strokeWidth="1.75" />
+        </span>
+        <h3 hlmDialogTitle class="text-lg font-bold">{{ 'items.view.addField' | t }}</h3>
         <p hlmDialogDescription>{{ 'items.view.addFieldDescription' | t }}</p>
       </hlm-dialog-header>
 
@@ -425,14 +504,35 @@
     [state]="removingFieldIndex() !== null ? 'open' : 'closed'"
     (stateChanged)="$event === 'closed' && cancelRemoveField()"
   >
-    <hlm-alert-dialog-content *hlmAlertDialogPortal [attr.aria-label]="'items.view.removeFieldTitle' | t">
+    <hlm-alert-dialog-content
+      *hlmAlertDialogPortal
+      class="w-[min(28rem,calc(100vw-2rem))] gap-6 rounded-2xl sm:max-w-md"
+      [attr.aria-label]="'items.view.removeFieldTitle' | t"
+    >
       <hlm-alert-dialog-header>
-        <h3 hlmAlertDialogTitle>{{ 'items.view.removeFieldTitle' | t }}</h3>
+        <hlm-alert-dialog-media
+          class="bg-destructive/10 text-destructive ring-destructive/20 size-12 rounded-2xl ring-1"
+        >
+          <ng-icon name="lucideTrash2" size="1.375rem" strokeWidth="1.75" />
+        </hlm-alert-dialog-media>
+        <h3 hlmAlertDialogTitle class="font-bold">{{ 'items.view.removeFieldTitle' | t }}</h3>
         <p hlmAlertDialogDescription>{{ 'items.view.removeFieldConfirm' | t }}</p>
       </hlm-alert-dialog-header>
-      <hlm-alert-dialog-footer>
-        <button hlmAlertDialogCancel (click)="cancelRemoveField()">{{ 'common.cancel' | t }}</button>
-        <button hlmAlertDialogAction variant="destructive" (click)="confirmRemoveField()">
+      <hlm-alert-dialog-footer class="gap-2">
+        <button
+          hlmAlertDialogCancel
+          class="h-10 rounded-xl px-4 font-semibold"
+          (click)="cancelRemoveField()"
+        >
+          {{ 'common.cancel' | t }}
+        </button>
+        <button
+          hlmAlertDialogAction
+          variant="destructive"
+          class="bg-destructive hover:bg-destructive/90 dark:bg-destructive dark:hover:bg-destructive/90 h-10 gap-2 rounded-xl px-4 font-bold text-white dark:text-white"
+          (click)="confirmRemoveField()"
+        >
+          <ng-icon name="lucideTrash2" size="1rem" strokeWidth="2" />
           {{ 'common.remove' | t }}
         </button>
       </hlm-alert-dialog-footer>
@@ -443,14 +543,24 @@
     [state]="movingItem() ? 'open' : 'closed'"
     (stateChanged)="movingItem.set($event === 'open')"
   >
-    <hlm-dialog-content *hlmDialogPortal class="sm:max-w-sm" [attr.aria-label]="'items.view.moveToVaultTitle' | t">
-      <hlm-dialog-header>
-        <h3 hlmDialogTitle>{{ 'items.view.moveToVaultTitle' | t }}</h3>
+    <hlm-dialog-content
+      *hlmDialogPortal
+      class="w-[min(28rem,calc(100vw-2rem))] gap-6 rounded-2xl sm:max-w-md"
+      [attr.aria-label]="'items.view.moveToVaultTitle' | t"
+    >
+      <hlm-dialog-header class="gap-1.5">
+        <span
+          class="bg-primary/15 text-accent-strong ring-primary/25 mb-2 inline-flex size-12 items-center justify-center rounded-2xl ring-1"
+          aria-hidden="true"
+        >
+          <ng-icon name="lucideFolderInput" size="1.375rem" strokeWidth="1.75" />
+        </span>
+        <h3 hlmDialogTitle class="text-lg font-bold">{{ 'items.view.moveToVaultTitle' | t }}</h3>
         <p hlmDialogDescription>{{ 'items.view.moveToVaultDescription' | t }}</p>
       </hlm-dialog-header>
 
       @if (!moveVaultOptions().length) {
-        <p class="text-muted-foreground text-sm">
+        <p class="bg-muted text-muted-foreground rounded-xl px-4 py-3 text-sm">
           {{ 'items.view.noOtherVault' | t }}
         </p>
       }
@@ -461,19 +571,36 @@
         [formControl]="moveVaultControl"
         [itemToString]="vaultOptionLabel"
       >
-        <hlm-select-trigger class="w-full">
+        <hlm-select-trigger class="bg-card h-11 w-full rounded-xl px-3.5 text-[0.9375rem]">
           <hlm-select-value [placeholder]="'items.selectVaultPlaceholder' | t" />
         </hlm-select-trigger>
-        <hlm-select-content *hlmSelectPortal>
+        <hlm-select-content *hlmSelectPortal class="rounded-xl">
           @for (option of moveVaultOptions(); track option.value) {
-            <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
+            <hlm-select-item [value]="option.value" class="h-9 rounded-lg">{{
+              option.label
+            }}</hlm-select-item>
           }
         </hlm-select-content>
       </hlm-select>
 
-      <hlm-dialog-footer>
-        <button hlmBtn variant="outline" (click)="cancelMove()">{{ 'common.cancel' | t }}</button>
-        <button hlmBtn [disabled]="!canMove()" (click)="confirmMove()">{{ 'common.move' | t }}</button>
+      <hlm-dialog-footer class="gap-2">
+        <button
+          hlmBtn
+          variant="outline"
+          class="h-10 rounded-xl px-4 font-semibold"
+          (click)="cancelMove()"
+        >
+          {{ 'common.cancel' | t }}
+        </button>
+        <button
+          hlmBtn
+          class="h-10 gap-2 rounded-xl px-4 font-bold"
+          [disabled]="!canMove()"
+          (click)="confirmMove()"
+        >
+          <ng-icon name="lucideFolderInput" size="1rem" strokeWidth="2" />
+          {{ 'common.move' | t }}
+        </button>
       </hlm-dialog-footer>
     </hlm-dialog-content>
   </hlm-dialog>
@@ -482,16 +609,39 @@
     [state]="deleteRequested() ? 'open' : 'closed'"
     (stateChanged)="deleteRequested.set($event === 'open')"
   >
-    <hlm-alert-dialog-content *hlmAlertDialogPortal [attr.aria-label]="'items.view.deleteItemTitle' | t">
+    <hlm-alert-dialog-content
+      *hlmAlertDialogPortal
+      class="w-[min(28rem,calc(100vw-2rem))] gap-6 rounded-2xl sm:max-w-md"
+      [attr.aria-label]="'items.view.deleteItemTitle' | t"
+    >
       <hlm-alert-dialog-header>
-        <h3 hlmAlertDialogTitle>{{ 'items.view.deleteItemTitle' | t }}</h3>
-        <p hlmAlertDialogDescription>
+        <hlm-alert-dialog-media
+          class="bg-destructive/10 text-destructive ring-destructive/20 size-12 rounded-2xl ring-1"
+        >
+          <ng-icon name="lucideTrash2" size="1.375rem" strokeWidth="1.75" />
+        </hlm-alert-dialog-media>
+        <h3 hlmAlertDialogTitle class="font-bold">{{ 'items.view.deleteItemTitle' | t }}</h3>
+        <p hlmAlertDialogDescription class="leading-relaxed">
           {{ 'items.view.deleteItemConfirm' | t: { name: name() } }}
         </p>
       </hlm-alert-dialog-header>
-      <hlm-alert-dialog-footer>
-        <button hlmAlertDialogCancel (click)="cancelDelete()">{{ 'common.cancel' | t }}</button>
-        <button hlmAlertDialogAction variant="destructive" (click)="confirmDelete()">{{ 'common.delete' | t }}</button>
+      <hlm-alert-dialog-footer class="gap-2">
+        <button
+          hlmAlertDialogCancel
+          class="h-10 rounded-xl px-4 font-semibold"
+          (click)="cancelDelete()"
+        >
+          {{ 'common.cancel' | t }}
+        </button>
+        <button
+          hlmAlertDialogAction
+          variant="destructive"
+          class="bg-destructive hover:bg-destructive/90 dark:bg-destructive dark:hover:bg-destructive/90 h-10 gap-2 rounded-xl px-4 font-bold text-white dark:text-white"
+          (click)="confirmDelete()"
+        >
+          <ng-icon name="lucideTrash2" size="1rem" strokeWidth="2" />
+          {{ 'common.delete' | t }}
+        </button>
       </hlm-alert-dialog-footer>
     </hlm-alert-dialog-content>
   </hlm-alert-dialog>
@@ -500,10 +650,16 @@
     [state]="viewingHistoryIndex() !== null ? 'open' : 'closed'"
     (stateChanged)="$event === 'closed' && closeHistoryEntry()"
   >
-    <hlm-dialog-content *hlmDialogPortal class="sm:max-w-lg" [attr.aria-label]="'items.view.versionHistoryAria' | t">
+    <hlm-dialog-content *hlmDialogPortal class="w-[min(32rem,calc(100vw-2rem))] gap-6 rounded-2xl sm:max-w-lg" [attr.aria-label]="'items.view.versionHistoryAria' | t">
       @if (viewingHistoryEntry(); as entry) {
-        <hlm-dialog-header>
-          <h3 hlmDialogTitle>{{ historyDate(entry) }}</h3>
+        <hlm-dialog-header class="gap-1.5">
+          <span
+            class="bg-primary/15 text-accent-strong ring-primary/25 mb-2 inline-flex size-12 items-center justify-center rounded-2xl ring-1"
+            aria-hidden="true"
+          >
+            <ng-icon name="lucideHistory" size="1.375rem" strokeWidth="1.75" />
+          </span>
+          <h3 hlmDialogTitle class="text-lg font-bold">{{ historyDate(entry) }}</h3>
           <p hlmDialogDescription>{{ historyAgo(entry) }}</p>
         </hlm-dialog-header>
 
@@ -619,9 +775,9 @@
           </section>
         </div>
 
-        <hlm-dialog-footer>
-          <button hlmBtn variant="outline" (click)="closeHistoryEntry()">{{ 'common.cancel' | t }}</button>
-          <button hlmBtn (click)="confirmRestoreHistory()">
+        <hlm-dialog-footer class="gap-2">
+          <button hlmBtn class="h-10 rounded-xl px-4 font-semibold" variant="outline" (click)="closeHistoryEntry()">{{ 'common.cancel' | t }}</button>
+          <button hlmBtn class="h-10 gap-2 rounded-xl px-4 font-bold" (click)="confirmRestoreHistory()">
             <app-icon name="refresh" />
             {{ 'items.view.restore' | t }}
           </button>
@@ -634,16 +790,37 @@
     [state]="deletingHistoryIndex() !== null ? 'open' : 'closed'"
     (stateChanged)="$event === 'closed' && cancelDeleteHistoryEntry()"
   >
-    <hlm-alert-dialog-content *hlmAlertDialogPortal [attr.aria-label]="'items.view.deleteVersionAriaLabel' | t">
+    <hlm-alert-dialog-content
+      *hlmAlertDialogPortal
+      class="w-[min(28rem,calc(100vw-2rem))] gap-6 rounded-2xl sm:max-w-md"
+      [attr.aria-label]="'items.view.deleteVersionAriaLabel' | t"
+    >
       <hlm-alert-dialog-header>
-        <h3 hlmAlertDialogTitle>{{ 'items.view.deleteVersionTitle' | t }}</h3>
+        <hlm-alert-dialog-media
+          class="bg-destructive/10 text-destructive ring-destructive/20 size-12 rounded-2xl ring-1"
+        >
+          <ng-icon name="lucideTrash2" size="1.375rem" strokeWidth="1.75" />
+        </hlm-alert-dialog-media>
+        <h3 hlmAlertDialogTitle class="font-bold">{{ 'items.view.deleteVersionTitle' | t }}</h3>
         <p hlmAlertDialogDescription>
           {{ 'items.view.deleteVersionConfirm' | t }}
         </p>
       </hlm-alert-dialog-header>
-      <hlm-alert-dialog-footer>
-        <button hlmAlertDialogCancel (click)="cancelDeleteHistoryEntry()">{{ 'common.cancel' | t }}</button>
-        <button hlmAlertDialogAction variant="destructive" (click)="confirmDeleteHistoryEntry()">
+      <hlm-alert-dialog-footer class="gap-2">
+        <button
+          hlmAlertDialogCancel
+          class="h-10 rounded-xl px-4 font-semibold"
+          (click)="cancelDeleteHistoryEntry()"
+        >
+          {{ 'common.cancel' | t }}
+        </button>
+        <button
+          hlmAlertDialogAction
+          variant="destructive"
+          class="bg-destructive hover:bg-destructive/90 dark:bg-destructive dark:hover:bg-destructive/90 h-10 gap-2 rounded-xl px-4 font-bold text-white dark:text-white"
+          (click)="confirmDeleteHistoryEntry()"
+        >
+          <ng-icon name="lucideTrash2" size="1rem" strokeWidth="2" />
           {{ 'common.delete' | t }}
         </button>
       </hlm-alert-dialog-footer>

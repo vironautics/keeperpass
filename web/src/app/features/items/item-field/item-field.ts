@@ -1,4 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideCheck, lucideCopy, lucideEye, lucideEyeOff } from '@ng-icons/lucide';
 import { HlmBadge } from '@spartan-ng/helm/badge';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmItemImports } from '@spartan-ng/helm/item';
@@ -51,9 +53,11 @@ interface FieldFinding {
     HlmProgressImports,
     HlmTooltip,
     Icon,
+    NgIcon,
     Totp,
     TranslatePipe,
   ],
+  providers: [provideIcons({ lucideCheck, lucideCopy, lucideEye, lucideEyeOff })],
   templateUrl: './item-field.html',
   host: { class: 'block' },
 })
@@ -102,7 +106,9 @@ export class ItemField {
 
   protected readonly strengthPercent = computed(() => strengthPercent(this.strength()));
   protected readonly strengthColour = computed(() => STRENGTH_COLOURS[this.strength()]);
-  protected readonly strengthLabel = computed(() => this.i18n.translate(STRENGTH_LABELS[this.strength()]));
+  protected readonly strengthLabel = computed(() =>
+    this.i18n.translate(STRENGTH_LABELS[this.strength()]),
+  );
 
   /** Brand and checksum, from the number itself — see `core/validation/card-number.ts`. */
   protected readonly card = computed(() =>

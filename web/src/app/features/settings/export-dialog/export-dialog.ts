@@ -7,6 +7,8 @@ import {
   model,
   untracked,
 } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideDownload } from '@ng-icons/lucide';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { HlmAlertImports } from '@spartan-ng/helm/alert';
@@ -40,6 +42,7 @@ const ALL_VAULTS = 'all';
   selector: 'app-export-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NgIcon,
     ReactiveFormsModule,
     Icon,
     HlmAlertImports,
@@ -49,6 +52,7 @@ const ALL_VAULTS = 'all';
     HlmSelectImports,
     TranslatePipe,
   ],
+  providers: [provideIcons({ lucideDownload })],
   templateUrl: './export-dialog.html',
   /** The dialog lives in an overlay, so this host renders nothing. */
   host: { class: 'contents' },

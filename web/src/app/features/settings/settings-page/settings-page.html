@@ -1,26 +1,41 @@
-<header class="flex shrink-0 items-center gap-1 border-b p-2">
+<header class="bg-card flex h-14 shrink-0 items-center gap-3 border-b px-3 sm:px-6">
   <!--
     The sidebar is a sheet below `md`, so it needs one obvious way in. From `md` up the
     sidebar column is permanently on screen and its own header owns the toggle.
   -->
-  <button hlmSidebarTrigger class="md:hidden" [srOnlyText]="'settings.openMenu' | t"></button>
+  <button
+    hlmSidebarTrigger
+    class="-ms-1 size-9 rounded-lg md:hidden"
+    [srOnlyText]="'settings.openMenu' | t"
+  ></button>
 
-  <h1 class="flex min-w-0 flex-1 items-center gap-2 px-1 text-sm font-semibold">
-    <app-icon name="settings" class="text-accent-strong text-[0.8125rem]" />
-    <span class="min-w-0 truncate">{{ 'settings.title' | t }}</span>
-  </h1>
+  <span
+    class="bg-primary/15 text-accent-strong inline-flex size-9 shrink-0 items-center justify-center rounded-xl"
+    aria-hidden="true"
+  >
+    <ng-icon name="lucideSettings" size="1.125rem" strokeWidth="1.75" />
+  </span>
+
+  <div class="flex min-w-0 flex-1 flex-col leading-tight">
+    <h1 class="text-foreground truncate text-base font-extrabold tracking-tight">
+      {{ 'settings.title' | t }}
+    </h1>
+    <p class="text-muted-foreground truncate text-xs max-sm:hidden">{{ 'settings.subtitle' | t }}</p>
+  </div>
 </header>
 
 <!--
-  One scrolling column of cards, capped at `max-w-3xl`: settings are read one row at a
-  time, and a form field stretched across a 1440px window is harder to use, not easier.
+  One scrolling column of grouped cards, capped at `max-w-3xl`: settings are read one row
+  at a time, and a control stretched across a 1440px window is harder to use, not easier.
+  The one destructive action sits last, on its own, under its own red heading.
 -->
-<main class="min-h-0 flex-1 overflow-y-auto">
-  <div class="mx-auto flex w-full max-w-3xl flex-col gap-4 p-4 sm:p-6">
+<main class="bg-background min-h-0 flex-1 overflow-y-auto">
+  <div class="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 py-6 sm:px-6 sm:py-8">
     <app-profile-section />
     <app-language-section />
     <app-master-password-section />
     <app-move-vault-section />
     <app-data-section />
+    <app-danger-zone-section />
   </div>
 </main>

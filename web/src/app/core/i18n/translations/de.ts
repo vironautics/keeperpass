@@ -97,14 +97,32 @@ export const de: TranslationTable = {
   'auth.recover.genericError':
     'Ihr Konto konnte nicht wiederhergestellt werden. Bitte versuchen Sie es erneut.',
 
+  'auth.layout.badge': 'Ende-zu-Ende-verschlüsselt',
+  'auth.layout.headline': 'Ihre Passwörter, versiegelt in Ihrer eigenen Cloud.',
+  'auth.layout.subline': 'KeeperPass verschlüsselt alles in diesem Browser, bevor es Ihren Speicher erreicht. Nur Ihr Geheimnis kann es öffnen.',
+  'auth.layout.featureAccess': 'Begrenzter Zugriff',
+  'auth.layout.featureEncryption': 'Zero-Knowledge-Verschlüsselung',
+  'auth.layout.featureNoServer': 'Kein Server dazwischen',
+  'auth.layout.footer': 'Verschlüsselt in Ihrem Browser. Gespeichert in Ihrer Cloud.',
+  'auth.layout.language': 'Sprache',
+
   'items.pageTitle': 'Tresor',
+  'items.noSelection.title': 'Kein Eintrag ausgewählt',
+  'items.noSelection.description': 'Wählen Sie einen aus der Liste, um ihn anzusehen und zu bearbeiten.',
   'generator.pageTitle': 'Passwortgenerator',
+  'generator.subtitle': 'Zufällige Passwörter und Passphrasen, auf diesem Gerät erzeugt',
+  'generator.options': 'Optionen',
+  'generator.charCount': '{count} Zeichen',
   'generator.passphrase': 'Passphrase',
   'generator.randomString': 'Zufällige Zeichenfolge',
   'generator.dialogCharacters': 'Zeichen',
   'generator.dialogWords': 'Wörter',
   'generator.wordSeparator': 'Worttrennzeichen',
   'generator.separatorPlaceholder': 'Trennzeichen',
+  'generator.separatorDash': 'Bindestrich ( - )',
+  'generator.separatorUnderscore': 'Unterstrich ( _ )',
+  'generator.separatorSlash': 'Schrägstrich ( / )',
+  'generator.separatorSpace': 'Leerzeichen',
   'generator.language': 'Sprache',
   'generator.languagePlaceholder': 'Sprache',
   'generator.words': 'Wörter',
@@ -304,6 +322,14 @@ export const de: TranslationTable = {
   'report.aboutSectionAria': 'Über {title}',
   'report.nothingFound': 'Nichts gefunden',
   'report.showAll': 'Alle {count} anzeigen',
+  'report.openItemAria': '{name} öffnen',
+  'report.healthLabel': 'Tresor-Zustand',
+  'report.healthGood': 'Stark',
+  'report.healthFair': 'Verbesserungsbedarf',
+  'report.healthPoor': 'Gefährdet',
+  'report.itemsCheckedOne': '{count} Eintrag mit Passwort geprüft',
+  'report.itemsCheckedMany': '{count} Einträge mit Passwort geprüft',
+  'report.subtitle': 'Wie gut Ihre gespeicherten Passwörter standhalten',
 
   'audit.weakPassword.label': 'Schwache Passwörter',
   'audit.weakPassword.description':
@@ -457,14 +483,15 @@ export const de: TranslationTable = {
     'Die Datenschutzerklärung wird an einem Ort außerhalb der App aktuell gehalten, damit sie unabhängig davon, wo Sie sie lesen, konsistent bleibt.',
 
   'support.title': 'Support',
+  'support.subtitle': 'Wie KeeperPass funktioniert, und Antworten auf häufige Fragen',
+  'support.contact.description': 'Fragen, Feedback oder ein Problem? Schreiben Sie uns eine E-Mail.',
   'support.dataLives.title': 'Wo Ihre Daten liegen',
-  'support.dataLives.description':
-    'Keeperpass hat keinen Server. Ihr Tresor ist eine einzelne verschlüsselte Datei in Ihrem eigenen Google Drive, und Ihr Browser ist der einzige Ort, an dem sie jemals lesbar ist.',
+  'support.dataLives.description': 'Keeperpass hat keinen Server. Ihr Tresor ist eine einzelne verschlüsselte Datei in einem Cloud-Speicher, den Sie bereits besitzen — etwa Google Drive oder Dropbox — und Ihr Browser ist der einzige Ort, an dem sie je lesbar ist.',
   'support.dataLives.browserTitle': 'Ihr Browser',
   'support.dataLives.browserDescription':
     'Verschlüsselt und entschlüsselt alles. Ihr Geheimnis verlässt dieses Gerät nie.',
   'support.dataLives.encryptedFile': 'verschlüsselte Datei',
-  'support.dataLives.driveTitle': 'Ihr Google Drive',
+  'support.dataLives.driveTitle': 'Ihr Cloud-Speicher',
   'support.dataLives.driveDescriptionPrefix': 'Enthält',
   'support.dataLives.driveDescriptionSuffix': '— unlesbares Chiffrat.',
   'support.dataLives.footer':
@@ -479,20 +506,15 @@ export const de: TranslationTable = {
   'support.protects.encryptionTerm': 'Verschlüsselung',
   'support.protects.encryptionDescription':
     'AES-GCM, das Manipulationen erkennt und zusätzlich das Lesen verhindert.',
-  'support.protects.driveAccessTerm': 'Drive-Zugriff',
-  'support.protects.driveAccessDescriptionPrefix': 'Beschränkt auf',
-  'support.protects.driveAccessDescriptionSuffix':
-    '— Keeperpass sieht nur die Dateien, die es selbst erstellt, nichts sonst in Ihrem Drive.',
+  'support.protects.storageAccessTerm': 'Speicherzugriff',
+  'support.protects.storageAccessDescription': 'Keeperpass erreicht nur die Dateien, die es selbst anlegt — über eine eingeschränkte Berechtigung bei Google Drive, einen App-Ordner bei Dropbox. Alles andere in Ihrem Speicher bleibt unsichtbar.',
   'support.signingIn.title': 'Anmelden',
   'support.signingIn.description': 'Zwei getrennte Dinge, aus zwei getrennten Gründen.',
-  'support.signingIn.step1Title': 'Mit Google fortfahren',
-  'support.signingIn.step1Description':
-    'Erteilt die Berechtigung, Ihre Tresordatei zu lesen und zu schreiben. Das beweist, wem das Drive gehört — es entsperrt nichts.',
+  'support.signingIn.step1Title': 'Cloud-Speicher verbinden',
+  'support.signingIn.step1Description': 'Melden Sie sich bei Ihrem Speicheranbieter an — Google oder Dropbox —, um Zugriff auf Ihre Tresordatei zu gewähren. Das belegt, wem der Speicher gehört; entsperrt wird dadurch nichts.',
   'support.signingIn.step2Title': 'Geheimnis eingeben',
-  'support.signingIn.step2Description':
-    'Leitet in Ihrem Browser den Schlüssel ab, der die Datei entschlüsselt. Google sieht dies nie, und wir auch nicht.',
-  'support.signingIn.footer':
-    'Wer nur Ihr Google-Konto hat, kann Ihren Tresor trotzdem nicht lesen. Wer nur Ihr Geheimnis hat, erreicht die Datei trotzdem nicht. Beides wird benötigt.',
+  'support.signingIn.step2Description': 'Leitet in Ihrem Browser den Schlüssel ab, der die Datei entschlüsselt. Ihr Speicheranbieter sieht ihn nie, und wir auch nicht.',
+  'support.signingIn.footer': 'Wer Zugriff auf Ihr Speicherkonto hat, kann Ihren Tresor trotzdem nicht lesen. Wer Ihr Geheimnis kennt, erreicht die Datei trotzdem nicht. Es braucht beides.',
   'support.terms.title': 'Begriffe, die Sie kennen sollten',
   'support.terms.secretDescription': 'Die eine Phrase, die Ihren Tresor entsperrt. Nicht wiederherstellbar — siehe unten.',
   'support.terms.vaultTerm': 'Tresor',
@@ -501,6 +523,8 @@ export const de: TranslationTable = {
   'support.terms.tagTermSingular': 'Tag',
   'support.terms.tagDescriptionPrefix': 'Eine Beschriftung zum Filtern über Tresore hinweg, wie',
   'support.terms.tagDescriptionMiddle': 'oder',
+  'support.terms.tagExampleWork': 'Arbeit',
+  'support.terms.tagExampleBanking': 'Bank',
   'support.terms.reportTerm': 'Sicherheitsbericht',
   'support.terms.reportDescription':
     'Markiert schwache, wiederverwendete und bekannt kompromittierte Passwörter. Läuft vollständig auf Ihrem Gerät.',
@@ -512,19 +536,15 @@ export const de: TranslationTable = {
   'support.faq.forgetSecretA2Strong': 'Geheimnis vergessen?',
   'support.faq.forgetSecretA2Middle':
     'auf dem Entsperrbildschirm richtet einen neuen, leeren Tresor unter einem neuen Geheimnis ein. Ihre alte Datei wird nicht gelöscht — sie wird umbenannt in',
-  'support.faq.forgetSecretA2Suffix':
-    'und bleibt in Ihrem Drive-Ordner, falls Ihnen das alte Geheimnis wieder einfällt.',
+  'support.faq.forgetSecretA2Suffix': 'und bleibt in Ihrem Speicherordner (bei Dropbox unter „Apps“), damit die Daten noch da sind, falls Ihnen das alte Geheimnis wieder einfällt.',
   'support.faq.forgetSecretA3':
     'Notieren Sie sich Ihr Geheimnis und bewahren Sie es sicher auf. Es ist das Einzige bei Keeperpass, das nicht ersetzt werden kann.',
   'support.faq.seeQ': 'Kann Keeperpass meine Passwörter sehen?',
-  'support.faq.seeA':
-    'Nein — und nicht nur als Versprechen, sondern als Folge des Designs. Die Verschlüsselung erfolgt in Ihrem Browser, und das Chiffrat geht direkt an Ihr Drive. Es gibt keinen Keeperpass-Server auf dem Weg, der irgendetwas sehen könnte.',
+  'support.faq.seeA': 'Nein — und das ist kein Versprechen, sondern eine Folge des Designs. Verschlüsselt wird in Ihrem Browser, und der Geheimtext geht direkt in Ihren eigenen Speicher. Es gibt keinen Keeperpass-Server dazwischen, der etwas sehen könnte.',
   'support.faq.syncQ': 'Synchronisiert es geräteübergreifend?',
-  'support.faq.syncA':
-    'Ja. Jedes Gerät liest dieselbe Datei aus Ihrem Drive. Melden Sie sich mit demselben Google-Konto an, geben Sie dasselbe Geheimnis ein, und Ihr Tresor ist da.',
-  'support.faq.googleQ': 'Was, wenn Google die Datei liest?',
-  'support.faq.googleA':
-    'Google würde nur verschlüsselte Bytes sehen. Der Schlüssel wird nie an Google gesendet, sodass der Inhalt für Google unlesbar bleibt.',
+  'support.faq.syncA': 'Ja. Jedes Gerät liest dieselbe Datei aus Ihrem Speicher. Melden Sie sich mit demselben Konto an, geben Sie dasselbe Geheimnis ein, und Ihr Tresor ist da.',
+  'support.faq.providerQ': 'Was, wenn mein Speicheranbieter die Datei liest?',
+  'support.faq.providerA': 'Er sähe nur verschlüsselte Bytes. Der Schlüssel verlässt Ihren Browser nie, daher können weder Google noch Dropbox noch ein anderer Anbieter den Inhalt lesen.',
   'support.faq.importQ': 'Kann ich aus einem anderen Passwortmanager importieren?',
   'support.faq.importA': 'Ja — exportieren Sie dort als CSV und verwenden Sie dann Importieren in den Einstellungen.',
   'support.faq.changeSecretQ': 'Wie ändere ich mein Geheimnis?',
@@ -533,12 +553,16 @@ export const de: TranslationTable = {
   'support.faq.changeSecretASuffix':
     'Sie geben Ihr aktuelles Geheimnis und das neue ein; Ihr Tresor wird entschlüsselt, mit dem neuen Geheimnis neu verschlüsselt und zurückgespeichert. Nichts geht verloren — jeder Eintrag bleibt erhalten, und die Änderung gilt auf jedem Gerät, sobald es Ihren Tresor das nächste Mal lädt.',
   'support.faq.costQ': 'Was kostet es?',
-  'support.faq.costA':
-    'Nichts. Keeperpass ist kostenlos und quelloffen und speichert Daten in Drive-Speicherplatz, den Sie bereits haben.',
+  'support.faq.costA': 'Nichts. Keeperpass ist kostenlos und quelloffen und speichert die Daten in Cloud-Speicher, den Sie bereits haben.',
   'support.contact.title': 'Immer noch nicht weiter?',
 
   'settings.title': 'Einstellungen',
   'settings.openMenu': 'Navigationsmenü öffnen',
+  'settings.subtitle': 'Konto, Sprache, Sicherheit und Daten',
+  'settings.security': 'Sicherheit',
+  'settings.storage': 'Speicher',
+  'settings.dangerZone': 'Gefahrenbereich',
+  'settings.profile.deleteHint': 'Benennt Ihre Tresordatei um, sodass diese App sie nicht mehr findet, und meldet Sie ab. Es wird nichts gelöscht.',
 
   'settings.language.title': 'Sprache',
   'settings.language.label': 'Anzeigesprache',

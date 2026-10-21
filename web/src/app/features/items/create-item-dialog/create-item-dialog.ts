@@ -8,6 +8,8 @@ import {
   signal,
   untracked,
 } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideFilePlus2 } from '@ng-icons/lucide';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -33,6 +35,7 @@ import { IconName } from '../../../ui/icon/icon-glyphs';
   selector: 'app-create-item-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NgIcon,
     HlmButton,
     HlmDialogImports,
     HlmFieldImports,
@@ -41,6 +44,7 @@ import { IconName } from '../../../ui/icon/icon-glyphs';
     ReactiveFormsModule,
     TranslatePipe,
   ],
+  providers: [provideIcons({ lucideFilePlus2 })],
   templateUrl: './create-item-dialog.html',
   /** The dialog itself lives in an overlay, so this host renders nothing. */
   host: { class: 'contents' },

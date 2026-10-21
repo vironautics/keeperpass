@@ -7,6 +7,8 @@ import {
   model,
   untracked,
 } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideFolderPlus } from '@ng-icons/lucide';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HlmButton } from '@spartan-ng/helm/button';
@@ -25,7 +27,16 @@ import { VaultStore } from '../../../core/vault/vault.store';
 @Component({
   selector: 'app-create-vault-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, HlmButton, HlmDialogImports, HlmFieldImports, HlmInput, TranslatePipe],
+  imports: [
+    NgIcon,
+    ReactiveFormsModule,
+    HlmButton,
+    HlmDialogImports,
+    HlmFieldImports,
+    HlmInput,
+    TranslatePipe,
+  ],
+  providers: [provideIcons({ lucideFolderPlus })],
   templateUrl: './create-vault-dialog.html',
   /** The dialog lives in an overlay, so this host renders nothing. */
   host: { class: 'contents' },

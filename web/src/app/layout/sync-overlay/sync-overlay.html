@@ -12,11 +12,16 @@
   <hlm-dialog-content
     *hlmDialogPortal
     [showCloseButton]="false"
-    class="sm:max-w-sm"
+    class="w-[min(24rem,calc(100vw-2rem))] gap-6 rounded-2xl sm:max-w-sm"
     [attr.aria-label]="'layout.sync.savingTitle' | t"
   >
     @if (syncing()) {
       <div class="flex flex-col items-center gap-4 py-2 text-center">
+        <!-- A tile like every other dialog's, with the work happening inside it. -->
+        <span
+          class="bg-primary/15 text-accent-strong ring-primary/25 inline-flex size-14 items-center justify-center rounded-2xl ring-1"
+          aria-hidden="true"
+        >
         <!--
           Sized with `text-*`, never `size-*`. helm sizes the glyph by *font-size*
           (`text-[length:--spacing(4)]`) and spins the host box: a `size-6` host around a
@@ -24,7 +29,10 @@
           glyph orbits that point as well as turning. `!` because this is the same
           property helm sets.
         -->
-        <hlm-spinner class="text-2xl!" />
+          <hlm-spinner class="text-2xl!" />
+        </span>
+
+        <p class="text-foreground text-base font-bold">{{ 'layout.sync.savingTitle' | t }}</p>
 
         @if (uploading()) {
           <!--
@@ -32,7 +40,7 @@
             measure, the upload has a byte count.
           -->
           <div class="flex w-full flex-col gap-1.5">
-            <hlm-progress [value]="percent()" class="h-1.5">
+            <hlm-progress [value]="percent()" class="h-1.5 rounded-full">
               <hlm-progress-indicator />
             </hlm-progress>
             <p class="text-muted-foreground text-xs">{{ 'settings.changePassword.uploadingProgress' | t: { percent: percent() } }}</p>
@@ -42,12 +50,18 @@
         }
       </div>
     } @else if (error()) {
-      <hlm-dialog-header>
-        <h3 hlmDialogTitle>{{ 'layout.sync.notSavedTitle' | t }}</h3>
+      <hlm-dialog-header class="gap-1.5">
+        <span
+          class="bg-destructive/10 text-destructive ring-destructive/20 mb-2 inline-flex size-12 items-center justify-center rounded-2xl ring-1"
+          aria-hidden="true"
+        >
+          <ng-icon name="lucideCloudOff" size="1.375rem" strokeWidth="1.75" />
+        </span>
+        <h3 hlmDialogTitle class="text-lg font-bold">{{ 'layout.sync.notSavedTitle' | t }}</h3>
       </hlm-dialog-header>
 
       <!-- Two columns by hand: see the note on the same alert in `start-page.html`. -->
-      <div hlmAlert variant="destructive" class="grid-cols-[auto_1fr] gap-x-2.5!" role="alert">
+      <div hlmAlert variant="destructive" class="grid-cols-[auto_1fr] gap-x-2.5! rounded-xl" role="alert">
         <app-icon name="alert" class="translate-y-0.5" />
         <p hlmAlertDescription class="col-start-2">{{ error() }}</p>
       </div>
@@ -56,10 +70,10 @@
         Retry and Dismiss are the only ways out, and neither is automatic: a silent
         auto-close is indistinguishable from a successful save.
       -->
-      <hlm-dialog-footer>
-        <button hlmBtn variant="outline" class="dismiss-sync" (click)="dismiss()">{{ 'layout.sync.dismiss' | t }}</button>
-        <button hlmBtn class="retry-sync" (click)="retry()">
-          <app-icon name="refresh" />
+      <hlm-dialog-footer class="gap-2">
+        <button hlmBtn variant="outline" class="dismiss-sync h-10 rounded-xl px-4 font-semibold" (click)="dismiss()">{{ 'layout.sync.dismiss' | t }}</button>
+        <button hlmBtn class="retry-sync h-10 gap-2 rounded-xl px-4 font-bold" (click)="retry()">
+          <ng-icon name="lucideRotateCw" size="1rem" strokeWidth="2" />
           {{ 'layout.sync.retry' | t }}
         </button>
       </hlm-dialog-footer>

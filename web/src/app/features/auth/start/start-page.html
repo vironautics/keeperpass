@@ -1,30 +1,25 @@
 <!--
-  First step of the sign-in flow, in spartan/ui. One action per provider, so the card is
-  mostly explanation: what signing in gives the app access to, and what it does not.
+  First step of the sign-in flow. One action per provider, then the one thing worth
+  knowing before pressing it. On large screens the layout's brand panel carries the
+  longer explanation; below `lg` a compact version of it sits under the buttons.
 -->
-<div
-  hlmCard
-  class="animate-in fade-in slide-in-from-bottom-4 mx-auto w-full max-w-100 duration-700"
->
-  <div hlmCardHeader>
-    <h1 hlmCardTitle>{{ 'auth.start.title' | t }}</h1>
-    <p hlmCardDescription>
-      {{ 'auth.start.description' | t }}
-    </p>
-  </div>
+<div class="animate-in fade-in slide-in-from-bottom-2 flex flex-col gap-8 duration-500">
+  <app-auth-heading
+    icon="lucideShieldCheck"
+    [heading]="'auth.start.title' | t"
+    [description]="'auth.start.description' | t"
+  />
 
-  <div hlmCardContent class="flex flex-col gap-4">
+  <div class="flex flex-col gap-3">
     @if (errorMessage()) {
       <!--
         helm's alert lays its icon out with `has-[>ng-icon]` / `*:[ng-icon]` selectors,
-        and this app's icons are `<app-icon>` glyphs, not `<ng-icon>` — so the two-column
-        grid it would have switched on has to be asked for by hand, with the same tokens
-        it uses. Without this the icon takes a row of its own above the title.
+        which the Lucide glyph here satisfies, so the two-column grid comes for free.
       -->
-      <div hlmAlert variant="destructive" class="grid-cols-[auto_1fr] gap-x-2.5!">
-        <app-icon name="alert" class="row-span-2 translate-y-0.5" />
-        <p hlmAlertTitle class="col-start-2">{{ 'auth.start.signInFailed' | t }}</p>
-        <p hlmAlertDescription class="col-start-2">{{ errorMessage() }}</p>
+      <div hlmAlert variant="destructive" class="mb-1 rounded-xl">
+        <ng-icon name="lucideCircleAlert" />
+        <p hlmAlertTitle>{{ 'auth.start.signInFailed' | t }}</p>
+        <p hlmAlertDescription>{{ errorMessage() }}</p>
       </div>
     }
 
@@ -33,48 +28,51 @@
         hlmBtn
         type="button"
         variant="outline"
-        class="w-full"
+        class="group bg-card hover:bg-card hover:ring-primary/60 ring-border relative h-13 w-full justify-start gap-3 rounded-xl border-0 px-4 text-[0.9375rem] font-semibold shadow-xs ring-1 transition-[box-shadow,transform] hover:shadow-md active:translate-y-px"
         [disabled]="submitting()"
         (click)="signIn(providerId)"
       >
-        @if (activeProvider() === providerId) {
-          <hlm-spinner />
-        } @else if (providerId === 'dropbox') {
-          <app-dropbox-logo class="size-4" />
-        } @else {
-          <app-google-logo class="size-4" />
-        }
-        {{ labelKeys[providerId] | t }}
+        <span class="inline-flex size-6 items-center justify-center">
+          @if (activeProvider() === providerId) {
+            <hlm-spinner />
+          } @else if (providerId === 'dropbox') {
+            <app-dropbox-logo class="size-5" />
+          } @else {
+            <app-google-logo class="size-5" />
+          }
+        </span>
+        <span class="flex-1 text-start">{{ labelKeys[providerId] | t }}</span>
+        <ng-icon
+          name="lucideArrowRight"
+          size="1.125rem"
+          class="text-muted-foreground group-hover:text-foreground transition-transform group-hover:translate-x-0.5 rtl:-scale-x-100"
+        />
       </button>
     }
-
-    <!--
-      The three things worth saying before someone hands over an account, each one
-      a fact about how this app works rather than reassurance.
-    -->
-    <ul class="text-muted-foreground flex flex-col gap-2 text-xs">
-      <li class="flex items-start gap-2">
-        <app-icon name="file" class="text-accent-strong mt-0.5 shrink-0" />
-        <span>
-          {{ 'auth.start.accessNote' | t }}
-        </span>
-      </li>
-      <li class="flex items-start gap-2">
-        <app-icon name="lock" class="text-accent-strong mt-0.5 shrink-0" />
-        <span>
-          {{ 'auth.start.encryptionNote' | t }}
-        </span>
-      </li>
-      <li class="flex items-start gap-2">
-        <app-icon name="cloud" class="text-accent-strong mt-0.5 shrink-0" />
-        <span>{{ 'auth.start.noServerNote' | t }}</span>
-      </li>
-    </ul>
   </div>
 
-  <div hlmCardFooter>
-    <p class="text-muted-foreground text-xs">
-      {{ 'auth.start.footerNote' | t }}
-    </p>
-  </div>
+  <p class="text-muted-foreground flex items-start gap-2.5 text-[0.8125rem] leading-relaxed">
+    <ng-icon name="lucideInfo" size="1rem" class="text-accent-strong mt-0.5 shrink-0" />
+    <span>{{ 'auth.start.footerNote' | t }}</span>
+  </p>
+
+  <!-- The brand panel's three facts, for screens too narrow to show the panel. -->
+  <ul class="bg-sidebar ring-border flex flex-col gap-4 rounded-2xl p-5 ring-1 lg:hidden">
+    @for (feature of features; track feature.icon) {
+      <li class="flex items-start gap-3.5">
+        <span
+          class="bg-primary/15 text-accent-strong inline-flex size-9 shrink-0 items-center justify-center rounded-xl"
+          aria-hidden="true"
+        >
+          <ng-icon [name]="feature.icon" size="1.125rem" strokeWidth="1.75" />
+        </span>
+        <div class="flex flex-col gap-0.5">
+          <p class="text-foreground text-sm font-bold">{{ feature.title | t }}</p>
+          <p class="text-muted-foreground text-[0.8125rem] leading-relaxed">
+            {{ feature.body | t }}
+          </p>
+        </div>
+      </li>
+    }
+  </ul>
 </div>

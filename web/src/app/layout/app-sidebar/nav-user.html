@@ -3,33 +3,34 @@
     <button
       hlmSidebarMenuButton
       size="lg"
+      class="bg-card ring-sidebar-border hover:bg-card data-open:bg-card h-13 rounded-xl px-2 shadow-xs ring-1 group-data-[collapsible=icon]:shadow-none group-data-[collapsible=icon]:ring-0"
       [tooltip]="label()"
       [hlmDropdownMenuTrigger]="menu"
       [side]="menuSide()"
       align="end"
     >
-      <hlm-avatar class="rounded-lg">
-        <span class="bg-primary text-primary-foreground rounded-lg" hlmAvatarFallback>
+      <hlm-avatar class="size-9 rounded-lg">
+        <span class="bg-primary text-primary-foreground rounded-lg text-xs font-bold" hlmAvatarFallback>
           {{ initials() }}
         </span>
       </hlm-avatar>
       <div class="grid flex-1 text-left text-sm leading-tight">
-        <span class="truncate font-medium">{{ label() }}</span>
+        <span class="text-foreground truncate font-semibold">{{ label() }}</span>
         @if (email()) {
           <span class="truncate text-xs">{{ email() }}</span>
         }
       </div>
-      <app-icon name="chevron-down" class="ms-auto" />
+      <ng-icon name="lucideChevronsUpDown" strokeWidth="2" class="text-sidebar-foreground/50 ms-auto" />
     </button>
   </li>
 </ul>
 
 <ng-template #menu>
-  <hlm-dropdown-menu class="min-w-56 rounded-lg">
+  <hlm-dropdown-menu class="min-w-60 rounded-xl p-1.5">
     <hlm-dropdown-menu-label>
       <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-        <hlm-avatar class="rounded-lg">
-          <span class="bg-primary text-primary-foreground rounded-lg" hlmAvatarFallback>
+        <hlm-avatar class="size-9 rounded-lg">
+          <span class="bg-primary text-primary-foreground rounded-lg text-xs font-bold" hlmAvatarFallback>
             {{ initials() }}
           </span>
         </hlm-avatar>
@@ -46,8 +47,8 @@
 
     <hlm-dropdown-menu-group>
       <!-- Cycles auto -> dark -> light -> auto, same as the legacy menu's theme button. -->
-      <button hlmDropdownMenuItem (click)="nextTheme()">
-        <app-icon [name]="themeIcon()" />
+      <button hlmDropdownMenuItem class="h-9 gap-2.5 rounded-lg px-2.5" (click)="nextTheme()">
+        <ng-icon [name]="themeIcon()" strokeWidth="1.75" />
         {{ 'layout.sidebar.themePrefix' | t: { theme: themePreference() } }}
       </button>
     </hlm-dropdown-menu-group>
@@ -56,13 +57,13 @@
 
     <hlm-dropdown-menu-group>
       <!-- Lock: forget the secret and the decrypted vault, keep the Google session. -->
-      <button hlmDropdownMenuItem (click)="lockRequested.emit()">
-        <app-icon name="lock" />
+      <button hlmDropdownMenuItem class="h-9 gap-2.5 rounded-lg px-2.5" (click)="lockRequested.emit()">
+        <ng-icon name="lucideLock" strokeWidth="1.75" />
         {{ 'layout.sidebar.lockApp' | t }}
       </button>
       <!-- Disconnect: end the Google session too, so signing back in needs consent. -->
-      <button hlmDropdownMenuItem (click)="signOutRequested.emit()">
-        <app-icon name="disconnect" />
+      <button hlmDropdownMenuItem class="h-9 gap-2.5 rounded-lg px-2.5" (click)="signOutRequested.emit()">
+        <ng-icon name="lucideLogOut" strokeWidth="1.75" class="rtl:-scale-x-100" />
         {{ 'common.disconnect' | t }}
       </button>
     </hlm-dropdown-menu-group>

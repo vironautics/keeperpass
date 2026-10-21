@@ -3,8 +3,15 @@
   actions on the same line. The panel around these rows draws the separators with
   `divide-y`, so nothing here owns a border — a row cannot know whether it is last.
 -->
-<div hlmItem size="sm" class="group/field rounded-none! border-transparent hover:bg-muted/40">
-  <hlm-item-media variant="icon" class="text-accent-strong size-5 self-start">
+<div
+  hlmItem
+  size="sm"
+  class="group/field gap-3.5 rounded-none! border-transparent px-4 py-3.5 transition-colors hover:bg-muted/40"
+>
+  <hlm-item-media
+    variant="icon"
+    class="bg-primary/10 text-accent-strong size-9 self-start rounded-lg text-[0.9375rem]"
+  >
     @if (iconGlyph()) {
       <app-icon [codePoint]="iconGlyph()" />
     } @else {
@@ -12,10 +19,10 @@
     }
   </hlm-item-media>
 
-  <hlm-item-content class="min-w-0 gap-0.5">
+  <hlm-item-content class="min-w-0 gap-1">
     <hlm-item-title class="min-w-0 max-w-full">
       <span
-        class="text-accent-strong min-w-0 truncate text-[0.65rem] font-semibold tracking-[0.08em] uppercase"
+        class="text-muted-foreground min-w-0 truncate text-xs font-semibold"
       >
         {{ displayName() }}
       </span>
@@ -42,7 +49,7 @@
 
     <hlm-item-description class="min-w-0 max-w-full">
       @if (isTotp()) {
-        <app-totp class="text-foreground font-mono text-sm" [secret]="field().value" />
+        <app-totp class="text-foreground font-mono text-[0.9375rem]" [secret]="field().value" />
       } @else if (!field().value) {
         <span class="text-sm italic opacity-50">{{ 'items.field.empty' | t }}</span>
       } @else {
@@ -54,11 +61,9 @@
           for the types that are read character by character.
         -->
         <p
-          class="text-foreground min-w-0 text-sm break-words whitespace-pre-wrap select-text"
+          class="text-foreground min-w-0 text-[0.9375rem] break-words whitespace-pre-wrap select-text"
           [class.font-mono]="isSecret()"
-        >
-          {{ displayValue() }}
-        </p>
+        >{{ displayValue() }}</p>
       }
     </hlm-item-description>
 
@@ -83,7 +88,7 @@
 
     @if (showsStrength() && field().value) {
       <div class="flex items-center gap-2">
-        <hlm-progress [value]="strengthPercent()" class="h-1 w-24 shrink-0">
+        <hlm-progress [value]="strengthPercent()" class="h-1.5 w-28 shrink-0 rounded-full">
           <hlm-progress-indicator [class]="strengthColour()" />
         </hlm-progress>
         <span class="text-muted-foreground text-[0.7rem]">{{ strengthLabel() }}</span>
@@ -97,32 +102,33 @@
     focused, and named by a tooltip since there is no room for a text label.
   -->
   <hlm-item-actions
-    class="self-start opacity-60 transition-opacity group-focus-within/field:opacity-100 group-hover/field:opacity-100"
+    class="gap-0.5 self-center opacity-70 transition-opacity group-focus-within/field:opacity-100 group-hover/field:opacity-100 max-md:opacity-100"
   >
     @if (isSecret()) {
       <button
         hlmBtn
         variant="ghost"
-        size="icon-sm"
+        size="icon"
+        class="text-muted-foreground hover:text-foreground size-9 rounded-lg"
         [hlmTooltip]="(masked() ? 'common.revealValue' : 'common.hideValue') | t"
         [attr.aria-label]="(masked() ? 'common.revealValue' : 'common.hideValue') | t"
         (click)="toggleMasked()"
       >
-        <app-icon [name]="masked() ? 'show' : 'hide'" />
+        <ng-icon [name]="masked() ? 'lucideEye' : 'lucideEyeOff'" size="1.125rem" strokeWidth="1.75" />
       </button>
     }
 
     <button
       hlmBtn
       variant="ghost"
-      size="icon-sm"
-      class="data-[copied=true]:text-accent-strong"
+      size="icon"
+      class="text-muted-foreground hover:text-foreground data-[copied=true]:text-accent-strong data-[copied=true]:bg-primary/10 size-9 rounded-lg"
       [attr.data-copied]="copied()"
       [hlmTooltip]="(copied() ? 'common.copied' : 'items.field.copyValueAria') | t"
       [attr.aria-label]="'items.field.copyValueAria' | t"
       (click)="copy()"
     >
-      <app-icon [name]="copied() ? 'check' : 'copy'" />
+      <ng-icon [name]="copied() ? 'lucideCheck' : 'lucideCopy'" size="1.0625rem" strokeWidth="1.75" />
     </button>
   </hlm-item-actions>
 </div>

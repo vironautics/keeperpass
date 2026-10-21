@@ -9,6 +9,8 @@ import {
   signal,
   untracked,
 } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideUpload } from '@ng-icons/lucide';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -39,6 +41,7 @@ interface Option {
   selector: 'app-import-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NgIcon,
     ReactiveFormsModule,
     Icon,
     HlmAlertImports,
@@ -48,6 +51,7 @@ interface Option {
     HlmSelectImports,
     TranslatePipe,
   ],
+  providers: [provideIcons({ lucideUpload })],
   templateUrl: './import-dialog.html',
   /** The dialog lives in an overlay, so this host renders nothing. */
   host: { class: 'contents' },
@@ -87,9 +91,7 @@ export class ImportDialog {
 
   protected readonly previewCount = computed(() => this.drafts().length);
 
-  protected readonly canImport = computed(
-    () => this.previewCount() > 0 && !!this.selectedVault(),
-  );
+  protected readonly canImport = computed(() => this.previewCount() > 0 && !!this.selectedVault());
 
   constructor() {
     effect(() => {

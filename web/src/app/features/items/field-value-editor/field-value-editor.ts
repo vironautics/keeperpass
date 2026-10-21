@@ -19,7 +19,7 @@ import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
 import { HlmItemImports } from '@spartan-ng/helm/item';
 import { HlmProgressImports } from '@spartan-ng/helm/progress';
 import { HlmTextarea } from '@spartan-ng/helm/textarea';
-import { I18nService, TranslatePipe } from '../../../core/i18n';
+import { formattingLocale, I18nService, TranslatePipe } from '../../../core/i18n';
 import { fieldDefinition, FieldType } from '../../../core/models';
 import { foldText } from '../../../core/text/fold';
 import {
@@ -223,8 +223,8 @@ export class FieldValueEditor {
       return '';
     }
     return this.isMonth()
-      ? date.toLocaleDateString(undefined, { year: 'numeric', month: 'long' })
-      : date.toLocaleDateString();
+      ? date.toLocaleDateString(formattingLocale(), { year: 'numeric', month: 'long' })
+      : date.toLocaleDateString(formattingLocale());
   });
 
   /** The country whose dial code the value currently starts with, if any. */
@@ -243,10 +243,10 @@ export class FieldValueEditor {
    * `Date.toDateString()` — "Wed Jun 12 2024" — which is not how anyone writes a date.
    */
   protected readonly formatDay = (date: Date): string =>
-    date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+    date.toLocaleDateString(formattingLocale(), { year: 'numeric', month: 'short', day: 'numeric' });
 
   protected readonly formatMonth = (date: Date): string =>
-    date.toLocaleDateString(undefined, { year: 'numeric', month: 'long' });
+    date.toLocaleDateString(formattingLocale(), { year: 'numeric', month: 'long' });
 
   /** The trigger stringifies the value, and the options only exist while it is open. */
   protected readonly countryDialLabel = (iso: string): string => {

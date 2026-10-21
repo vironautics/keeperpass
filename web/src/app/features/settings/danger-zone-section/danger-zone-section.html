@@ -1,0 +1,104 @@
+<h2 class="text-destructive mb-2.5 px-1 text-xs font-bold tracking-wider uppercase">
+  {{ 'settings.dangerZone' | t }}
+</h2>
+
+<div class="bg-card border-destructive/25 overflow-hidden rounded-2xl border shadow-xs">
+  <div class="flex flex-col gap-4 p-5 sm:flex-row sm:items-center">
+    <span
+      class="bg-destructive/10 text-destructive inline-flex size-10 shrink-0 items-center justify-center rounded-xl"
+      aria-hidden="true"
+    >
+      <ng-icon name="lucideTrash2" size="1.125rem" strokeWidth="1.75" />
+    </span>
+    <div class="min-w-0 flex-1">
+      <p class="text-foreground text-sm font-bold">{{ 'settings.profile.deleteAccount' | t }}</p>
+      <p class="text-muted-foreground mt-0.5 text-sm leading-relaxed">
+        {{ 'settings.profile.deleteHint' | t }}
+      </p>
+    </div>
+    <button
+      hlmBtn
+      variant="outline"
+      class="delete-account text-destructive hover:bg-destructive/10 hover:text-destructive border-destructive/30 h-10 shrink-0 gap-2 rounded-xl px-4 font-semibold"
+      (click)="confirmDelete()"
+    >
+      <ng-icon name="lucideTrash2" size="1rem" strokeWidth="1.75" />
+      {{ 'settings.profile.deleteAccount' | t }}
+    </button>
+  </div>
+</div>
+
+<hlm-dialog
+  [state]="deleteRequested() ? 'open' : 'closed'"
+  (stateChanged)="deleteRequested.set($event === 'open')"
+>
+  <hlm-dialog-content
+    *hlmDialogPortal
+    class="w-[min(30rem,calc(100vw-2rem))] gap-6 rounded-2xl sm:max-w-lg"
+    [attr.aria-label]="'settings.profile.deleteAccount' | t"
+  >
+    <hlm-dialog-header class="gap-1.5">
+      <span
+        class="bg-destructive/10 text-destructive ring-destructive/20 mb-2 inline-flex size-12 items-center justify-center rounded-2xl ring-1"
+        aria-hidden="true"
+      >
+        <ng-icon name="lucideTriangleAlert" size="1.375rem" strokeWidth="1.75" />
+      </span>
+      <h3 hlmDialogTitle class="text-lg font-bold">{{ 'settings.profile.deleteAccount' | t }}</h3>
+      <p hlmDialogDescription class="leading-relaxed">{{ 'settings.profile.deleteWarning' | t }}</p>
+    </hlm-dialog-header>
+
+    <hlm-field>
+      <label hlmFieldLabel for="delete-confirmation" class="text-[0.8125rem] font-semibold">
+        {{ 'settings.profile.confirmation' | t }}
+      </label>
+      <input
+        hlmInput
+        id="delete-confirmation"
+        class="delete-confirmation bg-card h-11 w-full rounded-xl font-mono tracking-widest"
+        autocomplete="off"
+        [formControl]="deleteConfirmation"
+        (keydown.enter)="deleteAccount()"
+      />
+      <!-- The token itself is never translated — it is compared literally. -->
+      <p hlmFieldDescription>
+        {{ 'settings.profile.deleteTypePrefix' | t }}
+        <strong class="text-foreground font-mono">{{ deleteToken }}</strong>
+        {{ 'settings.profile.deleteTypeSuffix' | t }}
+      </p>
+    </hlm-field>
+
+    @if (errorMessage()) {
+      <div hlmAlert variant="destructive" class="delete-error rounded-xl" role="alert">
+        <ng-icon name="lucideCircleAlert" />
+        <p hlmAlertDescription>{{ errorMessage() }}</p>
+      </div>
+    }
+
+    <hlm-dialog-footer class="gap-2">
+      <button
+        hlmBtn
+        variant="outline"
+        class="h-10 rounded-xl px-4 font-semibold"
+        [disabled]="deleting()"
+        (click)="cancelDelete()"
+      >
+        {{ 'common.cancel' | t }}
+      </button>
+      <button
+        hlmBtn
+        variant="destructive"
+        class="confirm-delete bg-destructive hover:bg-destructive/90 dark:bg-destructive dark:hover:bg-destructive/90 h-10 gap-2 rounded-xl px-4 font-bold text-white dark:text-white"
+        [disabled]="!deleteConfirmed() || deleting()"
+        (click)="deleteAccount()"
+      >
+        @if (deleting()) {
+          <hlm-spinner />
+        } @else {
+          <ng-icon name="lucideTrash2" size="1rem" strokeWidth="2" />
+        }
+        {{ 'common.delete' | t }}
+      </button>
+    </hlm-dialog-footer>
+  </hlm-dialog-content>
+</hlm-dialog>

@@ -9,11 +9,16 @@ import {
   untracked,
   viewChild,
 } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideCheck,
+  lucideCopy,
+  lucideRefreshCw,
+  lucideSlidersHorizontal,
+} from '@ng-icons/lucide';
 import { HlmButton } from '@spartan-ng/helm/button';
-import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
 import { HlmFieldImports } from '@spartan-ng/helm/field';
-import { HlmLabel } from '@spartan-ng/helm/label';
 import { HlmSelectImports } from '@spartan-ng/helm/select';
 import { HlmSlider } from '@spartan-ng/helm/slider';
 import { HlmToggleGroupImports } from '@spartan-ng/helm/toggle-group';
@@ -27,10 +32,29 @@ import {
   randomString,
   SEPARATOR_OPTIONS,
 } from '../../../core/generator/generator';
-import { TranslatePipe } from '../../../core/i18n';
-import { Icon } from '../../../ui/icon/icon';
+import { I18nService, TranslatePipe } from '../../../core/i18n';
+import { estimatePasswordStrength } from '../../../core/validation';
+import { STRENGTH_COLOURS, STRENGTH_LABELS, strengthPercent } from '../../items/strength-scale';
 
 type GeneratorMode = 'words' | 'chars';
+
+/**
+ * How one run of the result is drawn. Digits and symbols are tinted so a long string can
+ * be read back character by character — `0`/`O` and `1`/`l` stop being guesses — and
+ * a passphrase's separators recede so the words stand out.
+ */
+type SegmentKind = 'letter' | 'digit' | 'symbol';
+
+interface ResultSegment {
+  kind: SegmentKind;
+  text: string;
+}
+
+function kindOf(char: string): SegmentKind {
+  if (/[0-9]/.test(char)) return 'digit';
+  if (/\p{L}/u.test(char)) return 'letter';
+  return 'symbol';
+}
 
 /** How long the copy confirmation stays on the button. */
 const COPIED_FEEDBACK_MS = 1000;
@@ -59,16 +83,15 @@ const BOUNCE_DURATION_MS = 500;
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     HlmButton,
-    HlmCardImports,
     HlmCheckbox,
     HlmFieldImports,
-    HlmLabel,
     HlmSelectImports,
     HlmSlider,
     HlmToggleGroupImports,
-    Icon,
+    NgIcon,
     TranslatePipe,
   ],
+  providers: [provideIcons({ lucideCheck, lucideCopy, lucideRefreshCw, lucideSlidersHorizontal })],
   templateUrl: './generator-panel.html',
   host: { class: 'block' },
 })
@@ -88,6 +111,14 @@ export class GeneratorPanel {
   protected readonly other = signal(false);
   protected readonly length = signal(20);
 
+  /** The four character sets as tiles: what each one adds, and the switch for it. */
+  protected readonly charsets = [
+    { label: 'a–z', value: this.lower },
+    { label: 'A–Z', value: this.upper },
+    { label: '0–9', value: this.numbers },
+    { label: '?()/%…', value: this.other },
+  ] as const;
+
   protected readonly value = signal('');
   protected readonly copied = signal(false);
 
@@ -95,6 +126,34 @@ export class GeneratorPanel {
   protected readonly charsetEmpty = computed(
     () => !this.lower() && !this.upper() && !this.numbers() && !this.other(),
   );
+
+  /** The result split into runs of one kind, so a 150-character string is a handful of spans. */
+  protected readonly segments = computed<ResultSegment[]>(() => {
+    const runs: ResultSegment[] = [];
+    for (const char of this.value()) {
+      const kind = kindOf(char);
+      const last = runs[runs.length - 1];
+      if (last?.kind === kind) {
+        last.text += char;
+      } else {
+        runs.push({ kind, text: char });
+      }
+    }
+    return runs;
+  });
+
+  /** The same 0–4 scale and wording the vault uses for saved passwords. */
+  private readonly strength = computed(() => estimatePasswordStrength(this.value()).score);
+  protected readonly strengthPercent = computed(() => strengthPercent(this.strength()));
+  protected readonly strengthColour = computed(() => STRENGTH_COLOURS[this.strength()]);
+  protected readonly strengthLabel = computed(() =>
+    this.i18n.translate(STRENGTH_LABELS[this.strength()]),
+  );
+
+  /** Characters, not UTF-16 units — a passphrase in Portuguese has accented letters. */
+  protected readonly characterCount = computed(() => [...this.value()].length);
+
+  private readonly i18n = inject(I18nService);
 
   private readonly resultRef = viewChild<ElementRef<HTMLElement>>('result');
 
@@ -123,7 +182,10 @@ export class GeneratorPanel {
    * is open — so a closed trigger would otherwise show `-` or `en`, not `Dash ( - )`.
    */
   protected readonly separatorLabel = (value: string): string =>
-    SEPARATOR_OPTIONS.find((option) => option.value === value)?.label ?? value;
+    this.i18n.translate(
+      SEPARATOR_OPTIONS.find((option) => option.value === value)?.labelKey ??
+        SEPARATOR_OPTIONS[0].labelKey,
+    );
 
   protected readonly languageLabel = (value: string): string =>
     AVAILABLE_LANGUAGES.find((option) => option.value === value)?.label ?? value;

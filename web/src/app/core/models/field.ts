@@ -1,3 +1,4 @@
+import { formattingLocale } from '../i18n/locale-format';
 import { TranslationKey } from '../i18n/translations';
 import { IconName } from '../../ui/icon/icon-glyphs';
 
@@ -243,9 +244,9 @@ export function formatFieldValue(field: Field, hidden: boolean): string {
 
   switch (field.type) {
     case FieldType.Date:
-      return new Date(field.value).toLocaleDateString();
+      return new Date(field.value).toLocaleDateString(formattingLocale());
     case FieldType.Month:
-      return new Date(field.value).toLocaleDateString(undefined, {
+      return new Date(field.value).toLocaleDateString(formattingLocale(), {
         year: 'numeric',
         month: '2-digit',
       });

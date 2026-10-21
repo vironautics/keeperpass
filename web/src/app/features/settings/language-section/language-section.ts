@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideLanguages } from '@ng-icons/lucide';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { HlmCardImports } from '@spartan-ng/helm/card';
-import { HlmFieldImports } from '@spartan-ng/helm/field';
 import { HlmSelectImports } from '@spartan-ng/helm/select';
 import { I18nService, isAppLocale, TranslatePipe } from '../../../core/i18n';
 
@@ -19,7 +19,8 @@ import { I18nService, isAppLocale, TranslatePipe } from '../../../core/i18n';
 @Component({
   selector: 'app-language-section',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, TranslatePipe, HlmCardImports, HlmFieldImports, HlmSelectImports],
+  imports: [ReactiveFormsModule, TranslatePipe, NgIcon, HlmSelectImports],
+  providers: [provideIcons({ lucideLanguages })],
   templateUrl: './language-section.html',
   host: { class: 'block' },
 })

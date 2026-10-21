@@ -1,94 +1,110 @@
 <!--
-  One spartan card per step of the flow, sized against the layout column rather
-  than its own content, so moving between steps doesn't move the surface.
-  See SPARTAN.md.
+  Second step: the secret that opens the vault. The account it opens is shown above
+  the secret as a read-only field — it is also what password managers key the saved
+  secret on, so it stays a real `autocomplete="username"` input rather than a label.
 -->
 <form
-  hlmCard
-  class="animate-in fade-in slide-in-from-bottom-4 mx-auto w-full max-w-100 duration-700"
+  class="animate-in fade-in slide-in-from-bottom-2 flex flex-col gap-8 duration-500"
   [formGroup]="form"
   (ngSubmit)="submit()"
   novalidate
 >
-  <div hlmCardHeader>
-    <h1 hlmCardTitle>{{ 'auth.unlock.title' | t }}</h1>
-    <p hlmCardDescription>{{ 'auth.unlock.description' | t }}</p>
-  </div>
+  <app-auth-heading
+    icon="lucideLockKeyhole"
+    [heading]="'auth.unlock.title' | t"
+    [description]="'auth.unlock.description' | t"
+  />
 
-  <div hlmCardContent class="flex flex-col gap-4">
+  <div class="flex flex-col gap-5">
     <hlm-field>
-      <label hlmFieldLabel for="unlock-email">{{ 'auth.unlock.emailLabel' | t }}</label>
-      <hlm-input-group>
+      <label hlmFieldLabel for="unlock-email" class="text-[0.8125rem] font-semibold">
+        {{ 'auth.unlock.emailLabel' | t }}
+      </label>
+      <hlm-input-group class="bg-muted/60 dark:bg-muted/60 h-12 rounded-xl border-transparent shadow-none">
+        <hlm-input-group-addon align="inline-start" class="ps-3.5">
+          <ng-icon name="lucideCircleUser" size="1.125rem" strokeWidth="1.75" />
+        </hlm-input-group-addon>
         <input
           hlmInputGroupInput
           id="unlock-email"
           type="email"
           formControlName="email"
+          autocomplete="username"
+          class="text-foreground text-[0.9375rem] font-medium"
           readonly
         />
-        <hlm-input-group-addon align="inline-end">
+        <hlm-input-group-addon align="inline-end" class="pe-1.5">
           <!-- Abandons this sign-in, same action as the sidebar's own "Disconnect". -->
           <button
             hlmInputGroupButton
             type="button"
-            size="icon-xs"
+            size="icon-sm"
+            class="text-muted-foreground hover:text-foreground size-9 rounded-lg"
             [attr.aria-label]="'common.disconnect' | t"
+            [title]="'common.disconnect' | t"
             (click)="disconnect()"
           >
-            <app-icon name="disconnect" />
+            <ng-icon name="lucideLogOut" size="1.0625rem" strokeWidth="1.75" class="rtl:-scale-x-100" />
           </button>
         </hlm-input-group-addon>
       </hlm-input-group>
     </hlm-field>
 
     <div hlmField>
-      <label hlmFieldLabel for="unlock-secret">{{ 'auth.unlock.secretLabel' | t }}</label>
+      <label hlmFieldLabel for="unlock-secret" class="text-[0.8125rem] font-semibold">
+        {{ 'auth.unlock.secretLabel' | t }}
+      </label>
 
-      <hlm-input-group>
+      <hlm-input-group class="bg-card dark:bg-card border-foreground/12 h-12 rounded-xl">
+        <hlm-input-group-addon align="inline-start" class="ps-3.5">
+          <ng-icon name="lucideKeyRound" size="1.125rem" strokeWidth="1.75" />
+        </hlm-input-group-addon>
         <input
           hlmInputGroupInput
           id="unlock-secret"
           formControlName="secret"
+          class="font-mono text-[0.9375rem]"
           [type]="revealed() ? 'text' : 'password'"
           autocomplete="current-password"
           autofocus
           (focus)="selectAll($event)"
         />
-        <hlm-input-group-addon align="inline-end">
+        <hlm-input-group-addon align="inline-end" class="pe-1.5">
           <button
             hlmInputGroupButton
-            size="icon-xs"
+            type="button"
+            size="icon-sm"
+            class="text-muted-foreground hover:text-foreground size-9 rounded-lg"
             [attr.aria-label]="(revealed() ? 'common.hideSecret' : 'common.showSecret') | t"
             [attr.aria-pressed]="revealed()"
             (click)="toggleRevealed()"
           >
-            <app-icon [name]="revealed() ? 'hide' : 'show'" />
+            <ng-icon [name]="revealed() ? 'lucideEyeOff' : 'lucideEye'" size="1.125rem" strokeWidth="1.75" />
           </button>
         </hlm-input-group-addon>
       </hlm-input-group>
     </div>
 
     @if (errorMessage()) {
-      <!-- Two columns by hand: see the note on the same alert in `start-page.html`. -->
-      <div hlmAlert variant="destructive" class="grid-cols-[auto_1fr] gap-x-2.5!">
-        <app-icon name="alert" class="translate-y-0.5" />
+      <div hlmAlert variant="destructive" class="rounded-xl">
+        <ng-icon name="lucideCircleAlert" />
         <p hlmAlertDescription>{{ errorMessage() }}</p>
       </div>
     }
   </div>
 
-  <div hlmCardFooter class="flex-col gap-2">
+  <div class="flex flex-col gap-3">
     <button
       hlmBtn
       type="submit"
-      class="w-full"
+      class="h-12 w-full gap-2 rounded-xl text-[0.9375rem] font-bold shadow-xs"
       [variant]="hasSecret() ? 'default' : 'secondary'"
       [disabled]="!hasSecret() || submitting()"
     >
       @if (submitting()) {
         <hlm-spinner />
       } @else {
-        <app-icon name="unlock" />
+        <ng-icon name="lucideLockKeyholeOpen" size="1.125rem" strokeWidth="2" />
       }
       {{ 'auth.unlock.unlock' | t }}
     </button>
@@ -96,9 +112,9 @@
     <button
       hlmBtn
       type="button"
-      variant="ghost"
+      variant="link"
       size="sm"
-      class="text-muted-foreground w-full"
+      class="text-muted-foreground hover:text-foreground mx-auto h-9 font-semibold"
       (click)="openReset()"
     >
       {{ 'auth.unlock.forgotSecret' | t }}

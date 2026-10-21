@@ -1,93 +1,111 @@
-<!-- Same card shape as `/unlock` and `/setup` — see the note in `setup-page.html`. -->
+<!-- Same shape as `/unlock` and `/setup` — see the note in `setup-page.html`. -->
 <form
-  hlmCard
-  class="animate-in fade-in slide-in-from-bottom-4 mx-auto w-full max-w-120 duration-700"
+  class="animate-in fade-in slide-in-from-bottom-2 flex flex-col gap-8 duration-500"
   [formGroup]="form"
   (ngSubmit)="submit()"
   novalidate
 >
-  <div hlmCardHeader>
-    <!--
-      The way back out, above the title: this page is only ever reached from /unlock.
-      `justify-self`, not `self-start` — `hlmCardHeader` is a grid, so the inline axis
-      is the one that needs asking.
-    -->
+  <app-auth-heading
+    icon="lucideRotateCcwKey"
+    [heading]="'auth.recover.title' | t"
+    [description]="'auth.recover.description' | t"
+  >
+    <!-- The way back out, above everything else: this page is only ever reached from /unlock. -->
     <button
+      authHeadingLead
       hlmBtn
       type="button"
       variant="ghost"
       size="sm"
-      class="recover-back-button text-muted-foreground -ms-2 justify-self-start"
+      class="recover-back-button text-muted-foreground hover:text-foreground mb-6 -ms-2.5 h-9 gap-1.5 rounded-lg font-semibold"
       (click)="back()"
     >
-      <app-icon name="chevron-left" />
+      <ng-icon name="lucideArrowLeft" size="1rem" strokeWidth="2" class="rtl:-scale-x-100" />
       {{ 'auth.recover.backToUnlock' | t }}
     </button>
+  </app-auth-heading>
 
-    <h1 hlmCardTitle>{{ 'auth.recover.title' | t }}</h1>
-    <p hlmCardDescription>{{ 'auth.recover.description' | t }}</p>
-  </div>
-
-  <div hlmCardContent class="flex flex-col gap-4">
+  <div class="flex flex-col gap-5">
     <hlm-field>
-      <label hlmFieldLabel for="recover-email">{{ 'auth.recover.emailLabel' | t }}</label>
-      <input
-        hlmInput
-        id="recover-email"
-        class="w-full"
-        type="email"
-        formControlName="email"
-        readonly
-      />
+      <label hlmFieldLabel for="recover-email" class="text-[0.8125rem] font-semibold">
+        {{ 'auth.recover.emailLabel' | t }}
+      </label>
+      <hlm-input-group class="bg-muted/60 dark:bg-muted/60 h-12 rounded-xl border-transparent shadow-none">
+        <hlm-input-group-addon align="inline-start" class="ps-3.5">
+          <ng-icon name="lucideCircleUser" size="1.125rem" strokeWidth="1.75" />
+        </hlm-input-group-addon>
+        <input
+          hlmInputGroupInput
+          id="recover-email"
+          type="email"
+          formControlName="email"
+          autocomplete="username"
+          class="text-foreground text-[0.9375rem] font-medium"
+          readonly
+        />
+      </hlm-input-group>
     </hlm-field>
 
     <hlm-field>
-      <label hlmFieldLabel for="recover-secret">{{ 'auth.recover.newSecretLabel' | t }}</label>
+      <label hlmFieldLabel for="recover-secret" class="text-[0.8125rem] font-semibold">
+        {{ 'auth.recover.newSecretLabel' | t }}
+      </label>
 
-      <hlm-input-group>
+      <hlm-input-group class="bg-card dark:bg-card border-foreground/12 h-12 rounded-xl">
+        <hlm-input-group-addon align="inline-start" class="ps-3.5">
+          <ng-icon name="lucideKeyRound" size="1.125rem" strokeWidth="1.75" />
+        </hlm-input-group-addon>
         <input
           hlmInputGroupInput
           id="recover-secret"
           formControlName="secret"
+          class="font-mono text-[0.9375rem]"
           [type]="revealed() ? 'text' : 'password'"
           autocomplete="new-password"
         />
-        <hlm-input-group-addon align="inline-end">
+        <hlm-input-group-addon align="inline-end" class="gap-0.5 pe-1.5">
           <button
             hlmInputGroupButton
             type="button"
-            size="icon-xs"
+            size="icon-sm"
+            class="text-muted-foreground hover:text-foreground size-9 rounded-lg"
             [attr.aria-label]="'common.generateSecret' | t"
+            [title]="'common.generateSecret' | t"
             (click)="generating.set(true)"
           >
-            <app-icon name="generate" />
+            <ng-icon name="lucideWandSparkles" size="1.125rem" strokeWidth="1.75" />
           </button>
           <button
             hlmInputGroupButton
             type="button"
-            size="icon-xs"
+            size="icon-sm"
+            class="text-muted-foreground hover:text-foreground size-9 rounded-lg"
             [attr.aria-label]="(revealed() ? 'common.hideSecret' : 'common.showSecret') | t"
             [attr.aria-pressed]="revealed()"
             (click)="toggleRevealed()"
           >
-            <app-icon [name]="revealed() ? 'hide' : 'show'" />
+            <ng-icon
+              [name]="revealed() ? 'lucideEyeOff' : 'lucideEye'"
+              size="1.125rem"
+              strokeWidth="1.75"
+            />
           </button>
         </hlm-input-group-addon>
       </hlm-input-group>
 
       @if (newSecret()) {
         <!-- The same meter the item fields use, so "strong" means one thing everywhere. -->
-        <div class="mt-1 space-y-1">
-          <hlm-progress [value]="strengthPercent()" class="h-1">
+        <div class="mt-1 flex items-center gap-3">
+          <hlm-progress [value]="strengthPercent()" class="h-1.5 flex-1 rounded-full">
             <hlm-progress-indicator [class]="strengthColour()" />
           </hlm-progress>
-          <p class="text-muted-foreground text-[0.7rem]">{{ strengthLabel() }}</p>
+          <p class="text-muted-foreground shrink-0 text-xs font-semibold">{{ strengthLabel() }}</p>
         </div>
       }
 
       @if (weak()) {
         <!-- A native output element: the same announcement as a status role, without the role. -->
-        <output hlmFieldDescription>
+        <output hlmFieldDescription class="text-[0.8125rem] leading-relaxed">
           {{ 'auth.recover.weakWarning' | t }}
         </output>
       }
@@ -96,31 +114,41 @@
     <!--
       `forceInvalid` rather than `aria-invalid` on the input: the two secrets are
       compared by a validator on the *group*, so the control itself is valid and
-      BrnInput would overwrite an attribute set by hand. This is the lever helm
-      exposes for exactly that case.
+      BrnInput would overwrite an attribute set by hand.
     -->
     <hlm-field [forceInvalid]="mismatch()">
-      <label hlmFieldLabel for="recover-confirmation">{{ 'auth.recover.repeatSecretLabel' | t }}</label>
+      <label hlmFieldLabel for="recover-confirmation" class="text-[0.8125rem] font-semibold">
+        {{ 'auth.recover.repeatSecretLabel' | t }}
+      </label>
 
       <!-- One reveal for both fields — see the note in `setup-page.html`. -->
-      <hlm-input-group>
+      <hlm-input-group class="bg-card dark:bg-card border-foreground/12 h-12 rounded-xl">
+        <hlm-input-group-addon align="inline-start" class="ps-3.5">
+          <ng-icon name="lucideCopyCheck" size="1.125rem" strokeWidth="1.75" />
+        </hlm-input-group-addon>
         <input
           hlmInputGroupInput
           id="recover-confirmation"
           formControlName="confirmation"
+          class="font-mono text-[0.9375rem]"
           [type]="revealed() ? 'text' : 'password'"
           autocomplete="new-password"
         />
-        <hlm-input-group-addon align="inline-end">
+        <hlm-input-group-addon align="inline-end" class="pe-1.5">
           <button
             hlmInputGroupButton
             type="button"
-            size="icon-xs"
+            size="icon-sm"
+            class="text-muted-foreground hover:text-foreground size-9 rounded-lg"
             [attr.aria-label]="(revealed() ? 'common.hideSecret' : 'common.showSecret') | t"
             [attr.aria-pressed]="revealed()"
             (click)="toggleRevealed()"
           >
-            <app-icon [name]="revealed() ? 'hide' : 'show'" />
+            <ng-icon
+              [name]="revealed() ? 'lucideEyeOff' : 'lucideEye'"
+              size="1.125rem"
+              strokeWidth="1.75"
+            />
           </button>
         </hlm-input-group-addon>
       </hlm-input-group>
@@ -133,23 +161,26 @@
     <!--
       What recovery actually costs, stated before the button that does it. Loud
       through the fill and the icon rather than the copy — see the note on the same
-      block in `setup-page.html`. Two columns by hand, as in `start-page.html`.
+      block in `setup-page.html`.
     -->
-    <div hlmAlert class="bg-destructive/10! border-destructive/30 grid-cols-[auto_1fr] gap-x-2.5!">
-      <app-icon name="alert" class="text-destructive row-span-2 translate-y-0.5" />
-      <h2 hlmAlertTitle class="col-start-2">{{ 'auth.setup.readBeforeContinue' | t }}</h2>
+    <div
+      hlmAlert
+      class="bg-destructive/[0.07]! border-destructive/25 gap-y-1.5 rounded-xl p-4"
+    >
+      <ng-icon name="lucideTriangleAlert" class="text-destructive!" />
+      <h2 hlmAlertTitle class="font-bold">{{ 'auth.setup.readBeforeContinue' | t }}</h2>
       <!-- No gap of its own: the description already spaces a `p` that isn't last. -->
-      <div hlmAlertDescription class="text-foreground! col-start-2">
+      <div hlmAlertDescription class="text-foreground/85! text-[0.8125rem] leading-relaxed">
         <p>
           {{ 'auth.recover.warningIntro' | t }}
         </p>
-        <ul class="flex list-disc flex-col gap-1 ps-4">
+        <ul class="flex list-disc flex-col gap-1.5 ps-4 marker:text-destructive">
           <li>
             {{ 'auth.recover.bullet1' | t }}
           </li>
           <li>
             {{ 'auth.recover.bullet2Prefix' | t }}
-            <strong>keeperpass</strong>
+            <strong class="font-mono text-[0.75rem]">keeperpass</strong>
             {{ 'auth.recover.bullet2Suffix' | t }}
           </li>
         </ul>
@@ -157,35 +188,28 @@
     </div>
 
     @if (errorMessage()) {
-      <div
-        hlmAlert
-        variant="destructive"
-        class="submit-error grid-cols-[auto_1fr] gap-x-2.5!"
-        role="alert"
-      >
-        <app-icon name="alert" class="translate-y-0.5" />
-        <p hlmAlertDescription class="col-start-2">{{ errorMessage() }}</p>
+      <div hlmAlert variant="destructive" class="submit-error rounded-xl" role="alert">
+        <ng-icon name="lucideCircleAlert" />
+        <p hlmAlertDescription>{{ errorMessage() }}</p>
       </div>
     }
   </div>
 
-  <div hlmCardFooter>
-    <!-- Destructive, because it is: the old vault stops opening the moment this runs. -->
-    <button
-      hlmBtn
-      type="submit"
-      variant="destructive"
-      class="w-full"
-      [disabled]="!canSubmit() || submitting()"
-    >
-      @if (submitting()) {
-        <hlm-spinner />
-      } @else {
-        <app-icon name="refresh" />
-      }
-      {{ 'auth.recover.submit' | t }}
-    </button>
-  </div>
+  <!-- Destructive, because it is: the old vault stops opening the moment this runs. -->
+  <button
+    hlmBtn
+    type="submit"
+    variant="destructive"
+    class="bg-destructive hover:bg-destructive/90 dark:bg-destructive dark:hover:bg-destructive/90 h-12 w-full gap-2 rounded-xl text-[0.9375rem] font-bold text-white shadow-xs dark:text-white"
+    [disabled]="!canSubmit() || submitting()"
+  >
+    @if (submitting()) {
+      <hlm-spinner />
+    } @else {
+      <ng-icon name="lucideRotateCcwKey" size="1.125rem" strokeWidth="2" />
+    }
+    {{ 'auth.recover.submit' | t }}
+  </button>
 </form>
 
 <app-generate-password-dialog [(open)]="generating" (confirmed)="onGenerated($event)" />

@@ -3,10 +3,10 @@
   tracks descendant `routerLink`s, and a template ref on the link itself would
   be scoped to the `@if` block it lives in and invisible out here.
 
-  `rounded-none!` because `hlmItem` ships `rounded-md` and a same-property
-  utility would otherwise be decided by stylesheet order. The row keeps
-  `hlmItem`'s transparent 1px border and only colours the bottom edge, so the
-  divider costs no extra layout.
+  `rounded-xl!` because `hlmItem` ships `rounded-md` and a same-property
+  utility would otherwise be decided by stylesheet order. Rows are separated by
+  the host's padding rather than a divider, and the open one is marked by a tint
+  and a hairline ring rather than an edge bar.
 -->
 <div
   hlmItem
@@ -14,7 +14,7 @@
   routerLinkActive
   #row="routerLinkActive"
   [attr.data-active]="row.isActive"
-  class="relative rounded-none! border-b-border hover:bg-accent/50 has-[a:focus-visible]:ring-ring/50 data-[active=true]:bg-accent data-[active=true]:hover:bg-accent has-[a:focus-visible]:ring-2 data-[active=true]:before:absolute data-[active=true]:before:inset-y-0 data-[active=true]:before:left-0 data-[active=true]:before:w-0.5 data-[active=true]:before:bg-primary data-[active=true]:before:content-['']"
+  class="relative gap-3 rounded-xl! border-transparent px-3 py-2.5 transition-colors hover:bg-muted has-[a:focus-visible]:ring-ring/50 has-[a:focus-visible]:ring-2 data-[active=true]:bg-primary/10 data-[active=true]:ring-1 data-[active=true]:ring-primary/30 data-[active=true]:hover:bg-primary/10"
 >
   @if (selectable()) {
     <!--
@@ -30,7 +30,7 @@
     />
   } @else if (iconGlyph()) {
     <!-- A user-picked icon wins outright — see the note in `item-icon.ts`. -->
-    <hlm-item-media variant="icon" class="size-8">
+    <hlm-item-media variant="icon" class="bg-primary/10 text-accent-strong size-10 rounded-xl text-base">
       <app-icon [codePoint]="iconGlyph()" />
     </hlm-item-media>
   } @else if (showFavicon()) {
@@ -46,24 +46,18 @@
     -->
     <hlm-item-media
       variant="image"
-      class="rounded-md border border-black/10 bg-white p-1 [&_img]:object-contain"
+      class="size-10 rounded-xl bg-white p-1.5 ring-1 ring-black/5 [&_img]:object-contain"
     >
       <img [src]="faviconUrl()" alt="" (error)="onFaviconError()" />
     </hlm-item-media>
   } @else {
-    <hlm-item-media variant="icon" class="size-8">
+    <hlm-item-media variant="icon" class="bg-primary/10 text-accent-strong size-10 rounded-xl text-base">
       <app-icon [name]="glyph()" />
     </hlm-item-media>
   }
 
-  <hlm-item-content class="min-w-0">
-    @if (vaultLabel()) {
-      <hlm-item-description class="min-w-0">
-        <span class="min-w-0 truncate text-xs">{{ vaultLabel() }}</span>
-      </hlm-item-description>
-    }
-
-    <hlm-item-title class="min-w-0 max-w-full">
+  <hlm-item-content class="min-w-0 gap-0.5">
+    <hlm-item-title class="text-foreground min-w-0 max-w-full text-[0.9375rem] font-bold">
       @if (selectable()) {
         <span class="min-w-0 truncate" [class.text-muted-foreground]="unnamed()">{{
           displayName()
@@ -84,18 +78,24 @@
         >
       }
     </hlm-item-title>
+
+    @if (vaultLabel()) {
+      <hlm-item-description class="min-w-0">
+        <span class="min-w-0 truncate text-xs">{{ vaultLabel() }}</span>
+      </hlm-item-description>
+    }
   </hlm-item-content>
 
-  <hlm-item-actions class="self-start">
+  <hlm-item-actions class="gap-1.5 self-start">
     @if (flagged()) {
-      <span hlmBadge variant="destructive">
+      <span hlmBadge variant="destructive" class="rounded-full">
         <app-icon name="alert" />
         <span class="sr-only">{{ 'items.row.securityIssue' | t }}</span>
       </span>
     }
 
     @if (firstTag()) {
-      <span hlmBadge variant="secondary" class="max-w-40">
+      <span hlmBadge variant="secondary" class="max-w-32 rounded-full">
         <app-icon name="tag" />
         <span class="min-w-0 truncate">{{ firstTag() }}</span>
       </span>
@@ -118,7 +118,7 @@
           hlmHoverCardTrigger
           variant="secondary"
           type="button"
-          class="relative z-10 cursor-default"
+          class="relative z-10 cursor-default rounded-full"
           [attr.aria-label]="'items.row.moreTagsAria' | t: { count: extraTagCount() }"
         >
           <app-icon name="tags" />
@@ -154,7 +154,7 @@
     `flex-1` past a floor of 8rem, so they fill the row until there are too many
     and then overflow into the scroll.
   -->
-  <hlm-item-footer class="overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+  <hlm-item-footer class="gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
     @for (field of item().fields; track $index) {
       <!--
         `only:max-w-full`: with a single field there is no sibling chip to
@@ -170,7 +170,7 @@
         variant="outline"
         size="xs"
         type="button"
-        class="group/chip relative min-w-32 max-w-[60%] only:max-w-full flex-1 cursor-pointer text-start hover:bg-accent"
+        class="group/chip bg-background/70 hover:bg-background hover:border-ring/50 relative min-w-32 max-w-[60%] flex-1 cursor-pointer rounded-lg! border-border text-start transition-colors only:max-w-full"
         [attr.data-copied]="copiedFieldIndex() === $index"
         [attr.aria-label]="'items.field.copyFieldAria' | t: { field: field.name || fieldFallback() }"
         (click)="copyField(field, $index)"
@@ -186,7 +186,7 @@
         >
           <hlm-item-title class="min-w-0 max-w-full">
             <span
-              class="text-accent-strong flex min-w-0 items-center gap-1 text-[0.7rem] font-normal tracking-wide uppercase"
+              class="text-muted-foreground flex min-w-0 items-center gap-1.5 text-[0.6875rem] font-semibold [&_app-icon]:text-accent-strong"
             >
               @if (fieldIconGlyph(field); as codePoint) {
                 <app-icon [codePoint]="codePoint" />
@@ -213,16 +213,16 @@
         <span
           aria-hidden="true"
           class="text-accent-strong absolute inset-0 flex scale-0 items-center justify-center text-xs font-bold opacity-0 transition duration-200 group-data-[copied=true]/chip:scale-100 group-data-[copied=true]/chip:opacity-100"
-          >copied</span
+          >{{ 'common.copied' | t }}</span
         >
       </button>
     }
 
     @if (!item().fields.length) {
-      <div hlmItem variant="outline" size="xs" class="min-w-32 flex-1" aria-disabled="true">
+      <div hlmItem variant="outline" size="xs" class="border-border min-w-32 flex-1 rounded-lg! border-dashed" aria-disabled="true">
         <hlm-item-content class="min-w-0">
           <hlm-item-title class="min-w-0 max-w-full">
-            <span class="text-muted-foreground text-[0.7rem] font-normal tracking-wide uppercase">
+            <span class="text-muted-foreground text-[0.6875rem] font-semibold">
               {{ 'items.row.noFields' | t }}
             </span>
           </hlm-item-title>

@@ -1,4 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideCloudOff, lucideRotateCw } from '@ng-icons/lucide';
 import { HlmAlertImports } from '@spartan-ng/helm/alert';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmDialogImports } from '@spartan-ng/helm/dialog';
@@ -31,6 +33,7 @@ import { Icon } from '../../ui/icon/icon';
   selector: 'app-sync-overlay',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NgIcon,
     Icon,
     HlmAlertImports,
     HlmButton,
@@ -39,6 +42,7 @@ import { Icon } from '../../ui/icon/icon';
     HlmSpinnerImports,
     TranslatePipe,
   ],
+  providers: [provideIcons({ lucideCloudOff, lucideRotateCw })],
   templateUrl: './sync-overlay.html',
   /** The dialog lives in an overlay, so this host renders nothing. */
   host: { class: 'contents' },

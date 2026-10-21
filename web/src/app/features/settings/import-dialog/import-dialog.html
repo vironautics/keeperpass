@@ -1,7 +1,13 @@
 <hlm-dialog [state]="open() ? 'open' : 'closed'" (stateChanged)="open.set($event === 'open')">
-  <hlm-dialog-content *hlmDialogPortal class="sm:max-w-md" [attr.aria-label]="'settings.import.title' | t">
-    <hlm-dialog-header>
-      <h3 hlmDialogTitle>{{ 'settings.import.title' | t }}</h3>
+  <hlm-dialog-content *hlmDialogPortal class="w-[min(28rem,calc(100vw-2rem))] gap-6 rounded-2xl sm:max-w-md" [attr.aria-label]="'settings.import.title' | t">
+    <hlm-dialog-header class="gap-1.5">
+      <span
+        class="bg-primary/15 text-accent-strong ring-primary/25 mb-2 inline-flex size-12 items-center justify-center rounded-2xl ring-1"
+        aria-hidden="true"
+      >
+        <ng-icon name="lucideUpload" size="1.375rem" strokeWidth="1.75" />
+      </span>
+      <h3 hlmDialogTitle class="text-lg font-bold">{{ 'settings.import.title' | t }}</h3>
       @if (fileName()) {
         <p hlmDialogDescription class="truncate">{{ fileName() }}</p>
       } @else {
@@ -12,7 +18,7 @@
     <hlm-field>
       <label hlmFieldLabel for="import-vault">{{ 'settings.import.targetVaultLabel' | t }}</label>
       <hlm-select id="import-vault" [formControl]="vaultControl" [itemToString]="vaultLabel">
-        <hlm-select-trigger class="w-full">
+        <hlm-select-trigger class="bg-card h-11 w-full rounded-xl px-3.5">
           <hlm-select-value [placeholder]="'settings.import.myVaultPlaceholder' | t" />
         </hlm-select-trigger>
         <hlm-select-content *hlmSelectPortal>
@@ -25,12 +31,12 @@
 
     @if (parseError()) {
       <!-- Two columns by hand: see the note on the same alert in `start-page.html`. -->
-      <div hlmAlert variant="destructive" class="grid-cols-[auto_1fr] gap-x-2.5!" role="alert">
+      <div hlmAlert variant="destructive" class="grid-cols-[auto_1fr] gap-x-2.5! rounded-xl" role="alert">
         <app-icon name="alert" class="translate-y-0.5" />
         <p hlmAlertDescription class="col-start-2">{{ parseError() }}</p>
       </div>
     } @else if (previewCount() > 0) {
-      <div hlmAlert class="grid-cols-[auto_1fr] gap-x-2.5!" role="status">
+      <div hlmAlert class="grid-cols-[auto_1fr] gap-x-2.5! rounded-xl" role="status">
         <app-icon name="success" class="text-accent-strong translate-y-0.5" />
         <p hlmAlertDescription class="col-start-2">
           {{ 'settings.import.foundPrefix' | t }} <strong>{{ previewCount() }}</strong>
@@ -39,9 +45,9 @@
       </div>
     }
 
-    <hlm-dialog-footer>
-      <button hlmBtn variant="outline" (click)="cancel()">{{ 'common.cancel' | t }}</button>
-      <button hlmBtn class="confirm-import" [disabled]="!canImport()" (click)="importData()">
+    <hlm-dialog-footer class="gap-2">
+      <button hlmBtn class="h-10 rounded-xl px-4 font-semibold" variant="outline" (click)="cancel()">{{ 'common.cancel' | t }}</button>
+      <button hlmBtn class="confirm-import h-10 gap-2 rounded-xl px-4 font-bold" [disabled]="!canImport()" (click)="importData()">
         <app-icon name="import" />
         {{ (previewCount() === 1 ? 'settings.import.importOne' : 'settings.import.importMany') | t: { count: previewCount() } }}
       </button>

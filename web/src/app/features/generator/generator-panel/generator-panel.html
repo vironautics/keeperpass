@@ -1,151 +1,236 @@
-<div hlmCard class="w-full">
-  <div hlmCardContent class="flex flex-col gap-5">
+<!--
+  Two cards: the result, which is what the page is for, and the options that shape it.
+  Side by side from `lg`, result first; stacked below that, still result first, so on a
+  phone the password is on screen before any control is.
+-->
+<div class="grid items-start gap-5 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
+  <section class="bg-card overflow-hidden rounded-2xl border shadow-xs">
+    <!--
+      The result. `select-text` because copying it by hand has to keep working, and
+      `break-all` so a 150-character string wraps inside the card instead of widening
+      it. The bounce on regenerate is the one thing here that is animation rather than
+      layout — it is what tells you a new value arrived when the old one looked similar.
+
+      No `aria-live` here: the value is regenerated on every option change, so a live
+      region would read a fresh password out loud on each step of the slider. The
+      Regenerate and Copy buttons are the announcements that matter.
+    -->
+    <div class="flex min-h-48 flex-col justify-center gap-6 p-6 sm:p-8">
+      <div #result class="generated">
+        @if (value()) {
+          <p
+            class="text-foreground font-mono text-xl leading-relaxed tracking-wide break-all select-text sm:text-2xl"
+          >
+            @for (segment of segments(); track $index) {
+              <span
+                [class.text-accent-strong]="segment.kind === 'digit'"
+                [class.text-destructive]="segment.kind === 'symbol' && mode() === 'chars'"
+                [class.text-muted-foreground]="segment.kind === 'symbol' && mode() === 'words'"
+                >{{ segment.text }}</span
+              >
+            }
+          </p>
+        } @else {
+          <p class="text-muted-foreground text-center text-sm">
+            {{ 'generator.nothingToGenerate' | t }}
+          </p>
+        }
+      </div>
+
+      @if (value()) {
+        <!-- The same meter and wording the vault uses, so "strong" means one thing everywhere. -->
+        <div class="flex items-center gap-3">
+          <div class="bg-muted h-1.5 flex-1 overflow-hidden rounded-full">
+            <div
+              class="h-full rounded-full transition-[width] duration-300 ease-out"
+              [class]="strengthColour()"
+              [style.width.%]="strengthPercent()"
+            ></div>
+          </div>
+          <span class="text-foreground shrink-0 text-xs font-bold">{{ strengthLabel() }}</span>
+          <span class="text-muted-foreground shrink-0 text-xs tabular-nums">
+            · {{ 'generator.charCount' | t: { count: characterCount() } }}
+          </span>
+        </div>
+      }
+    </div>
+
+    <div class="bg-muted/40 flex gap-2 border-t p-4">
+      <button
+        hlmBtn
+        variant="outline"
+        class="bg-card h-11 flex-1 gap-2 rounded-xl font-semibold"
+        type="button"
+        (click)="generate()"
+      >
+        <ng-icon name="lucideRefreshCw" size="1rem" strokeWidth="2" />
+        {{ 'generator.regenerate' | t }}
+      </button>
+
+      <button
+        hlmBtn
+        class="h-11 flex-1 gap-2 rounded-xl font-bold shadow-xs"
+        type="button"
+        [disabled]="!value()"
+        [attr.aria-label]="'generator.copyPasswordAria' | t"
+        (click)="copy()"
+      >
+        <ng-icon [name]="copied() ? 'lucideCheck' : 'lucideCopy'" size="1rem" strokeWidth="2" />
+        {{ (copied() ? 'common.copied' : 'common.copy') | t }}
+      </button>
+    </div>
+  </section>
+
+  <section class="bg-card flex flex-col gap-6 rounded-2xl border p-5 shadow-xs sm:p-6">
+    <h2 class="text-foreground flex items-center gap-2 text-sm font-bold">
+      <ng-icon
+        name="lucideSlidersHorizontal"
+        size="1rem"
+        strokeWidth="2"
+        class="text-muted-foreground"
+      />
+      {{ 'generator.options' | t }}
+    </h2>
+
     <!--
       Two kinds of secret, not two pages: the mode picker is a toggle group, the same
       control the generator dialog uses so the two read as one feature.
     -->
-    <hlm-toggle-group [value]="mode()" (valueChange)="setMode($event)" class="w-full">
-      <button hlmToggleGroupItem value="words" class="flex-1">{{ 'generator.passphrase' | t }}</button>
-      <button hlmToggleGroupItem value="chars" class="flex-1">{{ 'generator.randomString' | t }}</button>
+    <hlm-toggle-group
+      [value]="mode()"
+      (valueChange)="setMode($event)"
+      class="bg-muted w-full rounded-xl p-1"
+    >
+      <button
+        hlmToggleGroupItem
+        value="words"
+        class="data-[state=on]:bg-card h-9 flex-1 rounded-lg border-0 font-semibold data-[state=on]:shadow-xs"
+      >
+        {{ 'generator.passphrase' | t }}
+      </button>
+      <button
+        hlmToggleGroupItem
+        value="chars"
+        class="data-[state=on]:bg-card h-9 flex-1 rounded-lg border-0 font-semibold data-[state=on]:shadow-xs"
+      >
+        {{ 'generator.randomString' | t }}
+      </button>
     </hlm-toggle-group>
 
     @if (mode() === 'words') {
-      <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-3">
+        <div class="flex items-center justify-between gap-4">
+          <label for="generator-words" class="text-foreground text-sm font-semibold">
+            {{ 'generator.words' | t }}
+          </label>
+          <span
+            class="bg-primary/15 text-accent-strong min-w-9 rounded-lg px-2 py-0.5 text-center text-sm font-bold tabular-nums"
+          >
+            {{ wordCount() }}
+          </span>
+        </div>
+        <hlm-slider
+          id="generator-words"
+          [value]="[wordCount()]"
+          (valueChange)="onWordCountChange($event)"
+          min="3"
+          max="12"
+          step="1"
+          [attr.aria-label]="'generator.numberOfWordsAria' | t"
+        />
+      </div>
+
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
         <div hlmField>
-          <label hlmFieldLabel for="generator-separator">{{ 'generator.wordSeparator' | t }}</label>
+          <label hlmFieldLabel for="generator-separator" class="text-[0.8125rem] font-semibold">
+            {{ 'generator.wordSeparator' | t }}
+          </label>
           <hlm-select
             id="generator-separator"
             [value]="separator()"
             [itemToString]="separatorLabel"
             (valueChange)="onSeparatorPicked($event)"
           >
-            <hlm-select-trigger class="w-full">
+            <hlm-select-trigger class="bg-card h-11 w-full rounded-xl px-3.5">
               <hlm-select-value [placeholder]="'generator.separatorPlaceholder' | t" />
             </hlm-select-trigger>
-            <hlm-select-content *hlmSelectPortal>
+            <hlm-select-content *hlmSelectPortal class="rounded-xl">
               @for (option of separatorOptions; track option.value) {
-                <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
+                <hlm-select-item [value]="option.value" class="h-9 rounded-lg">{{
+                  option.labelKey | t
+                }}</hlm-select-item>
               }
             </hlm-select-content>
           </hlm-select>
         </div>
 
         <div hlmField>
-          <label hlmFieldLabel for="generator-language">{{ 'generator.language' | t }}</label>
+          <label hlmFieldLabel for="generator-language" class="text-[0.8125rem] font-semibold">
+            {{ 'generator.language' | t }}
+          </label>
           <hlm-select
             id="generator-language"
             [value]="language()"
             [itemToString]="languageLabel"
             (valueChange)="onLanguagePicked($event)"
           >
-            <hlm-select-trigger class="w-full">
+            <hlm-select-trigger class="bg-card h-11 w-full rounded-xl px-3.5">
               <hlm-select-value [placeholder]="'generator.languagePlaceholder' | t" />
             </hlm-select-trigger>
-            <hlm-select-content *hlmSelectPortal>
+            <hlm-select-content *hlmSelectPortal class="rounded-xl">
               @for (option of languageOptions; track option.value) {
-                <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
+                <hlm-select-item [value]="option.value" class="h-9 rounded-lg">{{
+                  option.label
+                }}</hlm-select-item>
               }
             </hlm-select-content>
           </hlm-select>
         </div>
-
-        <div class="flex flex-col gap-3">
-          <div class="flex items-center justify-between gap-4">
-            <label hlmLabel for="generator-words">{{ 'generator.words' | t }}</label>
-            <span class="text-muted-foreground text-sm tabular-nums">{{ wordCount() }}</span>
-          </div>
-          <hlm-slider
-            id="generator-words"
-            [value]="[wordCount()]"
-            (valueChange)="onWordCountChange($event)"
-            min="3"
-            max="12"
-            step="1"
-            [attr.aria-label]="'generator.numberOfWordsAria' | t"
-          />
-        </div>
       </div>
     } @else {
-      <div class="flex flex-col gap-4">
-        <div class="grid grid-cols-2 gap-2">
-          <label hlmLabel class="gap-2">
-            <hlm-checkbox [checked]="lower()" (checkedChange)="lower.set($event)" />
-            a–z
+      <div class="flex flex-col gap-3">
+        <div class="flex items-center justify-between gap-4">
+          <label for="generator-length" class="text-foreground text-sm font-semibold">
+            {{ 'generator.length' | t }}
           </label>
-          <label hlmLabel class="gap-2">
-            <hlm-checkbox [checked]="upper()" (checkedChange)="upper.set($event)" />
-            A–Z
-          </label>
-          <label hlmLabel class="gap-2">
-            <hlm-checkbox [checked]="numbers()" (checkedChange)="numbers.set($event)" />
-            0–9
-          </label>
-          <label hlmLabel class="gap-2">
-            <hlm-checkbox [checked]="other()" (checkedChange)="other.set($event)" />
-            ?()/%…
-          </label>
+          <span
+            class="bg-primary/15 text-accent-strong min-w-9 rounded-lg px-2 py-0.5 text-center text-sm font-bold tabular-nums"
+          >
+            {{ length() }}
+          </span>
         </div>
-
-        @if (charsetEmpty()) {
-          <p class="text-destructive text-xs">{{ 'generator.pickAtLeastOneChar' | t }}</p>
-        }
-
-        <div class="flex flex-col gap-3">
-          <div class="flex items-center justify-between gap-4">
-            <label hlmLabel for="generator-length">{{ 'generator.length' | t }}</label>
-            <span class="text-muted-foreground text-sm tabular-nums">{{ length() }}</span>
-          </div>
-          <hlm-slider
-            id="generator-length"
-            [value]="[length()]"
-            (valueChange)="onLengthChange($event)"
-            min="5"
-            max="150"
-            step="1"
-            [attr.aria-label]="'generator.passwordLengthAria' | t"
-          />
-        </div>
+        <hlm-slider
+          id="generator-length"
+          [value]="[length()]"
+          (valueChange)="onLengthChange($event)"
+          min="5"
+          max="150"
+          step="1"
+          [attr.aria-label]="'generator.passwordLengthAria' | t"
+        />
       </div>
-    }
 
-    <!--
-      The result. `select-text` because copying it by hand has to keep working, and
-      `break-all` so a 150-character string wraps inside the card instead of widening
-      it. The bounce on regenerate is the one thing here that is animation rather than
-      layout — it is what tells you a new value arrived when the old one looked similar.
-    -->
-    <!--
-      No `aria-live` here: the value is regenerated on every option change, so a live
-      region would read a fresh password out loud on each step of the slider. The
-      Regenerate and Copy buttons are the announcements that matter.
-    -->
-    <div #result class="generated bg-muted/40 rounded-lg border p-4">
-      @if (value()) {
-        <p class="text-foreground text-center font-mono text-base break-all select-text">
-          {{ value() }}
+      <!--
+        Each character set as a tile that is wholly the checkbox's label, so the whole
+        tile toggles it. `has-[[data-state=checked]]` styles the tile off the checkbox's
+        own state, with no second copy of it to keep in step.
+      -->
+      <div class="grid grid-cols-2 gap-2">
+        @for (set of charsets; track set.label) {
+          <label
+            class="has-[[data-state=checked]]:border-primary/60 has-[[data-state=checked]]:bg-primary/10 hover:bg-muted flex cursor-pointer items-center gap-3 rounded-xl border px-3.5 py-3 transition-colors"
+          >
+            <hlm-checkbox [checked]="set.value()" (checkedChange)="set.value.set($event)" />
+            <span class="text-foreground font-mono text-sm font-semibold">{{ set.label }}</span>
+          </label>
+        }
+      </div>
+
+      @if (charsetEmpty()) {
+        <p class="text-destructive text-xs font-medium">
+          {{ 'generator.pickAtLeastOneChar' | t }}
         </p>
-      } @else {
-        <p class="text-muted-foreground text-center text-sm">{{ 'generator.nothingToGenerate' | t }}</p>
       }
-    </div>
-
-    <div class="flex gap-2">
-      <button hlmBtn variant="outline" class="flex-1" type="button" (click)="generate()">
-        <app-icon name="refresh" />
-        {{ 'generator.regenerate' | t }}
-      </button>
-
-      <button
-        hlmBtn
-        class="flex-1"
-        type="button"
-        [disabled]="!value()"
-        [attr.aria-label]="'generator.copyPasswordAria' | t"
-        (click)="copy()"
-      >
-        <app-icon [name]="copied() ? 'check' : 'copy'" />
-        {{ (copied() ? 'common.copied' : 'common.copy') | t }}
-      </button>
-    </div>
-  </div>
+    }
+  </section>
 </div>

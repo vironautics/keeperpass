@@ -1,23 +1,29 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DOCUMENT, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { HlmAlertImports } from '@spartan-ng/helm/alert';
-import { HlmBadge } from '@spartan-ng/helm/badge';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideArrowRight,
+  lucideCircleCheck,
+  lucideInfo,
+  lucideRepeat2,
+  lucideShieldAlert,
+  lucideShieldCheck,
+  lucideShieldX,
+  lucideTriangleAlert,
+} from '@ng-icons/lucide';
 import { HlmButton } from '@spartan-ng/helm/button';
-import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmPopoverImports } from '@spartan-ng/helm/popover';
 import { HlmSidebarTrigger } from '@spartan-ng/helm/sidebar';
+import { AuditService } from '../../../core/audit/audit.service';
+import { I18nService, TranslatePipe, TranslationKey } from '../../../core/i18n';
 import {
   AUDIT_DESCRIPTION_KEYS,
-  AUDIT_ICONS,
   AUDIT_LABEL_KEYS,
   AuditType,
+  FieldType,
   VaultItem,
 } from '../../../core/models';
-import { AuditService } from '../../../core/audit/audit.service';
-import { I18nService, TranslatePipe } from '../../../core/i18n';
 import { VaultStore } from '../../../core/vault/vault.store';
-import { Icon } from '../../../ui/icon/icon';
-import { IconName } from '../../../ui/icon/icon-glyphs';
 import { ItemRow } from '../../items/item-row/item-row';
 
 /** Every row a section can show, most this page ever renders per card. */
@@ -36,6 +42,29 @@ const AUDIT_ORDER: readonly AuditType[] = [
   AuditType.CompromisedPassword,
 ];
 
+/** Lucide glyph per finding, registered with `provideIcons` below. */
+const AUDIT_GLYPHS: Record<AuditType, string> = {
+  [AuditType.WeakPassword]: 'lucideShieldAlert',
+  [AuditType.ReusedPassword]: 'lucideRepeat2',
+  [AuditType.CompromisedPassword]: 'lucideShieldX',
+};
+
+/** What a section says when it has nothing in it — specific beats a generic "nothing found". */
+const AUDIT_EMPTY_KEYS: Record<AuditType, TranslationKey> = {
+  [AuditType.WeakPassword]: 'audit.weakPassword.empty',
+  [AuditType.ReusedPassword]: 'audit.reusedPassword.empty',
+  [AuditType.CompromisedPassword]: 'audit.compromisedPassword.empty',
+};
+
+/**
+ * Score bands for the health meter. The fill carries severity — accent, then amber,
+ * then the danger red — and the label beside it says the same thing in words, so the
+ * state never rests on colour alone.
+ */
+type HealthTone = 'good' | 'fair' | 'poor';
+const HEALTH_GOOD_FROM = 90;
+const HEALTH_FAIR_FROM = 60;
+
 interface AuditSectionItem {
   item: VaultItem;
   vaultLabel: string;
@@ -43,15 +72,18 @@ interface AuditSectionItem {
 
 interface AuditSection {
   type: AuditType;
-  icon: IconName;
+  anchor: string;
+  icon: string;
   title: string;
   description: string;
+  empty: string;
   items: readonly AuditSectionItem[];
 }
 
 /**
- * Security Report — one card per kind of finding, over the audit results this
- * session has computed (they live in `AuditService`, not in the vault).
+ * Security Report — a health score, one tile per kind of finding, then one card per
+ * kind listing the items, over the audit results this session has computed (they
+ * live in `AuditService`, not in the vault).
  *
  * This page reads and never scans. Opening a report should not start work, and a
  * page that audited on mount would either block on the network or redraw itself
@@ -64,15 +96,24 @@ interface AuditSection {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     RouterLink,
-    Icon,
+    NgIcon,
     ItemRow,
-    HlmAlertImports,
-    HlmBadge,
     HlmButton,
-    HlmCardImports,
     HlmPopoverImports,
     HlmSidebarTrigger,
     TranslatePipe,
+  ],
+  providers: [
+    provideIcons({
+      lucideArrowRight,
+      lucideCircleCheck,
+      lucideInfo,
+      lucideRepeat2,
+      lucideShieldAlert,
+      lucideShieldCheck,
+      lucideShieldX,
+      lucideTriangleAlert,
+    }),
   ],
   templateUrl: './report-page.html',
   /** Fills the shell's view area — see `ItemsPage` for why routed views position themselves. */
@@ -83,13 +124,16 @@ export class ReportPage {
   private readonly auditService = inject(AuditService);
   private readonly router = inject(Router);
   private readonly i18n = inject(I18nService);
+  private readonly document = inject(DOCUMENT);
 
   protected readonly sections = computed<AuditSection[]>(() =>
     AUDIT_ORDER.map((type) => ({
       type,
-      icon: AUDIT_ICONS[type],
+      anchor: `report-${type}`,
+      icon: AUDIT_GLYPHS[type],
       title: this.i18n.translate(AUDIT_LABEL_KEYS[type]),
       description: this.i18n.translate(AUDIT_DESCRIPTION_KEYS[type]),
+      empty: this.i18n.translate(AUDIT_EMPTY_KEYS[type]),
       items: this.auditService.itemsWithFinding(type).map((item) => ({
         item,
         vaultLabel: this.store.labelForVault(item.vaultId),
@@ -109,6 +153,37 @@ export class ReportPage {
    */
   protected readonly flaggedItemCount = this.auditService.flaggedCount;
 
+  /** The audit only looks at passwords, so only items that hold one count towards the score. */
+  protected readonly checkedItemCount = computed(
+    () =>
+      this.store.items().filter((item) => item.fields.some((f) => f.type === FieldType.Password))
+        .length,
+  );
+
+  /** Share of checked items with no finding, as a whole percentage; `null` with nothing to check. */
+  protected readonly healthScore = computed(() => {
+    const checked = this.checkedItemCount();
+    if (!checked) {
+      return null;
+    }
+    const healthy = Math.max(0, checked - this.flaggedItemCount());
+    return Math.round((healthy / checked) * 100);
+  });
+
+  protected readonly healthTone = computed<HealthTone>(() => {
+    const score = this.healthScore() ?? 100;
+    if (score >= HEALTH_GOOD_FROM) {
+      return 'good';
+    }
+    return score >= HEALTH_FAIR_FROM ? 'fair' : 'poor';
+  });
+
+  protected readonly healthLabels = {
+    good: 'report.healthGood',
+    fair: 'report.healthFair',
+    poor: 'report.healthPoor',
+  } as const satisfies Record<HealthTone, TranslationKey>;
+
   protected visibleItems(section: AuditSection): readonly AuditSectionItem[] {
     return section.items.slice(0, MAX_VISIBLE_PER_SECTION);
   }
@@ -119,5 +194,10 @@ export class ReportPage {
 
   protected openItem(itemId: string): void {
     void this.router.navigate(['/items', itemId]);
+  }
+
+  /** The stat tiles jump to their card; a fragment link would go through the router. */
+  protected scrollTo(anchor: string): void {
+    this.document.getElementById(anchor)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }

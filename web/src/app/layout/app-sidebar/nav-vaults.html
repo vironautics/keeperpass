@@ -2,7 +2,7 @@
   <div hlmSidebarGroupLabel>{{ 'layout.sidebar.vaultsAndItems' | t }}</div>
 
   <button hlmSidebarGroupAction [attr.aria-label]="'vaults.newVaultAria' | t" (click)="createVault()">
-    <app-icon name="add" />
+    <ng-icon name="lucidePlus" strokeWidth="2.25" />
   </button>
 
   <div hlmSidebarGroupContent>
@@ -24,7 +24,7 @@
           [routerLinkActiveOptions]="exactMatch"
           [isActive]="allVaults.isActive"
         >
-          <app-icon name="vaults" />
+          <ng-icon name="lucideLayers" strokeWidth="1.75" />
           <span>{{ 'items.list.allVaults' | t }}</span>
         </a>
         <div hlmSidebarMenuBadge>{{ counts().total }}</div>
@@ -41,7 +41,7 @@
           [routerLinkActiveOptions]="exactMatch"
           [isActive]="recent.isActive"
         >
-          <app-icon name="history" />
+          <ng-icon name="lucideHistory" strokeWidth="1.75" />
           <span>{{ 'items.list.recentlyUsed' | t }}</span>
         </a>
         <div hlmSidebarMenuBadge>{{ recentCount() }}</div>
@@ -58,7 +58,7 @@
           [routerLinkActiveOptions]="exactMatch"
           [isActive]="favourites.isActive"
         >
-          <app-icon name="favourite" />
+          <ng-icon name="lucideStar" strokeWidth="1.75" />
           <span>{{ 'layout.sidebar.favoritesTooltip' | t }}</span>
         </a>
         <div hlmSidebarMenuBadge>{{ counts().favourites }}</div>
@@ -76,7 +76,7 @@
         (expandedChange)="setExpanded('vaults', $event)"
       >
         <button hlmSidebarMenuButton hlmCollapsibleTrigger [tooltip]="'layout.sidebar.myVaultsTooltip' | t" class="pe-14">
-          <app-icon name="vault" />
+          <ng-icon name="lucideFolderLock" strokeWidth="1.75" />
           <span>{{ 'layout.sidebar.myVaultsTooltip' | t }}</span>
         </button>
 
@@ -87,7 +87,7 @@
           and the directive only matches buttons.
         -->
         <button hlmSidebarMenuAction class="end-7" routerLink="/vaults" [attr.aria-label]="'layout.sidebar.manageVaultsAria' | t">
-          <app-icon name="settings" />
+          <ng-icon name="lucideSettings2" strokeWidth="1.75" />
         </button>
 
         <!-- The chevron toggles too — every disclosure arrow in this app does. -->
@@ -97,7 +97,7 @@
           [attr.aria-label]="'layout.sidebar.toggleVaultsListAria' | t"
           class="data-[state=open]:rotate-90"
         >
-          <app-icon name="chevron-right" />
+          <ng-icon name="lucideChevronRight" strokeWidth="2" class="rtl:-scale-x-100" />
         </button>
 
         <hlm-collapsible-content>
@@ -114,7 +114,7 @@
                   [isActive]="ownVault.isActive"
                 >
                   <span class="truncate">{{ vault.name }}</span>
-                  <span class="ms-auto text-xs tabular-nums opacity-60">
+                  <span class="bg-sidebar-foreground/[0.06] ms-auto rounded-full px-1.5 text-[0.6875rem] font-semibold tabular-nums opacity-80">
                     {{ itemCount(vault.id) }}
                   </span>
                 </a>
@@ -132,7 +132,7 @@
           (expandedChange)="setExpanded(vaultsSectionId(organization.id), $event)"
         >
           <button hlmSidebarMenuButton hlmCollapsibleTrigger [tooltip]="organization.name">
-            <app-icon name="vaults" />
+            <ng-icon name="lucideBuilding2" strokeWidth="1.75" />
             <span>{{ organization.name }}</span>
           </button>
 
@@ -142,7 +142,7 @@
             [attr.aria-label]="'layout.sidebar.toggleOrgAria' | t: { name: organization.name }"
             class="data-[state=open]:rotate-90"
           >
-            <app-icon name="chevron-right" />
+            <ng-icon name="lucideChevronRight" strokeWidth="2" class="rtl:-scale-x-100" />
           </button>
 
           <hlm-collapsible-content>
@@ -159,7 +159,7 @@
                     [isActive]="sharedVault.isActive"
                   >
                     <span class="truncate">{{ vault.name }}</span>
-                    <span class="ms-auto text-xs tabular-nums opacity-60">
+                    <span class="bg-sidebar-foreground/[0.06] ms-auto rounded-full px-1.5 text-[0.6875rem] font-semibold tabular-nums opacity-80">
                       {{ itemCount(vault.id) }}
                     </span>
                   </a>
@@ -177,12 +177,12 @@
         (expandedChange)="setExpanded('tags', $event)"
       >
         <button hlmSidebarMenuButton hlmCollapsibleTrigger [tooltip]="'common.tags' | t" class="pe-14">
-          <app-icon name="tags" />
+          <ng-icon name="lucideTags" strokeWidth="1.75" />
           <span>{{ 'common.tags' | t }}</span>
         </button>
 
         <button hlmSidebarMenuAction class="end-7" routerLink="/tags" [attr.aria-label]="'layout.sidebar.manageTagsAria' | t">
-          <app-icon name="settings" />
+          <ng-icon name="lucideSettings2" strokeWidth="1.75" />
         </button>
 
         <button
@@ -191,7 +191,7 @@
           [attr.aria-label]="'layout.sidebar.toggleTagsListAria' | t"
           class="data-[state=open]:rotate-90"
         >
-          <app-icon name="chevron-right" />
+          <ng-icon name="lucideChevronRight" strokeWidth="2" class="rtl:-scale-x-100" />
         </button>
 
         <hlm-collapsible-content>
@@ -207,9 +207,9 @@
                   [routerLinkActiveOptions]="exactMatch"
                   [isActive]="tagLink.isActive"
                 >
-                  <app-icon name="tag" [style.color]="tag.color" />
+                  <ng-icon name="lucideTag" strokeWidth="2" [style.color]="tag.color" />
                   <span class="truncate">{{ tag.name }}</span>
-                  <span class="ms-auto text-xs tabular-nums opacity-60">{{ tag.count }}</span>
+                  <span class="bg-sidebar-foreground/[0.06] ms-auto rounded-full px-1.5 text-[0.6875rem] font-semibold tabular-nums opacity-80">{{ tag.count }}</span>
                 </a>
               </li>
             } @empty {
@@ -230,7 +230,7 @@
           #generator="routerLinkActive"
           [isActive]="generator.isActive"
         >
-          <app-icon name="generate" />
+          <ng-icon name="lucideWandSparkles" strokeWidth="1.75" />
           <span>{{ 'generator.pageTitle' | t }}</span>
         </a>
       </li>

@@ -1,18 +1,25 @@
 import { ChangeDetectionStrategy, Component, computed, inject, output } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideChevronsUpDown,
+  lucideLock,
+  lucideLogOut,
+  lucideMonitor,
+  lucideMoon,
+  lucideSun,
+} from '@ng-icons/lucide';
 import { HlmAvatarImports } from '@spartan-ng/helm/avatar';
 import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
 import { HlmSidebarImports, HlmSidebarService } from '@spartan-ng/helm/sidebar';
 import { AccountStore } from '../../core/account/account.store';
 import { I18nService, TranslatePipe } from '../../core/i18n';
 import { ThemePreference, ThemeService } from '../../core/theme/theme.service';
-import { Icon } from '../../ui/icon/icon';
-import { IconName } from '../../ui/icon/icon-glyphs';
 
-/** Theme item icon per preference. */
-const THEME_ICONS: Record<ThemePreference, IconName> = {
-  auto: 'theme-auto',
-  light: 'theme-light',
-  dark: 'theme-dark',
+/** Theme item icon per preference — Lucide glyphs, registered below. */
+const THEME_ICONS: Record<ThemePreference, string> = {
+  auto: 'lucideMonitor',
+  light: 'lucideSun',
+  dark: 'lucideMoon',
 };
 
 /**
@@ -26,7 +33,17 @@ const THEME_ICONS: Record<ThemePreference, IconName> = {
 @Component({
   selector: 'app-nav-user',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [HlmSidebarImports, HlmAvatarImports, HlmDropdownMenuImports, Icon, TranslatePipe],
+  imports: [HlmSidebarImports, HlmAvatarImports, HlmDropdownMenuImports, NgIcon, TranslatePipe],
+  providers: [
+    provideIcons({
+      lucideChevronsUpDown,
+      lucideLock,
+      lucideLogOut,
+      lucideMonitor,
+      lucideMoon,
+      lucideSun,
+    }),
+  ],
   templateUrl: './nav-user.html',
 })
 export class NavUser {

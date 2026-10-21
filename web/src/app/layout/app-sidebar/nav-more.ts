@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideLifeBuoy, lucideScale, lucideSettings, lucideShieldCheck } from '@ng-icons/lucide';
 import { HlmSidebarImports } from '@spartan-ng/helm/sidebar';
 import { AuditService } from '../../core/audit/audit.service';
 import { TranslatePipe, TranslationKey } from '../../core/i18n';
-import { Icon } from '../../ui/icon/icon';
-import { IconName } from '../../ui/icon/icon-glyphs';
 
 /**
  * A plain link in the sidebar's "More" group: a label, a glyph, a route.
@@ -17,20 +17,22 @@ import { IconName } from '../../ui/icon/icon-glyphs';
  */
 interface SidebarDestination {
   label: TranslationKey;
-  icon: IconName;
+  /** A Lucide glyph, registered with `provideIcons` below. */
+  icon: string;
   route: string;
 }
 
 const SIDEBAR_DESTINATIONS: readonly SidebarDestination[] = [
-  { label: 'layout.sidebar.settings', icon: 'settings', route: '/settings' },
-  { label: 'layout.sidebar.support', icon: 'support', route: '/support' },
-  { label: 'layout.sidebar.policies', icon: 'policies', route: '/policies' },
+  { label: 'layout.sidebar.settings', icon: 'lucideSettings', route: '/settings' },
+  { label: 'layout.sidebar.support', icon: 'lucideLifeBuoy', route: '/support' },
+  { label: 'layout.sidebar.policies', icon: 'lucideScale', route: '/policies' },
 ];
 
 @Component({
   selector: 'app-nav-more',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [HlmSidebarImports, Icon, RouterLink, RouterLinkActive, TranslatePipe],
+  imports: [HlmSidebarImports, NgIcon, RouterLink, RouterLinkActive, TranslatePipe],
+  providers: [provideIcons({ lucideLifeBuoy, lucideScale, lucideSettings, lucideShieldCheck })],
   templateUrl: './nav-more.html',
   /** `mt-auto` on the group needs the host to participate in the content column. */
   host: { class: 'mt-auto' },

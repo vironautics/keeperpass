@@ -212,9 +212,15 @@
   [state]="renamingVault() ? 'open' : 'closed'"
   (stateChanged)="$event === 'closed' && cancelRename()"
 >
-  <hlm-dialog-content *hlmDialogPortal class="sm:max-w-sm" [attr.aria-label]="'vaults.renameVaultTitle' | t">
-    <hlm-dialog-header>
-      <h3 hlmDialogTitle>{{ 'vaults.renameVaultTitle' | t }}</h3>
+  <hlm-dialog-content *hlmDialogPortal class="w-[min(28rem,calc(100vw-2rem))] gap-6 rounded-2xl sm:max-w-md" [attr.aria-label]="'vaults.renameVaultTitle' | t">
+    <hlm-dialog-header class="gap-1.5">
+      <span
+        class="bg-primary/15 text-accent-strong ring-primary/25 mb-2 inline-flex size-12 items-center justify-center rounded-2xl ring-1"
+        aria-hidden="true"
+      >
+        <ng-icon name="lucidePencil" size="1.375rem" strokeWidth="1.75" />
+      </span>
+      <h3 hlmDialogTitle class="text-lg font-bold">{{ 'vaults.renameVaultTitle' | t }}</h3>
       <p hlmDialogDescription>{{ 'vaults.renameVaultDescription' | t }}</p>
     </hlm-dialog-header>
 
@@ -223,7 +229,7 @@
       <input
         hlmInput
         id="rename-vault-name"
-        class="rename-input w-full"
+        class="rename-input w-full bg-card h-11 rounded-xl"
         [formControl]="renameControl"
         autocomplete="off"
         (keydown.enter)="confirmRename()"
@@ -235,9 +241,9 @@
       }
     </hlm-field>
 
-    <hlm-dialog-footer>
-      <button hlmBtn variant="outline" (click)="cancelRename()">{{ 'common.cancel' | t }}</button>
-      <button hlmBtn [disabled]="!canRename()" (click)="confirmRename()">{{ 'common.save' | t }}</button>
+    <hlm-dialog-footer class="gap-2">
+      <button hlmBtn class="h-10 rounded-xl px-4 font-semibold" variant="outline" (click)="cancelRename()">{{ 'common.cancel' | t }}</button>
+      <button hlmBtn class="h-10 gap-2 rounded-xl px-4 font-bold" [disabled]="!canRename()" (click)="confirmRename()">{{ 'common.save' | t }}</button>
     </hlm-dialog-footer>
   </hlm-dialog-content>
 </hlm-dialog>
@@ -246,10 +252,15 @@
   [state]="deletingVault() ? 'open' : 'closed'"
   (stateChanged)="$event === 'closed' && cancelDelete()"
 >
-  <hlm-alert-dialog-content *hlmAlertDialogPortal [attr.aria-label]="'vaults.deleteVaultTitle' | t: { name: deletingVault()?.name ?? '' }">
+  <hlm-alert-dialog-content class="w-[min(28rem,calc(100vw-2rem))] gap-6 rounded-2xl sm:max-w-md" *hlmAlertDialogPortal [attr.aria-label]="'vaults.deleteVaultTitle' | t: { name: deletingVault()?.name ?? '' }">
     <hlm-alert-dialog-header>
-      <h3 hlmAlertDialogTitle>{{ 'vaults.deleteVaultTitle' | t: { name: deletingVault()?.name ?? '' } }}</h3>
-      <p hlmAlertDialogDescription>
+      <hlm-alert-dialog-media
+        class="bg-destructive/10 text-destructive ring-destructive/20 size-12 rounded-2xl ring-1"
+      >
+        <ng-icon name="lucideTrash2" size="1.375rem" strokeWidth="1.75" />
+      </hlm-alert-dialog-media>
+      <h3 hlmAlertDialogTitle class="font-bold">{{ 'vaults.deleteVaultTitle' | t: { name: deletingVault()?.name ?? '' } }}</h3>
+      <p hlmAlertDialogDescription class="leading-relaxed">
         {{
           (deletingCount() === 1 ? 'vaults.deleteVaultConfirmOne' : 'vaults.deleteVaultConfirmMany')
             | t: { count: deletingCount(), personalVaultName: personalVaultName() }
@@ -257,9 +268,9 @@
       </p>
     </hlm-alert-dialog-header>
 
-    <hlm-alert-dialog-footer>
-      <button hlmAlertDialogCancel (click)="cancelDelete()">{{ 'common.cancel' | t }}</button>
-      <button hlmAlertDialogAction variant="destructive" (click)="confirmDelete()">{{ 'common.delete' | t }}</button>
+    <hlm-alert-dialog-footer class="gap-2">
+      <button hlmAlertDialogCancel class="h-10 rounded-xl px-4 font-semibold" (click)="cancelDelete()">{{ 'common.cancel' | t }}</button>
+      <button hlmAlertDialogAction class="bg-destructive hover:bg-destructive/90 dark:bg-destructive dark:hover:bg-destructive/90 h-10 gap-2 rounded-xl px-4 font-bold text-white dark:text-white" variant="destructive" (click)="confirmDelete()"><ng-icon name="lucideTrash2" size="1rem" strokeWidth="2" />{{ 'common.delete' | t }}</button>
     </hlm-alert-dialog-footer>
   </hlm-alert-dialog-content>
 </hlm-alert-dialog>
@@ -268,12 +279,17 @@
   [state]="bulkDeleteRequested() ? 'open' : 'closed'"
   (stateChanged)="$event === 'closed' && cancelBulkDelete()"
 >
-  <hlm-alert-dialog-content *hlmAlertDialogPortal [attr.aria-label]="(selectedCount() === 1 ? 'vaults.deleteSelectedTitleOne' : 'vaults.deleteSelectedTitleMany') | t: { count: selectedCount() }">
+  <hlm-alert-dialog-content class="w-[min(28rem,calc(100vw-2rem))] gap-6 rounded-2xl sm:max-w-md" *hlmAlertDialogPortal [attr.aria-label]="(selectedCount() === 1 ? 'vaults.deleteSelectedTitleOne' : 'vaults.deleteSelectedTitleMany') | t: { count: selectedCount() }">
     <hlm-alert-dialog-header>
-      <h3 hlmAlertDialogTitle>
+      <hlm-alert-dialog-media
+        class="bg-destructive/10 text-destructive ring-destructive/20 size-12 rounded-2xl ring-1"
+      >
+        <ng-icon name="lucideTrash2" size="1.375rem" strokeWidth="1.75" />
+      </hlm-alert-dialog-media>
+      <h3 hlmAlertDialogTitle class="font-bold">
         {{ (selectedCount() === 1 ? 'vaults.deleteSelectedTitleOne' : 'vaults.deleteSelectedTitleMany') | t: { count: selectedCount() } }}
       </h3>
-      <p hlmAlertDialogDescription>
+      <p hlmAlertDialogDescription class="leading-relaxed">
         {{
           (selectedItemCount() === 1 ? 'vaults.deleteSelectedConfirmOne' : 'vaults.deleteSelectedConfirmMany')
             | t: { count: selectedItemCount(), personalVaultName: personalVaultName() }
@@ -281,9 +297,9 @@
       </p>
     </hlm-alert-dialog-header>
 
-    <hlm-alert-dialog-footer>
-      <button hlmAlertDialogCancel (click)="cancelBulkDelete()">{{ 'common.cancel' | t }}</button>
-      <button hlmAlertDialogAction variant="destructive" (click)="confirmBulkDelete()">
+    <hlm-alert-dialog-footer class="gap-2">
+      <button hlmAlertDialogCancel class="h-10 rounded-xl px-4 font-semibold" (click)="cancelBulkDelete()">{{ 'common.cancel' | t }}</button>
+      <button hlmAlertDialogAction class="bg-destructive hover:bg-destructive/90 dark:bg-destructive dark:hover:bg-destructive/90 h-10 gap-2 rounded-xl px-4 font-bold text-white dark:text-white" variant="destructive" (click)="confirmBulkDelete()"><ng-icon name="lucideTrash2" size="1rem" strokeWidth="2" />
         {{ 'common.delete' | t }}
       </button>
     </hlm-alert-dialog-footer>

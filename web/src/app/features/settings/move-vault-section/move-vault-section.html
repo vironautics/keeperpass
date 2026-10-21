@@ -1,21 +1,41 @@
 @if (targets.length > 0) {
-  <div hlmCard>
-    <div hlmCardHeader>
-      <h2 hlmCardTitle class="text-base">{{ 'settings.migrate.title' | t }}</h2>
-      <p hlmCardDescription>{{ 'settings.migrate.description' | t }}</p>
-    </div>
+  <h2 class="text-muted-foreground mb-2.5 px-1 text-xs font-bold tracking-wider uppercase">
+    {{ 'settings.storage' | t }}
+  </h2>
 
-    <div hlmCardContent class="flex flex-wrap gap-2">
-      @for (target of targets; track target.id) {
-        <button hlmBtn variant="outline" size="sm" class="move-vault" (click)="start(target.id)">
-          @if (target.id === 'dropbox') {
-            <app-dropbox-logo class="size-4" />
-          } @else {
-            <app-google-logo class="size-4" />
-          }
-          {{ 'settings.migrate.button' | t: { provider: target.storageName } }}
-        </button>
-      }
+  <div class="bg-card overflow-hidden rounded-2xl border shadow-xs">
+    <div class="flex flex-col gap-4 p-5 sm:flex-row sm:items-center">
+      <span
+        class="bg-primary/15 text-accent-strong inline-flex size-10 shrink-0 items-center justify-center rounded-xl"
+        aria-hidden="true"
+      >
+        <ng-icon name="lucideCloudUpload" size="1.125rem" strokeWidth="1.75" />
+      </span>
+
+      <div class="min-w-0 flex-1">
+        <p class="text-foreground text-sm font-bold">{{ 'settings.migrate.title' | t }}</p>
+        <p class="text-muted-foreground mt-0.5 text-sm leading-relaxed">
+          {{ 'settings.migrate.description' | t }}
+        </p>
+      </div>
+
+      <div class="flex shrink-0 flex-wrap gap-2">
+        @for (target of targets; track target.id) {
+          <button
+            hlmBtn
+            variant="outline"
+            class="move-vault h-10 gap-2 rounded-xl px-4 font-semibold"
+            (click)="start(target.id)"
+          >
+            @if (target.id === 'dropbox') {
+              <app-dropbox-logo class="size-4" />
+            } @else {
+              <app-google-logo class="size-4" />
+            }
+            {{ 'settings.migrate.button' | t: { provider: target.storageName } }}
+          </button>
+        }
+      </div>
     </div>
   </div>
 

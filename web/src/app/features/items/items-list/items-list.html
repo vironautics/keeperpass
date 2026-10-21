@@ -1,169 +1,219 @@
 <!--
-  Three headers, one at a time: what is being shown, a search field, or the selection
-  toolbar. Each is the same shape — a fixed 1px-bordered bar — so switching between
-  them does not move the list underneath.
+  Two headers, one at a time: what is being shown with the search field under it, or
+  the selection toolbar. Both are the same height, so switching between them does not
+  move the list underneath.
+
+  The search field is always on screen. Until it is used it is a button dressed as a
+  field — pressing it swaps in the real input, which is what `searching()` tracks.
 -->
-@if (!searching() && !selecting()) {
-  <header class="flex shrink-0 items-center gap-1 border-b p-2">
-    <!--
-      The sidebar is a sheet below `md`, so it needs one obvious way in. From `md` up
-      the sidebar column is permanently on screen and its own header owns the toggle.
-    -->
-    <button hlmSidebarTrigger class="md:hidden" [srOnlyText]="'common.openNavMenu' | t"></button>
-
-    <h1 class="flex min-w-0 flex-1 items-center gap-2 px-1 text-sm font-semibold">
-      <app-icon [name]="headingIcon()" class="text-accent-strong text-[0.8125rem]" />
-      <span class="min-w-0 truncate">
-        @if (headingContext()) {
-          <span class="text-accent-strong">{{ headingContext() }} / </span>
-        }
-        {{ headingTitle() }}
-      </span>
-    </h1>
-
-    <div class="flex shrink-0 items-center">
+@if (!selecting()) {
+  <header class="flex shrink-0 flex-col gap-3 border-b px-3 pt-3 pb-3 sm:px-4">
+    <div class="flex h-10 items-center gap-2">
+      <!--
+        The sidebar is a sheet below `md`, so it needs one obvious way in. From `md` up
+        the sidebar column is permanently on screen and its own header owns the toggle.
+      -->
       <button
-        hlmBtn
-        variant="ghost"
-        size="icon-sm"
-        [attr.aria-label]="'items.list.selectMultipleAria' | t"
-        (click)="startSelecting()"
+        hlmSidebarTrigger
+        class="-ms-1 size-9 rounded-lg md:hidden"
+        [srOnlyText]="'common.openNavMenu' | t"
+      ></button>
+
+      <span
+        class="bg-primary/15 text-accent-strong inline-flex size-9 shrink-0 items-center justify-center rounded-xl"
+        aria-hidden="true"
       >
-        <app-icon name="checkbox-checked" />
-      </button>
+        <app-icon [name]="headingIcon()" class="text-[0.9375rem]" />
+      </span>
 
-      <button hlmBtn variant="ghost" size="icon-sm" [attr.aria-label]="'items.list.newItemAria' | t" (click)="createItem()">
-        <app-icon name="add" />
-      </button>
+      <h1 class="flex min-w-0 flex-1 flex-col leading-tight">
+        @if (headingContext()) {
+          <span class="text-muted-foreground truncate text-[0.6875rem] font-semibold">
+            {{ headingContext() }}
+          </span>
+        }
+        <span class="flex min-w-0 items-center gap-2">
+          <span class="text-foreground min-w-0 truncate text-base font-extrabold tracking-tight">
+            {{ headingTitle() }}
+          </span>
+          <span
+            class="bg-muted text-muted-foreground shrink-0 rounded-full px-2 py-0.5 text-[0.6875rem] font-bold tabular-nums"
+          >
+            {{ rows().length }}
+          </span>
+        </span>
+      </h1>
 
+      <div class="flex shrink-0 items-center gap-0.5">
+        <!--
+          Newest first by default, which is what you want right after adding something.
+          One button rather than a menu: there are only two orders worth having, and the
+          arrow says which one is on.
+        -->
+        <button
+          hlmBtn
+          variant="ghost"
+          size="icon"
+          class="text-muted-foreground hover:text-foreground size-9 rounded-lg"
+          [attr.aria-label]="(newestFirst() ? 'items.list.sortOldestFirstAria' : 'items.list.sortNewestFirstAria') | t"
+          [hlmTooltip]="(newestFirst() ? 'items.list.newestFirst' : 'items.list.oldestFirst') | t"
+          (click)="toggleSortOrder()"
+        >
+          <ng-icon
+            [name]="newestFirst() ? 'lucideArrowDownWideNarrow' : 'lucideArrowUpNarrowWide'"
+            size="1.125rem"
+            strokeWidth="1.75"
+          />
+        </button>
+
+        <button
+          hlmBtn
+          variant="ghost"
+          size="icon"
+          class="text-muted-foreground hover:text-foreground size-9 rounded-lg"
+          [attr.aria-label]="'items.list.selectMultipleAria' | t"
+          [hlmTooltip]="'items.list.selectMultipleAria' | t"
+          (click)="startSelecting()"
+        >
+          <ng-icon name="lucideListChecks" size="1.125rem" strokeWidth="1.75" />
+        </button>
+
+        <!-- The one primary action in the column, so it is the one filled button. -->
+        <button
+          hlmBtn
+          size="icon"
+          class="ms-1 size-9 rounded-lg shadow-xs"
+          [attr.aria-label]="'items.list.newItemAria' | t"
+          [hlmTooltip]="'items.list.newItemAria' | t"
+          (click)="createItem()"
+        >
+          <ng-icon name="lucidePlus" size="1.125rem" strokeWidth="2.25" />
+        </button>
+      </div>
+    </div>
+
+    @if (searching()) {
+      <hlm-input-group
+        class="bg-card dark:bg-card border-ring/60 ring-ring/20 h-10 rounded-xl ring-3"
+      >
+        <hlm-input-group-addon align="inline-start" class="ps-3">
+          <ng-icon name="lucideSearch" size="1rem" strokeWidth="2" />
+        </hlm-input-group-addon>
+
+        <input
+          hlmInputGroupInput
+          #searchInput
+          class="text-foreground text-sm"
+          [formControl]="searchControl"
+          [placeholder]="'items.list.typeToSearch' | t"
+          [attr.aria-label]="'items.list.searchItemsAria' | t"
+          (keydown.escape)="cancelSearch()"
+        />
+
+        <hlm-input-group-addon align="inline-end" class="pe-1">
+          <button
+            hlmInputGroupButton
+            size="icon-sm"
+            type="button"
+            class="size-8 rounded-lg"
+            [attr.aria-label]="'items.list.cancelSearchAria' | t"
+            (click)="cancelSearch()"
+          >
+            <ng-icon name="lucideX" size="1rem" strokeWidth="2" />
+          </button>
+        </hlm-input-group-addon>
+      </hlm-input-group>
+    } @else {
       <button
-        hlmBtn
-        variant="ghost"
-        size="icon-sm"
+        type="button"
+        class="bg-muted/70 text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring/50 flex h-10 w-full cursor-text items-center gap-2.5 rounded-xl px-3 text-start text-sm transition-colors outline-none focus-visible:ring-3"
         [attr.aria-label]="'items.list.searchItemsAria' | t"
         (click)="startSearch()"
       >
-        <app-icon name="search" />
+        <ng-icon name="lucideSearch" size="1rem" strokeWidth="2" class="shrink-0" />
+        <span class="min-w-0 flex-1 truncate">{{ 'items.list.typeToSearch' | t }}</span>
       </button>
-
-      <!--
-        Newest first by default, which is what you want right after adding something.
-        One button rather than a menu: there are only two orders worth having, and the
-        arrow says which one is on.
-      -->
+    }
+  </header>
+} @else {
+  <!--
+    Selection mode keeps the normal header's two-row shape, so the list does not move:
+    what is selected on top, and the two things you can do with it below, labelled.
+  -->
+  <header class="bg-primary/10 flex shrink-0 flex-col gap-3 border-b px-3 pt-3 pb-3 sm:px-4">
+    <div class="flex h-10 items-center gap-1">
       <button
         hlmBtn
         variant="ghost"
-        size="icon-sm"
-        [attr.aria-label]="(newestFirst() ? 'items.list.sortOldestFirstAria' : 'items.list.sortNewestFirstAria') | t"
-        [hlmTooltip]="(newestFirst() ? 'items.list.newestFirst' : 'items.list.oldestFirst') | t"
-        (click)="toggleSortOrder()"
+        size="icon"
+        class="-ms-1 size-9 rounded-lg"
+        [attr.aria-label]="'common.leaveSelectionMode' | t"
+        [hlmTooltip]="'common.leaveSelectionMode' | t"
+        (click)="cancelSelecting()"
       >
-        <app-icon [name]="newestFirst() ? 'sort-desc' : 'sort-asc'" />
+        <ng-icon name="lucideX" size="1.125rem" strokeWidth="2" />
+      </button>
+
+      <span class="text-foreground min-w-0 flex-1 truncate px-1 text-sm font-bold tabular-nums">
+        {{ (selectedCount() === 1 ? 'items.list.itemSelectedOne' : 'items.list.itemSelectedMany') | t: { count: selectedCount() } }}
+      </span>
+
+      <button
+        hlmBtn
+        variant="ghost"
+        size="icon"
+        class="size-9 rounded-lg"
+        [attr.aria-label]="'common.selectOrDeselectAll' | t"
+        [hlmTooltip]="'common.selectOrDeselectAll' | t"
+        (click)="toggleSelectAll()"
+      >
+        <ng-icon name="lucideCheckCheck" size="1.125rem" strokeWidth="2" />
       </button>
     </div>
-  </header>
-}
 
-@if (searching()) {
-  <header class="flex shrink-0 items-center gap-1 border-b p-2">
-    <hlm-input-group class="flex-1">
-      <hlm-input-group-addon align="inline-start">
-        <app-icon name="search" class="text-muted-foreground text-xs" />
-      </hlm-input-group-addon>
+    <div class="grid h-10 grid-cols-2 gap-2">
+      <button
+        hlmBtn
+        variant="outline"
+        class="bg-card h-10 gap-2 rounded-xl font-semibold"
+        [attr.aria-label]="'items.list.moveSelectedAria' | t"
+        [disabled]="!selectedCount()"
+        (click)="openMove()"
+      >
+        <ng-icon name="lucideFolderInput" size="1.0625rem" strokeWidth="1.75" />
+        {{ 'common.move' | t }}
+      </button>
 
-      <input
-        hlmInputGroupInput
-        #searchInput
-        class="text-foreground"
-        [formControl]="searchControl"
-        [placeholder]="'items.list.typeToSearch' | t"
-        [attr.aria-label]="'items.list.searchItemsAria' | t"
-        (keydown.escape)="cancelSearch()"
-      />
-
-      <hlm-input-group-addon align="inline-end">
-        <button
-          hlmInputGroupButton
-          size="icon-xs"
-          type="button"
-          [attr.aria-label]="'items.list.cancelSearchAria' | t"
-          (click)="cancelSearch()"
-        >
-          <app-icon name="cancel" />
-        </button>
-      </hlm-input-group-addon>
-    </hlm-input-group>
-  </header>
-}
-
-@if (selecting()) {
-  <header class="flex shrink-0 items-center gap-1 border-b p-2">
-    <button
-      hlmBtn
-      variant="ghost"
-      size="icon-sm"
-      [attr.aria-label]="'common.leaveSelectionMode' | t"
-      (click)="cancelSelecting()"
-    >
-      <app-icon name="cancel" />
-    </button>
-
-    <button
-      hlmBtn
-      variant="ghost"
-      size="icon-sm"
-      [attr.aria-label]="'common.selectOrDeselectAll' | t"
-      (click)="toggleSelectAll()"
-    >
-      <app-icon name="list-check" />
-    </button>
-
-    <span class="min-w-0 flex-1 truncate text-center text-sm">
-      {{ (selectedCount() === 1 ? 'items.list.itemSelectedOne' : 'items.list.itemSelectedMany') | t: { count: selectedCount() } }}
-    </span>
-
-    <button
-      hlmBtn
-      variant="ghost"
-      size="icon-sm"
-      [attr.aria-label]="'items.list.moveSelectedAria' | t"
-      [disabled]="!selectedCount()"
-      (click)="openMove()"
-    >
-      <app-icon name="move" />
-    </button>
-
-    <button
-      hlmBtn
-      variant="ghost"
-      size="icon-sm"
-      [attr.aria-label]="'items.list.deleteSelectedAria' | t"
-      [disabled]="!selectedCount()"
-      (click)="requestDelete()"
-    >
-      <app-icon name="delete" />
-    </button>
+      <button
+        hlmBtn
+        variant="outline"
+        class="bg-card text-destructive hover:bg-destructive/10 hover:text-destructive border-destructive/30 h-10 gap-2 rounded-xl font-semibold"
+        [attr.aria-label]="'items.list.deleteSelectedAria' | t"
+        [disabled]="!selectedCount()"
+        (click)="requestDelete()"
+      >
+        <ng-icon name="lucideTrash2" size="1.0625rem" strokeWidth="1.75" />
+        {{ 'common.delete' | t }}
+      </button>
+    </div>
   </header>
 }
 
 <main class="relative flex min-h-0 flex-1 flex-col">
   @if (isEmpty()) {
     <div class="absolute inset-0 flex items-center justify-center p-6">
-      <div hlmEmpty>
-        <hlm-empty-header>
-          <hlm-empty-media variant="icon">
-            <app-icon [name]="emptyStateIcon()" class="text-2xl" />
-          </hlm-empty-media>
-          <div hlmEmptyTitle>{{ emptyStateMessage() }}</div>
-        </hlm-empty-header>
-
-        <hlm-empty-content>
-          <button hlmBtn variant="outline" size="sm" (click)="createItem()">
-            <app-icon name="add" />
-            {{ 'items.list.newVaultItem' | t }}
-          </button>
-        </hlm-empty-content>
+      <div class="flex max-w-64 flex-col items-center gap-4 text-center">
+        <span
+          class="bg-primary/15 text-accent-strong ring-primary/25 inline-flex size-14 items-center justify-center rounded-2xl ring-1"
+          aria-hidden="true"
+        >
+          <app-icon [name]="emptyStateIcon()" class="text-xl" />
+        </span>
+        <p class="text-foreground text-[0.9375rem] font-bold text-balance">{{ emptyStateMessage() }}</p>
+        <button hlmBtn class="h-10 gap-1.5 rounded-xl px-4 font-semibold" (click)="createItem()">
+          <ng-icon name="lucidePlus" size="1rem" strokeWidth="2.25" />
+          {{ 'items.list.newVaultItem' | t }}
+        </button>
       </div>
     </div>
   } @else {
@@ -213,28 +263,48 @@
   [state]="movingItems() ? 'open' : 'closed'"
   (stateChanged)="movingItems.set($event === 'open')"
 >
-  <hlm-dialog-content *hlmDialogPortal class="sm:max-w-sm" [attr.aria-label]="'items.view.moveToVaultTitle' | t">
-    <hlm-dialog-header>
-      <h2 hlmDialogTitle>
+  <hlm-dialog-content
+    *hlmDialogPortal
+    class="w-[min(28rem,calc(100vw-2rem))] gap-6 rounded-2xl sm:max-w-md"
+    [attr.aria-label]="'items.view.moveToVaultTitle' | t"
+  >
+    <hlm-dialog-header class="gap-1.5">
+      <span
+        class="bg-primary/15 text-accent-strong ring-primary/25 mb-2 inline-flex size-12 items-center justify-center rounded-2xl ring-1"
+        aria-hidden="true"
+      >
+        <ng-icon name="lucideFolderInput" size="1.375rem" strokeWidth="1.75" />
+      </span>
+      <h2 hlmDialogTitle class="text-lg font-bold">
         {{ (selectedCount() === 1 ? 'items.list.moveOne' : 'items.list.moveMany') | t: { count: selectedCount() } }}
       </h2>
       <p hlmDialogDescription>{{ 'items.list.pickVaultTheyLiveIn' | t }}</p>
     </hlm-dialog-header>
 
     <hlm-select [formControl]="moveVaultControl" [itemToString]="vaultOptionLabel">
-      <hlm-select-trigger class="w-full">
+      <hlm-select-trigger class="bg-card h-11 w-full rounded-xl px-3.5 text-[0.9375rem]">
         <hlm-select-value [placeholder]="'items.selectVaultPlaceholder' | t" />
       </hlm-select-trigger>
-      <hlm-select-content *hlmSelectPortal>
+      <hlm-select-content *hlmSelectPortal class="rounded-xl">
         @for (option of moveVaultOptions(); track option.value) {
-          <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
+          <hlm-select-item [value]="option.value" class="h-9 rounded-lg">{{ option.label }}</hlm-select-item>
         }
       </hlm-select-content>
     </hlm-select>
 
-    <hlm-dialog-footer>
-      <button hlmBtn variant="outline" (click)="cancelMove()">{{ 'common.cancel' | t }}</button>
-      <button hlmBtn [disabled]="!canMove()" (click)="confirmMove()">{{ 'common.move' | t }}</button>
+    <hlm-dialog-footer class="gap-2">
+      <button hlmBtn variant="outline" class="h-10 rounded-xl px-4 font-semibold" (click)="cancelMove()">
+        {{ 'common.cancel' | t }}
+      </button>
+      <button
+        hlmBtn
+        class="h-10 gap-2 rounded-xl px-4 font-bold"
+        [disabled]="!canMove()"
+        (click)="confirmMove()"
+      >
+        <ng-icon name="lucideFolderInput" size="1rem" strokeWidth="2" />
+        {{ 'common.move' | t }}
+      </button>
     </hlm-dialog-footer>
   </hlm-dialog-content>
 </hlm-dialog>
@@ -243,18 +313,37 @@
   [state]="deleteRequested() ? 'open' : 'closed'"
   (stateChanged)="deleteRequested.set($event === 'open')"
 >
-  <hlm-alert-dialog-content *hlmAlertDialogPortal [attr.aria-label]="'items.list.deleteDialogAriaLabel' | t">
+  <hlm-alert-dialog-content
+    *hlmAlertDialogPortal
+    class="w-[min(28rem,calc(100vw-2rem))] gap-6 rounded-2xl sm:max-w-md"
+    [attr.aria-label]="'items.list.deleteDialogAriaLabel' | t"
+  >
     <hlm-alert-dialog-header>
-      <h2 hlmAlertDialogTitle>
+      <hlm-alert-dialog-media
+        class="bg-destructive/10 text-destructive ring-destructive/20 size-12 rounded-2xl ring-1"
+      >
+        <ng-icon name="lucideTrash2" size="1.375rem" strokeWidth="1.75" />
+      </hlm-alert-dialog-media>
+      <h2 hlmAlertDialogTitle class="font-bold">
         {{ (selectedCount() === 1 ? 'items.list.deleteOneTitle' : 'items.list.deleteManyTitle') | t: { count: selectedCount() } }}
       </h2>
-      <p hlmAlertDialogDescription>
+      <p hlmAlertDialogDescription class="leading-relaxed">
         {{ (selectedCount() === 1 ? 'items.list.deleteConfirmOne' : 'items.list.deleteConfirmMany') | t }}
       </p>
     </hlm-alert-dialog-header>
-    <hlm-alert-dialog-footer>
-      <button hlmAlertDialogCancel (click)="cancelDelete()">{{ 'common.cancel' | t }}</button>
-      <button hlmAlertDialogAction variant="destructive" (click)="confirmDelete()">{{ 'common.delete' | t }}</button>
+    <hlm-alert-dialog-footer class="gap-2">
+      <button hlmAlertDialogCancel class="h-10 rounded-xl px-4 font-semibold" (click)="cancelDelete()">
+        {{ 'common.cancel' | t }}
+      </button>
+      <button
+        hlmAlertDialogAction
+        variant="destructive"
+        class="bg-destructive hover:bg-destructive/90 dark:bg-destructive dark:hover:bg-destructive/90 h-10 gap-2 rounded-xl px-4 font-bold text-white dark:text-white"
+        (click)="confirmDelete()"
+      >
+        <ng-icon name="lucideTrash2" size="1rem" strokeWidth="2" />
+        {{ 'common.delete' | t }}
+      </button>
     </hlm-alert-dialog-footer>
   </hlm-alert-dialog-content>
 </hlm-alert-dialog>

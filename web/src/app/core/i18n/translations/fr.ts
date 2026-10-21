@@ -96,14 +96,32 @@ export const fr: TranslationTable = {
   'auth.recover.submit': 'Récupérer le compte',
   'auth.recover.genericError': 'Impossible de récupérer votre compte. Veuillez réessayer.',
 
+  'auth.layout.badge': 'Chiffré de bout en bout',
+  'auth.layout.headline': 'Vos mots de passe, scellés dans votre propre cloud.',
+  'auth.layout.subline': 'KeeperPass chiffre tout dans ce navigateur avant que cela n’atteigne votre stockage. Seul votre secret peut l’ouvrir.',
+  'auth.layout.featureAccess': 'Accès limité',
+  'auth.layout.featureEncryption': 'Chiffrement à divulgation nulle',
+  'auth.layout.featureNoServer': 'Aucun serveur intermédiaire',
+  'auth.layout.footer': 'Chiffré dans votre navigateur. Stocké dans votre cloud.',
+  'auth.layout.language': 'Langue',
+
   'items.pageTitle': 'Coffre-fort',
+  'items.noSelection.title': 'Aucun élément sélectionné',
+  'items.noSelection.description': 'Choisissez-en un dans la liste pour le consulter et le modifier.',
   'generator.pageTitle': 'Générateur de mots de passe',
+  'generator.subtitle': 'Mots de passe et phrases de passe aléatoires, créés sur cet appareil',
+  'generator.options': 'Paramètres',
+  'generator.charCount': '{count} caractères',
   'generator.passphrase': 'Phrase de passe',
   'generator.randomString': 'Chaîne aléatoire',
   'generator.dialogCharacters': 'Caractères',
   'generator.dialogWords': 'Mots',
   'generator.wordSeparator': 'Séparateur de mots',
   'generator.separatorPlaceholder': 'Séparateur',
+  'generator.separatorDash': 'Tiret ( - )',
+  'generator.separatorUnderscore': 'Tiret bas ( _ )',
+  'generator.separatorSlash': 'Barre oblique ( / )',
+  'generator.separatorSpace': 'Espace',
   'generator.language': 'Langue',
   'generator.languagePlaceholder': 'Langue',
   'generator.words': 'Mots',
@@ -302,6 +320,14 @@ export const fr: TranslationTable = {
   'report.aboutSectionAria': 'À propos de {title}',
   'report.nothingFound': 'Rien trouvé',
   'report.showAll': 'Afficher les {count}',
+  'report.openItemAria': 'Ouvrir {name}',
+  'report.healthLabel': 'Santé du coffre-fort',
+  'report.healthGood': 'Solide',
+  'report.healthFair': 'À améliorer',
+  'report.healthPoor': 'À risque',
+  'report.itemsCheckedOne': '{count} élément avec mot de passe vérifié',
+  'report.itemsCheckedMany': '{count} éléments avec mot de passe vérifiés',
+  'report.subtitle': 'La solidité de vos mots de passe enregistrés',
 
   'audit.weakPassword.label': 'Mots de passe faibles',
   'audit.weakPassword.description':
@@ -457,14 +483,15 @@ export const fr: TranslationTable = {
     'La Politique de confidentialité est tenue à jour à un seul endroit, en dehors de l’application, afin qu’elle reste cohérente où que vous la lisiez.',
 
   'support.title': 'Assistance',
+  'support.subtitle': 'Comment fonctionne KeeperPass, et réponses aux questions fréquentes',
+  'support.contact.description': 'Une question, un retour ou un problème à signaler ? Écrivez-nous.',
   'support.dataLives.title': 'Où vivent vos données',
-  'support.dataLives.description':
-    'Keeperpass n’a pas de serveur. Votre coffre-fort est un seul fichier chiffré dans votre propre Google Drive, et votre navigateur est le seul endroit où il est jamais lisible.',
+  'support.dataLives.description': 'Keeperpass n’a pas de serveur. Votre coffre-fort est un seul fichier chiffré dans un stockage cloud que vous possédez déjà — comme Google Drive ou Dropbox — et votre navigateur est le seul endroit où il est lisible.',
   'support.dataLives.browserTitle': 'Votre navigateur',
   'support.dataLives.browserDescription':
     'Chiffre et déchiffre tout. Votre secret ne quitte jamais cet appareil.',
   'support.dataLives.encryptedFile': 'fichier chiffré',
-  'support.dataLives.driveTitle': 'Votre Google Drive',
+  'support.dataLives.driveTitle': 'Votre stockage cloud',
   'support.dataLives.driveDescriptionPrefix': 'Contient',
   'support.dataLives.driveDescriptionSuffix': '— un texte chiffré illisible.',
   'support.dataLives.footer':
@@ -479,20 +506,15 @@ export const fr: TranslationTable = {
   'support.protects.encryptionTerm': 'Chiffrement',
   'support.protects.encryptionDescription':
     'AES-GCM, qui détecte les altérations en plus d’empêcher la lecture.',
-  'support.protects.driveAccessTerm': 'Accès à Drive',
-  'support.protects.driveAccessDescriptionPrefix': 'Limité à',
-  'support.protects.driveAccessDescriptionSuffix':
-    '— Keeperpass ne voit que les fichiers qu’il crée, rien d’autre dans votre Drive.',
+  'support.protects.storageAccessTerm': 'Accès au stockage',
+  'support.protects.storageAccessDescription': 'Keeperpass n’accède qu’aux fichiers qu’il crée — via une autorisation restreinte sur Google Drive, un dossier d’application sur Dropbox. Rien d’autre dans votre stockage ne lui est visible.',
   'support.signingIn.title': 'Connexion',
   'support.signingIn.description': 'Deux choses distinctes, pour deux raisons distinctes.',
-  'support.signingIn.step1Title': 'Continuer avec Google',
-  'support.signingIn.step1Description':
-    'Accorde la permission de lire et d’écrire votre fichier de coffre-fort. Cela prouve qui possède le Drive — cela ne déverrouille rien.',
+  'support.signingIn.step1Title': 'Connectez votre stockage cloud',
+  'support.signingIn.step1Description': 'Connectez-vous à votre fournisseur de stockage — Google ou Dropbox — pour autoriser l’accès au fichier de votre coffre-fort. Cela prouve à qui appartient le stockage ; cela ne déverrouille rien.',
   'support.signingIn.step2Title': 'Saisissez votre secret',
-  'support.signingIn.step2Description':
-    'Dérive dans votre navigateur la clé qui déchiffre le fichier. Google ne le voit jamais, et nous non plus.',
-  'support.signingIn.footer':
-    'Quelqu’un ayant votre compte Google ne peut toujours pas lire votre coffre-fort. Quelqu’un ayant votre secret ne peut toujours pas atteindre le fichier. Les deux sont nécessaires.',
+  'support.signingIn.step2Description': 'Dérive dans votre navigateur la clé qui déchiffre le fichier. Votre fournisseur de stockage ne la voit jamais, et nous non plus.',
+  'support.signingIn.footer': 'Quelqu’un ayant accès à votre compte de stockage ne peut toujours pas lire votre coffre-fort. Quelqu’un qui connaît votre secret ne peut toujours pas atteindre le fichier. Il faut les deux.',
   'support.terms.title': 'Termes à connaître',
   'support.terms.secretDescription':
     'L’unique phrase qui déverrouille votre coffre-fort. Non récupérable — voir ci-dessous.',
@@ -502,6 +524,8 @@ export const fr: TranslationTable = {
   'support.terms.tagTermSingular': 'Tag',
   'support.terms.tagDescriptionPrefix': 'Une étiquette pour filtrer entre coffres-forts, comme',
   'support.terms.tagDescriptionMiddle': 'ou',
+  'support.terms.tagExampleWork': 'travail',
+  'support.terms.tagExampleBanking': 'banque',
   'support.terms.reportTerm': 'Rapport de sécurité',
   'support.terms.reportDescription':
     'Signale les mots de passe faibles, réutilisés et connus comme compromis. S’exécute entièrement sur votre appareil.',
@@ -513,19 +537,15 @@ export const fr: TranslationTable = {
   'support.faq.forgetSecretA2Strong': 'Secret oublié ?',
   'support.faq.forgetSecretA2Middle':
     'sur l’écran de déverrouillage crée un nouveau coffre-fort vide sous un nouveau secret. Votre ancien fichier n’est pas supprimé — il est renommé en',
-  'support.faq.forgetSecretA2Suffix':
-    'et laissé dans votre dossier Drive, au cas où l’ancien secret vous reviendrait un jour.',
+  'support.faq.forgetSecretA2Suffix': 'et reste dans votre dossier de stockage (dans Dropbox, sous Applications) : si l’ancien secret vous revient, les données sont toujours là.',
   'support.faq.forgetSecretA3':
     'Notez votre secret et conservez-le en lieu sûr. C’est la seule chose de Keeperpass qui ne peut pas être remplacée.',
   'support.faq.seeQ': 'Keeperpass peut-il voir mes mots de passe ?',
-  'support.faq.seeA':
-    'Non — et pas comme une simple promesse, mais comme une conséquence de la conception. Le chiffrement a lieu dans votre navigateur et le texte chiffré part directement vers votre Drive. Aucun serveur Keeperpass ne se trouve sur le chemin pour voir quoi que ce soit.',
+  'support.faq.seeA': 'Non — et ce n’est pas une promesse, c’est une conséquence de la conception. Le chiffrement a lieu dans votre navigateur et le texte chiffré va directement dans votre propre stockage. Aucun serveur Keeperpass ne se trouve sur le chemin pour voir quoi que ce soit.',
   'support.faq.syncQ': 'Est-ce synchronisé entre les appareils ?',
-  'support.faq.syncA':
-    'Oui. Chaque appareil lit le même fichier depuis votre Drive. Connectez-vous avec le même compte Google, saisissez le même secret, et votre coffre-fort est là.',
-  'support.faq.googleQ': 'Et si Google lit le fichier ?',
-  'support.faq.googleA':
-    'Il verrait des octets chiffrés. La clé n’est jamais envoyée à Google, donc le contenu reste illisible pour lui.',
+  'support.faq.syncA': 'Oui. Chaque appareil lit le même fichier depuis votre stockage. Connectez-vous avec le même compte, saisissez le même secret, et votre coffre-fort est là.',
+  'support.faq.providerQ': 'Et si mon fournisseur de stockage lit le fichier ?',
+  'support.faq.providerA': 'Il verrait des octets chiffrés. La clé ne quitte jamais votre navigateur : ni Google, ni Dropbox, ni aucun autre fournisseur ne peut en lire le contenu.',
   'support.faq.importQ': 'Puis-je importer depuis un autre gestionnaire de mots de passe ?',
   'support.faq.importA': 'Oui — exportez en CSV depuis celui-ci, puis utilisez Importer dans Paramètres.',
   'support.faq.changeSecretQ': 'Comment changer mon secret ?',
@@ -534,12 +554,16 @@ export const fr: TranslationTable = {
   'support.faq.changeSecretASuffix':
     'Vous saisissez votre secret actuel et le nouveau ; votre coffre-fort est déchiffré, rechiffré avec le nouveau secret, puis renvoyé. Rien n’est perdu — chaque élément vous accompagne, et le changement s’applique sur chaque appareil dès son prochain chargement du coffre-fort.',
   'support.faq.costQ': 'Combien ça coûte ?',
-  'support.faq.costA':
-    'Rien. Keeperpass est gratuit et open source, et il stocke les données dans l’espace Drive que vous avez déjà.',
+  'support.faq.costA': 'Rien. Keeperpass est gratuit et open source, et stocke les données dans l’espace cloud que vous avez déjà.',
   'support.contact.title': 'Toujours bloqué ?',
 
   'settings.title': 'Paramètres',
   'settings.openMenu': 'Ouvrir le menu de navigation',
+  'settings.subtitle': 'Compte, langue, sécurité et données',
+  'settings.security': 'Sécurité',
+  'settings.storage': 'Stockage',
+  'settings.dangerZone': 'Zone de danger',
+  'settings.profile.deleteHint': 'Renomme le fichier de votre coffre-fort pour que cette application ne le trouve plus, puis vous déconnecte. Rien n’est effacé.',
 
   'settings.language.title': 'Langue',
   'settings.language.label': 'Langue de l’interface',

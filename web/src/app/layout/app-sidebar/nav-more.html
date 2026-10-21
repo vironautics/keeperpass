@@ -13,11 +13,11 @@
           #report="routerLinkActive"
           [isActive]="report.isActive"
         >
-          <app-icon name="audit-clean" />
+          <ng-icon name="lucideShieldCheck" strokeWidth="1.75" />
           <span>{{ 'report.title' | t }}</span>
         </a>
         @if (flaggedCount()) {
-          <div hlmSidebarMenuBadge class="text-destructive">{{ flaggedCount() }}</div>
+          <div hlmSidebarMenuBadge class="bg-destructive/10! text-destructive!">{{ flaggedCount() }}</div>
         }
       </li>
 
@@ -32,7 +32,7 @@
             #link="routerLinkActive"
             [isActive]="link.isActive"
           >
-            <app-icon [name]="destination.icon" />
+            <ng-icon [name]="destination.icon" strokeWidth="1.75" />
             <span>{{ destination.label | t }}</span>
           </a>
         </li>

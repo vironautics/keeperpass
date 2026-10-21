@@ -15,15 +15,31 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideCheck,
+  lucideChevronLeft,
+  lucideChevronRight,
+  lucideClock,
+  lucideEllipsis,
+  lucideFolderInput,
+  lucideFolderOpen,
+  lucideHistory,
+  lucideListPlus,
+  lucidePencil,
+  lucideSearchX,
+  lucideStar,
+  lucideTrash2,
+} from '@ng-icons/lucide';
 import { HlmAlertDialogImports } from '@spartan-ng/helm/alert-dialog';
 import { HlmBadge } from '@spartan-ng/helm/badge';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmComboboxImports } from '@spartan-ng/helm/combobox';
 import { HlmDialogImports } from '@spartan-ng/helm/dialog';
 import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
-import { HlmEmptyImports } from '@spartan-ng/helm/empty';
 import { HlmInput } from '@spartan-ng/helm/input';
 import { HlmItemImports } from '@spartan-ng/helm/item';
+import { HlmTooltip } from '@spartan-ng/helm/tooltip';
 import { HlmSelectImports } from '@spartan-ng/helm/select';
 import {
   AuditResult,
@@ -242,17 +258,35 @@ function fieldValueValidators(type: FieldType): ValidatorFn[] {
     HlmComboboxImports,
     HlmDialogImports,
     HlmDropdownMenuImports,
-    HlmEmptyImports,
     HlmInput,
     HlmItemImports,
     HlmSelectImports,
+    HlmTooltip,
     IconPickerDialog,
     ItemField,
     ItemIcon,
     Icon,
+    NgIcon,
     ReactiveFormsModule,
     RouterLink,
     TranslatePipe,
+  ],
+  providers: [
+    provideIcons({
+      lucideCheck,
+      lucideChevronLeft,
+      lucideChevronRight,
+      lucideClock,
+      lucideEllipsis,
+      lucideFolderInput,
+      lucideFolderOpen,
+      lucideHistory,
+      lucideListPlus,
+      lucidePencil,
+      lucideSearchX,
+      lucideStar,
+      lucideTrash2,
+    }),
   ],
   templateUrl: './item-view.html',
   /** Fills the detail pane. See `ItemsPage` for why routed views position themselves. */
@@ -343,7 +377,9 @@ export class ItemView {
   /** One row per *current* field, diffed against the entry at the same index. */
   protected readonly viewingHistoryFieldRows = computed<HistoryFieldRow[]>(() => {
     const entry = this.viewingHistoryEntry();
-    return entry ? historyFieldRows(this.fields(), entry.fields, this.i18n.translate('common.unnamed')) : [];
+    return entry
+      ? historyFieldRows(this.fields(), entry.fields, this.i18n.translate('common.unnamed'))
+      : [];
   });
 
   /** Fields the history entry has beyond the current item's field count — existed then, doesn't as a current slot now. */

@@ -1,16 +1,179 @@
 <!--
-  Chrome shared by every unauthenticated screen: the brand mark over a single
-  centred column, each step rendering into the outlet below it.
+  Chrome shared by every unauthenticated screen.
+
+  Two columns from `lg` up: the current step centred in a column with its own top bar
+  and footer, beside a brand panel that says what the app is and what signing in gives
+  it. Below `lg` the panel is dropped and the column fills the screen — the top bar,
+  the step and the footer are all a phone needs, and the start step carries its own
+  short version of the panel's three facts.
 
   The backdrop is painted here rather than left to the document, because nothing
   else covers the page underneath — the pre-bootstrap spinner in `index.html`
   used to show straight through this layout.
 -->
 <div class="bg-background absolute inset-0 overflow-y-auto">
-  <div
-    class="mx-auto flex min-h-full w-full flex-col items-center justify-center gap-8 px-4 py-10"
-  >
-    <app-logo class="animate-in fade-in shrink-0 duration-700" style="--logo-height: 2.75rem" />
-    <router-outlet />
+  <div class="grid min-h-full lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
+    <div
+      class="flex min-h-dvh flex-col px-5 pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:px-10 lg:min-h-full lg:pt-8 lg:pb-8"
+    >
+      <header class="flex h-12 items-center justify-between gap-4">
+        <app-logo
+          class="text-foreground animate-in fade-in w-fit duration-500"
+          style="--logo-height: 1.5rem"
+        />
+
+        <div class="-me-2 flex items-center gap-1">
+          <button
+            hlmBtn
+            type="button"
+            variant="ghost"
+            class="text-muted-foreground hover:text-foreground h-10 gap-1.5 rounded-xl px-3"
+            [attr.aria-label]="'auth.layout.language' | t"
+            [hlmDropdownMenuTrigger]="languageMenu"
+            align="end"
+          >
+            <ng-icon name="lucideLanguages" size="1.125rem" strokeWidth="1.75" />
+            <span class="text-xs font-bold tracking-wide uppercase">{{ locale() }}</span>
+          </button>
+          <button
+            hlmBtn
+            type="button"
+            variant="ghost"
+            size="icon"
+            class="text-muted-foreground hover:text-foreground size-10 rounded-xl"
+            [attr.aria-label]="'layout.sidebar.themePrefix' | t: { theme: themePreference() }"
+            (click)="nextTheme()"
+          >
+            <ng-icon [name]="themeIcon()" size="1.125rem" strokeWidth="1.75" />
+          </button>
+        </div>
+      </header>
+
+      <main id="main-content" class="flex flex-1 flex-col justify-center py-10 sm:py-16">
+        <div class="mx-auto w-full max-w-[25rem]">
+          <router-outlet />
+        </div>
+      </main>
+
+      <footer
+        class="text-muted-foreground flex items-center justify-center gap-2 text-xs font-medium lg:justify-start"
+      >
+        <ng-icon
+          name="lucideShieldCheck"
+          size="0.9375rem"
+          strokeWidth="1.75"
+          class="text-accent-strong shrink-0"
+        />
+        {{ 'auth.layout.footer' | t }}
+      </footer>
+    </div>
+
+    <!--
+      The brand panel. Everything in it is presentational except the copy, so the
+      artwork is hidden from assistive technology and the facts are a plain list.
+    -->
+    <aside
+      class="bg-sidebar ring-border relative m-3 hidden flex-col overflow-hidden rounded-[1.75rem] p-12 ring-1 lg:flex xl:p-14 2xl:p-16"
+    >
+      <!-- A dotted grid that fades out towards the bottom, and one soft pool of the accent. -->
+      <div
+        class="pointer-events-none absolute inset-0 [mask-image:linear-gradient(to_bottom,black,transparent_75%)] bg-[radial-gradient(var(--foreground)_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.12] dark:opacity-[0.10]"
+        aria-hidden="true"
+      ></div>
+      <div
+        class="bg-primary/35 dark:bg-primary/15 pointer-events-none absolute -top-40 -right-32 size-[30rem] rounded-full blur-3xl"
+        aria-hidden="true"
+      ></div>
+
+      <div class="relative flex flex-1 flex-col justify-between gap-12">
+        <span
+          class="bg-card/80 text-foreground ring-border inline-flex w-fit items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-bold ring-1 backdrop-blur"
+        >
+          <ng-icon
+            name="lucideLockKeyhole"
+            size="0.875rem"
+            strokeWidth="2"
+            class="text-accent-strong"
+          />
+          {{ 'auth.layout.badge' | t }}
+        </span>
+
+        <div class="flex flex-col gap-10">
+          <div class="flex max-w-[34rem] flex-col gap-4">
+            <p
+              class="text-foreground text-4xl leading-[1.08] font-extrabold tracking-tight text-balance xl:text-[2.875rem]"
+            >
+              {{ 'auth.layout.headline' | t }}
+            </p>
+            <p class="text-muted-foreground max-w-[30rem] text-base leading-relaxed text-pretty">
+              {{ 'auth.layout.subline' | t }}
+            </p>
+          </div>
+
+          <!-- The vault file as the storage provider sees it: a name and ciphertext. -->
+          <div
+            class="bg-card/90 ring-border w-full max-w-[26rem] -rotate-1 rounded-2xl p-5 shadow-[0_28px_56px_-28px_rgb(0_0_0/0.35)] ring-1 backdrop-blur"
+            aria-hidden="true"
+          >
+            <div class="flex items-center gap-3">
+              <span
+                class="bg-primary/15 text-accent-strong inline-flex size-10 shrink-0 items-center justify-center rounded-xl"
+              >
+                <ng-icon name="lucideFileLock2" size="1.25rem" strokeWidth="1.75" />
+              </span>
+              <div class="flex min-w-0 flex-1 flex-col gap-0.5">
+                <span class="text-foreground truncate font-mono text-sm font-bold"
+                  >vault.json.enc</span
+                >
+                <span class="text-muted-foreground text-xs">Argon2id · AES-256-GCM</span>
+              </div>
+              <span
+                class="bg-primary/15 text-accent-strong inline-flex size-7 shrink-0 items-center justify-center rounded-full"
+              >
+                <ng-icon name="lucideCheck" size="0.875rem" strokeWidth="2.5" />
+              </span>
+            </div>
+            <div class="bg-border my-4 h-px"></div>
+            <p
+              class="text-muted-foreground/70 line-clamp-3 font-mono text-[0.6875rem] leading-relaxed break-all select-none"
+            >
+              {{ cipherPreview }}
+            </p>
+          </div>
+        </div>
+
+        <ul class="grid grid-cols-1 gap-6 xl:grid-cols-3 xl:gap-5">
+          @for (feature of features; track feature.icon) {
+            <li class="flex gap-3.5 xl:flex-col xl:gap-3">
+              <span
+                class="bg-card text-accent-strong ring-border inline-flex size-9 shrink-0 items-center justify-center rounded-xl ring-1"
+                aria-hidden="true"
+              >
+                <ng-icon [name]="feature.icon" size="1.125rem" strokeWidth="1.75" />
+              </span>
+              <div class="flex flex-col gap-1">
+                <p class="text-foreground text-sm font-bold">{{ feature.title | t }}</p>
+                <p class="text-muted-foreground text-[0.8125rem] leading-relaxed">
+                  {{ feature.body | t }}
+                </p>
+              </div>
+            </li>
+          }
+        </ul>
+      </div>
+    </aside>
   </div>
 </div>
+
+<ng-template #languageMenu>
+  <hlm-dropdown-menu class="min-w-44">
+    @for (option of localeOptions; track option.value) {
+      <button hlmDropdownMenuItem (click)="setLocale(option.value)">
+        <span class="flex-1">{{ option.label }}</span>
+        @if (option.value === locale()) {
+          <ng-icon name="lucideCheck" size="1rem" class="text-accent-strong" />
+        }
+      </button>
+    }
+  </hlm-dropdown-menu>
+</ng-template>

@@ -95,14 +95,32 @@ export const es: TranslationTable = {
   'auth.recover.submit': 'Recuperar cuenta',
   'auth.recover.genericError': 'No se pudo recuperar tu cuenta. Inténtalo de nuevo.',
 
+  'auth.layout.badge': 'Cifrado de extremo a extremo',
+  'auth.layout.headline': 'Tus contraseñas, selladas en tu propia nube.',
+  'auth.layout.subline': 'KeeperPass cifra todo en este navegador antes de que llegue a tu almacenamiento. Solo tu secreto puede abrirlo.',
+  'auth.layout.featureAccess': 'Acceso limitado',
+  'auth.layout.featureEncryption': 'Cifrado de conocimiento cero',
+  'auth.layout.featureNoServer': 'Sin servidor intermedio',
+  'auth.layout.footer': 'Cifrado en tu navegador. Guardado en tu nube.',
+  'auth.layout.language': 'Idioma',
+
   'items.pageTitle': 'Caja fuerte',
+  'items.noSelection.title': 'Ningún elemento seleccionado',
+  'items.noSelection.description': 'Elige uno de la lista para verlo y editarlo.',
   'generator.pageTitle': 'Generador de contraseñas',
+  'generator.subtitle': 'Contraseñas y frases de contraseña aleatorias, creadas en este dispositivo',
+  'generator.options': 'Opciones',
+  'generator.charCount': '{count} caracteres',
   'generator.passphrase': 'Frase de contraseña',
   'generator.randomString': 'Cadena aleatoria',
   'generator.dialogCharacters': 'Caracteres',
   'generator.dialogWords': 'Palabras',
   'generator.wordSeparator': 'Separador de palabras',
   'generator.separatorPlaceholder': 'Separador',
+  'generator.separatorDash': 'Guion ( - )',
+  'generator.separatorUnderscore': 'Guion bajo ( _ )',
+  'generator.separatorSlash': 'Barra ( / )',
+  'generator.separatorSpace': 'Espacio',
   'generator.language': 'Idioma',
   'generator.languagePlaceholder': 'Idioma',
   'generator.words': 'Palabras',
@@ -301,6 +319,14 @@ export const es: TranslationTable = {
   'report.aboutSectionAria': 'Acerca de {title}',
   'report.nothingFound': 'No se encontró nada',
   'report.showAll': 'Mostrar los {count}',
+  'report.openItemAria': 'Abrir {name}',
+  'report.healthLabel': 'Salud de la caja fuerte',
+  'report.healthGood': 'Sólida',
+  'report.healthFair': 'Mejorable',
+  'report.healthPoor': 'En riesgo',
+  'report.itemsCheckedOne': '{count} elemento con contraseña revisado',
+  'report.itemsCheckedMany': '{count} elementos con contraseña revisados',
+  'report.subtitle': 'Qué tan seguras son tus contraseñas guardadas',
 
   'audit.weakPassword.label': 'Contraseñas débiles',
   'audit.weakPassword.description':
@@ -455,14 +481,15 @@ export const es: TranslationTable = {
     'La Política de privacidad se mantiene actualizada en un único lugar, fuera de la app, para que sea coherente sin importar dónde la leas.',
 
   'support.title': 'Soporte',
+  'support.subtitle': 'Cómo funciona KeeperPass y respuestas a preguntas frecuentes',
+  'support.contact.description': '¿Preguntas, comentarios o algún problema? Escríbenos un correo.',
   'support.dataLives.title': 'Dónde viven tus datos',
-  'support.dataLives.description':
-    'Keeperpass no tiene servidor. Tu caja fuerte es un único archivo cifrado en tu propio Google Drive, y tu navegador es el único lugar donde llega a ser legible.',
+  'support.dataLives.description': 'Keeperpass no tiene servidor. Tu caja fuerte es un único archivo cifrado en un almacenamiento en la nube que ya tienes — como Google Drive o Dropbox — y tu navegador es el único lugar donde se puede leer.',
   'support.dataLives.browserTitle': 'Tu navegador',
   'support.dataLives.browserDescription':
     'Cifra y descifra todo. Tu secreto nunca sale de este dispositivo.',
   'support.dataLives.encryptedFile': 'archivo cifrado',
-  'support.dataLives.driveTitle': 'Tu Google Drive',
+  'support.dataLives.driveTitle': 'Tu almacenamiento en la nube',
   'support.dataLives.driveDescriptionPrefix': 'Contiene',
   'support.dataLives.driveDescriptionSuffix': '— texto cifrado ilegible.',
   'support.dataLives.footer':
@@ -477,20 +504,15 @@ export const es: TranslationTable = {
   'support.protects.encryptionTerm': 'Cifrado',
   'support.protects.encryptionDescription':
     'AES-GCM, que detecta manipulaciones además de impedir la lectura.',
-  'support.protects.driveAccessTerm': 'Acceso a Drive',
-  'support.protects.driveAccessDescriptionPrefix': 'Limitado a',
-  'support.protects.driveAccessDescriptionSuffix':
-    '— Keeperpass solo ve los archivos que crea, nada más de tu Drive.',
+  'support.protects.storageAccessTerm': 'Acceso al almacenamiento',
+  'support.protects.storageAccessDescription': 'Keeperpass solo puede acceder a los archivos que crea — con un permiso limitado en Google Drive y una carpeta de aplicación en Dropbox. Nada más de tu almacenamiento le resulta visible.',
   'support.signingIn.title': 'Inicio de sesión',
   'support.signingIn.description': 'Dos cosas separadas, por dos razones separadas.',
-  'support.signingIn.step1Title': 'Continuar con Google',
-  'support.signingIn.step1Description':
-    'Concede permiso para leer y escribir tu archivo de caja fuerte. Esto demuestra quién es dueño del Drive — no desbloquea nada.',
+  'support.signingIn.step1Title': 'Conecta tu almacenamiento en la nube',
+  'support.signingIn.step1Description': 'Inicia sesión con tu proveedor de almacenamiento — Google o Dropbox — para dar acceso al archivo de tu caja fuerte. Esto demuestra quién es el dueño del almacenamiento; no desbloquea nada.',
   'support.signingIn.step2Title': 'Introduce tu secreto',
-  'support.signingIn.step2Description':
-    'Deriva en tu navegador la clave que descifra el archivo. Google nunca ve esto, y nosotros tampoco.',
-  'support.signingIn.footer':
-    'Alguien con tu cuenta de Google sigue sin poder leer tu caja fuerte. Alguien con tu secreto sigue sin poder llegar al archivo. Se necesitan los dos.',
+  'support.signingIn.step2Description': 'Deriva en tu navegador la clave que descifra el archivo. Tu proveedor de almacenamiento nunca la ve, y nosotros tampoco.',
+  'support.signingIn.footer': 'Quien tenga acceso a tu cuenta de almacenamiento sigue sin poder leer tu caja fuerte. Quien conozca tu secreto sigue sin poder llegar al archivo. Hacen falta las dos cosas.',
   'support.terms.title': 'Términos que conviene conocer',
   'support.terms.secretDescription': 'La única frase que desbloquea tu caja fuerte. No se puede recuperar — ver abajo.',
   'support.terms.vaultTerm': 'Caja fuerte',
@@ -499,6 +521,8 @@ export const es: TranslationTable = {
   'support.terms.tagTermSingular': 'Etiqueta',
   'support.terms.tagDescriptionPrefix': 'Una etiqueta para filtrar entre cajas fuertes, como',
   'support.terms.tagDescriptionMiddle': 'o',
+  'support.terms.tagExampleWork': 'trabajo',
+  'support.terms.tagExampleBanking': 'banca',
   'support.terms.reportTerm': 'Informe de seguridad',
   'support.terms.reportDescription':
     'Marca contraseñas débiles, reutilizadas y filtradas conocidas. Se ejecuta enteramente en tu dispositivo.',
@@ -510,19 +534,15 @@ export const es: TranslationTable = {
   'support.faq.forgetSecretA2Strong': '¿Olvidaste tu secreto?',
   'support.faq.forgetSecretA2Middle':
     'en la pantalla de desbloqueo crea una caja fuerte nueva y vacía con un nuevo secreto. Tu archivo antiguo no se elimina — se renombra a',
-  'support.faq.forgetSecretA2Suffix':
-    'y se queda en tu carpeta de Drive, por si algún día recuerdas el secreto anterior.',
+  'support.faq.forgetSecretA2Suffix': 'y se queda en tu carpeta de almacenamiento (en Dropbox, dentro de Aplicaciones), así que si algún día recuerdas el secreto antiguo, los datos siguen ahí.',
   'support.faq.forgetSecretA3':
     'Anota tu secreto y guárdalo en un lugar seguro. Es lo único en Keeperpass que no se puede reemplazar.',
   'support.faq.seeQ': '¿Puede Keeperpass ver mis contraseñas?',
-  'support.faq.seeA':
-    'No — y no como promesa, sino como consecuencia del diseño. El cifrado ocurre en tu navegador y el texto cifrado va directo a tu Drive. No hay ningún servidor de Keeperpass en el camino que pueda ver nada.',
+  'support.faq.seeA': 'No — y no es una promesa, sino una consecuencia del diseño. El cifrado ocurre en tu navegador y el texto cifrado va directo a tu propio almacenamiento. No hay ningún servidor de Keeperpass en el camino que pueda ver nada.',
   'support.faq.syncQ': '¿Se sincroniza entre dispositivos?',
-  'support.faq.syncA':
-    'Sí. Todos los dispositivos leen el mismo archivo de tu Drive. Inicia sesión con la misma cuenta de Google, introduce el mismo secreto y ahí está tu caja fuerte.',
-  'support.faq.googleQ': '¿Y si Google lee el archivo?',
-  'support.faq.googleA':
-    'Vería bytes cifrados. La clave nunca se envía a Google, así que el contenido sigue siendo ilegible para ellos.',
+  'support.faq.syncA': 'Sí. Todos los dispositivos leen el mismo archivo de tu almacenamiento. Inicia sesión con la misma cuenta, introduce el mismo secreto y tu caja fuerte estará ahí.',
+  'support.faq.providerQ': '¿Y si mi proveedor de almacenamiento lee el archivo?',
+  'support.faq.providerA': 'Verían bytes cifrados. La clave nunca sale de tu navegador, así que ni Google ni Dropbox ni ningún otro proveedor pueden leer el contenido.',
   'support.faq.importQ': '¿Puedo importar desde otro gestor de contraseñas?',
   'support.faq.importA': 'Sí — exporta a CSV desde ahí y luego usa Importar en Ajustes.',
   'support.faq.changeSecretQ': '¿Cómo cambio mi secreto?',
@@ -531,12 +551,16 @@ export const es: TranslationTable = {
   'support.faq.changeSecretASuffix':
     'Introduces tu secreto actual y el nuevo; tu caja fuerte se descifra, se vuelve a cifrar con el nuevo secreto y se guarda de nuevo. No se pierde nada — todos los elementos te acompañan, y el cambio se aplica en cada dispositivo la próxima vez que cargue tu caja fuerte.',
   'support.faq.costQ': '¿Cuánto cuesta?',
-  'support.faq.costA':
-    'Nada. Keeperpass es gratuito y de código abierto, y guarda los datos en el espacio de Drive que ya tienes.',
+  'support.faq.costA': 'Nada. Keeperpass es gratuito y de código abierto, y guarda los datos en el espacio en la nube que ya tienes.',
   'support.contact.title': '¿Sigues atascado?',
 
   'settings.title': 'Ajustes',
   'settings.openMenu': 'Abrir el menú de navegación',
+  'settings.subtitle': 'Cuenta, idioma, seguridad y datos',
+  'settings.security': 'Seguridad',
+  'settings.storage': 'Almacenamiento',
+  'settings.dangerZone': 'Zona de peligro',
+  'settings.profile.deleteHint': 'Cambia el nombre de tu archivo de la caja fuerte para que esta app ya no lo encuentre y cierra la sesión. No se borra nada.',
 
   'settings.language.title': 'Idioma',
   'settings.language.label': 'Idioma de la interfaz',

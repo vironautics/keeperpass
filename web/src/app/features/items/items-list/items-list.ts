@@ -14,10 +14,21 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideArrowDownWideNarrow,
+  lucideArrowUpNarrowWide,
+  lucideCheckCheck,
+  lucideFolderInput,
+  lucideListChecks,
+  lucidePlus,
+  lucideSearch,
+  lucideTrash2,
+  lucideX,
+} from '@ng-icons/lucide';
 import { HlmAlertDialogImports } from '@spartan-ng/helm/alert-dialog';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmDialogImports } from '@spartan-ng/helm/dialog';
-import { HlmEmptyImports } from '@spartan-ng/helm/empty';
 import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
 import { HlmSelectImports } from '@spartan-ng/helm/select';
 import { HlmSidebarTrigger } from '@spartan-ng/helm/sidebar';
@@ -75,14 +86,27 @@ interface ItemRowModel {
     HlmAlertDialogImports,
     HlmButton,
     HlmDialogImports,
-    HlmEmptyImports,
     HlmInputGroupImports,
     HlmSelectImports,
     HlmSidebarTrigger,
     HlmTooltip,
     Icon,
     ItemRow,
+    NgIcon,
     TranslatePipe,
+  ],
+  providers: [
+    provideIcons({
+      lucideArrowDownWideNarrow,
+      lucideArrowUpNarrowWide,
+      lucideCheckCheck,
+      lucideFolderInput,
+      lucideListChecks,
+      lucidePlus,
+      lucideSearch,
+      lucideTrash2,
+      lucideX,
+    }),
   ],
   templateUrl: './items-list.html',
   /** A column that fills the pane `ItemsPage` gives it, and never scrolls itself. */
@@ -91,7 +115,7 @@ interface ItemRowModel {
 export class ItemsList {
   protected readonly searchControl = new FormControl('', { nonNullable: true });
 
-  /** Whether the search field has replaced the title header. */
+  /** Whether the real search input has replaced the button dressed as one. */
   protected readonly searching = signal(false);
 
   /**

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideCloudUpload } from '@ng-icons/lucide';
 import { HlmButton } from '@spartan-ng/helm/button';
-import { HlmCardImports } from '@spartan-ng/helm/card';
 import { TranslatePipe } from '../../../core/i18n';
 import { ProviderId } from '../../../core/providers/provider';
 import { VaultMigrationService } from '../../../core/providers/vault-migration.service';
@@ -16,9 +17,10 @@ import { MoveVaultDialog } from '../move-vault-dialog/move-vault-dialog';
 @Component({
   selector: 'app-move-vault-section',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MoveVaultDialog, TranslatePipe, DropboxLogo, GoogleLogo, HlmButton, HlmCardImports],
+  imports: [MoveVaultDialog, TranslatePipe, NgIcon, DropboxLogo, GoogleLogo, HlmButton],
+  providers: [provideIcons({ lucideCloudUpload })],
   templateUrl: './move-vault-section.html',
-  host: { class: 'block' },
+  host: { class: 'block empty:hidden' },
 })
 export class MoveVaultSection {
   protected readonly targets = inject(VaultMigrationService).targets();

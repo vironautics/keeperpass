@@ -34,7 +34,10 @@
               version beside it.
             -->
             <app-logo style="--logo-height: 1.5em" />
-            <span class="text-sidebar-foreground/60 text-xs">v{{ version }}</span>
+            <span
+              class="bg-sidebar-foreground/[0.06] text-sidebar-foreground/60 rounded-full px-2 py-0.5 text-[0.625rem] font-bold tabular-nums"
+              >v{{ version }}</span
+            >
           </a>
 
           <!--
@@ -47,7 +50,16 @@
       </ul>
     </hlm-sidebar-header>
 
-    <hlm-sidebar-content>
+    <!--
+      One place for the navigation's look, so every group reads the same: helm's rows,
+      a little taller and rounder; group labels as small caps captions; the current
+      destination raised as a card with its icon in the accent; counts as quiet pills.
+      Descendant variants rather than classes on each row, because there are dozens of
+      rows across three components and they must not drift apart.
+    -->
+    <hlm-sidebar-content
+      class="gap-1 [&_[data-sidebar=group-label]]:text-[0.6875rem] [&_[data-sidebar=group-label]]:font-bold [&_[data-sidebar=group-label]]:tracking-wider [&_[data-sidebar=group-label]]:text-sidebar-foreground/50 [&_[data-sidebar=group-label]]:uppercase [&_[data-sidebar=menu-button]]:h-9 [&_[data-sidebar=menu-button]]:gap-3 [&_[data-sidebar=menu-button]]:rounded-lg [&_[data-sidebar=menu-button]]:px-2.5 [&_[data-sidebar=menu-button]]:font-medium [&_[data-sidebar=menu-button]]:text-sidebar-foreground/80 [&_[data-sidebar=menu-button]:hover]:bg-sidebar-foreground/[0.05] [&_[data-sidebar=menu-button]:hover]:text-sidebar-foreground [&_[data-sidebar=menu-button][data-active=true]]:bg-card [&_[data-sidebar=menu-button][data-active=true]]:font-semibold [&_[data-sidebar=menu-button][data-active=true]]:text-foreground [&_[data-sidebar=menu-button][data-active=true]]:shadow-xs [&_[data-sidebar=menu-button][data-active=true]]:ring-1 [&_[data-sidebar=menu-button][data-active=true]]:ring-sidebar-border [&_[data-sidebar=menu-button][data-active=true]_ng-icon]:text-accent-strong [&_[data-sidebar=menu-sub-button]]:h-8 [&_[data-sidebar=menu-sub-button]]:rounded-lg [&_[data-sidebar=menu-sub-button]]:px-2.5 [&_[data-sidebar=menu-sub-button]]:text-sidebar-foreground/75 [&_[data-sidebar=menu-sub-button]:hover]:bg-sidebar-foreground/[0.05] [&_[data-sidebar=menu-sub-button][data-active=true]]:bg-card [&_[data-sidebar=menu-sub-button][data-active=true]]:font-semibold [&_[data-sidebar=menu-sub-button][data-active=true]]:text-foreground [&_[data-sidebar=menu-sub-button][data-active=true]]:shadow-xs [&_[data-sidebar=menu-sub-button][data-active=true]]:ring-1 [&_[data-sidebar=menu-sub-button][data-active=true]]:ring-sidebar-border [&_[data-sidebar=menu-badge]]:end-1.5 [&_[data-sidebar=menu-badge]]:rounded-full [&_[data-sidebar=menu-badge]]:bg-sidebar-foreground/[0.06] [&_[data-sidebar=menu-badge]]:px-1.5 [&_[data-sidebar=menu-badge]]:text-[0.6875rem] [&_[data-sidebar=menu-badge]]:font-semibold [&_[data-sidebar=menu-badge]]:text-sidebar-foreground/70 [&_[data-sidebar=menu-sub]]:border-sidebar-foreground/10 [&_[data-sidebar=menu-sub]]:my-0.5"
+    >
       <app-nav-vaults />
       <app-nav-more />
     </hlm-sidebar-content>

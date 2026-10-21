@@ -1,15 +1,16 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideKeyRound, lucideLockKeyhole } from '@ng-icons/lucide';
 import { HlmButton } from '@spartan-ng/helm/button';
-import { HlmCardImports } from '@spartan-ng/helm/card';
 import { TranslatePipe } from '../../../core/i18n';
-import { Icon } from '../../../ui/icon/icon';
 import { ChangePasswordDialog } from '../change-password-dialog/change-password-dialog';
 
 /** Entry point for rotating the master password. */
 @Component({
   selector: 'app-master-password-section',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ChangePasswordDialog, TranslatePipe, Icon, HlmButton, HlmCardImports],
+  imports: [ChangePasswordDialog, TranslatePipe, NgIcon, HlmButton],
+  providers: [provideIcons({ lucideKeyRound, lucideLockKeyhole })],
   templateUrl: './master-password-section.html',
   host: { class: 'block' },
 })

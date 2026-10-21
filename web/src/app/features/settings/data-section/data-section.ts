@@ -7,14 +7,19 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { HlmBadge } from '@spartan-ng/helm/badge';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideDownload,
+  lucideFileInput,
+  lucideFileOutput,
+  lucideFileSpreadsheet,
+  lucideHistory,
+  lucideUpload,
+} from '@ng-icons/lucide';
 import { HlmButton } from '@spartan-ng/helm/button';
-import { HlmCardImports } from '@spartan-ng/helm/card';
-import { HlmItemImports } from '@spartan-ng/helm/item';
 import { TranslatePipe } from '../../../core/i18n';
 import { IMPORT_ACCEPT } from '../../../core/import-export';
 import { VaultStore } from '../../../core/vault/vault.store';
-import { Icon } from '../../../ui/icon/icon';
 import { formatDateTime } from '../../items/format-date';
 import { ExportDialog } from '../export-dialog/export-dialog';
 import { ImportDialog } from '../import-dialog/import-dialog';
@@ -23,15 +28,16 @@ import { ImportDialog } from '../import-dialog/import-dialog';
 @Component({
   selector: 'app-data-section',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    ExportDialog,
-    ImportDialog,
-    Icon,
-    TranslatePipe,
-    HlmBadge,
-    HlmButton,
-    HlmCardImports,
-    HlmItemImports,
+  imports: [ExportDialog, ImportDialog, NgIcon, TranslatePipe, HlmButton],
+  providers: [
+    provideIcons({
+      lucideDownload,
+      lucideFileInput,
+      lucideFileOutput,
+      lucideFileSpreadsheet,
+      lucideHistory,
+      lucideUpload,
+    }),
   ],
   templateUrl: './data-section.html',
   host: { class: 'block' },

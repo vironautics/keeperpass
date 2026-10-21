@@ -2,9 +2,21 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideCircleAlert,
+  lucideCircleUser,
+  lucideCopyCheck,
+  lucideEye,
+  lucideEyeOff,
+  lucideKeyRound,
+  lucideLogOut,
+  lucideTriangleAlert,
+  lucideVault,
+  lucideWandSparkles,
+} from '@ng-icons/lucide';
 import { HlmAlertImports } from '@spartan-ng/helm/alert';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
-import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmFieldImports } from '@spartan-ng/helm/field';
 import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
 import { HlmProgressImports } from '@spartan-ng/helm/progress';
@@ -26,7 +38,7 @@ import {
 import { I18nService, TranslatePipe } from '../../../core/i18n';
 import { encryptVault } from '../../../core/vault/vault-crypto';
 import { createEmptyVaultSnapshot, VaultStore } from '../../../core/vault/vault.store';
-import { Icon } from '../../../ui/icon/icon';
+import { AuthHeading } from '../auth-heading/auth-heading';
 import { GeneratePasswordDialog } from '../../items/generate-password-dialog/generate-password-dialog';
 import { STRENGTH_COLOURS, STRENGTH_LABELS, strengthPercent } from '../../items/strength-scale';
 
@@ -49,20 +61,33 @@ import { STRENGTH_COLOURS, STRENGTH_LABELS, strengthPercent } from '../../items/
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
-    Icon,
+    AuthHeading,
+    NgIcon,
     TranslatePipe,
     GeneratePasswordDialog,
     HlmAlertImports,
     HlmButtonImports,
-    HlmCardImports,
     HlmFieldImports,
     HlmInputGroupImports,
     HlmProgressImports,
     HlmSpinnerImports,
   ],
+  providers: [
+    provideIcons({
+      lucideCircleAlert,
+      lucideCircleUser,
+      lucideCopyCheck,
+      lucideEye,
+      lucideEyeOff,
+      lucideKeyRound,
+      lucideLogOut,
+      lucideTriangleAlert,
+      lucideVault,
+      lucideWandSparkles,
+    }),
+  ],
   templateUrl: './setup-page.html',
-  /** Fills the layout's centred column — see `UnlockPage` for why the host has to stretch. */
-  host: { class: 'block self-stretch' },
+  host: { class: 'block' },
 })
 export class SetupPage {
   private readonly session = inject(SessionStore);
@@ -105,7 +130,9 @@ export class SetupPage {
 
   protected readonly strengthPercent = computed(() => strengthPercent(this.strength()));
   protected readonly strengthColour = computed(() => STRENGTH_COLOURS[this.strength()]);
-  protected readonly strengthLabel = computed(() => this.i18n.translate(STRENGTH_LABELS[this.strength()]));
+  protected readonly strengthLabel = computed(() =>
+    this.i18n.translate(STRENGTH_LABELS[this.strength()]),
+  );
 
   /** A warning, not a block — see the class doc. */
   protected readonly weak = computed(

@@ -1,4 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucidePencil, lucideTrash2 } from '@ng-icons/lucide';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HlmAlertDialogImports } from '@spartan-ng/helm/alert-dialog';
@@ -28,6 +30,7 @@ import { Icon } from '../../../ui/icon/icon';
   selector: 'app-vaults-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NgIcon,
     ReactiveFormsModule,
     CreateVaultDialog,
     Icon,
@@ -43,6 +46,7 @@ import { Icon } from '../../../ui/icon/icon';
     HlmTooltip,
     TranslatePipe,
   ],
+  providers: [provideIcons({ lucidePencil, lucideTrash2 })],
   templateUrl: './vaults-page.html',
   /** Fills the shell's view area — see `ItemsPage` for why routed views position themselves. */
   host: { class: 'bg-card absolute inset-x-0 bottom-0 top-[var(--inset-top,0px)] flex flex-col' },

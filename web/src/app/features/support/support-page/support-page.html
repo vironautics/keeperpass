@@ -1,296 +1,337 @@
-<header class="flex shrink-0 items-center gap-1 border-b p-2">
+<header class="bg-card flex h-14 shrink-0 items-center gap-3 border-b px-3 sm:px-6">
   <!--
     The sidebar is a sheet below `md`, so it needs one obvious way in. From `md` up the
     sidebar column is permanently on screen and its own header owns the toggle.
   -->
-  <button hlmSidebarTrigger class="md:hidden" [srOnlyText]="'common.openNavMenu' | t"></button>
+  <button
+    hlmSidebarTrigger
+    class="-ms-1 size-9 rounded-lg md:hidden"
+    [srOnlyText]="'common.openNavMenu' | t"
+  ></button>
 
-  <h1 class="flex min-w-0 flex-1 items-center gap-2 px-1 text-sm font-semibold">
-    <app-icon name="support" class="text-accent-strong text-[0.8125rem]" />
-    <span class="min-w-0 truncate">{{ 'support.title' | t }}</span>
-  </h1>
+  <span
+    class="bg-primary/15 text-accent-strong inline-flex size-9 shrink-0 items-center justify-center rounded-xl"
+    aria-hidden="true"
+  >
+    <ng-icon name="lucideLifeBuoy" size="1.125rem" strokeWidth="1.75" />
+  </span>
+
+  <div class="flex min-w-0 flex-1 flex-col leading-tight">
+    <h1 class="text-foreground truncate text-base font-extrabold tracking-tight">
+      {{ 'support.title' | t }}
+    </h1>
+    <p class="text-muted-foreground truncate text-xs max-sm:hidden">{{ 'support.subtitle' | t }}</p>
+  </div>
 </header>
 
 <!-- A reading column of cards, one per question someone actually arrives with. -->
-<main class="min-h-0 flex-1 overflow-y-auto">
-  <div class="mx-auto flex w-full max-w-3xl flex-col gap-4 p-4 sm:p-6">
+<main class="bg-background min-h-0 flex-1 overflow-y-auto">
+  <div class="mx-auto flex w-full max-w-3xl flex-col gap-5 px-4 py-6 sm:px-6 sm:py-8">
     <!-- Where your data lives -->
-    <section hlmCard>
-      <div hlmCardHeader>
-        <h2 hlmCardTitle class="text-base">{{ 'support.dataLives.title' | t }}</h2>
-        <p hlmCardDescription>
-          {{ 'support.dataLives.description' | t }}
-        </p>
+    <section class="bg-card overflow-hidden rounded-2xl border shadow-xs">
+      <div class="flex items-start gap-3.5 p-5 pb-0 sm:p-6 sm:pb-0">
+        <span
+          class="bg-primary/15 text-accent-strong inline-flex size-10 shrink-0 items-center justify-center rounded-xl"
+          aria-hidden="true"
+        >
+          <ng-icon name="lucideDatabase" size="1.125rem" strokeWidth="1.75" />
+        </span>
+        <div class="min-w-0">
+          <h2 class="text-foreground text-base font-bold">{{ 'support.dataLives.title' | t }}</h2>
+          <p class="text-muted-foreground mt-0.5 text-sm leading-relaxed">
+            {{ 'support.dataLives.description' | t }}
+          </p>
+        </div>
       </div>
 
-      <div hlmCardContent class="flex flex-col gap-4">
+      <div class="flex flex-col gap-5 p-5 sm:p-6">
         <!--
           Two parties and what passes between them. A grid rather than absolute
-          positioning: at `sm` it is browser → file → Drive across, and below that the
-          arrow rotates and the three stack.
+          positioning: at `sm` it is browser → file → storage across, and below that the
+          connector turns vertical and the three stack.
         -->
-        <ul class="grid items-center gap-3 sm:grid-cols-[1fr_auto_1fr]">
-          <li class="bg-muted/40 flex flex-col gap-1 rounded-lg border p-3">
-            <app-icon name="computer" class="text-accent-strong text-xl" />
-            <p class="text-sm font-medium">{{ 'support.dataLives.browserTitle' | t }}</p>
-            <p class="text-muted-foreground text-xs">
+        <ul class="grid items-stretch gap-3 sm:grid-cols-[1fr_auto_1fr]">
+          <li class="bg-muted/40 flex flex-col gap-2 rounded-xl border p-4">
+            <span
+              class="bg-card text-accent-strong ring-border inline-flex size-9 items-center justify-center rounded-lg ring-1"
+              aria-hidden="true"
+            >
+              <ng-icon name="lucideMonitorSmartphone" size="1.125rem" strokeWidth="1.75" />
+            </span>
+            <p class="text-foreground text-sm font-bold">{{ 'support.dataLives.browserTitle' | t }}</p>
+            <p class="text-muted-foreground text-xs leading-relaxed">
               {{ 'support.dataLives.browserDescription' | t }}
             </p>
           </li>
 
-          <li class="flex flex-col items-center gap-1" aria-hidden="true">
-            <app-icon name="arrow-right" class="text-muted-foreground rotate-90 sm:rotate-0" />
-            <span class="text-muted-foreground text-[0.7rem]">{{ 'support.dataLives.encryptedFile' | t }}</span>
+          <li class="flex flex-col items-center justify-center gap-2 py-1" aria-hidden="true">
+            <span
+              class="bg-primary/15 text-accent-strong inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[0.6875rem] font-bold whitespace-nowrap"
+            >
+              <ng-icon name="lucideLock" size="0.75rem" strokeWidth="2.25" />
+              {{ 'support.dataLives.encryptedFile' | t }}
+            </span>
+            <ng-icon
+              name="lucideArrowRight"
+              size="1.125rem"
+              strokeWidth="2"
+              class="text-muted-foreground rotate-90 sm:rotate-0 rtl:sm:-scale-x-100"
+            />
           </li>
 
-          <li class="bg-muted/40 flex flex-col gap-1 rounded-lg border p-3">
-            <app-icon name="cloud" class="text-accent-strong text-xl" />
-            <p class="text-sm font-medium">{{ 'support.dataLives.driveTitle' | t }}</p>
-            <p class="text-muted-foreground text-xs">
+          <li class="bg-muted/40 flex flex-col gap-2 rounded-xl border p-4">
+            <span
+              class="bg-card text-accent-strong ring-border inline-flex size-9 items-center justify-center rounded-lg ring-1"
+              aria-hidden="true"
+            >
+              <ng-icon name="lucideCloud" size="1.125rem" strokeWidth="1.75" />
+            </span>
+            <p class="text-foreground text-sm font-bold">{{ 'support.dataLives.driveTitle' | t }}</p>
+            <p class="text-muted-foreground text-xs leading-relaxed">
               {{ 'support.dataLives.driveDescriptionPrefix' | t }}
-              <code class="font-mono">keeperpass/vault.json.enc</code>
+              <code class="bg-muted text-foreground rounded px-1 py-0.5 font-mono text-[0.6875rem]"
+                >keeperpass/vault.json.enc</code
+              >
               {{ 'support.dataLives.driveDescriptionSuffix' | t }}
             </p>
           </li>
         </ul>
 
-        <p class="text-muted-foreground text-sm">
-          {{ 'support.dataLives.footer' | t }}
+        <p
+          class="bg-primary/10 text-foreground flex items-start gap-2.5 rounded-xl px-4 py-3 text-sm leading-relaxed"
+        >
+          <ng-icon
+            name="lucideShieldCheck"
+            size="1rem"
+            strokeWidth="2"
+            class="text-accent-strong mt-0.5 shrink-0"
+          />
+          <span>{{ 'support.dataLives.footer' | t }}</span>
         </p>
       </div>
     </section>
 
     <!-- What protects it -->
-    <section hlmCard>
-      <div hlmCardHeader>
-        <h2 hlmCardTitle class="text-base">{{ 'support.protects.title' | t }}</h2>
+    <section class="bg-card overflow-hidden rounded-2xl border shadow-xs">
+      <div class="flex items-center gap-3.5 p-5 pb-0 sm:p-6 sm:pb-0">
+        <span
+          class="bg-primary/15 text-accent-strong inline-flex size-10 shrink-0 items-center justify-center rounded-xl"
+          aria-hidden="true"
+        >
+          <ng-icon name="lucideShieldCheck" size="1.125rem" strokeWidth="1.75" />
+        </span>
+        <h2 class="text-foreground text-base font-bold">{{ 'support.protects.title' | t }}</h2>
       </div>
 
-      <div hlmCardContent>
-        <dl class="grid gap-4 sm:grid-cols-2">
-          <div class="flex flex-col gap-1">
-            <dt class="text-sm font-medium">{{ 'support.protects.secretTerm' | t }}</dt>
-            <dd class="text-muted-foreground text-xs">
-              {{ 'support.protects.secretDescription' | t }}
-            </dd>
+      <dl class="grid gap-3 p-5 sm:grid-cols-2 sm:p-6">
+        @for (fact of protections; track fact.term) {
+          <div class="flex gap-3 rounded-xl border p-4">
+            <ng-icon
+              [name]="fact.icon"
+              size="1.125rem"
+              strokeWidth="1.75"
+              class="text-accent-strong mt-0.5 shrink-0"
+            />
+            <div class="flex min-w-0 flex-col gap-1">
+              <dt class="text-foreground text-sm font-bold">{{ fact.term | t }}</dt>
+              <dd class="text-muted-foreground text-xs leading-relaxed">
+                {{ fact.description | t }}
+              </dd>
+            </div>
           </div>
-          <div class="flex flex-col gap-1">
-            <dt class="text-sm font-medium">{{ 'support.protects.kdfTerm' | t }}</dt>
-            <dd class="text-muted-foreground text-xs">
-              {{ 'support.protects.kdfDescription' | t }}
-            </dd>
-          </div>
-          <div class="flex flex-col gap-1">
-            <dt class="text-sm font-medium">{{ 'support.protects.encryptionTerm' | t }}</dt>
-            <dd class="text-muted-foreground text-xs">
-              {{ 'support.protects.encryptionDescription' | t }}
-            </dd>
-          </div>
-          <div class="flex flex-col gap-1">
-            <dt class="text-sm font-medium">{{ 'support.protects.driveAccessTerm' | t }}</dt>
-            <dd class="text-muted-foreground text-xs">
-              {{ 'support.protects.driveAccessDescriptionPrefix' | t }}
-              <code class="font-mono">drive.file</code>
-              {{ 'support.protects.driveAccessDescriptionSuffix' | t }}
-            </dd>
-          </div>
-        </dl>
-      </div>
+        }
+      </dl>
     </section>
 
     <!-- Signing in -->
-    <section hlmCard>
-      <div hlmCardHeader>
-        <h2 hlmCardTitle class="text-base">{{ 'support.signingIn.title' | t }}</h2>
-        <p hlmCardDescription>{{ 'support.signingIn.description' | t }}</p>
+    <section class="bg-card overflow-hidden rounded-2xl border shadow-xs">
+      <div class="flex items-start gap-3.5 p-5 pb-0 sm:p-6 sm:pb-0">
+        <span
+          class="bg-primary/15 text-accent-strong inline-flex size-10 shrink-0 items-center justify-center rounded-xl"
+          aria-hidden="true"
+        >
+          <ng-icon name="lucideLogIn" size="1.125rem" strokeWidth="1.75" />
+        </span>
+        <div class="min-w-0">
+          <h2 class="text-foreground text-base font-bold">{{ 'support.signingIn.title' | t }}</h2>
+          <p class="text-muted-foreground mt-0.5 text-sm leading-relaxed">
+            {{ 'support.signingIn.description' | t }}
+          </p>
+        </div>
       </div>
 
-      <div hlmCardContent class="flex flex-col gap-4">
-        <ol class="flex flex-col gap-3">
-          <li class="flex gap-3">
-            <span
-              class="bg-primary text-primary-foreground flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-semibold"
-              aria-hidden="true"
-            >
-              1
-            </span>
-            <div class="flex min-w-0 flex-col gap-0.5">
-              <p class="text-sm font-medium">{{ 'support.signingIn.step1Title' | t }}</p>
-              <p class="text-muted-foreground text-xs">
-                {{ 'support.signingIn.step1Description' | t }}
-              </p>
-            </div>
-          </li>
-
-          <li class="flex gap-3">
-            <span
-              class="bg-primary text-primary-foreground flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-semibold"
-              aria-hidden="true"
-            >
-              2
-            </span>
-            <div class="flex min-w-0 flex-col gap-0.5">
-              <p class="text-sm font-medium">{{ 'support.signingIn.step2Title' | t }}</p>
-              <p class="text-muted-foreground text-xs">
-                {{ 'support.signingIn.step2Description' | t }}
-              </p>
-            </div>
-          </li>
+      <div class="flex flex-col gap-5 p-5 sm:p-6">
+        <!-- A vertical stepper: the line between the numbers says "then". -->
+        <ol class="flex flex-col">
+          @for (step of signInSteps; track step.title; let last = $last; let i = $index) {
+            <li class="relative flex gap-4" [class.pb-5]="!last">
+              @if (!last) {
+                <span
+                  class="bg-border absolute start-[0.9375rem] top-9 bottom-1 w-px"
+                  aria-hidden="true"
+                ></span>
+              }
+              <span
+                class="bg-primary text-primary-foreground ring-card relative flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-bold ring-4"
+                aria-hidden="true"
+              >
+                {{ i + 1 }}
+              </span>
+              <div class="flex min-w-0 flex-col gap-0.5 pt-1">
+                <p class="text-foreground text-sm font-bold">{{ step.title | t }}</p>
+                <p class="text-muted-foreground text-sm leading-relaxed">{{ step.description | t }}</p>
+              </div>
+            </li>
+          }
         </ol>
 
-        <p class="text-muted-foreground text-sm">
+        <p class="text-muted-foreground border-t pt-4 text-sm leading-relaxed">
           {{ 'support.signingIn.footer' | t }}
         </p>
       </div>
     </section>
 
     <!-- Terms worth knowing -->
-    <section hlmCard>
-      <div hlmCardHeader>
-        <h2 hlmCardTitle class="text-base">{{ 'support.terms.title' | t }}</h2>
+    <section class="bg-card overflow-hidden rounded-2xl border shadow-xs">
+      <div class="flex items-center gap-3.5 p-5 sm:p-6">
+        <span
+          class="bg-primary/15 text-accent-strong inline-flex size-10 shrink-0 items-center justify-center rounded-xl"
+          aria-hidden="true"
+        >
+          <ng-icon name="lucideBookOpen" size="1.125rem" strokeWidth="1.75" />
+        </span>
+        <h2 class="text-foreground text-base font-bold">{{ 'support.terms.title' | t }}</h2>
       </div>
 
-      <div hlmCardContent>
-        <dl class="divide-y rounded-lg border">
-          <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1 px-3 py-2.5">
-            <dt class="min-w-32 text-sm font-medium">{{ 'auth.unlock.secretLabel' | t }}</dt>
-            <dd class="text-muted-foreground min-w-0 flex-1 text-xs">
-              {{ 'support.terms.secretDescription' | t }}
-            </dd>
-          </div>
-          <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1 px-3 py-2.5">
-            <dt class="min-w-32 text-sm font-medium">{{ 'support.terms.vaultTerm' | t }}</dt>
-            <dd class="text-muted-foreground min-w-0 flex-1 text-xs">
-              {{ 'support.terms.vaultDescription' | t }}
-            </dd>
-          </div>
-          <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1 px-3 py-2.5">
-            <dt class="min-w-32 text-sm font-medium">{{ 'support.terms.tagTermSingular' | t }}</dt>
-            <dd class="text-muted-foreground min-w-0 flex-1 text-xs">
-              {{ 'support.terms.tagDescriptionPrefix' | t }} <em>work</em>
-              {{ 'support.terms.tagDescriptionMiddle' | t }} <em>banking</em>.
-            </dd>
-          </div>
-          <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1 px-3 py-2.5">
-            <dt class="min-w-32 text-sm font-medium">{{ 'support.terms.reportTerm' | t }}</dt>
-            <dd class="text-muted-foreground min-w-0 flex-1 text-xs">
-              {{ 'support.terms.reportDescription' | t }}
-            </dd>
-          </div>
-        </dl>
-      </div>
+      <dl class="divide-y border-t">
+        <div class="grid gap-1 px-5 py-3.5 sm:grid-cols-[10rem_1fr] sm:gap-4 sm:px-6">
+          <dt class="text-foreground text-sm font-bold">{{ 'auth.unlock.secretLabel' | t }}</dt>
+          <dd class="text-muted-foreground text-sm leading-relaxed">
+            {{ 'support.terms.secretDescription' | t }}
+          </dd>
+        </div>
+        <div class="grid gap-1 px-5 py-3.5 sm:grid-cols-[10rem_1fr] sm:gap-4 sm:px-6">
+          <dt class="text-foreground text-sm font-bold">{{ 'support.terms.vaultTerm' | t }}</dt>
+          <dd class="text-muted-foreground text-sm leading-relaxed">
+            {{ 'support.terms.vaultDescription' | t }}
+          </dd>
+        </div>
+        <div class="grid gap-1 px-5 py-3.5 sm:grid-cols-[10rem_1fr] sm:gap-4 sm:px-6">
+          <dt class="text-foreground text-sm font-bold">{{ 'support.terms.tagTermSingular' | t }}</dt>
+          <dd class="text-muted-foreground text-sm leading-relaxed">
+            {{ 'support.terms.tagDescriptionPrefix' | t }}
+            <em>{{ 'support.terms.tagExampleWork' | t }}</em>
+            {{ 'support.terms.tagDescriptionMiddle' | t }}
+            <em>{{ 'support.terms.tagExampleBanking' | t }}</em>.
+          </dd>
+        </div>
+        <div class="grid gap-1 px-5 py-3.5 sm:grid-cols-[10rem_1fr] sm:gap-4 sm:px-6">
+          <dt class="text-foreground text-sm font-bold">{{ 'support.terms.reportTerm' | t }}</dt>
+          <dd class="text-muted-foreground text-sm leading-relaxed">
+            {{ 'support.terms.reportDescription' | t }}
+          </dd>
+        </div>
+      </dl>
     </section>
 
     <!-- Questions -->
-    <section hlmCard>
-      <div hlmCardHeader>
-        <h2 hlmCardTitle class="text-base">{{ 'support.faq.title' | t }}</h2>
+    <section class="bg-card overflow-hidden rounded-2xl border shadow-xs">
+      <div class="flex items-center gap-3.5 p-5 sm:p-6">
+        <span
+          class="bg-primary/15 text-accent-strong inline-flex size-10 shrink-0 items-center justify-center rounded-xl"
+          aria-hidden="true"
+        >
+          <ng-icon name="lucideMessageCircleQuestion" size="1.125rem" strokeWidth="1.75" />
+        </span>
+        <h2 class="text-foreground text-base font-bold">{{ 'support.faq.title' | t }}</h2>
       </div>
 
-      <div hlmCardContent>
-        <!--
-          An accordion, so seven answers do not have to be scrolled past to reach the
-          eighth. The first one is open on arrival: a forgotten secret is the question
-          people come here with, and it is the one with consequences.
-        -->
-        <hlm-accordion>
-          <hlm-accordion-item isOpened class="faq-item">
-            <hlm-accordion-trigger>{{ 'support.faq.forgetSecretQ' | t }}</hlm-accordion-trigger>
-            <hlm-accordion-content>
-              <p class="text-muted-foreground text-sm">
+      <!--
+        An accordion, so seven answers do not have to be scrolled past to reach the
+        eighth. The first one is open on arrival: a forgotten secret is the question
+        people come here with, and it is the one with consequences.
+      -->
+      <hlm-accordion
+        class="border-t px-5 sm:px-6 [&_[data-slot=accordion-trigger]]:py-4 [&_[data-slot=accordion-trigger]]:text-[0.9375rem] [&_[data-slot=accordion-trigger]]:font-semibold [&_[data-slot=accordion-trigger]]:hover:no-underline [&_[data-slot=accordion-trigger]:hover]:text-accent-strong"
+      >
+        <hlm-accordion-item isOpened class="faq-item">
+          <hlm-accordion-trigger>{{ 'support.faq.forgetSecretQ' | t }}</hlm-accordion-trigger>
+          <hlm-accordion-content>
+            <div class="flex flex-col gap-2 pb-1">
+              <p class="text-muted-foreground text-sm leading-relaxed">
                 {{ 'support.faq.forgetSecretA1' | t }}
               </p>
-              <p class="text-muted-foreground text-sm">
+              <p class="text-muted-foreground text-sm leading-relaxed">
                 {{ 'support.faq.forgetSecretA2Prefix' | t }}
-                <strong>{{ 'support.faq.forgetSecretA2Strong' | t }}</strong>
+                <strong class="text-foreground">{{ 'support.faq.forgetSecretA2Strong' | t }}</strong>
                 {{ 'support.faq.forgetSecretA2Middle' | t }}
-                <code class="font-mono">vault.backup-&lt;timestamp&gt;.json.enc</code>
+                <code class="bg-muted text-foreground rounded px-1 py-0.5 font-mono text-xs"
+                  >vault.backup-&lt;timestamp&gt;.json.enc</code
+                >
                 {{ 'support.faq.forgetSecretA2Suffix' | t }}
               </p>
-              <p class="text-muted-foreground text-sm">
+              <p class="text-muted-foreground text-sm leading-relaxed">
                 {{ 'support.faq.forgetSecretA3' | t }}
               </p>
-            </hlm-accordion-content>
-          </hlm-accordion-item>
+            </div>
+          </hlm-accordion-content>
+        </hlm-accordion-item>
 
+        @for (faq of faqs; track faq.q) {
           <hlm-accordion-item class="faq-item">
-            <hlm-accordion-trigger>{{ 'support.faq.seeQ' | t }}</hlm-accordion-trigger>
+            <hlm-accordion-trigger>{{ faq.q | t }}</hlm-accordion-trigger>
             <hlm-accordion-content>
-              <p class="text-muted-foreground text-sm">
-                {{ 'support.faq.seeA' | t }}
-              </p>
+              <p class="text-muted-foreground pb-1 text-sm leading-relaxed">{{ faq.a | t }}</p>
             </hlm-accordion-content>
           </hlm-accordion-item>
+        }
 
-          <hlm-accordion-item class="faq-item">
-            <hlm-accordion-trigger>{{ 'support.faq.syncQ' | t }}</hlm-accordion-trigger>
-            <hlm-accordion-content>
-              <p class="text-muted-foreground text-sm">
-                {{ 'support.faq.syncA' | t }}
-              </p>
-            </hlm-accordion-content>
-          </hlm-accordion-item>
+        <hlm-accordion-item class="faq-item">
+          <hlm-accordion-trigger>{{ 'support.faq.changeSecretQ' | t }}</hlm-accordion-trigger>
+          <hlm-accordion-content>
+            <p class="text-muted-foreground pb-1 text-sm leading-relaxed">
+              {{ 'support.faq.changeSecretAPrefix' | t }}
+              <strong class="text-foreground">{{ 'support.faq.changeSecretAStrong' | t }}</strong>.
+              {{ 'support.faq.changeSecretASuffix' | t }}
+            </p>
+          </hlm-accordion-content>
+        </hlm-accordion-item>
 
-          <hlm-accordion-item class="faq-item">
-            <hlm-accordion-trigger>{{ 'support.faq.googleQ' | t }}</hlm-accordion-trigger>
-            <hlm-accordion-content>
-              <p class="text-muted-foreground text-sm">
-                {{ 'support.faq.googleA' | t }}
-              </p>
-            </hlm-accordion-content>
-          </hlm-accordion-item>
-
-          <hlm-accordion-item class="faq-item">
-            <hlm-accordion-trigger>
-              {{ 'support.faq.importQ' | t }}
-            </hlm-accordion-trigger>
-            <hlm-accordion-content>
-              <p class="text-muted-foreground text-sm">
-                {{ 'support.faq.importA' | t }}
-              </p>
-            </hlm-accordion-content>
-          </hlm-accordion-item>
-
-          <hlm-accordion-item class="faq-item">
-            <hlm-accordion-trigger>{{ 'support.faq.changeSecretQ' | t }}</hlm-accordion-trigger>
-            <hlm-accordion-content>
-              <p class="text-muted-foreground text-sm">
-                {{ 'support.faq.changeSecretAPrefix' | t }}
-                <strong>{{ 'support.faq.changeSecretAStrong' | t }}</strong>.
-                {{ 'support.faq.changeSecretASuffix' | t }}
-              </p>
-            </hlm-accordion-content>
-          </hlm-accordion-item>
-
-          <hlm-accordion-item class="faq-item">
-            <hlm-accordion-trigger>{{ 'support.faq.costQ' | t }}</hlm-accordion-trigger>
-            <hlm-accordion-content>
-              <p class="text-muted-foreground text-sm">
-                {{ 'support.faq.costA' | t }}
-              </p>
-            </hlm-accordion-content>
-          </hlm-accordion-item>
-        </hlm-accordion>
-      </div>
+        <hlm-accordion-item class="faq-item border-b-0">
+          <hlm-accordion-trigger>{{ 'support.faq.costQ' | t }}</hlm-accordion-trigger>
+          <hlm-accordion-content>
+            <p class="text-muted-foreground pb-1 text-sm leading-relaxed">
+              {{ 'support.faq.costA' | t }}
+            </p>
+          </hlm-accordion-content>
+        </hlm-accordion-item>
+      </hlm-accordion>
     </section>
 
     <!-- Contact -->
-    <section hlmCard>
-      <div hlmCardHeader>
-        <h2 hlmCardTitle class="text-base">{{ 'support.contact.title' | t }}</h2>
+    <section
+      class="bg-card flex flex-col gap-4 rounded-2xl border p-5 shadow-xs sm:flex-row sm:items-center sm:p-6"
+    >
+      <span
+        class="bg-primary/15 text-accent-strong inline-flex size-10 shrink-0 items-center justify-center rounded-xl"
+        aria-hidden="true"
+      >
+        <ng-icon name="lucideMail" size="1.125rem" strokeWidth="1.75" />
+      </span>
+      <div class="min-w-0 flex-1">
+        <h2 class="text-foreground text-base font-bold">{{ 'support.contact.title' | t }}</h2>
+        <p class="text-muted-foreground mt-0.5 text-sm leading-relaxed">
+          {{ 'support.contact.description' | t }}
+        </p>
       </div>
-
-      <div hlmCardContent>
-        <a
-          hlmBtn
-          variant="outline"
-          class="contact w-full justify-start! sm:w-auto"
-          href="mailto:contact@keeperpass.com"
-        >
-          <app-icon name="mail" />
-          contact&#64;keeperpass.com
-        </a>
-      </div>
+      <a
+        hlmBtn
+        class="contact h-10 shrink-0 gap-2 rounded-xl px-4 font-bold shadow-xs"
+        href="mailto:contact@keeperpass.com"
+      >
+        <ng-icon name="lucideSend" size="1rem" strokeWidth="2" />
+        contact&#64;keeperpass.com
+      </a>
     </section>
   </div>
 </main>

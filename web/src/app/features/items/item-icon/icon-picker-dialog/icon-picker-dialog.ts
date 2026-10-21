@@ -10,6 +10,8 @@ import {
   untracked,
   viewChild,
 } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideShapes } from '@ng-icons/lucide';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmDialogImports } from '@spartan-ng/helm/dialog';
 import { HlmInput } from '@spartan-ng/helm/input';
@@ -30,7 +32,8 @@ import { Icon } from '../../../../ui/icon/icon';
 @Component({
   selector: 'app-icon-picker-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [HlmButton, HlmDialogImports, HlmInput, Icon, TranslatePipe],
+  imports: [NgIcon, HlmButton, HlmDialogImports, HlmInput, Icon, TranslatePipe],
+  providers: [provideIcons({ lucideShapes })],
   templateUrl: './icon-picker-dialog.html',
   /** The dialog itself lives in an overlay, so this host renders nothing. */
   host: { class: 'contents' },

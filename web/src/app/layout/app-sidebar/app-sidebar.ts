@@ -7,7 +7,7 @@ import { NavUser } from './nav-user';
 import { NavVaults } from './nav-vaults';
 
 /** Shown under the app name in the sidebar header. */
-const APP_VERSION = '3.0.0';
+const APP_VERSION = '3.2.0';
 
 /**
  * The application's primary navigation, built on spartan's `sidebar-inset` block.

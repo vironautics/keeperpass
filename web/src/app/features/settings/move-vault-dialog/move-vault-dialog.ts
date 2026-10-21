@@ -9,6 +9,8 @@ import {
   signal,
   untracked,
 } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideCloudUpload } from '@ng-icons/lucide';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -63,6 +65,7 @@ const STAGE_KEYS = {
   selector: 'app-move-vault-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NgIcon,
     ReactiveFormsModule,
     Icon,
     HlmAlertImports,
@@ -74,6 +77,7 @@ const STAGE_KEYS = {
     HlmSpinnerImports,
     TranslatePipe,
   ],
+  providers: [provideIcons({ lucideCloudUpload })],
   templateUrl: './move-vault-dialog.html',
   /** The dialog lives in an overlay, so this host renders nothing. */
   host: { class: 'contents' },
@@ -119,7 +123,9 @@ export class MoveVaultDialog {
   );
 
   protected readonly nextSecret = computed(() => this.value().next ?? '');
-  private readonly strengthScore = computed(() => estimatePasswordStrength(this.nextSecret()).score);
+  private readonly strengthScore = computed(
+    () => estimatePasswordStrength(this.nextSecret()).score,
+  );
   protected readonly strengthPercent = computed(() => strengthPercent(this.strengthScore()));
   protected readonly strengthColour = computed(() => STRENGTH_COLOURS[this.strengthScore()]);
   protected readonly strengthLabel = computed(() =>

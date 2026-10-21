@@ -61,8 +61,15 @@ export const ITEM_ROW_HEIGHT_ESTIMATE = 121;
     TranslatePipe,
   ],
   templateUrl: './item-row.html',
-  /** The row is the block the viewport measures; nothing else styles the host. */
-  host: { class: 'block' },
+  /**
+   * The row is the block the viewport measures, padding included — that padding is the
+   * gap between rows, and the hairline drawn into its bottom edge is the divider. Drawn
+   * as a pseudo-element so it adds nothing to the measured height.
+   */
+  host: {
+    class:
+      'relative block px-2 py-1 after:pointer-events-none after:absolute after:inset-x-5 after:bottom-0 after:h-px after:bg-foreground/[0.07]',
+  },
 })
 export class ItemRow {
   readonly item = input.required<VaultItem>();
@@ -91,7 +98,9 @@ export class ItemRow {
   );
 
   /** Used as the field-name fallback in the copy-chip aria-label. */
-  protected readonly fieldFallback = computed(() => this.i18n.translate('items.field.fieldFallback'));
+  protected readonly fieldFallback = computed(() =>
+    this.i18n.translate('items.field.fieldFallback'),
+  );
 
   /** The first tag is shown in full; the rest collapse into a `+n` badge. */
   protected readonly firstTag = computed(() => this.item().tags[0] ?? '');

@@ -3,9 +3,15 @@
   "New vault" action or the vaults page header, both in other components.
 -->
 <hlm-dialog [state]="open() ? 'open' : 'closed'" (stateChanged)="open.set($event === 'open')">
-  <hlm-dialog-content *hlmDialogPortal class="sm:max-w-sm" [attr.aria-label]="'vaults.createVault.title' | t">
-    <hlm-dialog-header>
-      <h3 hlmDialogTitle>{{ 'vaults.createVault.title' | t }}</h3>
+  <hlm-dialog-content *hlmDialogPortal class="w-[min(28rem,calc(100vw-2rem))] gap-6 rounded-2xl sm:max-w-md" [attr.aria-label]="'vaults.createVault.title' | t">
+    <hlm-dialog-header class="gap-1.5">
+      <span
+        class="bg-primary/15 text-accent-strong ring-primary/25 mb-2 inline-flex size-12 items-center justify-center rounded-2xl ring-1"
+        aria-hidden="true"
+      >
+        <ng-icon name="lucideFolderPlus" size="1.375rem" strokeWidth="1.75" />
+      </span>
+      <h3 hlmDialogTitle class="text-lg font-bold">{{ 'vaults.createVault.title' | t }}</h3>
       <p hlmDialogDescription>
         {{ 'vaults.createVault.description' | t }}
       </p>
@@ -16,7 +22,7 @@
       <input
         hlmInput
         id="create-vault-name"
-        class="create-input w-full"
+        class="create-input w-full bg-card h-11 rounded-xl"
         [formControl]="nameControl"
         autocomplete="off"
         (keydown.enter)="create()"
@@ -26,9 +32,9 @@
       }
     </hlm-field>
 
-    <hlm-dialog-footer>
-      <button hlmBtn variant="outline" (click)="cancel()">{{ 'common.cancel' | t }}</button>
-      <button hlmBtn [disabled]="!canCreate()" (click)="create()">{{ 'common.create' | t }}</button>
+    <hlm-dialog-footer class="gap-2">
+      <button hlmBtn class="h-10 rounded-xl px-4 font-semibold" variant="outline" (click)="cancel()">{{ 'common.cancel' | t }}</button>
+      <button hlmBtn class="h-10 gap-2 rounded-xl px-4 font-bold" [disabled]="!canCreate()" (click)="create()">{{ 'common.create' | t }}</button>
     </hlm-dialog-footer>
   </hlm-dialog-content>
 </hlm-dialog>

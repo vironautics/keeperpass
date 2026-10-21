@@ -9,11 +9,22 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideArrowLeft,
+  lucideCircleAlert,
+  lucideCircleUser,
+  lucideCopyCheck,
+  lucideEye,
+  lucideEyeOff,
+  lucideKeyRound,
+  lucideRotateCcwKey,
+  lucideTriangleAlert,
+  lucideWandSparkles,
+} from '@ng-icons/lucide';
 import { HlmAlertImports } from '@spartan-ng/helm/alert';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
-import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmFieldImports } from '@spartan-ng/helm/field';
-import { HlmInput } from '@spartan-ng/helm/input';
 import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
 import { HlmProgressImports } from '@spartan-ng/helm/progress';
 import { HlmSpinnerImports } from '@spartan-ng/helm/spinner';
@@ -34,7 +45,7 @@ import {
 import { I18nService, TranslatePipe } from '../../../core/i18n';
 import { encryptVault } from '../../../core/vault/vault-crypto';
 import { createEmptyVaultSnapshot, VaultStore } from '../../../core/vault/vault.store';
-import { Icon } from '../../../ui/icon/icon';
+import { AuthHeading } from '../auth-heading/auth-heading';
 import { GeneratePasswordDialog } from '../../items/generate-password-dialog/generate-password-dialog';
 import { STRENGTH_COLOURS, STRENGTH_LABELS, strengthPercent } from '../../items/strength-scale';
 
@@ -60,21 +71,33 @@ import { STRENGTH_COLOURS, STRENGTH_LABELS, strengthPercent } from '../../items/
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
-    Icon,
+    AuthHeading,
+    NgIcon,
     TranslatePipe,
     GeneratePasswordDialog,
     HlmAlertImports,
     HlmButtonImports,
-    HlmCardImports,
     HlmFieldImports,
-    HlmInput,
     HlmInputGroupImports,
     HlmProgressImports,
     HlmSpinnerImports,
   ],
+  providers: [
+    provideIcons({
+      lucideArrowLeft,
+      lucideCircleAlert,
+      lucideCircleUser,
+      lucideCopyCheck,
+      lucideEye,
+      lucideEyeOff,
+      lucideKeyRound,
+      lucideRotateCcwKey,
+      lucideTriangleAlert,
+      lucideWandSparkles,
+    }),
+  ],
   templateUrl: './recover-page.html',
-  /** Fills the layout's centred column — see `UnlockPage` for why the host has to stretch. */
-  host: { class: 'block self-stretch' },
+  host: { class: 'block' },
 })
 export class RecoverPage {
   private readonly accounts = inject(AccountStore);
@@ -129,7 +152,9 @@ export class RecoverPage {
 
   protected readonly strengthPercent = computed(() => strengthPercent(this.strength()));
   protected readonly strengthColour = computed(() => STRENGTH_COLOURS[this.strength()]);
-  protected readonly strengthLabel = computed(() => this.i18n.translate(STRENGTH_LABELS[this.strength()]));
+  protected readonly strengthLabel = computed(() =>
+    this.i18n.translate(STRENGTH_LABELS[this.strength()]),
+  );
 
   protected readonly weak = computed(
     () => !!this.newSecret() && this.strength() < MIN_MASTER_PASSWORD_SCORE,

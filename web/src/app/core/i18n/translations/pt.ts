@@ -100,14 +100,32 @@ export const pt: TranslationTable = {
   'auth.recover.submit': 'Recuperar conta',
   'auth.recover.genericError': 'Não foi possível recuperar a sua conta. Tente novamente.',
 
+  'auth.layout.badge': 'Cifrado de ponta a ponta',
+  'auth.layout.headline': 'As suas palavras-passe, seladas na sua própria nuvem.',
+  'auth.layout.subline': 'O KeeperPass cifra tudo neste navegador antes de chegar ao seu armazenamento. Só o seu segredo o consegue abrir.',
+  'auth.layout.featureAccess': 'Acesso limitado',
+  'auth.layout.featureEncryption': 'Cifra de conhecimento zero',
+  'auth.layout.featureNoServer': 'Sem servidor pelo meio',
+  'auth.layout.footer': 'Cifrado no seu navegador. Guardado na sua nuvem.',
+  'auth.layout.language': 'Idioma',
+
   'items.pageTitle': 'Cofre',
+  'items.noSelection.title': 'Nenhum item selecionado',
+  'items.noSelection.description': 'Escolha um da lista para o ver e editar.',
   'generator.pageTitle': 'Gerador de Palavras-passe',
+  'generator.subtitle': 'Palavras-passe e frases-passe aleatórias, criadas neste dispositivo',
+  'generator.options': 'Opções',
+  'generator.charCount': '{count} caracteres',
   'generator.passphrase': 'Frase-passe',
   'generator.randomString': 'Cadeia aleatória',
   'generator.dialogCharacters': 'Carateres',
   'generator.dialogWords': 'Palavras',
   'generator.wordSeparator': 'Separador de palavras',
   'generator.separatorPlaceholder': 'Separador',
+  'generator.separatorDash': 'Hífen ( - )',
+  'generator.separatorUnderscore': 'Sublinhado ( _ )',
+  'generator.separatorSlash': 'Barra ( / )',
+  'generator.separatorSpace': 'Espaço',
   'generator.language': 'Idioma',
   'generator.languagePlaceholder': 'Idioma',
   'generator.words': 'Palavras',
@@ -307,6 +325,14 @@ export const pt: TranslationTable = {
   'report.aboutSectionAria': 'Acerca de {title}',
   'report.nothingFound': 'Nada encontrado',
   'report.showAll': 'Mostrar todos os {count}',
+  'report.openItemAria': 'Abrir {name}',
+  'report.healthLabel': 'Saúde do cofre',
+  'report.healthGood': 'Sólida',
+  'report.healthFair': 'A melhorar',
+  'report.healthPoor': 'Em risco',
+  'report.itemsCheckedOne': '{count} item com palavra-passe verificado',
+  'report.itemsCheckedMany': '{count} itens com palavra-passe verificados',
+  'report.subtitle': 'Quão bem as suas palavras-passe guardadas resistem',
 
   'audit.weakPassword.label': 'Palavras-passe Fracas',
   'audit.weakPassword.description':
@@ -461,14 +487,15 @@ export const pt: TranslationTable = {
     'A Política de Privacidade é mantida atualizada num único local, fora da aplicação, para que se mantenha consistente onde quer que a leia.',
 
   'support.title': 'Suporte',
+  'support.subtitle': 'Como funciona o KeeperPass e respostas a perguntas frequentes',
+  'support.contact.description': 'Dúvidas, comentários ou um problema? Envie-nos um email.',
   'support.dataLives.title': 'Onde vivem os seus dados',
-  'support.dataLives.description':
-    'O Keeperpass não tem servidor. O seu cofre é um único ficheiro cifrado no seu próprio Google Drive, e o seu navegador é o único sítio onde alguma vez é legível.',
+  'support.dataLives.description': 'O Keeperpass não tem servidor. O seu cofre é um único ficheiro cifrado num armazenamento na nuvem que já tem — como o Google Drive ou o Dropbox — e o seu navegador é o único sítio onde pode ser lido.',
   'support.dataLives.browserTitle': 'O seu navegador',
   'support.dataLives.browserDescription':
     'Cifra e decifra tudo. O seu segredo nunca sai deste dispositivo.',
   'support.dataLives.encryptedFile': 'ficheiro cifrado',
-  'support.dataLives.driveTitle': 'O seu Google Drive',
+  'support.dataLives.driveTitle': 'O seu armazenamento na nuvem',
   'support.dataLives.driveDescriptionPrefix': 'Contém',
   'support.dataLives.driveDescriptionSuffix': '— texto cifrado ilegível.',
   'support.dataLives.footer':
@@ -483,20 +510,15 @@ export const pt: TranslationTable = {
   'support.protects.encryptionTerm': 'Cifra',
   'support.protects.encryptionDescription':
     'AES-GCM, que deteta adulterações além de impedir a leitura.',
-  'support.protects.driveAccessTerm': 'Acesso ao Drive',
-  'support.protects.driveAccessDescriptionPrefix': 'Limitado a',
-  'support.protects.driveAccessDescriptionSuffix':
-    '— o Keeperpass só vê os ficheiros que cria, mais nada no seu Drive.',
+  'support.protects.storageAccessTerm': 'Acesso ao armazenamento',
+  'support.protects.storageAccessDescription': 'O Keeperpass só consegue aceder aos ficheiros que cria — com uma permissão limitada no Google Drive e uma pasta de aplicação no Dropbox. Nada mais no seu armazenamento lhe é visível.',
   'support.signingIn.title': 'Iniciar sessão',
   'support.signingIn.description': 'Duas coisas separadas, por duas razões separadas.',
-  'support.signingIn.step1Title': 'Continuar com o Google',
-  'support.signingIn.step1Description':
-    'Concede permissão para ler e escrever o seu ficheiro de cofre. Isto prova quem é dono do Drive — não desbloqueia nada.',
+  'support.signingIn.step1Title': 'Ligue o seu armazenamento na nuvem',
+  'support.signingIn.step1Description': 'Inicie sessão no seu fornecedor de armazenamento — Google ou Dropbox — para dar acesso ao ficheiro do cofre. Isto prova a quem pertence o armazenamento; não desbloqueia nada.',
   'support.signingIn.step2Title': 'Introduza o seu segredo',
-  'support.signingIn.step2Description':
-    'Deriva, no seu navegador, a chave que decifra o ficheiro. O Google nunca vê isto, e nós também não.',
-  'support.signingIn.footer':
-    'Quem tiver a sua conta Google continua a não conseguir ler o seu cofre. Quem tiver o seu segredo continua a não conseguir alcançar o ficheiro. Ambos são necessários.',
+  'support.signingIn.step2Description': 'Deriva no seu navegador a chave que decifra o ficheiro. O seu fornecedor de armazenamento nunca a vê, e nós também não.',
+  'support.signingIn.footer': 'Quem tiver acesso à sua conta de armazenamento continua sem conseguir ler o cofre. Quem souber o seu segredo continua sem conseguir chegar ao ficheiro. São precisas as duas coisas.',
   'support.terms.title': 'Termos que vale a pena conhecer',
   'support.terms.secretDescription':
     'A única frase que desbloqueia o seu cofre. Não recuperável — ver abaixo.',
@@ -506,6 +528,8 @@ export const pt: TranslationTable = {
   'support.terms.tagTermSingular': 'Etiqueta',
   'support.terms.tagDescriptionPrefix': 'Uma etiqueta para filtrar entre cofres, como',
   'support.terms.tagDescriptionMiddle': 'ou',
+  'support.terms.tagExampleWork': 'trabalho',
+  'support.terms.tagExampleBanking': 'banco',
   'support.terms.reportTerm': 'Relatório de segurança',
   'support.terms.reportDescription':
     'Assinala palavras-passe fracas, reutilizadas e conhecidas por terem sido comprometidas. Corre inteiramente no seu dispositivo.',
@@ -517,19 +541,15 @@ export const pt: TranslationTable = {
   'support.faq.forgetSecretA2Strong': 'Esqueceu-se do segredo?',
   'support.faq.forgetSecretA2Middle':
     'no ecrã de desbloqueio cria um cofre novo e vazio com um novo segredo. O seu ficheiro antigo não é eliminado — é renomeado para',
-  'support.faq.forgetSecretA2Suffix':
-    'e fica na sua pasta do Drive, caso o segredo antigo alguma vez lhe volte à memória.',
+  'support.faq.forgetSecretA2Suffix': 'e fica na sua pasta de armazenamento (no Dropbox, em Aplicações), por isso, se um dia se lembrar do segredo antigo, os dados continuam lá.',
   'support.faq.forgetSecretA3':
     'Anote o seu segredo e guarde-o num local seguro. É a única coisa no Keeperpass que não pode ser substituída.',
   'support.faq.seeQ': 'O Keeperpass consegue ver as minhas palavras-passe?',
-  'support.faq.seeA':
-    'Não — e não como uma promessa, mas como consequência da conceção. A cifra acontece no seu navegador e o texto cifrado vai diretamente para o seu Drive. Não há nenhum servidor Keeperpass no caminho para ver seja o que for.',
+  'support.faq.seeA': 'Não — e não é uma promessa, é uma consequência do design. A cifra acontece no seu navegador e o texto cifrado vai diretamente para o seu próprio armazenamento. Não há nenhum servidor Keeperpass pelo meio que possa ver alguma coisa.',
   'support.faq.syncQ': 'Sincroniza entre dispositivos?',
-  'support.faq.syncA':
-    'Sim. Cada dispositivo lê o mesmo ficheiro do seu Drive. Inicie sessão com a mesma conta Google, introduza o mesmo segredo, e o seu cofre está lá.',
-  'support.faq.googleQ': 'E se o Google ler o ficheiro?',
-  'support.faq.googleA':
-    'Veria bytes cifrados. A chave nunca é enviada ao Google, pelo que o conteúdo permanece ilegível para eles.',
+  'support.faq.syncA': 'Sim. Todos os dispositivos leem o mesmo ficheiro do seu armazenamento. Inicie sessão com a mesma conta, introduza o mesmo segredo e o seu cofre está lá.',
+  'support.faq.providerQ': 'E se o meu fornecedor de armazenamento ler o ficheiro?',
+  'support.faq.providerA': 'Veriam bytes cifrados. A chave nunca sai do seu navegador, por isso nem a Google, nem o Dropbox, nem outro fornecedor conseguem ler o conteúdo.',
   'support.faq.importQ': 'Posso importar de outro gestor de palavras-passe?',
   'support.faq.importA': 'Sim — exporte para CSV aí, depois use Importar nas Definições.',
   'support.faq.changeSecretQ': 'Como altero o meu segredo?',
@@ -538,12 +558,16 @@ export const pt: TranslationTable = {
   'support.faq.changeSecretASuffix':
     'Introduz o seu segredo atual e o novo; o seu cofre é decifrado, recifrado com o novo segredo e guardado novamente. Nada se perde — todos os itens acompanham-no, e a alteração aplica-se em todos os dispositivos assim que estes carregarem o seu cofre.',
   'support.faq.costQ': 'Quanto custa?',
-  'support.faq.costA':
-    'Nada. O Keeperpass é gratuito e de código aberto, e guarda dados no espaço do Drive que já tem.',
+  'support.faq.costA': 'Nada. O Keeperpass é gratuito e de código aberto, e guarda os dados no espaço na nuvem que já tem.',
   'support.contact.title': 'Continua sem conseguir?',
 
   'settings.title': 'Definições',
   'settings.openMenu': 'Abrir o menu de navegação',
+  'settings.subtitle': 'Conta, idioma, segurança e dados',
+  'settings.security': 'Segurança',
+  'settings.storage': 'Armazenamento',
+  'settings.dangerZone': 'Zona de perigo',
+  'settings.profile.deleteHint': 'Muda o nome do ficheiro do cofre para que esta aplicação deixe de o encontrar e termina a sessão. Nada é apagado.',
 
   'settings.language.title': 'Idioma',
   'settings.language.label': 'Idioma da interface',

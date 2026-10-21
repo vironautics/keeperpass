@@ -1,78 +1,94 @@
 <!--
-  Same card shape as `/unlock` — every step of the flow is one spartan card in the
-  layout's centred column, so moving between them doesn't move the surface.
+  First-run step: the secret that will encrypt a brand new vault. Same shape as
+  `/unlock`, so moving between the steps doesn't move the page.
 -->
 <form
-  hlmCard
-  class="animate-in fade-in slide-in-from-bottom-4 mx-auto w-full max-w-100 duration-700"
+  class="animate-in fade-in slide-in-from-bottom-2 flex flex-col gap-8 duration-500"
   [formGroup]="form"
   (ngSubmit)="submit()"
   novalidate
 >
-  <div hlmCardHeader>
-    <h1 hlmCardTitle>{{ 'auth.setup.title' | t }}</h1>
-    <p hlmCardDescription>
-      {{ 'auth.setup.description' | t }}
-    </p>
-  </div>
+  <app-auth-heading
+    icon="lucideKeyRound"
+    [heading]="'auth.setup.title' | t"
+    [description]="'auth.setup.description' | t"
+  />
 
-  <div hlmCardContent class="flex flex-col gap-4">
+  <div class="flex flex-col gap-5">
     @if (email()) {
-      <!-- Which Google account this vault will belong to: the wrong one is worth catching now. -->
-      <p class="text-muted-foreground text-xs">
-        {{ 'auth.setup.settingUpFor' | t }}
-        <strong class="text-foreground font-medium">{{ email() }}</strong>
-      </p>
+      <!-- Which account this vault will belong to: the wrong one is worth catching now. -->
+      <div
+        class="bg-muted/60 text-muted-foreground flex items-center gap-3 rounded-xl px-3.5 py-3 text-[0.8125rem]"
+      >
+        <ng-icon name="lucideCircleUser" size="1.125rem" strokeWidth="1.75" class="shrink-0" />
+        <p class="min-w-0">
+          {{ 'auth.setup.settingUpFor' | t }}
+          <strong class="text-foreground font-semibold break-all">{{ email() }}</strong>
+        </p>
+      </div>
     }
 
     <hlm-field>
-      <label hlmFieldLabel for="setup-secret">{{ 'auth.setup.secretLabel' | t }}</label>
+      <label hlmFieldLabel for="setup-secret" class="text-[0.8125rem] font-semibold">
+        {{ 'auth.setup.secretLabel' | t }}
+      </label>
 
-      <hlm-input-group>
+      <hlm-input-group class="bg-card dark:bg-card border-foreground/12 h-12 rounded-xl">
+        <hlm-input-group-addon align="inline-start" class="ps-3.5">
+          <ng-icon name="lucideKeyRound" size="1.125rem" strokeWidth="1.75" />
+        </hlm-input-group-addon>
         <input
           hlmInputGroupInput
           id="setup-secret"
           formControlName="secret"
+          class="font-mono text-[0.9375rem]"
           [type]="revealed() ? 'text' : 'password'"
           autocomplete="new-password"
           autofocus
         />
-        <hlm-input-group-addon align="inline-end">
+        <hlm-input-group-addon align="inline-end" class="gap-0.5 pe-1.5">
           <button
             hlmInputGroupButton
             type="button"
-            size="icon-xs"
+            size="icon-sm"
+            class="text-muted-foreground hover:text-foreground size-9 rounded-lg"
             [attr.aria-label]="'common.generateSecret' | t"
+            [title]="'common.generateSecret' | t"
             (click)="generating.set(true)"
           >
-            <app-icon name="generate" />
+            <ng-icon name="lucideWandSparkles" size="1.125rem" strokeWidth="1.75" />
           </button>
           <button
             hlmInputGroupButton
             type="button"
-            size="icon-xs"
+            size="icon-sm"
+            class="text-muted-foreground hover:text-foreground size-9 rounded-lg"
             [attr.aria-label]="(revealed() ? 'common.hideSecret' : 'common.showSecret') | t"
             [attr.aria-pressed]="revealed()"
             (click)="toggleRevealed()"
           >
-            <app-icon [name]="revealed() ? 'hide' : 'show'" />
+            <ng-icon
+              [name]="revealed() ? 'lucideEyeOff' : 'lucideEye'"
+              size="1.125rem"
+              strokeWidth="1.75"
+            />
           </button>
         </hlm-input-group-addon>
       </hlm-input-group>
 
       @if (secret()) {
         <!-- The same meter the item fields use, so "strong" means one thing everywhere. -->
-        <div class="mt-1 space-y-1">
-          <hlm-progress [value]="strengthPercent()" class="h-1">
+        <div class="mt-1 flex items-center gap-3">
+          <hlm-progress [value]="strengthPercent()" class="h-1.5 flex-1 rounded-full">
             <hlm-progress-indicator [class]="strengthColour()" />
           </hlm-progress>
-          <p class="text-muted-foreground text-[0.7rem]">{{ strengthLabel() }}</p>
+          <p class="text-muted-foreground shrink-0 text-xs font-semibold">{{ strengthLabel() }}</p>
         </div>
       }
 
       @if (weak()) {
         <!-- A native output element: the same announcement as a status role, without the role. -->
-        <output hlmFieldDescription>
+        <output hlmFieldDescription class="text-[0.8125rem] leading-relaxed">
           {{ 'auth.setup.weakWarning' | t }}
         </output>
       }
@@ -85,30 +101,41 @@
       exposes for exactly that case.
     -->
     <hlm-field [forceInvalid]="mismatch()">
-      <label hlmFieldLabel for="setup-confirmation">{{ 'auth.setup.repeatSecret' | t }}</label>
+      <label hlmFieldLabel for="setup-confirmation" class="text-[0.8125rem] font-semibold">
+        {{ 'auth.setup.repeatSecret' | t }}
+      </label>
 
       <!--
         The reveal toggle covers both fields from one signal: this field exists to be
         compared against the one above, and showing half of a comparison helps nobody.
       -->
-      <hlm-input-group>
+      <hlm-input-group class="bg-card dark:bg-card border-foreground/12 h-12 rounded-xl">
+        <hlm-input-group-addon align="inline-start" class="ps-3.5">
+          <ng-icon name="lucideCopyCheck" size="1.125rem" strokeWidth="1.75" />
+        </hlm-input-group-addon>
         <input
           hlmInputGroupInput
           id="setup-confirmation"
           formControlName="confirmation"
+          class="font-mono text-[0.9375rem]"
           [type]="revealed() ? 'text' : 'password'"
           autocomplete="new-password"
         />
-        <hlm-input-group-addon align="inline-end">
+        <hlm-input-group-addon align="inline-end" class="pe-1.5">
           <button
             hlmInputGroupButton
             type="button"
-            size="icon-xs"
+            size="icon-sm"
+            class="text-muted-foreground hover:text-foreground size-9 rounded-lg"
             [attr.aria-label]="(revealed() ? 'common.hideSecret' : 'common.showSecret') | t"
             [attr.aria-pressed]="revealed()"
             (click)="toggleRevealed()"
           >
-            <app-icon [name]="revealed() ? 'hide' : 'show'" />
+            <ng-icon
+              [name]="revealed() ? 'lucideEyeOff' : 'lucideEye'"
+              size="1.125rem"
+              strokeWidth="1.75"
+            />
           </button>
         </hlm-input-group-addon>
       </hlm-input-group>
@@ -122,53 +149,52 @@
       The one thing on this page a user must not skim past — this is the moment the
       secret becomes the only key that exists.
 
-      Loud through the fill and the icon, not the copy: the `destructive` variant
-      colours its text `--destructive`, which is 4.1:1 on this tint at 14px and so
-      misses AA for a block this long. The default variant keeps the text on the
-      foreground colour (10:1) and the red is carried by the border and the icon,
-      where 3:1 is the bar.
-
-      Two columns by hand: see the note on the same alert in `start-page.html`.
+      Loud through the fill and the icon, not the copy: red text on this tint misses AA
+      for a block this long, so the text stays on the foreground colour and the red is
+      carried by the border and the icon, where 3:1 is the bar.
     -->
-    <div hlmAlert class="bg-destructive/10! border-destructive/30 grid-cols-[auto_1fr] gap-x-2.5!">
-      <app-icon name="alert" class="text-destructive row-span-2 translate-y-0.5" />
-      <h2 hlmAlertTitle class="col-start-2">{{ 'auth.setup.readBeforeContinue' | t }}</h2>
+    <div
+      hlmAlert
+      class="bg-destructive/[0.07]! border-destructive/25 gap-y-1.5 rounded-xl p-4"
+    >
+      <ng-icon name="lucideTriangleAlert" class="text-destructive!" />
+      <h2 hlmAlertTitle class="font-bold">{{ 'auth.setup.readBeforeContinue' | t }}</h2>
       <!-- No gap of its own: the description already spaces a `p` that isn't last. -->
-      <div hlmAlertDescription class="text-foreground! col-start-2">
+      <div hlmAlertDescription class="text-foreground/85! text-[0.8125rem] leading-relaxed">
         <p>
           {{ 'auth.setup.warningIntro' | t }}
         </p>
-        <ul class="flex list-disc flex-col gap-1 ps-4">
+        <ul class="flex list-disc flex-col gap-1.5 ps-4 marker:text-destructive">
           <li>
             {{ 'auth.setup.warningBullet1' | t }}
           </li>
           <li>
             {{ 'auth.setup.warningBullet2' | t }}
           </li>
-          <li>{{ 'auth.setup.warningBullet3' | t }}</li>
+          <li class="text-foreground font-semibold">{{ 'auth.setup.warningBullet3' | t }}</li>
         </ul>
       </div>
     </div>
 
     @if (errorMessage()) {
-      <div
-        hlmAlert
-        variant="destructive"
-        class="submit-error grid-cols-[auto_1fr] gap-x-2.5!"
-        role="alert"
-      >
-        <app-icon name="alert" class="translate-y-0.5" />
-        <p hlmAlertDescription class="col-start-2">{{ errorMessage() }}</p>
+      <div hlmAlert variant="destructive" class="submit-error rounded-xl" role="alert">
+        <ng-icon name="lucideCircleAlert" />
+        <p hlmAlertDescription>{{ errorMessage() }}</p>
       </div>
     }
   </div>
 
-  <div hlmCardFooter class="flex-col gap-2">
-    <button hlmBtn type="submit" class="w-full" [disabled]="!canSubmit() || submitting()">
+  <div class="flex flex-col gap-3">
+    <button
+      hlmBtn
+      type="submit"
+      class="h-12 w-full gap-2 rounded-xl text-[0.9375rem] font-bold shadow-xs"
+      [disabled]="!canSubmit() || submitting()"
+    >
       @if (submitting()) {
         <hlm-spinner />
       } @else {
-        <app-icon name="vault" />
+        <ng-icon name="lucideVault" size="1.125rem" strokeWidth="2" />
       }
       {{ 'auth.setup.createVault' | t }}
     </button>
@@ -176,12 +202,12 @@
     <button
       hlmBtn
       type="button"
-      variant="ghost"
+      variant="link"
       size="sm"
-      class="text-muted-foreground w-full"
+      class="text-muted-foreground hover:text-foreground mx-auto h-9 gap-1.5 font-semibold"
       (click)="disconnect()"
     >
-      <app-icon name="disconnect" />
+      <ng-icon name="lucideLogOut" size="1rem" strokeWidth="1.75" class="rtl:-scale-x-100" />
       {{ 'common.disconnect' | t }}
     </button>
   </div>

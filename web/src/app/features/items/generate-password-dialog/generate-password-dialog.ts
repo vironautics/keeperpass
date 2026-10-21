@@ -11,6 +11,8 @@ import {
   untracked,
   viewChild,
 } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideWandSparkles } from '@ng-icons/lucide';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
 import { HlmDialogImports } from '@spartan-ng/helm/dialog';
@@ -63,6 +65,7 @@ const BOUNCE_DURATION_MS = 500;
   selector: 'app-generate-password-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    NgIcon,
     HlmButton,
     HlmCheckbox,
     HlmDialogImports,
@@ -75,6 +78,7 @@ const BOUNCE_DURATION_MS = 500;
     Icon,
     TranslatePipe,
   ],
+  providers: [provideIcons({ lucideWandSparkles })],
   templateUrl: './generate-password-dialog.html',
   /** The dialog itself lives in an overlay, so this host renders nothing. */
   host: { class: 'contents' },
@@ -112,7 +116,9 @@ export class GeneratePasswordDialog {
   private readonly i18n = inject(I18nService);
 
   protected readonly score = computed(() => estimatePasswordStrength(this.value()).score);
-  protected readonly strengthLabel = computed(() => this.i18n.translate(STRENGTH_LABELS[this.score()]));
+  protected readonly strengthLabel = computed(() =>
+    this.i18n.translate(STRENGTH_LABELS[this.score()]),
+  );
   protected readonly strengthPercent = computed(() => strengthPercent(this.score()));
   protected readonly strengthColour = computed(() => STRENGTH_COLOURS[this.score()]);
 
@@ -175,7 +181,10 @@ export class GeneratePasswordDialog {
    * not `Dash ( - )`. Same helper as `GeneratorPanel`.
    */
   protected readonly separatorLabel = (value: string): string =>
-    SEPARATOR_OPTIONS.find((option) => option.value === value)?.label ?? value;
+    this.i18n.translate(
+      SEPARATOR_OPTIONS.find((option) => option.value === value)?.labelKey ??
+        SEPARATOR_OPTIONS[0].labelKey,
+    );
 
   protected readonly languageLabel = (value: string): string =>
     AVAILABLE_LANGUAGES.find((option) => option.value === value)?.label ?? value;
