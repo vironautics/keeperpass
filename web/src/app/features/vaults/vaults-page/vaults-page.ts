@@ -1,16 +1,28 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucidePencil, lucideTrash2 } from '@ng-icons/lucide';
+import {
+  lucideArrowRight,
+  lucideCheckCheck,
+  lucideFolder,
+  lucideFolderLock,
+  lucideInfo,
+  lucideListChecks,
+  lucideLock,
+  lucidePencil,
+  lucidePlus,
+  lucideTrash2,
+  lucideHouse,
+  lucideX,
+} from '@ng-icons/lucide';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { HlmAlertDialogImports } from '@spartan-ng/helm/alert-dialog';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
 import { HlmDialogImports } from '@spartan-ng/helm/dialog';
-import { HlmEmptyImports } from '@spartan-ng/helm/empty';
 import { HlmFieldImports } from '@spartan-ng/helm/field';
 import { HlmInput } from '@spartan-ng/helm/input';
-import { HlmItemImports } from '@spartan-ng/helm/item';
 import { HlmSidebarTrigger } from '@spartan-ng/helm/sidebar';
 import { HlmTooltip } from '@spartan-ng/helm/tooltip';
 import { maxLength, singleLineValidator } from '../../../core/validation';
@@ -19,7 +31,6 @@ import { PERSONAL_VAULT_ID, VaultStore } from '../../../core/vault/vault.store';
 import { VaultSyncService } from '../../../core/vault/vault-sync.service';
 import { CreateVaultDialog } from '../../items/create-vault-dialog/create-vault-dialog';
 import { formatDate } from '../../items/format-date';
-import { Icon } from '../../../ui/icon/icon';
 
 /**
  * Vault management — reachable from the sidebar's "My Vaults" section via its
@@ -33,20 +44,33 @@ import { Icon } from '../../../ui/icon/icon';
     NgIcon,
     ReactiveFormsModule,
     CreateVaultDialog,
-    Icon,
+    RouterLink,
     HlmAlertDialogImports,
     HlmButton,
     HlmCheckbox,
     HlmDialogImports,
-    HlmEmptyImports,
     HlmFieldImports,
     HlmInput,
-    HlmItemImports,
     HlmSidebarTrigger,
     HlmTooltip,
     TranslatePipe,
   ],
-  providers: [provideIcons({ lucidePencil, lucideTrash2 })],
+  providers: [
+    provideIcons({
+      lucideArrowRight,
+      lucideCheckCheck,
+      lucideFolder,
+      lucideFolderLock,
+      lucideInfo,
+      lucideListChecks,
+      lucideLock,
+      lucidePencil,
+      lucidePlus,
+      lucideTrash2,
+      lucideHouse,
+      lucideX,
+    }),
+  ],
   templateUrl: './vaults-page.html',
   /** Fills the shell's view area — see `ItemsPage` for why routed views position themselves. */
   host: { class: 'bg-card absolute inset-x-0 bottom-0 top-[var(--inset-top,0px)] flex flex-col' },
@@ -85,6 +109,12 @@ export class VaultsPage {
   );
 
   /** The personal vault, as a line of text under the list — see the template. */
+  /** The default vault, shown on its own above the grid — it has no actions to offer. */
+  protected readonly personalVault = computed(() => {
+    const personal = this.store.personalVault();
+    return personal ? { id: personal.id, name: personal.name } : null;
+  });
+
   protected readonly personalSummary = computed(() => {
     const personal = this.store.personalVault();
     if (!personal) {

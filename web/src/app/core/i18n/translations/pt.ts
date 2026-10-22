@@ -348,6 +348,9 @@ export const pt: TranslationTable = {
   'audit.compromisedPassword.empty': 'Nenhuma das suas palavras-passe apareceu numa fuga de dados conhecida.',
 
   'tags.title': 'Etiquetas',
+  'tags.subtitle': 'Etiquetas comuns a todos os cofres, para encontrar tudo depressa',
+  'tags.openAria': 'Ver itens com a etiqueta {name}',
+  'tags.since': 'desde {date}',
   'tags.selectMultipleAria': 'Selecionar várias etiquetas',
   'tags.addTagAria': 'Adicionar etiqueta',
   'tags.selectedOne': '{count} etiqueta selecionada',
@@ -381,6 +384,9 @@ export const pt: TranslationTable = {
     'Cada uma é removida de todos os itens que a têm. Os itens em si são mantidos. Esta ação não pode ser anulada.',
 
   'vaults.title': 'Os Meus Cofres',
+  'vaults.subtitle': 'Grupos separados de itens — trabalho, família, pessoal',
+  'vaults.defaultBadge': 'Predefinido',
+  'vaults.openAria': 'Abrir {name}',
   'vaults.selectMultipleAria': 'Selecionar vários cofres',
   'vaults.newVaultAria': 'Novo cofre',
   'vaults.selectedOne': '{count} cofre selecionado',
@@ -478,6 +484,8 @@ export const pt: TranslationTable = {
   'layout.sync.retry': 'Tentar novamente',
 
   'policies.title': 'Políticas',
+  'policies.subtitle': 'As condições de utilização do KeeperPass e o tratamento dos seus dados',
+  'policies.opensNewTab': 'Abre num novo separador',
   'policies.termsTab': 'Termos e Condições',
   'policies.privacyTab': 'Política de Privacidade',
   'policies.termsBody':

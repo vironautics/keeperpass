@@ -1,203 +1,284 @@
 <!--
   Two headers, one at a time — the title with its actions, or the selection toolbar.
-  Both are the same shape, so switching between them does not move the list underneath.
+  Both are the same height, so switching between them does not move the grid underneath.
 -->
 @if (!selecting()) {
-  <header class="flex shrink-0 items-center gap-1 border-b p-2">
+  <header class="bg-card flex h-14 shrink-0 items-center gap-3 border-b px-3 sm:px-6">
     <!--
       The sidebar is a sheet below `md`, so it needs one obvious way in. From `md` up the
       sidebar column is permanently on screen and its own header owns the toggle.
     -->
-    <button hlmSidebarTrigger class="md:hidden" [srOnlyText]="'common.openNavMenu' | t"></button>
+    <button
+      hlmSidebarTrigger
+      class="-ms-1 size-9 rounded-lg md:hidden"
+      [srOnlyText]="'common.openNavMenu' | t"
+    ></button>
 
-    <h1 class="flex min-w-0 flex-1 items-center gap-2 px-1 text-sm font-semibold">
-      <app-icon name="vault" class="text-accent-strong text-[0.8125rem]" />
-      <span class="min-w-0 truncate">{{ 'vaults.title' | t }}</span>
-    </h1>
+    <span
+      class="bg-primary/15 text-accent-strong inline-flex size-9 shrink-0 items-center justify-center rounded-xl"
+      aria-hidden="true"
+    >
+      <ng-icon name="lucideFolderLock" size="1.125rem" strokeWidth="1.75" />
+    </span>
 
-    <div class="flex shrink-0 items-center">
+    <div class="flex min-w-0 flex-1 flex-col leading-tight">
+      <h1 class="flex min-w-0 items-center gap-2">
+        <span class="text-foreground truncate text-base font-extrabold tracking-tight">
+          {{ 'vaults.title' | t }}
+        </span>
+        <span
+          class="bg-muted text-muted-foreground shrink-0 rounded-full px-2 py-0.5 text-[0.6875rem] font-bold tabular-nums"
+        >
+          {{ ownVaults().length }}
+        </span>
+      </h1>
+      <p class="text-muted-foreground truncate text-xs max-sm:hidden">{{ 'vaults.subtitle' | t }}</p>
+    </div>
+
+    <div class="flex shrink-0 items-center gap-1">
       <button
         hlmBtn
         variant="ghost"
-        size="icon-sm"
+        size="icon"
+        class="text-muted-foreground hover:text-foreground size-9 rounded-lg"
         [hlmTooltip]="'vaults.selectMultipleAria' | t"
         [attr.aria-label]="'vaults.selectMultipleAria' | t"
         [disabled]="isEmpty()"
         (click)="startSelecting()"
       >
-        <app-icon name="checkbox-checked" />
+        <ng-icon name="lucideListChecks" size="1.125rem" strokeWidth="1.75" />
       </button>
 
+      <!-- The one primary action on the page, so it is the one filled button. -->
       <button
         hlmBtn
-        variant="ghost"
-        size="icon-sm"
-        [hlmTooltip]="'vaults.newVaultAria' | t"
+        class="h-9 gap-1.5 rounded-lg px-3.5 font-semibold shadow-xs max-sm:w-9 max-sm:px-0"
         [attr.aria-label]="'vaults.newVaultAria' | t"
         (click)="creatingVault.set(true)"
       >
-        <app-icon name="add" />
+        <ng-icon name="lucidePlus" size="1rem" strokeWidth="2.25" />
+        <span class="max-sm:hidden">{{ 'vaults.newVault' | t }}</span>
       </button>
     </div>
   </header>
 } @else {
-  <header class="bg-accent/40 flex shrink-0 items-center gap-1 border-b p-2">
+  <header class="bg-primary/10 flex h-14 shrink-0 items-center gap-2 border-b px-3 sm:px-6">
     <button
       hlmBtn
       variant="ghost"
-      size="icon-sm"
+      size="icon"
+      class="-ms-1 size-9 rounded-lg"
       [attr.aria-label]="'common.leaveSelectionMode' | t"
+      [hlmTooltip]="'common.leaveSelectionMode' | t"
       (click)="cancelSelecting()"
     >
-      <app-icon name="cancel" />
+      <ng-icon name="lucideX" size="1.125rem" strokeWidth="2" />
     </button>
 
-    <button
-      hlmBtn
-      variant="ghost"
-      size="icon-sm"
-      [hlmTooltip]="'common.selectOrDeselectAll' | t"
-      [attr.aria-label]="'common.selectOrDeselectAll' | t"
-      (click)="toggleSelectAll()"
-    >
-      <app-icon name="select-all" />
-    </button>
-
-    <span class="min-w-0 flex-1 truncate px-1 text-center text-sm font-semibold">
+    <span class="text-foreground min-w-0 flex-1 truncate text-sm font-bold tabular-nums">
       {{ (selectedCount() === 1 ? 'vaults.selectedOne' : 'vaults.selectedMany') | t: { count: selectedCount() } }}
     </span>
 
     <button
       hlmBtn
       variant="ghost"
-      size="icon-sm"
-      class="text-destructive"
-      [hlmTooltip]="'vaults.deleteSelectedAria' | t"
+      size="icon"
+      class="size-9 rounded-lg"
+      [hlmTooltip]="'common.selectOrDeselectAll' | t"
+      [attr.aria-label]="'common.selectOrDeselectAll' | t"
+      (click)="toggleSelectAll()"
+    >
+      <ng-icon name="lucideCheckCheck" size="1.125rem" strokeWidth="2" />
+    </button>
+
+    <button
+      hlmBtn
+      variant="outline"
+      class="bg-card text-destructive hover:bg-destructive/10 hover:text-destructive border-destructive/30 h-9 gap-2 rounded-lg px-3.5 font-semibold"
       [attr.aria-label]="'vaults.deleteSelectedAria' | t"
       [disabled]="!selectedCount()"
       (click)="requestBulkDelete()"
     >
-      <app-icon name="delete" />
+      <ng-icon name="lucideTrash2" size="1rem" strokeWidth="1.75" />
+      <span class="max-sm:hidden">{{ 'common.delete' | t }}</span>
     </button>
   </header>
 }
 
 <!--
-  The list is a column, not the full width of the window: a row is a name and two
-  numbers, and on a wide screen its actions would end up an inch of empty space away
-  from the name they belong to.
+  A grid of cards: the default vault first, on its own, then every vault you made, then
+  a tile for making another. Each card is a link into the items it holds — the page is
+  as much a way into a vault as a place to manage it.
 -->
-<main class="min-h-0 flex-1 overflow-y-auto">
-  <div class="mx-auto w-full max-w-3xl p-4 sm:p-6">
-    @if (isEmpty()) {
-      <div hlmEmpty class="py-12">
-        <hlm-empty-header>
-          <hlm-empty-media variant="icon">
-            <app-icon name="vault" class="text-2xl" />
-          </hlm-empty-media>
-          <div hlmEmptyTitle>{{ 'vaults.emptyTitle' | t }}</div>
-          <div hlmEmptyDescription>
-            {{ 'vaults.emptyDescription' | t }}
-          </div>
-        </hlm-empty-header>
+<main class="bg-background min-h-0 flex-1 overflow-y-auto">
+  <div class="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-6 sm:px-6 sm:py-8">
+    @if (personalVault(); as personal) {
+      <!--
+        The personal vault cannot be renamed or deleted, so its card carries no actions —
+        just what it is, how much is in it, and the reason it has no buttons.
+      -->
+      <a
+        class="bg-card group focus-visible:ring-ring/50 relative flex flex-col gap-4 overflow-hidden rounded-2xl border p-5 shadow-xs transition-[box-shadow,transform] outline-none hover:-translate-y-0.5 hover:shadow-md focus-visible:ring-3 sm:flex-row sm:items-center sm:p-6"
+        [class.pointer-events-none]="selecting()"
+        [class.opacity-60]="selecting()"
+        routerLink="/items"
+        [queryParams]="{ vault: personal.id }"
+        [attr.aria-label]="'vaults.openAria' | t: { name: personal.name }"
+        [attr.tabindex]="selecting() ? -1 : null"
+      >
+        <span
+          class="bg-primary text-primary-foreground inline-flex size-14 shrink-0 items-center justify-center rounded-2xl shadow-xs"
+          aria-hidden="true"
+        >
+          <ng-icon name="lucideHouse" size="1.5rem" strokeWidth="1.75" />
+        </span>
 
-        <hlm-empty-content>
-          <button hlmBtn variant="outline" size="sm" (click)="creatingVault.set(true)">
-            <app-icon name="add" />
-            {{ 'vaults.newVault' | t }}
-          </button>
-        </hlm-empty-content>
-      </div>
-    } @else {
-      <ul class="bg-card divide-y overflow-hidden rounded-lg border">
-        @for (vault of vaultRows(); track vault.id) {
-          <li>
-            <div
-              hlmItem
-              size="sm"
-              class="group/row relative rounded-none! border-transparent hover:bg-muted/40"
+        <div class="flex min-w-0 flex-1 flex-col gap-1">
+          <p class="flex min-w-0 items-center gap-2">
+            <span class="text-foreground truncate text-lg font-extrabold tracking-tight">
+              {{ personal.name }}
+            </span>
+            <span
+              class="bg-primary/15 text-accent-strong shrink-0 rounded-full px-2 py-0.5 text-[0.6875rem] font-bold"
             >
+              {{ 'vaults.defaultBadge' | t }}
+            </span>
+          </p>
+          <p class="text-muted-foreground flex items-start gap-1.5 text-sm leading-relaxed">
+            <ng-icon name="lucideLock" size="0.875rem" strokeWidth="2" class="mt-1 shrink-0" />
+            {{ personalSummary() }}
+          </p>
+        </div>
+
+        <ng-icon
+          name="lucideArrowRight"
+          size="1.25rem"
+          strokeWidth="2"
+          class="text-muted-foreground group-hover:text-foreground shrink-0 transition-transform group-hover:translate-x-0.5 max-sm:hidden rtl:-scale-x-100"
+        />
+      </a>
+    }
+
+    <section class="flex flex-col gap-3">
+      <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        @for (vault of vaultRows(); track vault.id) {
+          <div
+            class="bg-card group/card focus-within:ring-ring/50 data-[selected=true]:ring-primary data-[selected=true]:bg-primary/5 relative flex flex-col gap-4 rounded-2xl border p-5 shadow-xs transition-[box-shadow,transform] focus-within:ring-3 hover:-translate-y-0.5 hover:shadow-md data-[selected=true]:ring-2"
+            [attr.data-selected]="selecting() && isSelected(vault.id)"
+          >
+            <div class="flex items-start justify-between gap-3">
+              <span
+                class="bg-primary/15 text-accent-strong inline-flex size-11 items-center justify-center rounded-xl"
+                aria-hidden="true"
+              >
+                <ng-icon name="lucideFolder" size="1.25rem" strokeWidth="1.75" />
+              </span>
+
               @if (selecting()) {
                 <!--
-                  One control for the whole row: the checkbox's own button carries a
-                  stretched pseudo-element, so the row keeps its large hit area without a
-                  second, redundant control beside it — as `app-item-row` does.
+                  One control for the whole card: the checkbox's own button carries a
+                  stretched pseudo-element, so the card keeps its large hit area without a
+                  second, redundant control — as `app-item-row` does.
                 -->
                 <hlm-checkbox
-                  class="before:absolute before:inset-0 before:content-['']"
+                  class="before:absolute before:inset-0 before:rounded-2xl before:content-['']"
                   [checked]="isSelected(vault.id)"
                   [aria-label]="'vaults.selectAria' | t: { name: vault.name }"
                   (checkedChange)="toggleSelection(vault.id)"
                 />
-              }
-
-              <hlm-item-media variant="icon" class="text-accent-strong size-5">
-                <app-icon name="vault" />
-              </hlm-item-media>
-
-              <hlm-item-content class="min-w-0">
-                <hlm-item-title class="min-w-0 max-w-full">
-                  <span class="min-w-0 truncate">{{ vault.name }}</span>
-                </hlm-item-title>
-
-                <!--
-                  What is actually worth knowing about a vault: how much is in it, and
-                  how long it has been there.
-                -->
-                <hlm-item-description class="min-w-0">
-                  <span class="text-xs">
-                    {{ (vault.itemCount === 1 ? 'vaults.itemsCountOne' : 'vaults.itemsCountMany') | t: { count: vault.itemCount } }}
-                    @if (vault.created) {
-                      · {{ 'vaults.createdOn' | t: { date: vault.created } }}
-                    }
-                  </span>
-                </hlm-item-description>
-              </hlm-item-content>
-
-              @if (!selecting()) {
-                <hlm-item-actions
-                  class="opacity-60 transition-opacity group-focus-within/row:opacity-100 group-hover/row:opacity-100"
+              } @else {
+                <!-- Above the card's stretched link, so they stay clickable. -->
+                <div
+                  class="relative z-10 -me-1.5 -mt-1.5 flex items-center gap-0.5 opacity-70 transition-opacity group-focus-within/card:opacity-100 group-hover/card:opacity-100 max-md:opacity-100"
                 >
                   <button
                     hlmBtn
                     variant="ghost"
-                    size="icon-sm"
-                    class="rename-vault"
+                    size="icon"
+                    class="rename-vault text-muted-foreground hover:text-foreground size-8 rounded-lg"
                     [hlmTooltip]="'vaults.renameAria' | t: { name: vault.name }"
                     [attr.aria-label]="'vaults.renameAria' | t: { name: vault.name }"
                     (click)="startRenaming(vault.id, vault.name)"
                   >
-                    <app-icon name="edit" />
+                    <ng-icon name="lucidePencil" size="1rem" strokeWidth="1.75" />
                   </button>
-
                   <button
                     hlmBtn
                     variant="ghost"
-                    size="icon-sm"
-                    class="delete-vault text-destructive"
+                    size="icon"
+                    class="delete-vault text-muted-foreground hover:text-destructive hover:bg-destructive/10 size-8 rounded-lg"
                     [hlmTooltip]="'vaults.deleteAria' | t: { name: vault.name }"
                     [attr.aria-label]="'vaults.deleteAria' | t: { name: vault.name }"
                     (click)="requestDelete(vault.id, vault.name)"
                   >
-                    <app-icon name="delete" />
+                    <ng-icon name="lucideTrash2" size="1rem" strokeWidth="1.75" />
                   </button>
-                </hlm-item-actions>
+                </div>
               }
             </div>
-          </li>
-        }
-      </ul>
 
-      <!--
-        The personal vault is listed too, but as a footnote rather than a row: it cannot
-        be renamed or deleted, so a row for it would carry two disabled buttons.
-      -->
-      @if (personalSummary()) {
-        <p class="text-muted-foreground mt-3 px-1 text-xs">
-          {{ personalSummary() }}
-        </p>
+            <div class="flex min-w-0 flex-col gap-1">
+              @if (selecting()) {
+                <span class="text-foreground truncate text-base font-bold">{{ vault.name }}</span>
+              } @else {
+                <!-- The stretched pseudo-element makes the whole card the link. -->
+                <a
+                  class="text-foreground truncate text-base font-bold outline-none before:absolute before:inset-0 before:rounded-2xl before:content-['']"
+                  routerLink="/items"
+                  [queryParams]="{ vault: vault.id }"
+                  [attr.aria-label]="'vaults.openAria' | t: { name: vault.name }"
+                  >{{ vault.name }}</a
+                >
+              }
+
+              <!-- What is actually worth knowing about a vault: how much is in it, and its age. -->
+              <p class="text-muted-foreground flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">
+                <span class="text-foreground/80 font-semibold tabular-nums">
+                  {{ (vault.itemCount === 1 ? 'vaults.itemsCountOne' : 'vaults.itemsCountMany') | t: { count: vault.itemCount } }}
+                </span>
+                @if (vault.created) {
+                  <span aria-hidden="true">·</span>
+                  <span>{{ 'vaults.createdOn' | t: { date: vault.created } }}</span>
+                }
+              </p>
+            </div>
+          </div>
+        }
+
+        @if (!selecting()) {
+          <!-- Making another vault, as the last tile of the grid it would join. -->
+          <button
+            type="button"
+            class="border-border text-muted-foreground hover:border-primary/60 hover:bg-primary/5 hover:text-accent-strong focus-visible:ring-ring/50 flex min-h-36 flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed p-5 transition-colors outline-none focus-visible:ring-3"
+            (click)="creatingVault.set(true)"
+          >
+            <span
+              class="bg-muted inline-flex size-10 items-center justify-center rounded-xl"
+              aria-hidden="true"
+            >
+              <ng-icon name="lucidePlus" size="1.25rem" strokeWidth="2" />
+            </span>
+            <span class="text-sm font-bold">{{ 'vaults.newVault' | t }}</span>
+          </button>
+        }
+      </div>
+
+      @if (isEmpty()) {
+        <!-- Only the default vault so far: say what more of them are for. -->
+        <div class="flex items-start gap-3 rounded-xl px-1 py-2">
+          <ng-icon
+            name="lucideInfo"
+            size="1rem"
+            strokeWidth="2"
+            class="text-accent-strong mt-0.5 shrink-0"
+          />
+          <p class="text-muted-foreground text-sm leading-relaxed">
+            <strong class="text-foreground font-semibold">{{ 'vaults.emptyTitle' | t }}.</strong>
+            {{ 'vaults.emptyDescription' | t }}
+          </p>
+        </div>
       }
-    }
+    </section>
   </div>
 </main>
 

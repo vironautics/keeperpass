@@ -10,8 +10,12 @@
              fails WCAG 1.4.4 — and this is an app people read passwords off. -->
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
+  <!-- System bars are black on every platform, matching the brand icon: Android takes
+       its status and navigation bars from `theme-color` (and the manifest), iOS from
+       the status-bar style. -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <meta name="color-scheme" content="light dark" />
-  <meta name="theme-color" content="#24559e" />
+  <meta name="theme-color" content="#000000" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="icon" type="image/x-icon" sizes="48x48" href="favicon.ico" />
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />

@@ -1,197 +1,247 @@
 <!--
   Two headers, one at a time — the title with its actions, or the selection toolbar.
-  Both are the same shape, so switching between them does not move the list underneath.
+  Both are the same height, so switching between them does not move the grid underneath.
 -->
 @if (!selecting()) {
-  <header class="flex shrink-0 items-center gap-1 border-b p-2">
+  <header class="bg-card flex h-14 shrink-0 items-center gap-3 border-b px-3 sm:px-6">
     <!--
       The sidebar is a sheet below `md`, so it needs one obvious way in. From `md` up the
       sidebar column is permanently on screen and its own header owns the toggle.
     -->
-    <button hlmSidebarTrigger class="md:hidden" [srOnlyText]="'common.openNavMenu' | t"></button>
+    <button
+      hlmSidebarTrigger
+      class="-ms-1 size-9 rounded-lg md:hidden"
+      [srOnlyText]="'common.openNavMenu' | t"
+    ></button>
 
-    <h1 class="flex min-w-0 flex-1 items-center gap-2 px-1 text-sm font-semibold">
-      <app-icon name="tags" class="text-accent-strong text-[0.8125rem]" />
-      <span class="min-w-0 truncate">{{ 'tags.title' | t }}</span>
-    </h1>
+    <span
+      class="bg-primary/15 text-accent-strong inline-flex size-9 shrink-0 items-center justify-center rounded-xl"
+      aria-hidden="true"
+    >
+      <ng-icon name="lucideTags" size="1.125rem" strokeWidth="1.75" />
+    </span>
 
-    <div class="flex shrink-0 items-center">
+    <div class="flex min-w-0 flex-1 flex-col leading-tight">
+      <h1 class="flex min-w-0 items-center gap-2">
+        <span class="text-foreground truncate text-base font-extrabold tracking-tight">
+          {{ 'tags.title' | t }}
+        </span>
+        <span
+          class="bg-muted text-muted-foreground shrink-0 rounded-full px-2 py-0.5 text-[0.6875rem] font-bold tabular-nums"
+        >
+          {{ tags().length }}
+        </span>
+      </h1>
+      <p class="text-muted-foreground truncate text-xs max-sm:hidden">{{ 'tags.subtitle' | t }}</p>
+    </div>
+
+    <div class="flex shrink-0 items-center gap-1">
       <button
         hlmBtn
         variant="ghost"
-        size="icon-sm"
+        size="icon"
+        class="text-muted-foreground hover:text-foreground size-9 rounded-lg"
         [hlmTooltip]="'tags.selectMultipleAria' | t"
         [attr.aria-label]="'tags.selectMultipleAria' | t"
         [disabled]="isEmpty()"
         (click)="startSelecting()"
       >
-        <app-icon name="checkbox-checked" />
+        <ng-icon name="lucideListChecks" size="1.125rem" strokeWidth="1.75" />
       </button>
 
+      <!-- The one primary action on the page, so it is the one filled button. -->
       <button
         hlmBtn
-        variant="ghost"
-        size="icon-sm"
-        [hlmTooltip]="'tags.addTagAria' | t"
+        class="h-9 gap-1.5 rounded-lg px-3.5 font-semibold shadow-xs max-sm:w-9 max-sm:px-0"
         [attr.aria-label]="'tags.addTagAria' | t"
         (click)="startAddingTag()"
       >
-        <app-icon name="add" />
+        <ng-icon name="lucidePlus" size="1rem" strokeWidth="2.25" />
+        <span class="max-sm:hidden">{{ 'tags.addTag' | t }}</span>
       </button>
     </div>
   </header>
 } @else {
-  <header class="bg-accent/40 flex shrink-0 items-center gap-1 border-b p-2">
+  <header class="bg-primary/10 flex h-14 shrink-0 items-center gap-2 border-b px-3 sm:px-6">
     <button
       hlmBtn
       variant="ghost"
-      size="icon-sm"
+      size="icon"
+      class="-ms-1 size-9 rounded-lg"
       [attr.aria-label]="'common.leaveSelectionMode' | t"
+      [hlmTooltip]="'common.leaveSelectionMode' | t"
       (click)="cancelSelecting()"
     >
-      <app-icon name="cancel" />
+      <ng-icon name="lucideX" size="1.125rem" strokeWidth="2" />
     </button>
 
-    <button
-      hlmBtn
-      variant="ghost"
-      size="icon-sm"
-      [hlmTooltip]="'common.selectOrDeselectAll' | t"
-      [attr.aria-label]="'common.selectOrDeselectAll' | t"
-      (click)="toggleSelectAll()"
-    >
-      <app-icon name="select-all" />
-    </button>
-
-    <span class="min-w-0 flex-1 truncate px-1 text-center text-sm font-semibold">
+    <span class="text-foreground min-w-0 flex-1 truncate text-sm font-bold tabular-nums">
       {{ (selectedCount() === 1 ? 'tags.selectedOne' : 'tags.selectedMany') | t: { count: selectedCount() } }}
     </span>
 
     <button
       hlmBtn
       variant="ghost"
-      size="icon-sm"
-      class="text-destructive"
-      [hlmTooltip]="'tags.deleteSelectedAria' | t"
+      size="icon"
+      class="size-9 rounded-lg"
+      [hlmTooltip]="'common.selectOrDeselectAll' | t"
+      [attr.aria-label]="'common.selectOrDeselectAll' | t"
+      (click)="toggleSelectAll()"
+    >
+      <ng-icon name="lucideCheckCheck" size="1.125rem" strokeWidth="2" />
+    </button>
+
+    <button
+      hlmBtn
+      variant="outline"
+      class="bg-card text-destructive hover:bg-destructive/10 hover:text-destructive border-destructive/30 h-9 gap-2 rounded-lg px-3.5 font-semibold"
       [attr.aria-label]="'tags.deleteSelectedAria' | t"
       [disabled]="!selectedCount()"
       (click)="requestBulkDelete()"
     >
-      <app-icon name="delete" />
+      <ng-icon name="lucideTrash2" size="1rem" strokeWidth="1.75" />
+      <span class="max-sm:hidden">{{ 'common.delete' | t }}</span>
     </button>
   </header>
 }
 
 <!--
-  A column rather than the full width of the window: a row is a name, a count and a
-  date, and on a wide screen its actions would sit an inch of empty space away from the
-  name they belong to.
+  A grid of cards, one per tag, each in the tag's own colour — the colour is how a tag is
+  recognised everywhere else in the app, so it leads here too. A card is a link into the
+  items carrying the tag; renaming and deleting sit in its corner.
 -->
-<main class="min-h-0 flex-1 overflow-y-auto">
-  <div class="mx-auto w-full max-w-3xl p-4 sm:p-6">
+<main class="bg-background min-h-0 flex-1 overflow-y-auto">
+  <div class="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 sm:py-8">
     @if (isEmpty()) {
-      <div hlmEmpty class="py-12">
-        <hlm-empty-header>
-          <hlm-empty-media variant="icon">
-            <app-icon name="tags" class="text-2xl" />
-          </hlm-empty-media>
-          <div hlmEmptyTitle>{{ 'tags.emptyTitle' | t }}</div>
-          <div hlmEmptyDescription>
+      <div class="flex flex-col items-center gap-4 px-6 py-16 text-center">
+        <span
+          class="bg-primary/15 text-accent-strong ring-primary/25 inline-flex size-16 items-center justify-center rounded-2xl ring-1"
+          aria-hidden="true"
+        >
+          <ng-icon name="lucideTags" size="1.75rem" strokeWidth="1.5" />
+        </span>
+        <div class="flex max-w-sm flex-col gap-1.5">
+          <p class="text-foreground text-lg font-extrabold tracking-tight">
+            {{ 'tags.emptyTitle' | t }}
+          </p>
+          <p class="text-muted-foreground text-sm leading-relaxed">
             {{ 'tags.emptyDescription' | t }}
-          </div>
-        </hlm-empty-header>
-
-        <hlm-empty-content>
-          <button hlmBtn variant="outline" size="sm" (click)="startAddingTag()">
-            <app-icon name="add" />
-            {{ 'tags.addTag' | t }}
-          </button>
-        </hlm-empty-content>
+          </p>
+        </div>
+        <button
+          hlmBtn
+          class="h-10 gap-2 rounded-xl px-4 font-bold shadow-xs"
+          (click)="startAddingTag()"
+        >
+          <ng-icon name="lucidePlus" size="1rem" strokeWidth="2.25" />
+          {{ 'tags.addTag' | t }}
+        </button>
       </div>
     } @else {
-      <ul class="bg-card divide-y overflow-hidden rounded-lg border">
+      <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         @for (tag of tags(); track tag.name) {
-          <li>
-            <div
-              hlmItem
-              size="sm"
-              class="group/row relative rounded-none! border-transparent hover:bg-muted/40"
+          <div
+            class="bg-card group/card focus-within:ring-ring/50 data-[selected=true]:ring-primary data-[selected=true]:bg-primary/5 relative flex items-center gap-3.5 rounded-2xl border p-4 shadow-xs transition-[box-shadow,transform] focus-within:ring-3 hover:-translate-y-0.5 hover:shadow-md data-[selected=true]:ring-2"
+            [attr.data-selected]="selecting() && isSelected(tag)"
+          >
+            <!--
+              The colour stays put while selecting: it is how a tag is recognised at a
+              glance, and losing it would make the grid a wall of names.
+            -->
+            <span
+              class="inline-flex size-11 shrink-0 items-center justify-center rounded-xl"
+              [style.color]="tag.color"
+              [style.background-color]="tint(tag.color)"
+              aria-hidden="true"
             >
+              <ng-icon name="lucideTag" size="1.25rem" strokeWidth="2" />
+            </span>
+
+            <div class="flex min-w-0 flex-1 flex-col gap-0.5">
               @if (selecting()) {
-                <!--
-                  One control for the whole row: the checkbox's own button carries a
-                  stretched pseudo-element, so the row keeps its large hit area without
-                  a second, redundant control beside it — as `app-item-row` does.
-                -->
-                <hlm-checkbox
-                  class="before:absolute before:inset-0 before:content-['']"
-                  [checked]="isSelected(tag)"
-                  [aria-label]="'tags.selectAria' | t: { name: tag.name }"
-                  (checkedChange)="toggleSelection(tag)"
-                />
+                <span class="text-foreground truncate text-[0.9375rem] font-bold">{{ tag.name }}</span>
+              } @else {
+                <!-- The stretched pseudo-element makes the whole card the link. -->
+                <a
+                  class="text-foreground truncate text-[0.9375rem] font-bold outline-none before:absolute before:inset-0 before:rounded-2xl before:content-['']"
+                  routerLink="/items"
+                  [queryParams]="{ tag: tag.name }"
+                  [attr.aria-label]="'tags.openAria' | t: { name: tag.name }"
+                  >{{ tag.name }}</a
+                >
               }
 
               <!--
-                The colour stays put while selecting: it is how a tag is recognised at
-                a glance, and losing it would make the list a column of names.
+                What is worth knowing about a tag: how many items carry it, and since
+                when. A tag registered before the registry stored dates falls back to
+                the earliest item carrying it — see `VaultStore.tags`.
               -->
-              <hlm-item-media variant="icon" class="size-5">
-                <app-icon name="tag" [style.color]="tag.color" />
-              </hlm-item-media>
-
-              <hlm-item-content class="min-w-0">
-                <hlm-item-title class="min-w-0 max-w-full">
-                  <span class="min-w-0 truncate">{{ tag.name }}</span>
-                </hlm-item-title>
-
-                <!--
-                  What is worth knowing about a tag: how many items carry it, and since
-                  when. A tag registered before the registry stored dates falls back to
-                  the earliest item carrying it — see `VaultStore.tags`.
-                -->
-                <hlm-item-description class="min-w-0">
-                  <span class="text-xs">
-                    {{ (tag.count === 1 ? 'tags.itemsCountOne' : 'tags.itemsCountMany') | t: { count: tag.count } }}
-                    @if (createdLabel(tag); as created) {
-                      · {{ created }}
-                    }
-                  </span>
-                </hlm-item-description>
-              </hlm-item-content>
-
-              @if (!selecting()) {
-                <hlm-item-actions
-                  class="opacity-60 transition-opacity group-focus-within/row:opacity-100 group-hover/row:opacity-100"
-                >
-                  <button
-                    hlmBtn
-                    variant="ghost"
-                    size="icon-sm"
-                    class="rename-tag"
-                    [hlmTooltip]="'tags.renameAria' | t: { name: tag.name }"
-                    [attr.aria-label]="'tags.renameAria' | t: { name: tag.name }"
-                    (click)="startRenaming(tag)"
-                  >
-                    <app-icon name="edit" />
-                  </button>
-
-                  <button
-                    hlmBtn
-                    variant="ghost"
-                    size="icon-sm"
-                    class="delete-tag text-destructive"
-                    [hlmTooltip]="'tags.deleteAria' | t: { name: tag.name }"
-                    [attr.aria-label]="'tags.deleteAria' | t: { name: tag.name }"
-                    (click)="requestDelete(tag)"
-                  >
-                    <app-icon name="delete" />
-                  </button>
-                </hlm-item-actions>
-              }
+              <p class="text-muted-foreground flex flex-col text-xs leading-snug">
+                <span class="text-foreground/80 font-semibold tabular-nums">
+                  {{ (tag.count === 1 ? 'tags.itemsCountOne' : 'tags.itemsCountMany') | t: { count: tag.count } }}
+                </span>
+                @if (createdLabel(tag); as created) {
+                  <span class="truncate">{{ created }}</span>
+                }
+              </p>
             </div>
-          </li>
+
+            @if (selecting()) {
+              <!--
+                One control for the whole card: the checkbox's own button carries a
+                stretched pseudo-element, so the card keeps its large hit area without a
+                second, redundant control beside it — as `app-item-row` does.
+              -->
+              <hlm-checkbox
+                class="shrink-0 before:absolute before:inset-0 before:rounded-2xl before:content-['']"
+                [checked]="isSelected(tag)"
+                [aria-label]="'tags.selectAria' | t: { name: tag.name }"
+                (checkedChange)="toggleSelection(tag)"
+              />
+            } @else {
+              <!-- Above the card's stretched link, so they stay clickable. -->
+              <div
+                class="relative z-10 -me-1 flex shrink-0 items-center gap-0.5 opacity-70 transition-opacity group-focus-within/card:opacity-100 group-hover/card:opacity-100 max-md:opacity-100"
+              >
+                <button
+                  hlmBtn
+                  variant="ghost"
+                  size="icon"
+                  class="rename-tag text-muted-foreground hover:text-foreground size-8 rounded-lg"
+                  [hlmTooltip]="'tags.renameAria' | t: { name: tag.name }"
+                  [attr.aria-label]="'tags.renameAria' | t: { name: tag.name }"
+                  (click)="startRenaming(tag)"
+                >
+                  <ng-icon name="lucidePencil" size="1rem" strokeWidth="1.75" />
+                </button>
+                <button
+                  hlmBtn
+                  variant="ghost"
+                  size="icon"
+                  class="delete-tag text-muted-foreground hover:text-destructive hover:bg-destructive/10 size-8 rounded-lg"
+                  [hlmTooltip]="'tags.deleteAria' | t: { name: tag.name }"
+                  [attr.aria-label]="'tags.deleteAria' | t: { name: tag.name }"
+                  (click)="requestDelete(tag)"
+                >
+                  <ng-icon name="lucideTrash2" size="1rem" strokeWidth="1.75" />
+                </button>
+              </div>
+            }
+          </div>
         }
-      </ul>
+
+        @if (!selecting()) {
+          <!-- Making another tag, as the last tile of the grid it would join. -->
+          <button
+            type="button"
+            class="border-border text-muted-foreground hover:border-primary/60 hover:bg-primary/5 hover:text-accent-strong focus-visible:ring-ring/50 flex min-h-[4.75rem] items-center justify-center gap-2 rounded-2xl border-2 border-dashed p-4 transition-colors outline-none focus-visible:ring-3"
+            (click)="startAddingTag()"
+          >
+            <ng-icon name="lucidePlus" size="1.125rem" strokeWidth="2" />
+            <span class="text-sm font-bold">{{ 'tags.addTag' | t }}</span>
+          </button>
+        }
+      </div>
     }
   </div>
 </main>

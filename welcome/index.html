@@ -1,28 +1,33 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>KeeperPass — Your Passwords Live in Your Google Drive</title>
-<meta name="description" content="A free, open-source password manager that stores your encrypted vault in your own Google Drive — no company database, no server, nothing to breach." />
+<title>KeeperPass — Your Passwords Live in Your Google Drive or Dropbox</title>
+<meta name="description" content="A free, open-source password manager that stores your encrypted vault in your own Google Drive or Dropbox — no company database, no server, nothing to breach." />
 <link rel="canonical" href="https://keeperpass.com/" />
-<link rel="icon" href="logo.svg" type="image/svg+xml" />
+<link rel="icon" href="/favicon.ico" sizes="48x48" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/favicon-96.png" type="image/png" sizes="96x96" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 <link rel="manifest" href="/site.webmanifest" />
+<link rel="preload" href="fonts/PlusJakartaSans-800.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="fonts/PlusJakartaSans-400.woff2" as="font" type="font/woff2" crossorigin />
 
 <!-- Social share previews (Open Graph + Twitter Card) -->
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="KeeperPass" />
 <meta property="og:locale" content="en_US" />
-<meta property="og:title" content="KeeperPass — Your passwords live in your Google Drive" />
-<meta property="og:description" content="A free, open-source password manager that stores your encrypted vault in your own Google Drive — no company database, no server, nothing to breach." />
+<meta property="og:title" content="KeeperPass — Your passwords live in your Google Drive or Dropbox" />
+<meta property="og:description" content="A free, open-source password manager that stores your encrypted vault in your own Google Drive or Dropbox — no company database, no server, nothing to breach." />
 <meta property="og:url" content="https://keeperpass.com/" />
 <meta property="og:image" content="https://keeperpass.com/images/web.png" />
 <meta property="og:image:width" content="1291" />
 <meta property="og:image:height" content="805" />
 <meta property="og:image:alt" content="The KeeperPass web app showing an encrypted vault's item list" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="KeeperPass — Your passwords live in your Google Drive" />
-<meta name="twitter:description" content="A free, open-source password manager that stores your encrypted vault in your own Google Drive — no company database, no server, nothing to breach." />
+<meta name="twitter:title" content="KeeperPass — Your passwords live in your Google Drive or Dropbox" />
+<meta name="twitter:description" content="A free, open-source password manager that stores your encrypted vault in your own Google Drive or Dropbox — no company database, no server, nothing to breach." />
 <meta name="twitter:image" content="https://keeperpass.com/images/web.png" />
 <meta name="twitter:image:alt" content="The KeeperPass web app showing an encrypted vault's item list" />
 
@@ -33,9 +38,10 @@
   "@type": "SoftwareApplication",
   "name": "KeeperPass",
   "url": "https://keeperpass.com/",
+  "image": "https://keeperpass.com/favicon-512.png",
   "applicationCategory": "SecurityApplication",
   "operatingSystem": "Any (runs in the browser)",
-  "description": "A free, open-source password manager that stores your encrypted vault in your own Google Drive — no company database, no server, nothing to breach.",
+  "description": "A free, open-source password manager that stores your encrypted vault in your own Google Drive or Dropbox — no company database, no server, nothing to breach.",
   "offers": {
     "@type": "Offer",
     "price": "0",
@@ -48,8 +54,19 @@
 }
 </script>
 
-<meta name="theme-color" content="#e7eaf1" media="(prefers-color-scheme: light)" />
-<meta name="theme-color" content="#0c0d10" media="(prefers-color-scheme: dark)" />
+<meta name="theme-color" content="#faf9f7" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#0e0c0b" media="(prefers-color-scheme: dark)" />
+
+<!-- Theme before first paint, so a dark-mode visitor never sees a white flash.
+     An explicit choice (toggle button, or the D key) wins over the system setting. -->
+<script>
+  (function () {
+    var stored = null;
+    try { stored = localStorage.getItem('keeperpass.theme'); } catch (e) {}
+    var dark = stored ? stored === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.classList.add(dark ? 'dark' : 'light', 'js');
+  })();
+</script>
 
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-G2HHD6E3VL"></script>
@@ -61,1050 +78,1298 @@
   gtag('config', 'G-G2HHD6E3VL');
 </script>
 
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          background: 'var(--background)',
-          foreground: 'var(--foreground)',
-          card: 'var(--card)',
-          cardf: 'var(--card-foreground)',
-          primary: 'var(--primary)',
-          primaryf: 'var(--primary-foreground)',
-          accent: 'var(--accent-strong)',
-          muted: 'var(--muted-foreground)',
-          edge: 'var(--border)',
-          success: 'var(--success)',
-        },
-        fontFamily: {
-          display: ['Nunito', 'ui-sans-serif', 'sans-serif'],
-          body: ['Nunito', 'ui-sans-serif', 'sans-serif'],
-          mono: ['"Space Mono"', 'ui-monospace', 'monospace'],
-        },
-      },
-    },
-  };
-</script>
-
 <style>
-  @font-face { font-family: 'Nunito'; font-style: normal; font-weight: 400; font-display: swap; src: url('fonts/Nunito-400.woff2') format('woff2'); }
-  @font-face { font-family: 'Nunito'; font-style: normal; font-weight: 600; font-display: swap; src: url('fonts/Nunito-600.woff2') format('woff2'); }
-  @font-face { font-family: 'Nunito'; font-style: normal; font-weight: 700; font-display: swap; src: url('fonts/Nunito-700.woff2') format('woff2'); }
-  @font-face { font-family: 'Nunito'; font-style: normal; font-weight: 800; font-display: swap; src: url('fonts/Nunito-800.woff2') format('woff2'); }
-  @font-face { font-family: 'Nunito'; font-style: normal; font-weight: 900; font-display: swap; src: url('fonts/Nunito-900.woff2') format('woff2'); }
-  @font-face { font-family: 'Space Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url('fonts/SpaceMono-400.woff2') format('woff2'); }
-  @font-face { font-family: 'Space Mono'; font-style: normal; font-weight: 700; font-display: swap; src: url('fonts/SpaceMono-700.woff2') format('woff2'); }
+  @font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 400; font-display: swap; src: url('fonts/PlusJakartaSans-400.woff2') format('woff2'); }
+  @font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 500; font-display: swap; src: url('fonts/PlusJakartaSans-500.woff2') format('woff2'); }
+  @font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 600; font-display: swap; src: url('fonts/PlusJakartaSans-600.woff2') format('woff2'); }
+  @font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 700; font-display: swap; src: url('fonts/PlusJakartaSans-700.woff2') format('woff2'); }
+  @font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 800; font-display: swap; src: url('fonts/PlusJakartaSans-800.woff2') format('woff2'); }
+  @font-face { font-family: 'Geist Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url('fonts/GeistMono-400.woff2') format('woff2'); }
+  @font-face { font-family: 'Geist Mono'; font-style: normal; font-weight: 500; font-display: swap; src: url('fonts/GeistMono-500.woff2') format('woff2'); }
 
   /*
-    KeeperPass's own token set — light is the bare :root, dark redefines the
-    same names under prefers-color-scheme. Values match the shipping app
-    (COLORS.md / spartan.css) so this page and the product it's selling look
-    like the same thing.
+    Tokens, three layers: primitives (raw stone scale) → semantic roles
+    (background, card, primary…) → component tokens (buttons, cards).
+    The brand is black and white, matching the app icon: "primary" is simply
+    the strongest ink of each theme. Green is reserved for one meaning only —
+    "this is encrypted / safe" — never decoration.
   */
   :root {
-    --background: #e7eaf1;
-    --foreground: #3a3d46;
-    --card: #f8f9fc;
-    --card-foreground: #3a3d46;
-    --primary: #85ade5;
-    --primary-foreground: #1a1c22;
-    --accent-strong: #24559e;
-    --muted-foreground: #5b5e68;
-    --border: rgb(0 0 0 / 9%);
-    --success: #3f9c6c;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --background: #0c0d10;
-      --foreground: #e8e9ed;
-      --card: #16181d;
-      --card-foreground: #e8e9ed;
-      --primary: #85ade5;
-      --primary-foreground: #0c0d10;
-      --accent-strong: #9dc0f2;
-      --muted-foreground: #9a9da5;
-      --border: rgb(255 255 255 / 10%);
-      --success: #56c990;
-    }
+    --stone-0: #ffffff;
+    --stone-50: #faf9f7;
+    --stone-100: #f3f1ee;
+    --stone-200: #e7e4e0;
+    --stone-400: #a8a29e;
+    --stone-500: #8a827b;
+    --stone-600: #57534e;
+    --stone-800: #24211e;
+    --stone-900: #171513;
+    --stone-950: #0e0c0b;
+    --ink-light: #1c1917;
+    --ink-dark: #f5f2ef;
+    --green-700: #166534;
+    --green-400: #4ade80;
+
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    --radius: 0.75rem;
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  * { box-sizing: border-box; }
-  html { color-scheme: light dark; scroll-behavior: smooth; scroll-padding-top: 5.5rem; }
+  :root, html.light {
+    --background: var(--stone-50);
+    --foreground: var(--ink-light);
+    --card: var(--stone-0);
+    --muted: var(--stone-100);
+    --muted-foreground: var(--stone-600);
+    --border: var(--stone-200);
+    --primary: var(--ink-light);
+    --primary-foreground: var(--stone-0);
+    --primary-soft: var(--stone-100);
+    --success: var(--green-700);
+    --ring: var(--ink-light);
+    --elevation-card: 0 1px 2px rgb(28 25 23 / 0.04), 0 2px 8px -2px rgb(28 25 23 / 0.06);
+    --elevation-card-hover: 0 2px 4px rgb(28 25 23 / 0.05), 0 12px 24px -8px rgb(28 25 23 / 0.12);
+    --elevation-float: 0 4px 12px -2px rgb(28 25 23 / 0.08), 0 24px 48px -12px rgb(28 25 23 / 0.18);
+    color-scheme: light;
+  }
+  html.dark {
+    --background: var(--stone-950);
+    --foreground: var(--ink-dark);
+    --card: var(--stone-900);
+    --muted: var(--stone-800);
+    --muted-foreground: var(--stone-400);
+    --border: #2a2724;
+    --primary: var(--ink-dark);
+    --primary-foreground: var(--stone-950);
+    --primary-soft: var(--stone-800);
+    --success: var(--green-400);
+    --ring: var(--ink-dark);
+    --elevation-card: 0 0 0 1px rgb(255 255 255 / 0.03), 0 1px 2px rgb(0 0 0 / 0.3);
+    --elevation-card-hover: 0 0 0 1px rgb(255 255 255 / 0.06), 0 12px 24px -8px rgb(0 0 0 / 0.5);
+    --elevation-float: 0 0 0 1px rgb(255 255 255 / 0.05), 0 24px 48px -12px rgb(0 0 0 / 0.6);
+    color-scheme: dark;
+  }
 
+  /* Component tokens */
+  :root {
+    --btn-primary-bg: var(--primary);
+    --btn-primary-fg: var(--primary-foreground);
+    --card-ring: color-mix(in srgb, var(--border) 60%, transparent);
+    --card-shadow: var(--elevation-card), 0 0 0 1px var(--card-ring);
+    --card-shadow-hover: var(--elevation-card-hover), 0 0 0 1px var(--card-ring);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 5rem; -webkit-text-size-adjust: 100%; }
   body {
+    margin: 0;
     background: var(--background);
     color: var(--foreground);
-    font-family: 'Nunito', ui-sans-serif, sans-serif;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
     overflow-x: hidden;
   }
-
-  h1, h2, h3 { text-wrap: balance; }
+  h1, h2, h3, h4, p, figure, dl, dd { margin: 0; }
+  h1, h2, h3 { text-wrap: balance; letter-spacing: -0.025em; line-height: 1.1; }
   p { text-wrap: pretty; }
-  .prose-copy { max-width: 38rem; }
-  ::selection { background: var(--primary); color: var(--primary-foreground); }
+  ul, ol { margin: 0; padding: 0; list-style: none; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  button { font: inherit; color: inherit; }
+  code { font-family: var(--font-mono); }
+  ::selection { background: var(--foreground); color: var(--background); }
+  button:not(:disabled), a[href], summary { cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--ring); outline-offset: 3px; border-radius: var(--radius-md); }
+  .num { font-variant-numeric: tabular-nums; }
+  [hidden] { display: none !important; }
 
-  a:focus-visible, button:focus-visible {
-    outline: 2px solid var(--primary);
-    outline-offset: 3px;
-    border-radius: 4px;
+  .container { width: 100%; max-width: 72rem; margin-inline: auto; padding-inline: 1rem; }
+  @media (min-width: 640px) { .container { padding-inline: 1.5rem; } }
+  .section { padding-block: 5rem; border-top: 1px solid var(--border); }
+  @media (min-width: 1024px) { .section { padding-block: 7rem; } }
+  .section-alt { background: color-mix(in srgb, var(--muted) 45%, var(--background)); }
+
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted-foreground);
   }
+  .eyebrow::before { content: ''; width: 1.25rem; height: 1px; background: currentColor; }
+  .h2 { margin-top: 1rem; font-size: clamp(2rem, 4.2vw, 3rem); font-weight: 800; }
+  .lede { margin-top: 1.25rem; max-width: 38rem; font-size: 1.0625rem; line-height: 1.7; color: var(--muted-foreground); }
+  .section-head { max-width: 44rem; }
+  .muted { color: var(--muted-foreground); }
 
   /* ---- skip link ---- */
   .skip-link {
-    position: absolute; top: 0; left: 1rem; z-index: 100;
-    transform: translateY(-140%);
-    background: var(--accent-strong); color: #f8f9fc;
-    padding: 0.7rem 1.15rem; border-radius: 0 0 10px 10px;
-    font-weight: 700; font-size: 0.85rem;
+    position: fixed; top: 1rem; inset-inline-start: 1rem; z-index: 100;
+    transform: translateY(-200%);
+    background: var(--card); color: var(--foreground);
+    padding: 0.6rem 1rem; border-radius: var(--radius-md);
+    font-size: 0.875rem; font-weight: 600; box-shadow: var(--elevation-float), 0 0 0 2px var(--ring);
     transition: transform 0.15s ease;
   }
-  .skip-link:focus { transform: translateY(0); }
-  @media (prefers-color-scheme: dark) { .skip-link { color: #0c0d10; } }
+  .skip-link:focus { transform: none; }
 
-  .cta-primary {
-    background: var(--accent-strong);
-    color: #f8f9fc;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
-    box-shadow: 0 1px 2px rgb(0 0 0 / 8%);
+  /* ---- buttons ---- */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    min-height: 2.75rem; padding: 0 1.125rem; border-radius: var(--radius-xl);
+    border: 1px solid transparent; font-size: 0.9375rem; font-weight: 600; white-space: nowrap;
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s var(--ease-out);
   }
-  .cta-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 20px -6px rgb(36 85 158 / 45%); }
-  @media (prefers-color-scheme: dark) { .cta-primary { color: #0c0d10; } }
-
-  .cta-ghost {
-    border: 1.5px solid var(--border);
-    color: var(--foreground);
-    transition: border-color 0.15s ease, background 0.15s ease;
-  }
-  .cta-ghost:hover { border-color: var(--accent-strong); background: var(--card); }
-
-  .chip { border: 1px solid var(--border); color: var(--muted-foreground); font-family: 'Space Mono', ui-monospace, monospace; }
-  .card-surface { background: var(--card); border: 1px solid var(--border); }
-
-  /* <img> can't inherit currentColor into an SVG's fills, so the wordmark is
-     drawn as a mask instead — same technique the app itself uses. */
-  .wordmark {
-    display: inline-block;
-    background-color: var(--foreground);
-    aspect-ratio: 1151 / 217;
-    mask: url('logo.svg') no-repeat center / contain;
-    -webkit-mask: url('logo.svg') no-repeat center / contain;
-  }
-
-  /* ---- nav ---- */
-  #site-header {
-    background: transparent;
-    border-bottom: 1px solid transparent;
-    transition: background 0.25s ease, border-color 0.25s ease;
-  }
-  #site-header.is-scrolled { background: var(--background); border-bottom-color: var(--border); }
-  #site-header:has(#mobile-menu:not(.hidden)) { background: var(--background); border-bottom-color: var(--border); }
-
-  .nav-link { position: relative; padding-bottom: 3px; }
-  .nav-link::after {
-    content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px;
-    background: var(--accent-strong); transform: scaleX(0); transform-origin: left;
-    transition: transform 0.2s ease;
-  }
-  .nav-link:hover::after { transform: scaleX(1); }
-  .nav-link[aria-current="true"] { color: var(--foreground); }
-  .nav-link[aria-current="true"]::after { transform: scaleX(1); }
-
+  .btn:active { transform: translateY(1px); }
+  .btn svg { width: 1.125rem; height: 1.125rem; flex: none; }
+  .btn-lg { min-height: 3.25rem; padding: 0 1.5rem; font-size: 1rem; }
+  .btn-sm { min-height: 2.5rem; padding: 0 1rem; font-size: 0.875rem; border-radius: var(--radius-lg); }
+  .btn-primary { background: var(--btn-primary-bg); color: var(--btn-primary-fg); box-shadow: 0 1px 2px rgb(0 0 0 / 0.1); }
+  .btn-primary:hover { background: color-mix(in srgb, var(--btn-primary-bg) 86%, var(--background)); box-shadow: var(--elevation-card-hover); }
+  .btn-outline { border-color: var(--border); background: var(--card); }
+  .btn-outline:hover { background: var(--muted); }
   .icon-btn {
     display: inline-flex; align-items: center; justify-content: center;
-    width: 2.25rem; height: 2.25rem; border-radius: 9999px;
-    color: var(--muted-foreground);
-    transition: background 0.15s ease, color 0.15s ease;
+    width: 2.75rem; height: 2.75rem; border-radius: var(--radius-xl);
+    border: 0; background: transparent; color: var(--muted-foreground);
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
-  .icon-btn:hover { background: var(--card); color: var(--foreground); }
+  .icon-btn:hover { background: var(--muted); color: var(--foreground); }
+  .icon-btn svg { width: 1.25rem; height: 1.25rem; }
 
-  /* ---- mobile menu: full-screen overlay, not a stacked panel ---- */
+  /* ---- chips / pills ---- */
+  .chip {
+    display: inline-flex; align-items: center;
+    padding: 0.3rem 0.65rem; border-radius: var(--radius-md);
+    border: 1px solid var(--border); background: var(--card);
+    font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted-foreground); white-space: nowrap;
+  }
+  .pill {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.35rem 0.85rem 0.35rem 0.4rem; border-radius: 999px;
+    background: var(--card); box-shadow: var(--card-shadow);
+    font-size: 0.8125rem; font-weight: 600;
+    transition: box-shadow 0.2s ease;
+  }
+  .pill:hover { box-shadow: var(--card-shadow-hover); }
+  .pill-tag {
+    padding: 0.15rem 0.5rem; border-radius: 999px;
+    background: var(--primary); color: var(--primary-foreground);
+    font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .dot { width: 0.5rem; height: 0.5rem; border-radius: 999px; background: var(--success); flex: none; }
+
+  /* ---- cards (bento tiles) ---- */
+  .card {
+    position: relative; min-width: 0;
+    background: var(--card); border-radius: var(--radius-2xl);
+    box-shadow: var(--card-shadow); padding: 1.5rem;
+  }
+  @media (min-width: 640px) { .card { padding: 1.75rem; } }
+  .card-link { display: flex; flex-direction: column; transition: box-shadow 0.2s ease-out, transform 0.2s ease-out; }
+  .card-link:hover { transform: translateY(-2px); box-shadow: var(--card-shadow-hover); }
+  .card-link:active { transform: scale(0.99); }
+  .card h3 { font-size: 1.125rem; font-weight: 700; letter-spacing: -0.015em; }
+  .card p { color: var(--muted-foreground); font-size: 0.9375rem; line-height: 1.65; }
+  .tile {
+    display: inline-flex; align-items: center; justify-content: center; flex: none;
+    width: 2.75rem; height: 2.75rem; border-radius: var(--radius-xl);
+    background: var(--primary-soft); color: var(--foreground);
+  }
+  .tile svg { width: 1.25rem; height: 1.25rem; }
+  .tile-ink { background: var(--primary); color: var(--primary-foreground); }
+
+  /* ---- header ---- */
+  #site-header {
+    position: sticky; top: 0; z-index: 50;
+    border-bottom: 1px solid transparent;
+    transition: background-color 0.25s ease, border-color 0.25s ease;
+  }
+  #site-header.is-scrolled, #site-header.menu-open { background: var(--background); border-bottom-color: var(--border); }
+  .header-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; height: 4.5rem; }
+  .brand { display: inline-flex; align-items: center; gap: 0.6rem; border-radius: var(--radius-md); }
+  /* The wordmark SVG fills with currentColor, which an <img> can't inherit —
+     so it's drawn as a mask over a foreground-coloured box instead. */
+  .wordmark {
+    display: inline-block; height: 1.6rem; aspect-ratio: 1151 / 217;
+    background-color: var(--foreground);
+    -webkit-mask: url('logo.svg') no-repeat center / contain; mask: url('logo.svg') no-repeat center / contain;
+  }
+  .nav { display: none; align-items: center; gap: 0.25rem; }
+  .nav a {
+    position: relative; padding: 0.55rem 0.8rem; border-radius: var(--radius-lg);
+    font-size: 0.9rem; font-weight: 600; color: var(--muted-foreground);
+    transition: color 0.2s ease, background-color 0.2s ease;
+  }
+  .nav a:hover { color: var(--foreground); background: var(--muted); }
+  .nav a[aria-current="true"] { color: var(--foreground); }
+  .nav a[aria-current="true"]::after {
+    content: ''; position: absolute; inset-inline: 0.8rem; bottom: 0.2rem; height: 2px; border-radius: 2px; background: var(--foreground);
+  }
+  .header-actions { display: flex; align-items: center; gap: 0.25rem; }
+  .hide-sm { display: none !important; }
+  @media (min-width: 640px) { .hide-sm { display: inline-flex !important; } }
+  @media (min-width: 1024px) { .nav { display: flex; } .hide-lg { display: none !important; } }
+
+  .theme-toggle .i-sun { display: none; }
+  html.dark .theme-toggle .i-sun { display: block; }
+  html.dark .theme-toggle .i-moon { display: none; }
+
   #mobile-menu {
-    position: fixed;
-    top: 5rem; right: 0; bottom: 0; left: 0;
-    z-index: 40;
-    background: var(--background);
-    overflow-y: auto;
+    position: fixed; inset: 4.5rem 0 0 0; z-index: 40;
+    background: var(--background); overflow-y: auto;
+    padding: 1.5rem 1rem 3rem;
   }
-  #mobile-menu .menu-inner {
-    min-height: 100%;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 2.5rem 1.5rem 4rem;
+  html:has(#mobile-menu:not([hidden])) { overflow: hidden; }
+  .mobile-nav { display: flex; flex-direction: column; }
+  .mobile-nav a {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 0.25rem; border-bottom: 1px solid var(--border);
+    font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em;
   }
-  /* The page behind must not scroll while the full-screen menu is open. */
-  html:has(#mobile-menu:not(.hidden)) { overflow: hidden; }
+  .mobile-nav a svg { width: 1.25rem; height: 1.25rem; color: var(--muted-foreground); }
+  .mobile-actions { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 2rem; }
 
-  /* ---- hero flow diagram ----
-     Real DOM nodes rather than one fixed-viewBox SVG. An SVG scales its text
-     down with its box, so a 12px label inside a 1160-unit viewBox lands around
-     3px on a phone — unreadable, and unfixable from CSS. Here every label is
-     real text at a real size, and the diagram re-flows (column → row → two
-     zones side by side) instead of merely shrinking. */
-  .flow { display: grid; gap: 0; }
+  /* ---- hero ---- */
+  .hero { padding-block: 3rem 4.5rem; }
+  @media (min-width: 1024px) { .hero { padding-block: 4.5rem 6.5rem; } }
+  .hero-grid { display: grid; gap: 3.5rem; align-items: center; }
+  @media (min-width: 1024px) { .hero-grid { grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: 4rem; } }
+  .hero h1 {
+    margin-top: 1.5rem;
+    font-size: clamp(2.6rem, 6.4vw, 4.6rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.02;
+  }
+  .hero h1 .soft { color: var(--muted-foreground); }
+  .hero .lede { font-size: 1.125rem; margin-top: 1.5rem; }
+  .hero-ctas { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2.25rem; }
+  .hero-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2.25rem; }
 
-  .flow-zone {
-    position: relative;
-    display: flex; flex-direction: column;
-    border: 1.5px dashed var(--border);
-    border-radius: 18px;
-    padding: 2.2rem 0.9rem 1rem;
+  /* Hero visual: the vault, before and after it leaves the browser. */
+  .vault { padding: 0 !important; overflow: hidden; box-shadow: var(--elevation-float), 0 0 0 1px var(--card-ring); }
+  .vault-bar {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 0.75rem;
+    padding: 0.9rem 1.25rem; border-bottom: 1px solid var(--border);
   }
-  .flow-zone-label {
-    position: absolute; top: 0.85rem; left: 1.15rem;
-    font-family: 'Space Mono', ui-monospace, monospace;
-    font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase;
-    color: var(--muted-foreground);
+  .vault-file { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-mono); font-size: 0.8125rem; font-weight: 500; }
+  .vault-file svg { width: 1rem; height: 1rem; }
+  .vault-status { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; font-weight: 600; color: var(--success); }
+  .vault-rows { padding: 0.5rem; }
+  .vault-row { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 0.9rem; padding: 0.75rem; }
+  .vault-row + .vault-row { border-top: 1px dashed var(--border); }
+  .vault-row .tile { width: 2.5rem; height: 2.5rem; }
+  .vault-text { position: relative; min-width: 0; height: 2.6rem; }
+  .vault-text > span { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+  .vault-text strong { font-size: 0.9375rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .vault-text small { font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted-foreground); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .vault-text .cipher { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--muted-foreground); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; line-height: 2.6rem; }
+  .vault-text .plain { animation: vault-plain 7s ease-in-out infinite; }
+  .vault-text .cipher { animation: vault-cipher 7s ease-in-out infinite; opacity: 0; }
+  .vault-row:nth-child(2) .vault-text > span { animation-delay: 0.12s; }
+  .vault-row:nth-child(3) .vault-text > span { animation-delay: 0.24s; }
+  @keyframes vault-plain { 0%, 40% { opacity: 1; transform: none; } 47%, 93% { opacity: 0; transform: translateY(-4px); } 100% { opacity: 1; transform: none; } }
+  @keyframes vault-cipher { 0%, 40% { opacity: 0; transform: translateY(4px); } 47%, 93% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translateY(4px); } }
+
+  .vault-foot { display: block; padding: 1.1rem 1.25rem 1.25rem; border-top: 1px solid var(--border); background: color-mix(in srgb, var(--muted) 50%, var(--card)); }
+  .vault-foot-label { font-size: 0.75rem; font-weight: 600; color: var(--muted-foreground); }
+  .segmented {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0.25rem; margin-top: 0.6rem;
+    padding: 0.25rem; border-radius: var(--radius-xl); background: var(--muted);
+  }
+  .segmented button {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    min-height: 2.75rem; border: 0; border-radius: var(--radius-lg); background: transparent;
+    font-size: 0.875rem; font-weight: 600; color: var(--muted-foreground);
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .segmented button svg { width: 1rem; height: 1rem; }
+  .segmented button:hover { color: var(--foreground); }
+  .segmented button[aria-pressed="true"] { background: var(--card); color: var(--foreground); box-shadow: var(--card-shadow); }
+  .vault-path {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; margin-top: 0.85rem;
+    font-family: var(--font-mono); font-size: 0.8125rem; color: var(--muted-foreground);
+  }
+  .vault-path b { color: var(--foreground); font-weight: 500; }
+  .vault-path svg { width: 0.85rem; height: 0.85rem; opacity: 0.6; }
+
+  /* ---- stats strip ---- */
+  .stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+  @media (min-width: 1024px) { .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .stat { padding: 1.25rem 1.25rem 1.35rem !important; }
+  .card .stat-value { font-size: clamp(1.75rem, 3.6vw, 2.5rem); font-weight: 800; letter-spacing: -0.035em; line-height: 1; color: var(--foreground); }
+  .card .stat-label { margin-top: 0.6rem; font-size: 0.875rem; line-height: 1.45; }
+
+  /* ---- how it works ---- */
+  .how-grid { display: grid; gap: 3rem; margin-top: 3.5rem; }
+  @media (min-width: 1024px) { .how-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4rem; align-items: start; } }
+  .step { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1.25rem; padding-bottom: 2rem; position: relative; }
+  .step:last-child { padding-bottom: 0; }
+  .step:not(:last-child)::before {
+    content: ''; position: absolute; inset-inline-start: 1.25rem; top: 3rem; bottom: 0.75rem; width: 1px; background: var(--border);
+  }
+  .step-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 2.5rem; height: 2.5rem; border-radius: 999px;
+    background: var(--primary); color: var(--primary-foreground);
+    font-family: var(--font-mono); font-size: 0.8125rem; font-weight: 500;
+  }
+  .step h3 { font-size: 1.125rem; font-weight: 700; letter-spacing: -0.015em; padding-top: 0.45rem; }
+  .step p { margin-top: 0.4rem; color: var(--muted-foreground); line-height: 1.65; }
+  code.inline {
+    font-size: 0.85em; padding: 0.1em 0.4em; border-radius: 6px;
+    background: var(--muted); color: var(--foreground); white-space: nowrap;
   }
 
-  .flow-stages { display: flex; flex-direction: column; gap: 0; flex: 1; }
-
-  .stage {
-    display: flex; align-items: center; gap: 0.85rem;
-    background: var(--background);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 0.85rem 1rem;
+  @media (min-width: 1024px) { .flow { position: sticky; top: 6.5rem; } }
+  .zone { border: 1.5px dashed var(--border); border-radius: var(--radius-xl); padding: 2.25rem 0.85rem 0.85rem; position: relative; }
+  .zone-label {
+    position: absolute; top: 0.8rem; inset-inline-start: 1rem;
+    font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted-foreground);
   }
-  .stage-icon {
-    flex: none; display: grid; place-items: center;
-    width: 2.4rem; height: 2.4rem; border-radius: 11px;
-    background: color-mix(in srgb, var(--accent-strong) 13%, transparent);
-    color: var(--accent-strong);
-  }
-  .stage-out .stage-icon {
-    background: color-mix(in srgb, var(--success) 15%, transparent);
-    color: var(--success);
-  }
-  .stage-text { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
-  .stage-title {
-    font-family: 'Space Mono', ui-monospace, monospace;
-    font-size: 0.78rem; font-weight: 700; color: var(--foreground);
-  }
-  .stage-note { font-size: 0.72rem; line-height: 1.45; color: var(--muted-foreground); }
-
-  /* Connector between two stages. Vertical by default; the media queries below
-     flip it horizontal at whichever breakpoint its own container turns into a
-     row — which is 768px inside a zone, but only 1024px for the boundary. */
-  .rail {
-    --delay: 0s;
-    position: relative; display: block; flex: none; align-self: center;
-    width: 2px; height: 22px;
-    background-image: repeating-linear-gradient(to bottom, var(--border) 0 4px, transparent 4px 9px);
-  }
+  .stage { display: flex; align-items: center; gap: 0.85rem; padding: 0.85rem; border-radius: var(--radius-lg); background: var(--background); border: 1px solid var(--border); }
+  .stage .tile { width: 2.5rem; height: 2.5rem; }
+  .stage strong { display: block; font-family: var(--font-mono); font-size: 0.8125rem; font-weight: 500; }
+  .stage span.note { display: block; font-size: 0.8125rem; color: var(--muted-foreground); line-height: 1.4; }
+  .stage-out .tile { background: color-mix(in srgb, var(--success) 14%, transparent); color: var(--success); }
+  .rail { position: relative; display: block; width: 2px; height: 1.5rem; margin-inline: auto; background-image: repeating-linear-gradient(to bottom, var(--border) 0 4px, transparent 4px 8px); }
   .rail::after {
-    content: ''; position: absolute; top: 0; left: 50%;
-    width: 6px; height: 6px; border-radius: 999px; background: var(--primary);
-    translate: -50% -50%;
-    animation: rail-y 2.2s linear infinite var(--delay);
+    content: ''; position: absolute; top: 0; left: 50%; width: 6px; height: 6px; border-radius: 999px;
+    background: var(--foreground); translate: -50% -50%; animation: rail 2.2s linear infinite var(--d, 0s);
   }
-  @keyframes rail-y {
-    0%   { top: 0;    opacity: 0; }
-    18%  { opacity: 1; }
-    82%  { opacity: 1; }
-    100% { top: 100%; opacity: 0; }
-  }
-  @keyframes rail-x {
-    0%   { left: 0;    opacity: 0; }
-    18%  { opacity: 1; }
-    82%  { opacity: 1; }
-    100% { left: 100%; opacity: 0; }
-  }
-
-  /* The trust boundary: the one place the data crosses out of your control. */
-  .flow-boundary {
-    display: flex; flex-direction: column; align-items: center;
-    gap: 0.5rem; padding: 0.6rem 0;
-  }
-  .boundary-mark { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
+  @keyframes rail { 0% { top: 0; opacity: 0; } 20%, 80% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
+  .boundary { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; padding-block: 0.4rem; }
   .boundary-badge {
-    display: grid; place-items: center;
-    width: 2rem; height: 2rem; border-radius: 999px;
-    border: 1.5px solid var(--border); background: var(--background); color: var(--success);
+    display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.7rem; border-radius: 999px;
+    border: 1px solid var(--border); background: var(--card);
+    font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--success);
   }
-  .boundary-note {
-    font-family: 'Space Mono', ui-monospace, monospace;
-    font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--muted-foreground); white-space: nowrap;
-  }
+  .boundary-badge svg { width: 0.85rem; height: 0.85rem; }
+  .flow-caption { margin-top: 1rem; font-size: 0.875rem; color: var(--muted-foreground); text-align: center; }
 
-  /* Stages sit shoulder to shoulder once there's room for three of them. */
-  @media (min-width: 768px) {
-    .flow-stages { flex-direction: row; align-items: stretch; }
-    .stage {
-      flex: 1 1 0; flex-direction: column; text-align: center;
-      gap: 0.65rem; padding: 1.35rem 0.9rem;
-    }
-    .stage-text { align-items: center; }
-    .flow-stages .rail {
-      width: 30px; height: 2px;
-      background-image: repeating-linear-gradient(to right, var(--border) 0 4px, transparent 4px 9px);
-    }
-    .flow-stages .rail::after { top: 50%; left: 0; animation-name: rail-x; }
+  /* ---- storage ---- */
+  .storage-grid { display: grid; gap: 0.75rem; margin-top: 3.5rem; }
+  @media (min-width: 768px) { .storage-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .provider-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .provider-name { display: flex; align-items: center; gap: 0.85rem; }
+  .provider-name h3 { font-size: 1.375rem; }
+  .facts { margin-top: 1.5rem; border-top: 1px solid var(--border); }
+  .facts div { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: 1rem; padding-block: 0.85rem; border-bottom: 1px solid var(--border); font-size: 0.9375rem; }
+  .facts dt { color: var(--muted-foreground); font-size: 0.8125rem; font-weight: 600; padding-top: 0.1rem; }
+  .facts dd { min-width: 0; overflow-wrap: anywhere; }
+  .facts code.inline { white-space: normal; overflow-wrap: anywhere; }
+  .provider-foot { margin-top: 1.25rem; font-size: 0.875rem !important; }
+  .text-link { font-weight: 600; color: var(--foreground); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, var(--foreground) 30%, transparent); transition: text-decoration-color 0.2s ease; }
+  .text-link:hover { text-decoration-color: currentColor; }
+  .badge-soft {
+    display: inline-flex; align-items: center; padding: 0.2rem 0.6rem; border-radius: 999px;
+    background: var(--muted); color: var(--muted-foreground); font-size: 0.75rem; font-weight: 600; white-space: nowrap;
   }
+  .badge-ink { background: var(--primary); color: var(--primary-foreground); }
+  .move { display: grid; gap: 1.25rem; align-items: center; margin-top: 0.75rem; }
+  @media (min-width: 768px) { .move { grid-template-columns: auto minmax(0, 1fr) auto; } }
+  .move-icons { display: flex; align-items: center; gap: 0.5rem; color: var(--muted-foreground); }
+  .move-icons .tile { width: 2.5rem; height: 2.5rem; }
+  .move-icons > svg { width: 1.25rem; height: 1.25rem; }
+  .move p { margin-top: 0.35rem; }
 
-  /* Both trust zones side by side — the shape the whole diagram is arguing for. */
-  @media (min-width: 1024px) {
-    .flow { grid-template-columns: minmax(0, 1fr) auto minmax(0, 0.46fr); align-items: stretch; }
-    .flow-zone { padding: 2.4rem 1.1rem 1.2rem; }
-    .flow-boundary { align-self: center; flex-direction: row; padding: 0 0.6rem; }
-    .flow-boundary .rail {
-      width: 28px; height: 2px;
-      background-image: repeating-linear-gradient(to right, var(--border) 0 4px, transparent 4px 9px);
-    }
-    .flow-boundary .rail::after { top: 50%; left: 0; animation-name: rail-x; }
-  }
+  /* ---- screenshots ---- */
+  .shots { display: grid; gap: 0.75rem; margin-top: 3.5rem; }
+  @media (min-width: 1024px) { .shots { grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr); align-items: start; } }
+  .frame { padding: 0 !important; overflow: hidden; }
+  .frame-bar { display: flex; align-items: center; gap: 0.4rem; padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); }
+  .frame-bar i { width: 0.6rem; height: 0.6rem; border-radius: 999px; background: var(--border); }
+  .frame-url { margin-inline-start: 0.6rem; padding: 0.15rem 0.75rem; border-radius: 999px; background: var(--muted); font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted-foreground); }
+  .frame-title { font-size: 0.8125rem; font-weight: 700; }
+  .shot-box { position: relative; }
+  .shot-side { display: grid; gap: 0.75rem; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+  .shot-trigger { position: relative; display: block; width: 100%; height: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; border-radius: 0; }
+  .shot-trigger img { width: 100%; height: 100%; object-fit: cover; }
+  .shot-hint { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgb(0 0 0 / 0); opacity: 0; transition: opacity 0.2s ease, background-color 0.2s ease; color: #fff; }
+  .shot-hint svg { width: 1.75rem; height: 1.75rem; filter: drop-shadow(0 1px 3px rgb(0 0 0 / 0.4)); }
+  .shot-trigger:hover .shot-hint, .shot-trigger:focus-visible .shot-hint { opacity: 1; background: rgb(0 0 0 / 0.35); }
+  .shot-fallback { display: none; position: absolute; inset: 0; align-items: center; justify-content: center; padding: 1rem; text-align: center; font-size: 0.875rem; font-weight: 600; color: var(--muted-foreground); }
+  .phone { padding: 0.45rem; border-radius: 1.9rem; background: var(--foreground); }
+  .phone .shot-box { border-radius: 1.5rem; overflow: hidden; background: var(--card); }
 
-  @media (prefers-reduced-motion: reduce) {
-    .rail::after { animation: none; top: 50%; left: 50%; opacity: 1; }
-  }
-
-  /* ---- scroll reveal ---- */
-  .reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.6s ease, transform 0.6s ease; }
-  .reveal.is-visible { opacity: 1; transform: translateY(0); }
-  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
-
-  /* ---- cipher swap in the encryption panel ---- */
-  .cipher-line .plain { animation: cipher-plain 6s ease-in-out infinite; }
-  .cipher-line .locked { animation: cipher-locked 6s ease-in-out infinite; }
-  @keyframes cipher-plain { 0%, 38% { opacity: 1; } 46%, 100% { opacity: 0; } }
-  @keyframes cipher-locked { 0%, 38% { opacity: 0; } 46%, 100% { opacity: 1; } }
-  @media (prefers-reduced-motion: reduce) {
-    .cipher-line .plain { animation: none; opacity: 0; }
-    .cipher-line .locked { animation: none; opacity: 1; }
-  }
-
-  /* ---- device frames for screenshots ---- */
-  .frame-browser { border: 1px solid var(--border); border-radius: 14px; overflow: hidden; background: var(--card); }
-  .frame-browser .bar { display: flex; align-items: center; gap: 6px; padding: 10px 14px; border-bottom: 1px solid var(--border); }
-  .frame-browser .dot { width: 9px; height: 9px; border-radius: 999px; background: var(--border); }
-  .frame-browser .url { margin-left: 10px; font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--muted-foreground); background: var(--background); border-radius: 999px; padding: 3px 12px; }
-
-  .frame-phone { border: 8px solid var(--card-foreground); opacity: 0.94; border-radius: 34px; overflow: hidden; background: var(--card); box-shadow: 0 20px 40px -20px rgb(0 0 0 / 30%); }
-  .frame-phone .notch { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 90px; height: 18px; background: var(--card-foreground); border-radius: 999px; z-index: 2; }
-
-  .frame-popup { border: 1px solid var(--border); border-radius: 14px; overflow: hidden; background: var(--card); box-shadow: 0 20px 40px -24px rgb(0 0 0 / 35%); }
-  .frame-popup .bar { padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 0.75rem; font-weight: 700; }
-
-  /* ---- click-to-enlarge screenshots ---- */
-  .shot-trigger {
-    position: relative; display: block; width: 100%; height: 100%; padding: 0; border: none;
-    background: none; cursor: zoom-in; font: inherit; text-align: inherit;
-  }
-  .shot-zoom-hint {
-    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-    background: rgb(0 0 0 / 0%); opacity: 0;
-    transition: opacity 0.2s ease, background 0.2s ease;
-  }
-  .shot-trigger:hover .shot-zoom-hint,
-  .shot-trigger:focus-visible .shot-zoom-hint {
-    opacity: 1;
-    background: rgb(0 0 0 / 35%);
-  }
-  .shot-zoom-hint svg {
-    color: #fff;
-    filter: drop-shadow(0 1px 3px rgb(0 0 0 / 40%));
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .shot-zoom-hint { transition: none; }
-  }
-
-  /*
-    `position: fixed` is doing real work here, not just centring: the UA gives a
-    modal <dialog> `position: fixed` by default, and overriding that put the
-    dialog back in normal flow at its DOM position. `showModal()` then moves
-    focus into it, the browser scrolls that in-flow box into view, and with
-    `scroll-behavior: smooth` on <html> you watch the page slide away from the
-    screenshot you just clicked. Fixed keeps it out of flow, so there is
-    nothing to scroll to.
-  */
+  /* `position: fixed` keeps the modal dialog out of flow — otherwise showModal()
+     focuses it, the browser scrolls it into view, and the page slides away. */
   #lightbox {
-    position: fixed; inset: 0; margin: auto;
-    width: fit-content; height: fit-content;
-    max-width: min(92vw, 1400px); max-height: 92vh;
-    border: none; padding: 0; background: transparent; overflow: visible;
+    position: fixed; inset: 0; margin: auto; width: fit-content; height: fit-content;
+    max-width: min(92vw, 1400px); max-height: 92vh; border: 0; padding: 0; background: transparent; overflow: visible;
   }
-  #lightbox::backdrop { background: rgb(0 0 0 / 78%); backdrop-filter: blur(3px); }
-  #lightbox img {
-    display: block; max-width: min(92vw, 1400px); max-height: 92vh;
-    width: auto; height: auto; border-radius: 12px;
-    box-shadow: 0 30px 70px -20px rgb(0 0 0 / 60%);
-  }
-  #lightbox[open] { animation: lightbox-in 0.18s ease-out; }
-  @keyframes lightbox-in { from { opacity: 0; transform: scale(0.97); } }
-
-  /* Inside the image, not hanging off the corner — at 92vw there is no corner
-     left to hang off on a phone. */
+  #lightbox::backdrop { background: rgb(0 0 0 / 0.8); backdrop-filter: blur(3px); }
+  #lightbox img { max-width: min(92vw, 1400px); max-height: 92vh; width: auto; height: auto; border-radius: var(--radius-xl); }
+  #lightbox[open] { animation: pop 0.18s var(--ease-out); }
+  @keyframes pop { from { opacity: 0; transform: scale(0.97); } }
   #lightbox-close {
-    position: absolute; top: 10px; right: 10px; width: 34px; height: 34px; border-radius: 999px;
-    border: none; background: rgb(0 0 0 / 55%); color: #fff; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    backdrop-filter: blur(6px); transition: background 0.15s ease;
+    position: absolute; top: 0.6rem; inset-inline-end: 0.6rem; width: 2.75rem; height: 2.75rem; border-radius: 999px; border: 0;
+    display: flex; align-items: center; justify-content: center; background: rgb(0 0 0 / 0.6); color: #fff;
   }
-  #lightbox-close:hover { background: rgb(0 0 0 / 80%); }
-
-  /* The page behind must not scroll while the lightbox is up. */
+  #lightbox-close svg { width: 1rem; height: 1rem; }
   html:has(#lightbox[open]) { overflow: hidden; }
 
-  @media (prefers-reduced-motion: reduce) {
-    #lightbox[open] { animation: none; }
+  /* ---- security bento ---- */
+  .bento { display: grid; gap: 0.75rem; margin-top: 3.5rem; }
+  @media (min-width: 768px) { .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); } .bento .cipher-card { grid-column: span 2; } }
+  @media (min-width: 1024px) {
+    .bento { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .bento .cipher-card { grid-column: span 1; grid-row: span 2; }
   }
+  .bento .card h3 { margin-top: 1.25rem; }
+  .bento .card p { margin-top: 0.5rem; }
+  .cipher-card { display: flex; flex-direction: column; background: var(--primary); color: var(--primary-foreground); }
+  .cipher-card p { color: color-mix(in srgb, var(--primary-foreground) 72%, transparent) !important; }
+  .cipher-card .tile { background: color-mix(in srgb, var(--primary-foreground) 12%, transparent); color: var(--primary-foreground); }
+  .cipher-steps { margin-top: auto; padding-top: 2rem; font-family: var(--font-mono); font-size: 0.8125rem; }
+  .cipher-steps .row { display: flex; justify-content: space-between; gap: 1rem; padding-block: 0.7rem; border-top: 1px solid color-mix(in srgb, var(--primary-foreground) 16%, transparent); }
+  .cipher-steps .row > span:first-child { flex: none; color: color-mix(in srgb, var(--primary-foreground) 60%, transparent); }
+  .cipher-steps .row > span:last-child { text-align: end; min-width: 0; overflow-wrap: anywhere; }
+  .swap { display: inline-grid; }
+  .swap > span { grid-area: 1 / 1; }
+  .swap .a { animation: swap-a 6s ease-in-out infinite; }
+  .swap .b { animation: swap-b 6s ease-in-out infinite; opacity: 0; }
+  @keyframes swap-a { 0%, 40% { opacity: 1; } 48%, 100% { opacity: 0; } }
+  @keyframes swap-b { 0%, 40% { opacity: 0; } 48%, 100% { opacity: 1; } }
 
-  .shot-fallback { display: none; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--muted-foreground); }
+  /* ---- features ---- */
+  .features { display: grid; gap: 0.75rem; margin-top: 0.75rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (min-width: 1024px) { .features { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .feature { display: flex; align-items: center; gap: 0.9rem; padding: 1.1rem !important; }
+  .feature h3 { font-size: 0.9375rem; }
+  .feature p { font-size: 0.8125rem !important; margin-top: 0.1rem; line-height: 1.45 !important; }
+  @media (max-width: 479px) { .feature { flex-direction: column; align-items: flex-start; } }
+
+  /* ---- downloads ---- */
+  .downloads { display: grid; gap: 0.75rem; margin-top: 3.5rem; }
+  @media (min-width: 640px) { .downloads { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 1024px) { .downloads { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .download h3 { margin-top: 1.25rem; }
+  .download p { margin-top: 0.4rem; }
+  .download .go { margin-top: auto; padding-top: 1.25rem; display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.875rem; font-weight: 700; }
+  .download .go svg { width: 0.9rem; height: 0.9rem; transition: transform 0.2s var(--ease-out); }
+  .download:hover .go svg { transform: translateX(3px); }
+  .download-note { margin-top: 1.25rem; font-size: 0.875rem; color: var(--muted-foreground); }
+
+  /* ---- pricing ---- */
+  .pricing { display: grid; gap: 0.75rem; margin-top: 3.5rem; }
+  @media (min-width: 768px) { .pricing { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .pricing .card { display: flex; flex-direction: column; }
+  .card .price { font-size: 4rem; font-weight: 800; letter-spacing: -0.05em; line-height: 1; color: var(--foreground); }
+  .checks { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem; }
+  .checks li { display: flex; gap: 0.65rem; color: var(--muted-foreground); font-size: 0.9375rem; line-height: 1.55; }
+  .checks svg { flex: none; width: 1.1rem; height: 1.1rem; margin-top: 0.2rem; color: var(--success); }
+  .pricing .btn { margin-top: auto; align-self: flex-start; }
+  .pricing .btn-wrap { margin-top: auto; padding-top: 1.5rem; }
+
+  /* ---- faq ---- */
+  .faq-grid { display: grid; gap: 3rem; }
+  @media (min-width: 1024px) { .faq-grid { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 4rem; align-items: start; } }
+  .faq { display: flex; flex-direction: column; gap: 0.5rem; }
+  .faq details { border-radius: var(--radius-xl); background: var(--card); box-shadow: var(--card-shadow); }
+  .faq summary {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    min-height: 3.5rem; padding: 1rem 1.25rem; list-style: none; font-weight: 700; border-radius: var(--radius-xl);
+  }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary svg { width: 1.1rem; height: 1.1rem; flex: none; color: var(--muted-foreground); transition: transform 0.25s var(--ease-out); }
+  .faq details[open] summary svg { transform: rotate(45deg); }
+  .faq details p { padding: 0 1.25rem 1.25rem; color: var(--muted-foreground); font-size: 0.9375rem; line-height: 1.7; }
+
+  /* ---- final cta: the one inverted block on the page ---- */
+  .cta-wrap { padding-block: 2rem 0; }
+  .cta-band {
+    border-radius: var(--radius-3xl); background: var(--primary); color: var(--primary-foreground);
+    padding: 3.5rem 1.5rem; text-align: center;
+  }
+  @media (min-width: 768px) { .cta-band { padding: 5rem 3rem; } }
+  .cta-band .mark { width: 3.5rem; height: 3.5rem; margin-inline: auto; border-radius: 0.9rem; box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary-foreground) 20%, transparent); }
+  .cta-band h2 { margin-top: 1.75rem; font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; }
+  .cta-band p { margin: 1rem auto 0; max-width: 32rem; font-size: 1.0625rem; color: color-mix(in srgb, var(--primary-foreground) 72%, transparent); }
+  .cta-band .btn-invert { background: var(--primary-foreground); color: var(--primary); }
+  .cta-band .btn-invert:hover { background: color-mix(in srgb, var(--primary-foreground) 88%, var(--primary)); }
+  .cta-band .btn-line { border-color: color-mix(in srgb, var(--primary-foreground) 25%, transparent); color: var(--primary-foreground); }
+  .cta-band .btn-line:hover { background: color-mix(in srgb, var(--primary-foreground) 10%, transparent); }
+  .cta-band .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; margin-top: 2.25rem; }
+  .cta-band small { display: block; margin-top: 1.25rem; font-size: 0.8125rem; color: color-mix(in srgb, var(--primary-foreground) 62%, transparent); }
+  .cta-band :focus-visible { outline-color: var(--primary-foreground); }
+
+  /* ---- footer ---- */
+  .footer { border-top: 1px solid var(--border); margin-top: 5rem; }
+  .footer-grid { display: grid; gap: 2.5rem; padding-block: 4rem; }
+  @media (min-width: 640px) { .footer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 1024px) { .footer-grid { grid-template-columns: 1.4fr 1fr 1fr 1.3fr; } }
+  .footer h4 { font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted-foreground); }
+  .footer ul { display: flex; flex-direction: column; margin-top: 0.75rem; }
+  .footer li a, .footer li span { display: inline-block; padding-block: 0.35rem; font-size: 0.9rem; }
+  .footer li a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .footer li span { color: var(--muted-foreground); }
+  .footer-tagline { margin-top: 1rem; max-width: 17rem; font-size: 0.9rem; color: var(--muted-foreground); }
+  .footer-bottom { border-top: 1px solid var(--border); }
+  .footer-bottom .container { display: flex; flex-direction: column; gap: 0.5rem; padding-block: 1.5rem; font-size: 0.8125rem; color: var(--muted-foreground); }
+  @media (min-width: 640px) { .footer-bottom .container { flex-direction: row; justify-content: space-between; } }
+
+  /* ---- reveal: 450ms, 60ms stagger; content stays visible without JS ---- */
+  .js [data-reveal] { opacity: 0; transform: translateY(16px); transition: opacity 0.45s var(--ease-out), transform 0.45s var(--ease-out); transition-delay: calc(var(--i, 0) * 60ms); }
+  .js [data-reveal].is-visible { opacity: 1; transform: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+    .vault-text .plain, .swap .a { animation: none !important; opacity: 0 !important; }
+    .vault-text .cipher, .swap .b { animation: none !important; opacity: 1 !important; transform: none !important; }
+    .rail::after { animation: none !important; top: 50%; opacity: 1; }
+    .js [data-reveal] { opacity: 1; transform: none; }
+  }
 </style>
 </head>
-<body class="antialiased">
-  <a href="#top" class="skip-link">Skip to main content</a>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
-  <!-- ============ NAV ============ -->
-  <header id="site-header" class="sticky top-0 z-50">
-    <div class="mx-auto max-w-6xl px-6">
-      <div class="h-20 flex items-center justify-between">
-        <a href="#top" class="flex items-center gap-2" aria-label="KeeperPass home">
-          <span class="wordmark h-6"></span>
+  <!-- ============ HEADER ============ -->
+  <header id="site-header">
+    <div class="container header-row">
+      <a href="#top" class="brand" aria-label="KeeperPass home">
+        <span class="wordmark" aria-hidden="true"></span>
+      </a>
+
+      <nav class="nav" aria-label="Primary">
+        <a href="#how-it-works" data-nav-link="how-it-works">How it works</a>
+        <a href="#storage" data-nav-link="storage">Storage</a>
+        <a href="#security" data-nav-link="security">Security</a>
+        <a href="#download" data-nav-link="download">Download</a>
+        <a href="#faq" data-nav-link="faq">FAQ</a>
+      </nav>
+
+      <div class="header-actions">
+        <a href="https://github.com/vironautics/keeperpass" target="_blank" rel="noopener" class="icon-btn hide-sm" aria-label="View source on GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
         </a>
-
-        <nav class="hidden lg:flex items-center gap-9 text-[0.9rem] font-bold text-muted">
-          <a href="#how-it-works" data-nav-link="how-it-works" class="nav-link hover:text-foreground transition-colors">How it works</a>
-          <a href="#screenshots" data-nav-link="screenshots" class="nav-link hover:text-foreground transition-colors">Screenshots</a>
-          <a href="#encryption" data-nav-link="encryption" class="nav-link hover:text-foreground transition-colors">Encryption</a>
-          <a href="#extension" data-nav-link="extension" class="nav-link hover:text-foreground transition-colors">Extension</a>
-          <a href="#pricing" data-nav-link="pricing" class="nav-link hover:text-foreground transition-colors">Pricing</a>
-        </nav>
-
-        <div class="flex items-center gap-2">
-          <a href="https://github.com/vironautics/keeperpass" target="_blank" rel="noopener" class="icon-btn hidden sm:inline-flex" aria-label="View source on GitHub">
-            <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.5 0 12.3c0 5.44 3.44 10.05 8.21 11.68.6.11.82-.27.82-.6 0-.29-.01-1.26-.02-2.29-3.34.75-4.04-1.45-4.04-1.45-.55-1.44-1.34-1.82-1.34-1.82-1.09-.77.08-.75.08-.75 1.21.09 1.84 1.28 1.84 1.28 1.07 1.88 2.8 1.34 3.49 1.02.11-.79.42-1.34.76-1.65-2.67-.31-5.47-1.38-5.47-6.13 0-1.35.47-2.46 1.24-3.32-.12-.31-.54-1.57.12-3.28 0 0 1.01-.33 3.3 1.27a11.2 11.2 0 0 1 6.01 0c2.29-1.6 3.3-1.27 3.3-1.27.66 1.71.24 2.97.12 3.28.77.86 1.24 1.97 1.24 3.32 0 4.76-2.8 5.81-5.48 6.12.43.38.81 1.13.81 2.28 0 1.65-.01 2.98-.01 3.38 0 .33.22.72.83.6C20.56 22.34 24 17.73 24 12.3 24 5.5 18.63 0 12 0Z"/></svg>
-          </a>
-          <a href="https://vault.keeperpass.com" class="cta-primary rounded-full px-5 py-2.5 text-sm font-bold">Get Started</a>
-          <button id="nav-toggle" class="icon-btn lg:hidden" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-menu">
-            <svg id="icon-menu" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-            <svg id="icon-close" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" class="hidden"><path d="M6 6l12 12M18 6L6 18"/></svg>
-          </button>
-        </div>
+        <button type="button" class="icon-btn theme-toggle" id="theme-toggle" aria-label="Switch to dark theme" title="Toggle theme (D)">
+          <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+          <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        </button>
+        <a href="https://vault.keeperpass.com" class="btn btn-primary btn-sm hide-sm">Get started</a>
+        <button type="button" id="nav-toggle" class="icon-btn hide-lg" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+          <svg id="icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          <svg id="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" hidden><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
       </div>
     </div>
 
-    <div id="mobile-menu" class="hidden lg:hidden" role="dialog" aria-modal="true" aria-label="Mobile navigation">
-      <div class="menu-inner">
-        <nav class="flex flex-col items-center gap-2 text-center">
-          <a href="#how-it-works" class="mobile-nav-link font-display font-black text-3xl py-2 hover:text-accent transition-colors">How it works</a>
-          <a href="#screenshots" class="mobile-nav-link font-display font-black text-3xl py-2 hover:text-accent transition-colors">Screenshots</a>
-          <a href="#encryption" class="mobile-nav-link font-display font-black text-3xl py-2 hover:text-accent transition-colors">Encryption</a>
-          <a href="#extension" class="mobile-nav-link font-display font-black text-3xl py-2 hover:text-accent transition-colors">Extension</a>
-          <a href="#pricing" class="mobile-nav-link font-display font-black text-3xl py-2 hover:text-accent transition-colors">Pricing</a>
-        </nav>
-        <div class="mt-10 flex flex-col items-center gap-6">
-          <a href="https://vault.keeperpass.com" class="mobile-nav-link cta-primary rounded-full px-8 py-3.5 font-bold text-base">Get Started — it's free</a>
-          <a href="https://github.com/vironautics/keeperpass" target="_blank" rel="noopener" class="mobile-nav-link inline-flex items-center gap-2 text-sm font-bold text-muted hover:text-foreground transition-colors">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.5 0 12.3c0 5.44 3.44 10.05 8.21 11.68.6.11.82-.27.82-.6 0-.29-.01-1.26-.02-2.29-3.34.75-4.04-1.45-4.04-1.45-.55-1.44-1.34-1.82-1.34-1.82-1.09-.77.08-.75.08-.75 1.21.09 1.84 1.28 1.84 1.28 1.07 1.88 2.8 1.34 3.49 1.02.11-.79.42-1.34.76-1.65-2.67-.31-5.47-1.38-5.47-6.13 0-1.35.47-2.46 1.24-3.32-.12-.31-.54-1.57.12-3.28 0 0 1.01-.33 3.3 1.27a11.2 11.2 0 0 1 6.01 0c2.29-1.6 3.3-1.27 3.3-1.27.66 1.71.24 2.97.12 3.28.77.86 1.24 1.97 1.24 3.32 0 4.76-2.8 5.81-5.48 6.12.43.38.81 1.13.81 2.28 0 1.65-.01 2.98-.01 3.38 0 .33.22.72.83.6C20.56 22.34 24 17.73 24 12.3 24 5.5 18.63 0 12 0Z"/></svg>
-            View source on GitHub
-          </a>
-        </div>
+    <div id="mobile-menu" hidden>
+      <nav class="mobile-nav" aria-label="Mobile">
+        <a href="#how-it-works" class="mobile-nav-link">How it works <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a href="#storage" class="mobile-nav-link">Storage <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a href="#security" class="mobile-nav-link">Security <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a href="#download" class="mobile-nav-link">Download <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a href="#faq" class="mobile-nav-link">FAQ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </nav>
+      <div class="mobile-actions">
+        <a href="https://vault.keeperpass.com" class="btn btn-primary btn-lg mobile-nav-link">Get started — it's free</a>
+        <a href="https://github.com/vironautics/keeperpass" target="_blank" rel="noopener" class="btn btn-outline btn-lg mobile-nav-link">View source on GitHub</a>
       </div>
     </div>
   </header>
 
-  <main id="top">
+  <main id="main-content">
     <!-- ============ HERO ============ -->
-    <section class="relative overflow-hidden">
-      <div class="mx-auto max-w-6xl px-6 pt-16 pb-4 sm:pt-20">
-        <div class="max-w-3xl">
-          <p class="inline-flex items-center gap-2 chip rounded-full px-3 py-1 text-[0.7rem] tracking-[0.14em] uppercase">
-            Free · Open source · Built on Google Drive
+    <section id="top" class="hero">
+      <div class="container hero-grid">
+        <div>
+          <a href="#storage" class="pill" data-reveal>
+            <span class="pill-tag">New</span>
+            Dropbox support in the web app
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+
+          <h1 data-reveal style="--i:1">Your passwords live in your cloud. <span class="soft">Not ours.</span></h1>
+
+          <p class="lede" data-reveal style="--i:2">
+            KeeperPass encrypts your entire vault in your browser and saves it as
+            one file in your own Google Drive or Dropbox. There is no KeeperPass
+            server — because there's nothing left for one to hold.
           </p>
 
-          <h1 class="mt-6 font-display font-black leading-[1.04] text-[2.6rem] sm:text-6xl tracking-tight">
-            Your passwords live in
-            <span style="color: var(--accent-strong);">your</span>
-            Google Drive.
-            <span class="block">Not ours.</span>
-          </h1>
-
-          <p class="prose-copy mt-6 text-lg leading-relaxed text-muted">
-            KeeperPass encrypts your entire vault in your browser and saves the
-            result as a single file, inside a folder in your own Drive. There
-            is no KeeperPass server — because there's nothing left for one to hold.
-          </p>
-
-          <div class="mt-9 flex flex-wrap items-center gap-4">
-            <a href="https://vault.keeperpass.com" class="cta-primary rounded-full px-7 py-3.5 font-bold text-base">Get Started — it's free</a>
-            <a href="https://github.com/vironautics/keeperpass" target="_blank" rel="noopener" class="cta-ghost rounded-full px-7 py-3.5 font-bold text-base inline-flex items-center gap-2">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.5 0 12.3c0 5.44 3.44 10.05 8.21 11.68.6.11.82-.27.82-.6 0-.29-.01-1.26-.02-2.29-3.34.75-4.04-1.45-4.04-1.45-.55-1.44-1.34-1.82-1.34-1.82-1.09-.77.08-.75.08-.75 1.21.09 1.84 1.28 1.84 1.28 1.07 1.88 2.8 1.34 3.49 1.02.11-.79.42-1.34.76-1.65-2.67-.31-5.47-1.38-5.47-6.13 0-1.35.47-2.46 1.24-3.32-.12-.31-.54-1.57.12-3.28 0 0 1.01-.33 3.3 1.27a11.2 11.2 0 0 1 6.01 0c2.29-1.6 3.3-1.27 3.3-1.27.66 1.71.24 2.97.12 3.28.77.86 1.24 1.97 1.24 3.32 0 4.76-2.8 5.81-5.48 6.12.43.38.81 1.13.81 2.28 0 1.65-.01 2.98-.01 3.38 0 .33.22.72.83.6C20.56 22.34 24 17.73 24 12.3 24 5.5 18.63 0 12 0Z"/></svg>
+          <div class="hero-ctas" data-reveal style="--i:3">
+            <a href="https://vault.keeperpass.com" class="btn btn-primary btn-lg">
+              Get started — it's free
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a href="https://github.com/vironautics/keeperpass" target="_blank" rel="noopener" class="btn btn-outline btn-lg">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
               View source
             </a>
           </div>
 
-          <ul class="mt-9 flex flex-wrap gap-2.5 text-xs">
-            <li class="chip rounded-md px-2.5 py-1">AES-256-GCM</li>
-            <li class="chip rounded-md px-2.5 py-1">Argon2id</li>
-            <li class="chip rounded-md px-2.5 py-1">drive.file scope only</li>
-            <li class="chip rounded-md px-2.5 py-1">no server</li>
-            <li class="chip rounded-md px-2.5 py-1">AGPL-3.0</li>
+          <ul class="hero-chips" data-reveal style="--i:4" aria-label="Technical facts">
+            <li class="chip">AES-256-GCM</li>
+            <li class="chip">Argon2id</li>
+            <li class="chip">drive.file scope only</li>
+            <li class="chip">Dropbox app folder only</li>
+            <li class="chip">no server</li>
+            <li class="chip">AGPL-3.0</li>
           </ul>
         </div>
-      </div>
 
-      <!-- hero diagram: full-width, the page's centerpiece -->
-      <figure class="mx-auto max-w-6xl px-6 mt-14 sm:mt-16">
-        <div class="reveal card-surface rounded-3xl p-4 sm:p-7" data-reveal>
-          <div class="flow">
-
-            <div class="flow-zone">
-              <span class="flow-zone-label">Your device</span>
-              <div class="flow-stages">
-
-                <div class="stage">
-                  <span class="stage-icon">
-                    <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                      <rect x="2" y="3.5" width="20" height="14" rx="2.5"/><path d="M8 21h8M12 17.5V21"/>
-                    </svg>
-                  </span>
-                  <span class="stage-text">
-                    <strong class="stage-title">Your browser</strong>
-                    <span class="stage-note">where the vault is opened and edited</span>
-                  </span>
-                </div>
-
-                <span class="rail" style="--delay: -0.2s" aria-hidden="true"></span>
-
-                <div class="stage">
-                  <span class="stage-icon">
-                    <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                      <path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/>
-                      <circle cx="16.5" cy="7.5" r="0.6" fill="currentColor"/>
-                    </svg>
-                  </span>
-                  <span class="stage-text">
-                    <strong class="stage-title">Argon2id</strong>
-                    <span class="stage-note">your secret becomes a 256-bit key</span>
-                  </span>
-                </div>
-
-                <span class="rail" style="--delay: -0.9s" aria-hidden="true"></span>
-
-                <div class="stage">
-                  <span class="stage-icon">
-                    <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                      <rect x="3" y="10.5" width="18" height="11" rx="2.5"/><path d="M7 10.5V6.8a5 5 0 0 1 10 0v3.7"/>
-                    </svg>
-                  </span>
-                  <span class="stage-text">
-                    <strong class="stage-title">AES-256-GCM</strong>
-                    <span class="stage-note">the whole vault, sealed and signed</span>
-                  </span>
-                </div>
-
-              </div>
-            </div>
-
-            <div class="flow-boundary">
-              <span class="rail" style="--delay: -1.5s" aria-hidden="true"></span>
-              <span class="boundary-mark">
-                <span class="boundary-badge">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M12 3l7 3v5.5c0 4-2.9 7.3-7 8.5-4.1-1.2-7-4.5-7-8.5V6z"/><path d="M9 12l2 2 4-4"/>
-                  </svg>
-                </span>
-                <span class="boundary-note">ciphertext only</span>
-              </span>
-              <span class="rail" style="--delay: -0.6s" aria-hidden="true"></span>
-            </div>
-
-            <div class="flow-zone">
-              <span class="flow-zone-label">Your Google Drive</span>
-              <div class="flow-stages">
-                <div class="stage stage-out">
-                  <span class="stage-icon">
-                    <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                      <path d="M14.5 2H6.5a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7z"/><path d="M14.5 2v5h5"/>
-                      <rect x="9" y="13" width="6" height="5" rx="1.2"/><path d="M10.5 13v-1.2a1.5 1.5 0 0 1 3 0V13"/>
-                    </svg>
-                  </span>
-                  <span class="stage-text">
-                    <strong class="stage-title">vault.json.enc</strong>
-                    <span class="stage-note">bytes Google can store, but not read</span>
-                  </span>
-                </div>
-              </div>
-            </div>
-
+        <!-- The vault as you see it, then as Google or Dropbox sees it. -->
+        <figure class="card vault" data-reveal style="--i:2">
+          <div class="vault-bar">
+            <span class="vault-file">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              vault.json.enc
+            </span>
+            <span class="vault-status"><span class="dot" aria-hidden="true"></span>Encrypted in your browser</span>
           </div>
-        </div>
-        <figcaption class="mt-4 text-center text-sm text-muted mx-auto max-w-xl">
-          Every step up to and including encryption runs on your device. Only the last one ever reaches Google.
-        </figcaption>
-      </figure>
+          <div class="vault-rows" aria-hidden="true">
+            <div class="vault-row">
+              <span class="tile"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></span>
+              <span class="vault-text">
+                <span class="plain"><strong>github.com</strong><small>you@example.com · ••••••••••••</small></span>
+                <span class="cipher">kX9dP0q+Lm3vRw8Zt1aYc4==:Ue7bQ…</span>
+              </span>
+            </div>
+            <div class="vault-row">
+              <span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h18M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 21h18M12 3l9 5H3z"/></svg></span>
+              <span class="vault-text">
+                <span class="plain"><strong>Bank account</strong><small>Login · TOTP 482 913</small></span>
+                <span class="cipher">U2FsdGVkX1+8mK/qN3vRw==:4Lz2Q…</span>
+              </span>
+            </div>
+            <div class="vault-row">
+              <span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg></span>
+              <span class="vault-text">
+                <span class="plain"><strong>Home Wi-Fi</strong><small>Note · ••••••••••</small></span>
+                <span class="cipher">9fQ2wLx7+RkT0bN5mJs1==:aH8vC…</span>
+              </span>
+            </div>
+          </div>
+          <figcaption class="vault-foot">
+            <span class="vault-foot-label" id="provider-label">Saved to your own</span>
+            <div class="segmented" role="group" aria-labelledby="provider-label">
+              <button type="button" data-provider="drive" aria-pressed="true">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.01 1.485c-2.082 0-3.754.02-3.743.047.01.02 1.708 3.001 3.774 6.62l3.76 6.574h3.76c2.081 0 3.753-.02 3.742-.047-.005-.02-1.708-3.001-3.775-6.62l-3.76-6.574zm-4.76 1.73a789.828 789.861 0 0 0-3.63 6.319L0 15.868l1.89 3.298 1.885 3.297 3.62-6.335 3.618-6.33-1.88-3.287C8.1 4.704 7.255 3.22 7.25 3.214zm2.259 12.653-.203.348c-.114.198-.96 1.672-1.88 3.287a423.93 423.948 0 0 1-1.698 2.97c-.01.026 3.24.042 7.222.042h7.244l1.796-3.157c.992-1.734 1.85-3.23 1.906-3.323l.104-.167h-7.249z"/></svg>
+                Google Drive
+              </button>
+              <button type="button" data-provider="dropbox" aria-pressed="false">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 1.807L0 5.629l6 3.822 6.001-3.822L6 1.807zM18 1.807l-6 3.822 6 3.822 6-3.822-6-3.822zM0 13.274l6 3.822 6.001-3.822L6 9.452l-6 3.822zM18 9.452l-6 3.822 6 3.822 6-3.822-6-3.822zM6 18.371l6.001 3.822 6-3.822-6-3.822L6 18.371z"/></svg>
+                Dropbox
+              </button>
+            </div>
+            <p class="vault-path" id="vault-path" aria-live="polite">
+              <b>My Drive</b>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+              <b>keeperpass</b>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+              vault.json.enc
+            </p>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============ PROOF ============ -->
+    <section aria-label="KeeperPass at a glance">
+      <div class="container">
+        <ul class="stats">
+          <li class="card stat" data-reveal><p class="stat-value num">0</p><p class="stat-label">KeeperPass servers holding your data</p></li>
+          <li class="card stat" data-reveal style="--i:1"><p class="stat-value num">0</p><p class="stat-label">KeeperPass accounts to create or lose</p></li>
+          <li class="card stat" data-reveal style="--i:2"><p class="stat-value num">256-bit</p><p class="stat-label">key derived from your secret with Argon2id</p></li>
+          <li class="card stat" data-reveal style="--i:3"><p class="stat-value num">$0</p><p class="stat-label">forever — free and open source under AGPL-3.0</p></li>
+        </ul>
+      </div>
     </section>
 
     <!-- ============ HOW IT WORKS ============ -->
-    <section id="how-it-works" class="border-t border-edge mt-16">
-      <div class="mx-auto max-w-6xl px-6 py-24 grid lg:grid-cols-[0.9fr_1.1fr] gap-16">
-        <div class="reveal" data-reveal>
-          <p class="text-xs font-bold tracking-[0.14em] uppercase text-accent">How it works</p>
-          <h2 class="mt-3 font-display font-black text-3xl sm:text-4xl leading-tight">Three files. One folder.<br/>Nothing else.</h2>
-          <p class="prose-copy mt-5 text-muted leading-relaxed">
-            There's no account database, no user table, no company
-            infrastructure standing between you and your passwords. When you
-            sign in, KeeperPass asks Google for permission to see exactly one
-            thing: a folder it creates for itself.
+    <section id="how-it-works" class="section" style="margin-top:5rem;">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <p class="eyebrow">How it works</p>
+          <h2 class="h2">One folder. One file. Nothing else.</h2>
+          <p class="lede">
+            No account database, no user table, no company infrastructure
+            between you and your passwords. When you sign in, KeeperPass asks
+            Google or Dropbox for permission to see exactly one thing: a folder
+            it creates for itself.
           </p>
-
-          <div class="mt-8 card-surface rounded-xl p-5 font-mono text-sm">
-            <p class="flex items-center gap-2 text-foreground font-bold">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>
-              keeperpass/
-            </p>
-            <p class="pl-6 mt-2 flex items-center gap-2 text-muted">
-              <span class="text-muted">└─</span>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              vault.json.enc
-              <span class="text-[0.65rem] text-success">encrypted</span>
-            </p>
-          </div>
         </div>
 
-        <ol class="space-y-8">
-          <li class="reveal flex gap-5" data-reveal>
-            <span class="shrink-0 h-9 w-9 rounded-full grid place-items-center font-mono font-bold text-sm" style="background: var(--accent-strong); color: #f8f9fc;">1</span>
-            <div>
-              <h3 class="font-bold text-lg">Sign in with Google</h3>
-              <p class="mt-1.5 text-muted leading-relaxed">One click grants a single Drive scope — <code class="font-mono text-[0.85em] chip rounded px-1.5 py-0.5">drive.file</code> — which only lets KeeperPass see files it creates itself. Everything else already in your Drive stays invisible to it.</p>
+        <div class="how-grid">
+          <ol class="steps">
+            <li class="step" data-reveal>
+              <span class="step-num">01</span>
+              <div>
+                <h3>Sign in with Google or Dropbox</h3>
+                <p>With Google, one click grants a single Drive scope — <code class="inline">drive.file</code> — which only lets KeeperPass see files it creates itself. With Dropbox, access is limited to KeeperPass's own app folder. Everything else in your storage stays invisible to it.</p>
+              </div>
+            </li>
+            <li class="step" data-reveal style="--i:1">
+              <span class="step-num">02</span>
+              <div>
+                <h3>We create one folder</h3>
+                <p>The first time you use KeeperPass, it creates a folder named <code class="inline">keeperpass</code> (in Dropbox, under <code class="inline">Apps</code>) and one file inside it. That's the entire footprint, for as long as you use it.</p>
+              </div>
+            </li>
+            <li class="step" data-reveal style="--i:2">
+              <span class="step-num">03</span>
+              <div>
+                <h3>You choose a secret</h3>
+                <p>Your master secret never touches Google or Dropbox and is never transmitted anywhere. It's used inside your browser to derive an encryption key.</p>
+              </div>
+            </li>
+            <li class="step" data-reveal style="--i:3">
+              <span class="step-num">04</span>
+              <div>
+                <h3>Every change re-encrypts and re-uploads</h3>
+                <p>Add a password, edit a note, delete an item — each change re-encrypts the whole vault and overwrites that one file. Your provider stores bytes it cannot read.</p>
+              </div>
+            </li>
+            <li class="step" data-reveal style="--i:4">
+              <span class="step-num">05</span>
+              <div>
+                <h3>Switch providers whenever you like</h3>
+                <p>In the web app, Settings → Storage → Move Vault copies your vault between Google Drive and Dropbox. The copy is checked before anything else changes, and the old file is renamed, never deleted.</p>
+              </div>
+            </li>
+          </ol>
+
+          <figure class="flow card" data-reveal style="--i:1">
+            <div class="zone">
+              <span class="zone-label">Your device</span>
+              <div class="stage">
+                <span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3.5" width="20" height="14" rx="2.5"/><path d="M8 21h8M12 17.5V21"/></svg></span>
+                <div><strong>Your browser</strong><span class="note">where the vault is opened and edited</span></div>
+              </div>
+              <span class="rail" style="--d:-0.3s" aria-hidden="true"></span>
+              <div class="stage">
+                <span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".6" fill="currentColor"/></svg></span>
+                <div><strong>Argon2id</strong><span class="note">your secret becomes a 256-bit key</span></div>
+              </div>
+              <span class="rail" style="--d:-1s" aria-hidden="true"></span>
+              <div class="stage">
+                <span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="10.5" width="18" height="11" rx="2.5"/><path d="M7 10.5V6.8a5 5 0 0 1 10 0v3.7"/></svg></span>
+                <div><strong>AES-256-GCM</strong><span class="note">the whole vault, sealed and signed</span></div>
+              </div>
             </div>
-          </li>
-          <li class="reveal flex gap-5" data-reveal>
-            <span class="shrink-0 h-9 w-9 rounded-full grid place-items-center font-mono font-bold text-sm" style="background: var(--accent-strong); color: #f8f9fc;">2</span>
-            <div>
-              <h3 class="font-bold text-lg">We create one folder</h3>
-              <p class="mt-1.5 text-muted leading-relaxed">The first time you use KeeperPass, it creates a folder named <code class="font-mono text-[0.85em] chip rounded px-1.5 py-0.5">keeperpass</code> and one file inside it. That's the entire footprint, for as long as you use it.</p>
+
+            <div class="boundary">
+              <span class="rail" style="--d:-1.6s" aria-hidden="true"></span>
+              <span class="boundary-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5.5c0 4-2.9 7.3-7 8.5-4.1-1.2-7-4.5-7-8.5V6z"/><path d="M9 12l2 2 4-4"/></svg>
+                ciphertext only
+              </span>
+              <span class="rail" style="--d:-0.7s" aria-hidden="true"></span>
             </div>
-          </li>
-          <li class="reveal flex gap-5" data-reveal>
-            <span class="shrink-0 h-9 w-9 rounded-full grid place-items-center font-mono font-bold text-sm" style="background: var(--accent-strong); color: #f8f9fc;">3</span>
-            <div>
-              <h3 class="font-bold text-lg">You choose a secret</h3>
-              <p class="mt-1.5 text-muted leading-relaxed">Your master secret never touches Google and is never transmitted anywhere. It's used once, inside your browser, to derive an encryption key.</p>
+
+            <div class="zone">
+              <span class="zone-label">Your Google Drive or Dropbox</span>
+              <div class="stage stage-out">
+                <span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 2H6.5a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7z"/><path d="M14.5 2v5h5"/><rect x="9" y="13" width="6" height="5" rx="1.2"/><path d="M10.5 13v-1.2a1.5 1.5 0 0 1 3 0V13"/></svg></span>
+                <div><strong>vault.json.enc</strong><span class="note">bytes your provider can store, but not read</span></div>
+              </div>
             </div>
-          </li>
-          <li class="reveal flex gap-5" data-reveal>
-            <span class="shrink-0 h-9 w-9 rounded-full grid place-items-center font-mono font-bold text-sm" style="background: var(--accent-strong); color: #f8f9fc;">4</span>
-            <div>
-              <h3 class="font-bold text-lg">Every change re-encrypts and re-uploads</h3>
-              <p class="mt-1.5 text-muted leading-relaxed">Add a password, edit a note, delete an item — each change re-encrypts the whole vault and overwrites that one file. Google stores bytes it cannot read.</p>
+            <figcaption class="flow-caption">Every step up to and including encryption runs on your device. Only the last one ever reaches Google or Dropbox.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ STORAGE ============ -->
+    <section id="storage" class="section section-alt">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <p class="eyebrow">Your storage, your choice</p>
+          <h2 class="h2">Google Drive or Dropbox. Same vault, same encryption.</h2>
+          <p class="lede">Pick the account you already trust. KeeperPass asks each one for the narrowest access it offers, and the file it writes is unreadable to both.</p>
+        </div>
+
+        <div class="storage-grid">
+          <article class="card" data-reveal>
+            <div class="provider-head">
+              <div class="provider-name">
+                <span class="tile tile-ink"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.01 1.485c-2.082 0-3.754.02-3.743.047.01.02 1.708 3.001 3.774 6.62l3.76 6.574h3.76c2.081 0 3.753-.02 3.742-.047-.005-.02-1.708-3.001-3.775-6.62l-3.76-6.574zm-4.76 1.73a789.828 789.861 0 0 0-3.63 6.319L0 15.868l1.89 3.298 1.885 3.297 3.62-6.335 3.618-6.33-1.88-3.287C8.1 4.704 7.255 3.22 7.25 3.214zm2.259 12.653-.203.348c-.114.198-.96 1.672-1.88 3.287a423.93 423.948 0 0 1-1.698 2.97c-.01.026 3.24.042 7.222.042h7.244l1.796-3.157c.992-1.734 1.85-3.23 1.906-3.323l.104-.167h-7.249z"/></svg></span>
+                <h3>Google Drive</h3>
+              </div>
+              <span class="badge-soft">All apps</span>
             </div>
-          </li>
-        </ol>
+            <dl class="facts">
+              <div><dt>Access</dt><dd><code class="inline">drive.file</code> — only files KeeperPass creates</dd></div>
+              <div><dt>Location</dt><dd><code class="inline">keeperpass/vault.json.enc</code></dd></div>
+              <div><dt>Works in</dt><dd>Web app, browser extension, mobile app</dd></div>
+            </dl>
+            <p class="provider-foot">Revoke any time in your <a class="text-link" href="https://myaccount.google.com/permissions" target="_blank" rel="noopener">Google account permissions</a>.</p>
+          </article>
+
+          <article class="card" data-reveal style="--i:1">
+            <div class="provider-head">
+              <div class="provider-name">
+                <span class="tile tile-ink"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 1.807L0 5.629l6 3.822 6.001-3.822L6 1.807zM18 1.807l-6 3.822 6 3.822 6-3.822-6-3.822zM0 13.274l6 3.822 6.001-3.822L6 9.452l-6 3.822zM18 9.452l-6 3.822 6 3.822 6-3.822-6-3.822zM6 18.371l6.001 3.822 6-3.822-6-3.822L6 18.371z"/></svg></span>
+                <h3>Dropbox</h3>
+              </div>
+              <span class="badge-soft badge-ink">New</span>
+            </div>
+            <dl class="facts">
+              <div><dt>Access</dt><dd>App folder only — nothing else in your Dropbox</dd></div>
+              <div><dt>Location</dt><dd><code class="inline">Apps/keeperpass/vault.json.enc</code></dd></div>
+              <div><dt>Works in</dt><dd>Web app (the extension and mobile app use Google Drive for now)</dd></div>
+            </dl>
+            <p class="provider-foot">Revoke any time in your <a class="text-link" href="https://www.dropbox.com/account/connected_apps" target="_blank" rel="noopener">Dropbox connected apps</a>.</p>
+          </article>
+        </div>
+
+        <div class="card move" data-reveal>
+          <div class="move-icons" aria-hidden="true">
+            <span class="tile"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.01 1.485c-2.082 0-3.754.02-3.743.047.01.02 1.708 3.001 3.774 6.62l3.76 6.574h3.76c2.081 0 3.753-.02 3.742-.047-.005-.02-1.708-3.001-3.775-6.62l-3.76-6.574zm-4.76 1.73a789.828 789.861 0 0 0-3.63 6.319L0 15.868l1.89 3.298 1.885 3.297 3.62-6.335 3.618-6.33-1.88-3.287C8.1 4.704 7.255 3.22 7.25 3.214zm2.259 12.653-.203.348c-.114.198-.96 1.672-1.88 3.287a423.93 423.948 0 0 1-1.698 2.97c-.01.026 3.24.042 7.222.042h7.244l1.796-3.157c.992-1.734 1.85-3.23 1.906-3.323l.104-.167h-7.249z"/></svg></span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h13l-3-3M17 17H4l3 3"/></svg>
+            <span class="tile"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 1.807L0 5.629l6 3.822 6.001-3.822L6 1.807zM18 1.807l-6 3.822 6 3.822 6-3.822-6-3.822zM0 13.274l6 3.822 6.001-3.822L6 9.452l-6 3.822zM18 9.452l-6 3.822 6 3.822 6-3.822-6-3.822zM6 18.371l6.001 3.822 6-3.822-6-3.822L6 18.371z"/></svg></span>
+          </div>
+          <div>
+            <h3>Move your vault between them</h3>
+            <p>Settings → Storage → Move Vault. Your vault is copied and checked, and only then is the old file renamed. If anything fails, nothing is changed.</p>
+          </div>
+          <a href="https://vault.keeperpass.com" class="btn btn-outline">Open the web app</a>
+        </div>
       </div>
     </section>
 
     <!-- ============ SCREENSHOTS ============ -->
-    <section id="screenshots" class="border-t border-edge" style="background: var(--card);">
-      <div class="mx-auto max-w-6xl px-6 py-24">
-        <div class="reveal max-w-2xl" data-reveal>
-          <p class="text-xs font-bold tracking-[0.14em] uppercase text-accent">See it everywhere</p>
-          <h2 class="mt-3 font-display font-black text-3xl sm:text-4xl leading-tight">One vault. Every screen.</h2>
-          <p class="prose-copy mt-5 text-muted leading-relaxed">The same encrypted file, opened from the web app, the browser extension, or your phone — nothing is ever synced anywhere but your own Drive.</p>
+    <section id="screenshots" class="section">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <p class="eyebrow">See it everywhere</p>
+          <h2 class="h2">One vault. Every screen.</h2>
+          <p class="lede">The same encrypted file, opened from the web app, the browser extension, or your phone — nothing is ever synced anywhere but your own cloud storage.</p>
         </div>
 
-        <div class="mt-14 grid lg:grid-cols-[1.6fr_1fr] gap-6">
-          <!-- web app: frame matches the real screenshot's own 1291x805 ratio, so object-cover has nothing to crop.
-               self-start: grid stretches every item in a row to the tallest by default, and the extension
-               card beside it is portrait (taller) — without this the landscape web card would be stretched
-               down to match it, leaving empty space below the image. -->
-          <div class="reveal frame-browser self-start" data-reveal>
-            <div class="bar">
-              <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-              <span class="url">vault.keeperpass.com</span>
-            </div>
-            <div class="relative aspect-[1291/805]">
-              <button type="button" class="shot-trigger" aria-label="View the web app screenshot enlarged" onclick="openLightbox(this)">
-                <img src="./images/web.png" alt="KeeperPass web app showing the vault item list" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'; this.closest('.shot-trigger').style.display='none'; this.closest('.shot-trigger').nextElementSibling.style.display='flex';" />
-                <span class="shot-zoom-hint">
-                  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg>
-                </span>
+        <div class="shots">
+          <div class="card frame" data-reveal>
+            <div class="frame-bar"><i></i><i></i><i></i><span class="frame-url">vault.keeperpass.com</span></div>
+            <div class="shot-box" style="aspect-ratio:1291/805;">
+              <button type="button" class="shot-trigger" aria-label="View the web app screenshot enlarged" data-lightbox>
+                <img src="./images/web.png" alt="KeeperPass web app showing the vault item list" width="1291" height="805" loading="lazy" decoding="async" />
+                <span class="shot-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span>
               </button>
-              <div class="shot-fallback absolute inset-0">
-                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg>
-                <p class="text-sm font-semibold">Web app screenshot coming soon</p>
-              </div>
+              <p class="shot-fallback">Web app screenshot coming soon</p>
             </div>
           </div>
 
-          <div class="flex flex-col gap-6">
-            <!-- extension: real screenshot is 399x599, essentially the popup's own native 400x600 -->
-            <div class="reveal frame-popup" data-reveal>
-              <div class="bar">Browser extension</div>
-              <div class="relative aspect-[399/599]">
-                <button type="button" class="shot-trigger" aria-label="View the browser extension screenshot enlarged" onclick="openLightbox(this)">
-                  <img src="./images/ext.png" alt="KeeperPass browser extension popup" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'; this.closest('.shot-trigger').style.display='none'; this.closest('.shot-trigger').nextElementSibling.style.display='flex';" />
-                  <span class="shot-zoom-hint">
-                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg>
-                  </span>
+          <div class="shot-side">
+            <div class="card frame" data-reveal style="--i:1">
+              <div class="frame-bar"><span class="frame-title">Browser extension</span></div>
+              <div class="shot-box" style="aspect-ratio:399/599;">
+                <button type="button" class="shot-trigger" aria-label="View the browser extension screenshot enlarged" data-lightbox>
+                  <img src="./images/ext.png" alt="KeeperPass browser extension popup" width="399" height="599" loading="lazy" decoding="async" />
+                  <span class="shot-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span>
                 </button>
-                <div class="shot-fallback absolute inset-0">
-                  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 7h6M9 11h6M9 15h3"/></svg>
-                  <p class="text-sm font-semibold text-center px-4">Extension screenshot coming soon</p>
-                </div>
+                <p class="shot-fallback">Extension screenshot coming soon</p>
               </div>
             </div>
-          </div>
-
-          <!-- mobile: real screenshot is 380x817, spans under both columns on large screens -->
-          <div class="lg:col-span-2 flex justify-center">
-            <div class="reveal relative frame-phone w-full max-w-[280px]" data-reveal>
-              <span class="notch"></span>
-              <div class="relative aspect-[380/817]">
-                <button type="button" class="shot-trigger" aria-label="View the mobile screenshot enlarged" onclick="openLightbox(this)">
-                  <img src="./images/mobile.png" alt="KeeperPass on mobile" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'; this.closest('.shot-trigger').style.display='none'; this.closest('.shot-trigger').nextElementSibling.style.display='flex';" />
-                  <span class="shot-zoom-hint">
-                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg>
-                  </span>
+            <div class="phone" data-reveal style="--i:2">
+              <div class="shot-box" style="aspect-ratio:380/817;">
+                <button type="button" class="shot-trigger" aria-label="View the mobile screenshot enlarged" data-lightbox>
+                  <img src="./images/mobile.png" alt="KeeperPass on mobile" width="380" height="817" loading="lazy" decoding="async" />
+                  <span class="shot-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span>
                 </button>
-                <div class="shot-fallback absolute inset-0">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/></svg>
-                  <p class="text-sm font-semibold text-center px-6">Mobile screenshot coming soon</p>
-                </div>
+                <p class="shot-fallback">Mobile screenshot coming soon</p>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Enlarged view of whichever screenshot was clicked above. -->
         <dialog id="lightbox" aria-label="Enlarged screenshot">
           <button type="button" id="lightbox-close" aria-label="Close">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
           </button>
-          <img id="lightbox-img" src="" alt="" />
+          <img id="lightbox-img" src="data:," alt="" />
         </dialog>
       </div>
     </section>
 
-    <!-- ============ ENCRYPTION ============ -->
-    <section id="encryption" class="border-t border-edge">
-      <div class="mx-auto max-w-6xl px-6 py-24 grid lg:grid-cols-[1.05fr_0.95fr] gap-16 items-center">
-        <div class="reveal" data-reveal>
-          <p class="text-xs font-bold tracking-[0.14em] uppercase text-accent">Under the hood</p>
-          <h2 class="mt-3 font-display font-black text-3xl sm:text-4xl leading-tight">Locked before it ever<br/>leaves your device</h2>
-          <p class="prose-copy mt-5 text-muted leading-relaxed">
-            Your secret is run through <strong class="text-foreground">Argon2id</strong> — a
-            memory-hard key-derivation function built to resist GPU cracking,
-            the same default security-focused apps like Bitwarden use. The
-            resulting key encrypts your vault with
-            <strong class="text-foreground">AES-256-GCM</strong>, an authenticated
-            cipher: tamper with a single byte of the ciphertext, and
-            decryption fails outright instead of quietly returning garbage.
-          </p>
-          <p class="prose-copy mt-4 text-muted leading-relaxed">
-            Google can host the file. Google cannot read it. Neither can
-            anyone else — there's no third party holding the key, because
-            there's no third party at all.
-          </p>
+    <!-- ============ SECURITY ============ -->
+    <section id="security" class="section section-alt">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <p class="eyebrow">Under the hood</p>
+          <h2 class="h2">Locked before it ever leaves your device.</h2>
+          <p class="lede">Nothing to breach, because there's nothing to hold. Google or Dropbox can host the file. Neither can read it — nor can anyone else, because there's no third party holding the key.</p>
         </div>
 
-        <div class="reveal card-surface rounded-2xl p-6 sm:p-7 font-mono text-sm leading-loose" data-reveal style="background: var(--card);">
-          <p class="text-muted text-xs uppercase tracking-wider mb-4">your secret →</p>
-          <p class="cipher-line relative h-6">
-            <span class="plain absolute inset-0">correct horse battery staple</span>
-            <span class="locked absolute inset-0" style="color: var(--accent-strong);">3f9a1c…e207b4 <span class="text-muted text-xs">(256-bit key)</span></span>
-          </p>
-          <p class="text-muted mt-5 text-xs">↓ Argon2id · 64 MiB · 3 iterations · p=4</p>
-          <p class="text-muted mt-5 text-xs">↓ AES-256-GCM</p>
-          <div class="mt-5 pt-5 border-t" style="border-color: var(--border);">
-            <p class="break-all" style="color: var(--foreground);">U2FsdGVkX1+8mK/qN3vRw==:kX9dP…4Lz2Qa==</p>
-            <p class="mt-2 text-success text-xs">✓ this is what reaches Drive</p>
-          </div>
+        <div class="bento">
+          <article class="card cipher-card" data-reveal>
+            <span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="10.5" width="18" height="11" rx="2.5"/><path d="M7 10.5V6.8a5 5 0 0 1 10 0v3.7"/></svg></span>
+            <h3>Argon2id + AES-256-GCM</h3>
+            <p>Your secret is run through Argon2id — a memory-hard key-derivation function built to resist GPU cracking, with the same parameters Bitwarden uses. The key then seals the vault with AES-256-GCM: tamper with a single byte, and decryption fails outright instead of quietly returning garbage.</p>
+            <div class="cipher-steps" aria-label="Example: a secret becomes ciphertext">
+              <div class="row"><span>secret</span><span class="swap"><span class="a">correct horse battery staple</span><span class="b">3f9a1c…e207b4 (key)</span></span></div>
+              <div class="row"><span>Argon2id</span><span>64 MiB · 3 iterations · p=4</span></div>
+              <div class="row"><span>AES-256-GCM</span><span>fresh 12-byte nonce per save</span></div>
+              <div class="row"><span>to your cloud</span><span>U2FsdGVkX1+8mK/qN3vRw==…</span></div>
+            </div>
+          </article>
+
+          <article class="card" data-reveal style="--i:1">
+            <span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.66 3.58 3 8 3s8-1.34 8-3V5M4 11v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6"/><path d="M3 3l18 18"/></svg></span>
+            <h3>No company database</h3>
+            <p>Password managers get breached because they're one juicy target holding everyone's vaults at once. KeeperPass has no vaults to lose — each one lives in its owner's own storage.</p>
+          </article>
+
+          <article class="card" data-reveal style="--i:2">
+            <span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18.36 6.64a9 9 0 1 1-12.73 0M12 2v10"/></svg></span>
+            <h3>Revoke it in one click</h3>
+            <p>KeeperPass only ever holds a temporary access token, never your data. Remove its access in your Google or Dropbox settings and it's gone instantly — your vault file stays exactly where you left it.</p>
+          </article>
+
+          <article class="card" data-reveal style="--i:3">
+            <span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4M12 16h.01"/></svg></span>
+            <h3>Real breach checking</h3>
+            <p>Every password is checked against Have I Been Pwned using k-anonymity — only the first 5 characters of a SHA-1 hash ever leave your browser. Your actual password never does.</p>
+          </article>
+
+          <article class="card" data-reveal style="--i:4">
+            <span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68M6.61 6.61A13.53 13.53 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61M2 2l20 20"/></svg></span>
+            <h3>No tracking in the app</h3>
+            <p>The web app and the extension contain no analytics, no telemetry, no crash reporting, and no advertising code. See exactly what moves where in the <a class="text-link" href="/privacy-policy">privacy policy</a>.</p>
+          </article>
         </div>
+
+        <ul class="features" aria-label="Features">
+          <li class="card feature" data-reveal>
+            <span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M10 2h4"/></svg></span>
+            <div><h3>TOTP codes</h3><p>Two-factor codes next to the login they protect.</p></div>
+          </li>
+          <li class="card feature" data-reveal style="--i:1">
+            <span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8M21 3v5h-5"/></svg></span>
+            <div><h3>Password generator</h3><p>Strong, unique passwords in one click.</p></div>
+          </li>
+          <li class="card feature" data-reveal style="--i:2">
+            <span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2H2v10l9.29 9.29a1 1 0 0 0 1.41 0l8.59-8.59a1 1 0 0 0 0-1.41z"/><circle cx="7" cy="7" r="1.2" fill="currentColor"/></svg></span>
+            <div><h3>Tags</h3><p>Group items your own way.</p></div>
+          </li>
+          <li class="card feature" data-reveal style="--i:3">
+            <span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>
+            <div><h3>Multiple vaults</h3><p>Keep personal and work apart.</p></div>
+          </li>
+          <li class="card feature" data-reveal style="--i:4">
+            <span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8"/></svg></span>
+            <div><h3>CSV import &amp; export</h3><p>Bring your passwords in, take them out.</p></div>
+          </li>
+          <li class="card feature" data-reveal style="--i:5">
+            <span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg></span>
+            <div><h3>Security report</h3><p>Spot breached and reused passwords.</p></div>
+          </li>
+        </ul>
       </div>
     </section>
 
-    <!-- ============ WHY IT MATTERS ============ -->
-    <section id="why" class="border-t border-edge" style="background: var(--card);">
-      <div class="mx-auto max-w-6xl px-6 py-24">
-        <div class="reveal max-w-2xl" data-reveal>
-          <p class="text-xs font-bold tracking-[0.14em] uppercase text-accent">Why this matters</p>
-          <h2 class="mt-3 font-display font-black text-3xl sm:text-4xl leading-tight">Nothing to breach, because<br/>there's nothing to hold</h2>
+    <!-- ============ DOWNLOAD ============ -->
+    <section id="download" class="section">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <p class="eyebrow">Everywhere you type a password</p>
+          <h2 class="h2">Get KeeperPass on every device.</h2>
+          <p class="lede">Unlock your vault and autofill logins from the toolbar, or carry it on your phone. Same encrypted file — just quicker to reach.</p>
         </div>
 
-        <div class="mt-14 grid sm:grid-cols-2 gap-6">
-          <div class="reveal rounded-xl p-6" data-reveal style="background: var(--background); border: 1px solid var(--border);">
-            <h3 class="font-bold text-lg">No company database</h3>
-            <p class="mt-2 text-muted leading-relaxed text-[0.95rem]">Password managers get breached because they're one juicy target holding everyone's vaults at once. KeeperPass has no vaults to lose — each one lives in its owner's own Drive.</p>
-          </div>
-          <div class="reveal rounded-xl p-6" data-reveal style="background: var(--background); border: 1px solid var(--border);">
-            <h3 class="font-bold text-lg">Revoke it in one click</h3>
-            <p class="mt-2 text-muted leading-relaxed text-[0.95rem]">KeeperPass only ever holds a temporary access token, never your data. Remove its access from your Google Account and it's gone instantly — your vault file stays exactly where you left it.</p>
-          </div>
-          <div class="reveal rounded-xl p-6" data-reveal style="background: var(--background); border: 1px solid var(--border);">
-            <h3 class="font-bold text-lg">Real breach checking</h3>
-            <p class="mt-2 text-muted leading-relaxed text-[0.95rem]">The security report checks every password against Have I Been Pwned using k-anonymity — only the first 5 characters of a SHA-1 hash ever leave your browser. Your actual password never does.</p>
-          </div>
-          <div class="reveal rounded-xl p-6" data-reveal style="background: var(--background); border: 1px solid var(--border);">
-            <h3 class="font-bold text-lg">Still a real password manager</h3>
-            <p class="mt-2 text-muted leading-relaxed text-[0.95rem]">TOTP codes, a strong password generator, tags, multiple vaults, CSV import and export — everything you'd expect, built on an architecture most password managers don't have.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============ BROWSER EXTENSION ============ -->
-    <section id="extension" class="border-t border-edge" style="background: var(--card);">
-      <div class="mx-auto max-w-6xl px-6 py-24">
-        <div class="reveal max-w-2xl" data-reveal>
-          <p class="text-xs font-bold tracking-[0.14em] uppercase text-accent">Everywhere you type a password</p>
-          <h2 class="mt-3 font-display font-black text-3xl sm:text-4xl leading-tight">Get the browser extension</h2>
-          <p class="prose-copy mt-5 text-muted leading-relaxed">Unlock your vault and autofill logins from the toolbar, on whichever browser you use. Same encrypted file, same Drive folder — just quicker to reach.</p>
-        </div>
-
-        <div class="mt-14 grid sm:grid-cols-3 gap-6">
-          <!-- Chrome: not on the Web Store yet, so this links to build-it-yourself instructions -->
-          <a href="https://github.com/vironautics/keeperpass/blob/main/extention/README.md#build--install" target="_blank" rel="noopener" class="reveal card-surface rounded-2xl p-6 flex flex-col items-start transition-transform hover:-translate-y-1" data-reveal>
-            <svg width="40" height="40" viewBox="0 0 256 256" aria-hidden="true">
-              <path fill="#fff" d="M128.003 199.216c39.335 0 71.221-31.888 71.221-71.223S167.338 56.77 128.003 56.77S56.78 88.658 56.78 127.993s31.887 71.223 71.222 71.223"/><path fill="#229342" d="M35.89 92.997Q27.92 79.192 17.154 64.02a127.98 127.98 0 0 0 110.857 191.981q17.671-24.785 23.996-35.74q12.148-21.042 31.423-60.251v-.015a63.993 63.993 0 0 1-110.857.017Q46.395 111.19 35.89 92.998"/><path fill="#fbc116" d="M128.008 255.996A127.97 127.97 0 0 0 256 127.997A128 128 0 0 0 238.837 64q-36.372-3.585-53.686-3.585q-19.632 0-57.152 3.585l-.014.01a63.99 63.99 0 0 1 55.444 31.987a63.99 63.99 0 0 1-.001 64.01z"/><path fill="#1a73e8" d="M128.003 178.677c27.984 0 50.669-22.685 50.669-50.67s-22.685-50.67-50.67-50.67c-27.983 0-50.669 22.686-50.669 50.67s22.686 50.67 50.67 50.67"/><path fill="#e33b2e" d="M128.003 64.004H238.84a127.973 127.973 0 0 0-221.685.015l55.419 95.99l.015.008a63.993 63.993 0 0 1 55.415-96.014z"/>
-            </svg>
-            <h3 class="mt-4 font-bold text-lg">Chrome</h3>
-            <p class="mt-1.5 text-muted text-sm leading-relaxed">Not on the Web Store yet — build it from source in a couple of minutes.</p>
-            <span class="mt-4 inline-flex items-center gap-1.5 font-bold text-sm" style="color: var(--accent-strong);">
-              Build &amp; install
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-            </span>
+        <div class="downloads">
+          <a href="https://vault.keeperpass.com" class="card card-link download" data-reveal>
+            <span class="tile tile-ink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
+            <h3>Web app</h3>
+            <p>Nothing to install. Works with Google Drive or Dropbox.</p>
+            <span class="go">Open the vault <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </a>
-
-          <!-- Edge: build isn't automated yet (see extention/README.md), so this is a status card, not a link -->
-          <div class="reveal card-surface rounded-2xl p-6 flex flex-col items-start opacity-70" data-reveal>
-            <svg width="40" height="40" viewBox="0 0 256 256" aria-hidden="true">
-              <defs><radialGradient id="edgeGradA" cx="161.83" cy="788.401" r="95.38" gradientTransform="matrix(.9999 0 0 .9498 -4.622 -570.387)" gradientUnits="userSpaceOnUse"><stop offset=".72" stop-opacity="0"/><stop offset=".95" stop-opacity=".53"/><stop offset="1"/></radialGradient><radialGradient id="edgeGradB" cx="-773.636" cy="746.715" r="143.24" gradientTransform="matrix(.15 -.9898 .8 .12 -410.718 -656.341)" gradientUnits="userSpaceOnUse"><stop offset=".76" stop-opacity="0"/><stop offset=".95" stop-opacity=".5"/><stop offset="1"/></radialGradient><radialGradient id="edgeGradC" cx="230.593" cy="-106.038" r="202.43" gradientTransform="matrix(-.04 .9998 -2.1299 -.07998 -190.775 -191.635)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#35c1f1"/><stop offset=".11" stop-color="#34c1ed"/><stop offset=".23" stop-color="#2fc2df"/><stop offset=".31" stop-color="#2bc3d2"/><stop offset=".67" stop-color="#36c752"/></radialGradient><radialGradient id="edgeGradD" cx="536.357" cy="-117.703" r="97.34" gradientTransform="matrix(.28 .9598 -.78 .23 -1.928 -410.318)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#66eb6e"/><stop offset="1" stop-color="#66eb6e" stop-opacity="0"/></radialGradient><linearGradient id="edgeGradE" x1="63.334" x2="241.617" y1="757.83" y2="757.83" gradientTransform="translate(-4.63 -580.81)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#0c59a4"/><stop offset="1" stop-color="#114a8b"/></linearGradient><linearGradient id="edgeGradF" x1="157.401" x2="46.028" y1="680.556" y2="801.868" gradientTransform="translate(-4.63 -580.81)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#1b9de2"/><stop offset=".16" stop-color="#1595df"/><stop offset=".67" stop-color="#0680d7"/><stop offset="1" stop-color="#0078d4"/></linearGradient></defs><path fill="url(#edgeGradE)" d="M231 190.5c-3.4 1.8-6.9 3.4-10.5 4.7c-11.5 4.3-23.6 6.5-35.9 6.5c-47.3 0-88.5-32.5-88.5-74.3c.1-11.4 6.4-21.9 16.4-27.3c-42.8 1.8-53.8 46.4-53.8 72.5c0 73.9 68.1 81.4 82.8 81.4c7.9 0 19.8-2.3 27-4.6l1.3-.4c27.6-9.5 51-28.1 66.6-52.8c1.2-1.9.6-4.3-1.2-5.5c-1.3-.8-2.9-.9-4.2-.2"/><path fill="url(#edgeGradA)" d="M231 190.5c-3.4 1.8-6.9 3.4-10.5 4.7c-11.5 4.3-23.6 6.5-35.9 6.5c-47.3 0-88.5-32.5-88.5-74.3c.1-11.4 6.4-21.9 16.4-27.3c-42.8 1.8-53.8 46.4-53.8 72.5c0 73.9 68.1 81.4 82.8 81.4c7.9 0 19.8-2.3 27-4.6l1.3-.4c27.6-9.5 51-28.1 66.6-52.8c1.2-1.9.6-4.3-1.2-5.5c-1.3-.8-2.9-.9-4.2-.2" opacity=".35"/><path fill="url(#edgeGradF)" d="M105.7 241.4c-8.9-5.5-16.6-12.8-22.7-21.3c-26.3-36-18.4-86.5 17.6-112.8c3.8-2.7 7.7-5.2 11.9-7.2c3.1-1.5 8.4-4.1 15.5-4c10.1.1 19.6 4.9 25.7 13c4 5.4 6.3 11.9 6.4 18.7c0-.2 24.5-79.6-80-79.6c-43.9 0-80 41.7-80 78.2c-.2 19.3 4 38.5 12.1 56c27.6 58.8 94.8 87.6 156.4 67.1c-21.1 6.6-44.1 3.7-62.9-8.1"/><path fill="url(#edgeGradB)" d="M105.7 241.4c-8.9-5.5-16.6-12.8-22.7-21.3c-26.3-36-18.4-86.5 17.6-112.8c3.8-2.7 7.7-5.2 11.9-7.2c3.1-1.5 8.4-4.1 15.5-4c10.1.1 19.6 4.9 25.7 13c4 5.4 6.3 11.9 6.4 18.7c0-.2 24.5-79.6-80-79.6c-43.9 0-80 41.7-80 78.2c-.2 19.3 4 38.5 12.1 56c27.6 58.8 94.8 87.6 156.4 67.1c-21.1 6.6-44.1 3.7-62.9-8.1" opacity=".41"/><path fill="url(#edgeGradC)" d="M152.3 148.9c-.8 1-3.3 2.5-3.3 5.7c0 2.6 1.7 5.1 4.7 7.2c14.4 10 41.5 8.7 41.6 8.7c10.7 0 21.1-2.9 30.3-8.3c18.8-11 30.4-31.1 30.4-52.9c.3-22.4-8-37.3-11.3-43.9C223.5 23.9 177.7 0 128 0C58 0 1 56.2 0 126.2c.5-36.5 36.8-66 80-66c3.5 0 23.5.3 42 10.1c16.3 8.6 24.9 18.9 30.8 29.2c6.2 10.7 7.3 24.1 7.3 29.5c0 5.3-2.7 13.3-7.8 19.9"/><path fill="url(#edgeGradD)" d="M152.3 148.9c-.8 1-3.3 2.5-3.3 5.7c0 2.6 1.7 5.1 4.7 7.2c14.4 10 41.5 8.7 41.6 8.7c10.7 0 21.1-2.9 30.3-8.3c18.8-11 30.4-31.1 30.4-52.9c.3-22.4-8-37.3-11.3-43.9C223.5 23.9 177.7 0 128 0C58 0 1 56.2 0 126.2c.5-36.5 36.8-66 80-66c3.5 0 23.5.3 42 10.1c16.3 8.6 24.9 18.9 30.8 29.2c6.2 10.7 7.3 24.1 7.3 29.5c0 5.3-2.7 13.3-7.8 19.9"/>
-            </svg>
-            <h3 class="mt-4 font-bold text-lg">Edge</h3>
-            <p class="mt-1.5 text-muted text-sm leading-relaxed">Store listing in progress — check back soon.</p>
-            <span class="mt-4 chip rounded-full px-3 py-1 text-[0.7rem] tracking-[0.1em] uppercase">In progress</span>
-          </div>
 
           <!-- Firefox: live AMO listing -->
-          <a href="https://addons.mozilla.org/en-US/firefox/addon/keeperpass/" target="_blank" rel="noopener" class="reveal card-surface rounded-2xl p-6 flex flex-col items-start transition-transform hover:-translate-y-1" data-reveal>
-            <svg width="40" height="41" viewBox="0 0 256 265" aria-hidden="true">
-              <defs><radialGradient id="ffGradA" cx="-7907.187" cy="-8515.121" r="80.797" gradientTransform="translate(26367.938 28186.305)scale(3.3067)" gradientUnits="userSpaceOnUse"><stop offset=".129" stop-color="#ffbd4f"/><stop offset=".186" stop-color="#ffac31"/><stop offset=".247" stop-color="#ff9d17"/><stop offset=".283" stop-color="#ff980e"/><stop offset=".403" stop-color="#ff563b"/><stop offset=".467" stop-color="#ff3750"/><stop offset=".71" stop-color="#f5156c"/><stop offset=".782" stop-color="#eb0878"/><stop offset=".86" stop-color="#e50080"/></radialGradient><radialGradient id="ffGradB" cx="-7936.711" cy="-8482.089" r="80.797" gradientTransform="translate(26367.938 28186.305)scale(3.3067)" gradientUnits="userSpaceOnUse"><stop offset=".3" stop-color="#960e18"/><stop offset=".351" stop-color="#b11927" stop-opacity=".74"/><stop offset=".435" stop-color="#db293d" stop-opacity=".343"/><stop offset=".497" stop-color="#f5334b" stop-opacity=".094"/><stop offset=".53" stop-color="#ff3750" stop-opacity="0"/></radialGradient><radialGradient id="ffGradC" cx="-7926.97" cy="-8533.457" r="58.534" gradientTransform="translate(26367.938 28186.305)scale(3.3067)" gradientUnits="userSpaceOnUse"><stop offset=".132" stop-color="#fff44f"/><stop offset=".252" stop-color="#ffdc3e"/><stop offset=".506" stop-color="#ff9d12"/><stop offset=".526" stop-color="#ff980e"/></radialGradient><radialGradient id="ffGradD" cx="-7945.648" cy="-8460.984" r="38.471" gradientTransform="translate(26367.938 28186.305)scale(3.3067)" gradientUnits="userSpaceOnUse"><stop offset=".353" stop-color="#3a8ee6"/><stop offset=".472" stop-color="#5c79f0"/><stop offset=".669" stop-color="#9059ff"/><stop offset="1" stop-color="#c139e6"/></radialGradient><radialGradient id="ffGradE" cx="-7935.62" cy="-8491.546" r="20.397" gradientTransform="matrix(3.21411 -.77707 .90934 3.76302 33365.914 25904.014)" gradientUnits="userSpaceOnUse"><stop offset=".206" stop-color="#9059ff" stop-opacity="0"/><stop offset=".278" stop-color="#8c4ff3" stop-opacity=".064"/><stop offset=".747" stop-color="#7716a8" stop-opacity=".45"/><stop offset=".975" stop-color="#6e008b" stop-opacity=".6"/></radialGradient><radialGradient id="ffGradF" cx="-7937.731" cy="-8518.427" r="27.676" gradientTransform="translate(26367.938 28186.305)scale(3.3067)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffe226"/><stop offset=".121" stop-color="#ffdb27"/><stop offset=".295" stop-color="#ffc82a"/><stop offset=".502" stop-color="#ffa930"/><stop offset=".732" stop-color="#ff7e37"/><stop offset=".792" stop-color="#ff7139"/></radialGradient><radialGradient id="ffGradG" cx="-7915.977" cy="-8535.981" r="118.081" gradientTransform="translate(26367.938 28186.305)scale(3.3067)" gradientUnits="userSpaceOnUse"><stop offset=".113" stop-color="#fff44f"/><stop offset=".456" stop-color="#ff980e"/><stop offset=".622" stop-color="#ff5634"/><stop offset=".716" stop-color="#ff3647"/><stop offset=".904" stop-color="#e31587"/></radialGradient><radialGradient id="ffGradH" cx="-7927.165" cy="-8522.859" r="86.499" gradientTransform="matrix(.3472 3.29017 -2.15928 .22816 -15491.597 28008.376)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff44f"/><stop offset=".06" stop-color="#ffe847"/><stop offset=".168" stop-color="#ffc830"/><stop offset=".304" stop-color="#ff980e"/><stop offset=".356" stop-color="#ff8b16"/><stop offset=".455" stop-color="#ff672a"/><stop offset=".57" stop-color="#ff3647"/><stop offset=".737" stop-color="#e31587"/></radialGradient><radialGradient id="ffGradI" cx="-7938.383" cy="-8508.176" r="73.72" gradientTransform="translate(26367.938 28186.305)scale(3.3067)" gradientUnits="userSpaceOnUse"><stop offset=".137" stop-color="#fff44f"/><stop offset=".48" stop-color="#ff980e"/><stop offset=".592" stop-color="#ff5634"/><stop offset=".655" stop-color="#ff3647"/><stop offset=".904" stop-color="#e31587"/></radialGradient><radialGradient id="ffGradJ" cx="-7918.923" cy="-8503.861" r="80.686" gradientTransform="translate(26367.938 28186.305)scale(3.3067)" gradientUnits="userSpaceOnUse"><stop offset=".094" stop-color="#fff44f"/><stop offset=".231" stop-color="#ffe141"/><stop offset=".509" stop-color="#ffaf1e"/><stop offset=".626" stop-color="#ff980e"/></radialGradient><linearGradient id="ffGradK" x1="70.786" x2="6.447" y1="12.393" y2="74.468" gradientTransform="translate(-2.999 -.01)scale(3.3067)" gradientUnits="userSpaceOnUse"><stop offset=".048" stop-color="#fff44f"/><stop offset=".111" stop-color="#ffe847"/><stop offset=".225" stop-color="#ffc830"/><stop offset=".368" stop-color="#ff980e"/><stop offset=".401" stop-color="#ff8b16"/><stop offset=".462" stop-color="#ff672a"/><stop offset=".534" stop-color="#ff3647"/><stop offset=".705" stop-color="#e31587"/></linearGradient><linearGradient id="ffGradL" x1="70.013" x2="15.267" y1="12.061" y2="66.806" gradientTransform="translate(-2.999 -.01)scale(3.3067)" gradientUnits="userSpaceOnUse"><stop offset=".167" stop-color="#fff44f" stop-opacity=".8"/><stop offset=".266" stop-color="#fff44f" stop-opacity=".634"/><stop offset=".489" stop-color="#fff44f" stop-opacity=".217"/><stop offset=".6" stop-color="#fff44f" stop-opacity="0"/></linearGradient></defs><path fill="url(#ffGradK)" d="M248.033 88.713c-5.569-13.399-16.864-27.866-25.71-32.439a133.2 133.2 0 0 1 12.979 38.9l.023.215c-14.49-36.126-39.062-50.692-59.13-82.41a155 155 0 0 1-3.019-4.907a41 41 0 0 1-1.412-2.645a23.3 23.3 0 0 1-1.912-5.076a.33.33 0 0 0-.291-.331a.5.5 0 0 0-.241 0c-.016 0-.043.03-.063.037s-.063.036-.092.049l.049-.086c-32.19 18.849-43.113 53.741-44.118 71.194a64.1 64.1 0 0 0-35.269 13.593a38 38 0 0 0-3.307-2.506a59.4 59.4 0 0 1-.36-31.324a94.9 94.9 0 0 0-30.848 23.841h-.06c-5.079-6.438-4.722-27.667-4.431-32.102a23 23 0 0 0-4.279 2.272a93.4 93.4 0 0 0-12.526 10.73a112 112 0 0 0-11.98 14.375v.019v-.023A108.3 108.3 0 0 0 4.841 108.92l-.171.846a204 204 0 0 0-1.26 8.003c0 .096-.02.185-.03.281a122 122 0 0 0-2.08 17.667v.662c.086 98.661 106.944 160.23 192.344 110.825a128.17 128.17 0 0 0 62.12-89.153c.215-1.653.39-3.29.582-4.96a131.8 131.8 0 0 0-8.313-64.378M100.322 189.031c.599.288 1.161.599 1.776.873l.089.057a69 69 0 0 1-1.865-.93m135.013-93.612v-.123l.023.136z"/><path fill="url(#ffGradA)" d="M248.033 88.713c-5.569-13.399-16.864-27.866-25.71-32.439a133.2 133.2 0 0 1 12.979 38.9v.122l.023.136a116.07 116.07 0 0 1-3.988 86.497c-14.688 31.516-50.242 63.819-105.894 62.248c-60.132-1.703-113.089-46.323-122.989-104.766c-1.802-9.216 0-13.888.906-21.378a95.4 95.4 0 0 0-2.06 17.684v.662c.086 98.661 106.944 160.23 192.344 110.825a128.17 128.17 0 0 0 62.12-89.153c.215-1.653.39-3.29.582-4.96a131.8 131.8 0 0 0-8.313-64.378"/><path fill="url(#ffGradB)" d="M248.033 88.713c-5.569-13.399-16.864-27.866-25.71-32.439a133.2 133.2 0 0 1 12.979 38.9v.122l.023.136a116.07 116.07 0 0 1-3.988 86.497c-14.688 31.516-50.242 63.819-105.894 62.248c-60.132-1.703-113.089-46.323-122.989-104.766c-1.802-9.216 0-13.888.906-21.378a95.4 95.4 0 0 0-2.06 17.684v.662c.086 98.661 106.944 160.23 192.344 110.825a128.17 128.17 0 0 0 62.12-89.153c.215-1.653.39-3.29.582-4.96a131.8 131.8 0 0 0-8.313-64.378"/><path fill="url(#ffGradC)" d="M185.754 103.778c.278.195.536.39.797.585a69.8 69.8 0 0 0-11.904-15.525C134.815 48.999 164.208 2.457 169.165.093l.049-.073c-32.19 18.849-43.113 53.741-44.118 71.194c1.495-.103 2.976-.229 4.504-.229a64.68 64.68 0 0 1 56.154 32.793"/><path fill="url(#ffGradD)" d="M129.683 111.734c-.212 3.188-11.475 14.182-15.413 14.182c-36.443 0-42.359 22.046-42.359 22.046c1.614 18.564 14.55 33.854 30.187 41.942c.714.371 1.439.705 2.163 1.032a71 71 0 0 0 3.763 1.541a57 57 0 0 0 16.675 3.217c63.876 2.996 76.25-76.384 30.154-99.419a44.24 44.24 0 0 1 30.901 7.503A64.68 64.68 0 0 0 129.6 70.985c-1.521 0-3.009.126-4.504.229a64.1 64.1 0 0 0-35.269 13.593c1.954 1.654 4.16 3.863 8.806 8.442c8.696 8.568 31 17.443 31.05 18.485"/><path fill="url(#ffGradE)" d="M129.683 111.734c-.212 3.188-11.475 14.182-15.413 14.182c-36.443 0-42.359 22.046-42.359 22.046c1.614 18.564 14.55 33.854 30.187 41.942c.714.371 1.439.705 2.163 1.032a71 71 0 0 0 3.763 1.541a57 57 0 0 0 16.675 3.217c63.876 2.996 76.25-76.384 30.154-99.419a44.24 44.24 0 0 1 30.901 7.503A64.68 64.68 0 0 0 129.6 70.985c-1.521 0-3.009.126-4.504.229a64.1 64.1 0 0 0-35.269 13.593c1.954 1.654 4.16 3.863 8.806 8.442c8.696 8.568 31 17.443 31.05 18.485"/><path fill="url(#ffGradF)" d="M83.852 80.545a82 82 0 0 1 2.645 1.756a59.4 59.4 0 0 1-.36-31.324a94.9 94.9 0 0 0-30.849 23.841c.625-.017 19.216-.351 28.564 5.727"/><path fill="url(#ffGradG)" d="M2.471 139.411c9.89 58.443 62.857 103.063 122.989 104.766c55.652 1.574 91.205-30.732 105.894-62.248a116.07 116.07 0 0 0 3.988-86.497v-.122c0-.096-.02-.153 0-.123l.023.215c4.547 29.684-10.552 58.443-34.155 77.889l-.073.166c-45.989 37.455-90.002 22.598-98.91 16.533a65 65 0 0 1-1.865-.929c-26.814-12.817-37.891-37.247-35.517-58.198a32.91 32.91 0 0 1-30.359-19.096a48.34 48.34 0 0 1 47.117-1.891a63.82 63.82 0 0 0 48.119 1.891c-.049-1.042-22.353-9.92-31.05-18.484c-4.646-4.58-6.851-6.786-8.805-8.442a38 38 0 0 0-3.307-2.507c-.761-.519-1.617-1.081-2.645-1.756c-9.348-6.078-27.939-5.744-28.554-5.727h-.059c-5.079-6.438-4.722-27.667-4.431-32.101a23 23 0 0 0-4.279 2.271a93.4 93.4 0 0 0-12.526 10.73a112 112 0 0 0-12.03 14.342v.019v-.023A108.3 108.3 0 0 0 4.841 108.92c-.062.261-4.616 20.167-2.37 30.491"/><path fill="url(#ffGradH)" d="M174.654 88.838a69.8 69.8 0 0 1 11.904 15.542a27 27 0 0 1 1.921 1.574c29.056 26.784 13.832 64.646 12.698 67.341c23.603-19.447 38.688-48.205 34.155-77.89c-14.497-36.142-39.069-50.708-59.137-82.426a155 155 0 0 1-3.019-4.907a41 41 0 0 1-1.412-2.645a23.3 23.3 0 0 1-1.912-5.076a.33.33 0 0 0-.291-.331a.5.5 0 0 0-.241 0c-.016 0-.043.03-.063.037s-.063.036-.092.049c-4.957 2.351-34.35 48.893 5.489 88.732"/><path fill="url(#ffGradI)" d="M188.459 105.937a27 27 0 0 0-1.921-1.574c-.261-.195-.519-.39-.797-.585a44.24 44.24 0 0 0-30.901-7.503c46.095 23.048 33.728 102.415-30.154 99.419a57 57 0 0 1-16.675-3.217a67 67 0 0 1-3.763-1.541c-.725-.331-1.449-.661-2.163-1.032l.089.057c8.908 6.081 52.907 20.938 98.91-16.534l.073-.165c1.147-2.679 16.371-40.55-12.698-67.325"/><path fill="url(#ffGradJ)" d="M71.911 147.962s5.916-22.046 42.359-22.046c3.938 0 15.211-10.994 15.413-14.182a63.82 63.82 0 0 1-48.119-1.892a48.34 48.34 0 0 0-47.118 1.892a32.91 32.91 0 0 0 30.359 19.096c-2.374 20.955 8.703 45.385 35.517 58.198c.599.288 1.161.599 1.776.873c-15.65-8.085-28.573-23.375-30.187-41.939"/><path fill="url(#ffGradL)" d="M248.033 88.713c-5.569-13.399-16.864-27.866-25.71-32.439a133.2 133.2 0 0 1 12.979 38.9l.023.215c-14.49-36.126-39.062-50.692-59.13-82.41a155 155 0 0 1-3.019-4.907a41 41 0 0 1-1.412-2.645a23.3 23.3 0 0 1-1.912-5.076a.33.33 0 0 0-.291-.331a.5.5 0 0 0-.241 0c-.016 0-.043.03-.063.037s-.063.036-.092.049l.049-.086c-32.19 18.849-43.113 53.741-44.118 71.194c1.495-.103 2.976-.229 4.504-.229a64.68 64.68 0 0 1 56.154 32.793a44.24 44.24 0 0 0-30.901-7.503c46.096 23.048 33.729 102.415-30.154 99.419a57 57 0 0 1-16.675-3.217a67 67 0 0 1-3.763-1.541c-.724-.331-1.449-.661-2.163-1.032l.089.057a69 69 0 0 1-1.865-.93c.599.288 1.161.599 1.776.873c-15.65-8.088-28.573-23.378-30.187-41.942c0 0 5.916-22.046 42.359-22.046c3.938 0 15.211-10.994 15.413-14.182c-.05-1.042-22.354-9.92-31.05-18.485c-4.646-4.579-6.852-6.785-8.806-8.442a38 38 0 0 0-3.307-2.506a59.4 59.4 0 0 1-.36-31.324a94.9 94.9 0 0 0-30.848 23.841h-.06c-5.079-6.438-4.722-27.667-4.431-32.102a23 23 0 0 0-4.279 2.272a93.4 93.4 0 0 0-12.526 10.73a112 112 0 0 0-11.98 14.375v.019v-.023A108.3 108.3 0 0 0 4.841 108.92l-.171.846c-.242 1.128-1.323 6.855-1.479 8.085c0 .093 0-.096 0 0A149 149 0 0 0 1.3 135.717v.662c.086 98.661 106.944 160.23 192.344 110.825a128.17 128.17 0 0 0 62.12-89.153c.215-1.653.39-3.29.582-4.96a131.8 131.8 0 0 0-8.313-64.378m-12.715 6.583l.024.136z"/>
-            </svg>
-            <h3 class="mt-4 font-bold text-lg">Firefox</h3>
-            <p class="mt-1.5 text-muted text-sm leading-relaxed">Install straight from Firefox Add-ons (AMO).</p>
-            <span class="mt-4 inline-flex items-center gap-1.5 font-bold text-sm" style="color: var(--accent-strong);">
-              Get the extension
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-            </span>
+          <a href="https://addons.mozilla.org/en-US/firefox/addon/keeperpass/" target="_blank" rel="noopener" class="card card-link download" data-reveal style="--i:1">
+            <span class="tile"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.824 7.287c.008 0 .004 0 0 0zm-2.8-1.4c.006 0 .003 0 0 0zm16.754 2.161c-.505-1.215-1.53-2.528-2.333-2.943.654 1.283 1.033 2.57 1.177 3.53l.002.02c-1.314-3.278-3.544-4.6-5.366-7.477-.091-.147-.184-.292-.273-.446a3.545 3.545 0 01-.13-.24 2.118 2.118 0 01-.172-.46.03.03 0 00-.027-.03.038.038 0 00-.021 0l-.006.001a.037.037 0 00-.01.005L15.624 0c-2.585 1.515-3.657 4.168-3.932 5.856a6.197 6.197 0 00-2.305.587.297.297 0 00-.147.37c.057.162.24.24.396.17a5.622 5.622 0 012.008-.523l.067-.005a5.847 5.847 0 011.957.222l.095.03a5.816 5.816 0 01.616.228c.08.036.16.073.238.112l.107.055a5.835 5.835 0 01.368.211 5.953 5.953 0 012.034 2.104c-.62-.437-1.733-.868-2.803-.681 4.183 2.09 3.06 9.292-2.737 9.02a5.164 5.164 0 01-1.513-.292 4.42 4.42 0 01-.538-.232c-1.42-.735-2.593-2.121-2.74-3.806 0 0 .537-2 3.845-2 .357 0 1.38-.998 1.398-1.287-.005-.095-2.029-.9-2.817-1.677-.422-.416-.622-.616-.8-.767a3.47 3.47 0 00-.301-.227 5.388 5.388 0 01-.032-2.842c-1.195.544-2.124 1.403-2.8 2.163h-.006c-.46-.584-.428-2.510-.402-2.913-.006-.025-.343.176-.389.206-.406.29-.787.616-1.136.974-.397.403-.76.839-1.085 1.303a9.816 9.816 0 00-1.562 3.52c-.003.013-.11.487-.19 1.073-.013.09-.026.181-.037.272a7.8 7.8 0 00-.069.667l-.002.034-.023.387-.001.06C.386 18.795 5.593 24 12.016 24c5.752 0 10.527-4.176 11.463-9.661.02-.149.035-.298.052-.448.232-1.994-.025-4.090-.753-5.844z"/></svg></span>
+            <h3>Firefox</h3>
+            <p>Install straight from Firefox Add-ons (AMO).</p>
+            <span class="go">Get the extension <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+
+          <!-- Chrome: not on the Web Store yet, so this links to build-it-yourself instructions -->
+          <a href="https://github.com/vironautics/keeperpass/blob/main/extention/README.md#build--install" target="_blank" rel="noopener" class="card card-link download" data-reveal style="--i:2">
+            <span class="tile"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C8.21 0 4.831 1.757 2.632 4.501l3.953 6.848A5.454 5.454 0 0 1 12 6.545h10.691A12 12 0 0 0 12 0zM1.931 5.47A11.943 11.943 0 0 0 0 12c0 6.012 4.42 10.991 10.189 11.864l3.953-6.847a5.45 5.45 0 0 1-6.865-2.29zm13.342 2.166a5.446 5.446 0 0 1 1.45 7.09l.002.001h-.002l-5.344 9.257c.206.01.413.016.621.016 6.627 0 12-5.373 12-12 0-1.54-.29-3.011-.818-4.364zM12 16.364a4.364 4.364 0 1 1 0-8.728 4.364 4.364 0 0 1 0 8.728Z"/></svg></span>
+            <h3>Chrome</h3>
+            <p>Not on the Web Store yet — build it from source in a couple of minutes. Edge listing in progress.</p>
+            <span class="go">Build &amp; install <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+
+          <a href="https://github.com/vironautics/keeperpass/blob/main/mobile/README.md#build--install" target="_blank" rel="noopener" class="card card-link download" data-reveal style="--i:3">
+            <span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/></svg></span>
+            <h3>Mobile app</h3>
+            <p>Your vault in your pocket — build and install from source.</p>
+            <span class="go">Build &amp; install <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </a>
         </div>
+        <p class="download-note" data-reveal>The browser extension and the mobile app currently sign in with Google Drive. Dropbox is available in the web app.</p>
       </div>
     </section>
 
     <!-- ============ PRICING + OPEN SOURCE ============ -->
-    <section id="pricing" class="border-t border-edge">
-      <div class="mx-auto max-w-6xl px-6 py-24">
-        <div class="reveal max-w-2xl" data-reveal>
-          <p class="text-xs font-bold tracking-[0.14em] uppercase text-accent">Free. Open source. Always.</p>
-          <h2 class="mt-3 font-display font-black text-3xl sm:text-4xl leading-tight">No plans. No paywalls. No catch.</h2>
+    <section id="pricing" class="section section-alt">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <p class="eyebrow">Free. Open source. Always.</p>
+          <h2 class="h2">No plans. No paywalls. No catch.</h2>
         </div>
 
-        <div class="mt-14 grid md:grid-cols-2 gap-6">
-          <div class="reveal card-surface rounded-2xl p-8" data-reveal>
-            <p class="font-mono text-5xl font-bold" style="color: var(--accent-strong);">$0</p>
-            <h3 class="mt-3 font-bold text-xl">Free, forever</h3>
-            <ul class="mt-5 space-y-3 text-muted text-[0.95rem]">
-              <li class="flex gap-2.5"><svg class="shrink-0 mt-0.5" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>No subscription, no premium tier, no feature paywall.</li>
-              <li class="flex gap-2.5"><svg class="shrink-0 mt-0.5" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>Unlimited vaults and items, limited only by your own Drive storage.</li>
-              <li class="flex gap-2.5"><svg class="shrink-0 mt-0.5" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>Free because there's no infrastructure to fund — you're already paying Google for Drive, if you pay for it at all.</li>
+        <div class="pricing">
+          <article class="card" data-reveal>
+            <p class="price num">$0</p>
+            <h3 style="margin-top:1rem;">Free, forever</h3>
+            <ul class="checks">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>No subscription, no premium tier, no feature paywall.</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Unlimited vaults and items, limited only by your own Google Drive or Dropbox storage.</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Free because there's no infrastructure to fund — you're already paying Google or Dropbox for storage, if you pay for it at all.</li>
             </ul>
-          </div>
+          </article>
 
-          <div class="reveal card-surface rounded-2xl p-8" data-reveal>
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="var(--accent-strong)"><path d="M12 0C5.37 0 0 5.5 0 12.3c0 5.44 3.44 10.05 8.21 11.68.6.11.82-.27.82-.6 0-.29-.01-1.26-.02-2.29-3.34.75-4.04-1.45-4.04-1.45-.55-1.44-1.34-1.82-1.34-1.82-1.09-.77.08-.75.08-.75 1.21.09 1.84 1.28 1.84 1.28 1.07 1.88 2.8 1.34 3.49 1.02.11-.79.42-1.34.76-1.65-2.67-.31-5.47-1.38-5.47-6.13 0-1.35.47-2.46 1.24-3.32-.12-.31-.54-1.57.12-3.28 0 0 1.01-.33 3.3 1.27a11.2 11.2 0 0 1 6.01 0c2.29-1.6 3.3-1.27 3.3-1.27.66 1.71.24 2.97.12 3.28.77.86 1.24 1.97 1.24 3.32 0 4.76-2.8 5.81-5.48 6.12.43.38.81 1.13.81 2.28 0 1.65-.01 2.98-.01 3.38 0 .33.22.72.83.6C20.56 22.34 24 17.73 24 12.3 24 5.5 18.63 0 12 0Z"/></svg>
-            <h3 class="mt-3 font-bold text-xl">Open source</h3>
-            <p class="mt-4 text-muted leading-relaxed text-[0.95rem]">
-              Every line that touches your vault — the encryption, the Drive
-              calls, the app itself — is public under the
-              <strong class="text-foreground">GNU AGPL-3.0</strong>. Read it,
-              audit it, or fork it. Trust doesn't have to be a leap when you
-              can just look.
-            </p>
-            <a href="https://github.com/vironautics/keeperpass" target="_blank" rel="noopener" class="mt-6 inline-flex items-center gap-1.5 font-bold text-sm hover:gap-2.5 transition-all" style="color: var(--accent-strong);">
-              View the repository
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-            </a>
-          </div>
+          <article class="card" data-reveal style="--i:1">
+            <span class="tile tile-ink"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.070 3.633 17.700 3.633 17.700c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.070 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></span>
+            <h3 style="margin-top:1.25rem;">Open source</h3>
+            <p style="margin-top:0.5rem;">Every line that touches your vault — the encryption, the Google Drive and Dropbox calls, the app itself — is public under the GNU AGPL-3.0. Read it, audit it, or fork it. Trust doesn't have to be a leap when you can just look.</p>
+            <div class="btn-wrap">
+              <a href="https://github.com/vironautics/keeperpass" target="_blank" rel="noopener" class="btn btn-outline">
+                View the repository
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FAQ ============ -->
+    <section id="faq" class="section">
+      <div class="container faq-grid">
+        <div class="section-head" data-reveal>
+          <p class="eyebrow">Questions</p>
+          <h2 class="h2">Straight answers.</h2>
+          <p class="lede">Still curious? Write to <a class="text-link" href="mailto:contact@keeperpass.com">contact@keeperpass.com</a>.</p>
+        </div>
+
+        <div class="faq">
+          <details data-reveal>
+            <summary>Can KeeperPass read my passwords?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <p>No. Your vault is encrypted in your browser before it is uploaded, with a key derived from a secret that never leaves your device. We never receive the vault, and Google or Dropbox only ever stores ciphertext.</p>
+          </details>
+          <details data-reveal style="--i:1">
+            <summary>Can it see the other files in my Drive or Dropbox?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <p>No. On Google Drive it uses the <code class="inline">drive.file</code> scope, which only covers files KeeperPass creates. On Dropbox it is limited to its own app folder, <code class="inline">Apps/keeperpass</code>.</p>
+          </details>
+          <details data-reveal style="--i:2">
+            <summary>What happens if I forget my secret?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <p>Nobody can recover it — not us, not Google, not Dropbox. "Forgot your secret?" on the unlock screen starts a fresh, empty vault and keeps the old file renamed in your storage, in case the secret ever comes back to you. Use the export feature to keep your own backups.</p>
+          </details>
+          <details data-reveal style="--i:3">
+            <summary>Can I switch from Google Drive to Dropbox?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <p>Yes, in either direction. In the web app, open Settings → Storage → Move Vault. The vault is copied and checked first; only then is the old file renamed, never deleted.</p>
+          </details>
+          <details data-reveal style="--i:4">
+            <summary>Does Dropbox work in the extension and mobile app?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <p>Not yet. Dropbox is available in the web app today; the browser extension and the mobile app currently sign in with Google Drive.</p>
+          </details>
+          <details data-reveal style="--i:5">
+            <summary>Is it really free?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <p>Yes. There is no subscription, no paid tier, and no payment of any kind. The source code is public under the GNU AGPL-3.0.</p>
+          </details>
         </div>
       </div>
     </section>
 
     <!-- ============ FINAL CTA ============ -->
-    <section class="border-t border-edge" style="background: var(--card);">
-      <div class="mx-auto max-w-6xl px-6 py-24 text-center">
-        <h2 class="reveal font-display font-black text-3xl sm:text-5xl leading-tight max-w-2xl mx-auto" data-reveal>Open your first vault</h2>
-        <p class="reveal mt-5 text-muted text-lg max-w-md mx-auto" data-reveal>Sign in with Google, choose a secret, and KeeperPass writes its first encrypted file in about two seconds.</p>
-        <div class="reveal mt-9" data-reveal>
-          <a href="https://vault.keeperpass.com" class="cta-primary inline-block rounded-full px-8 py-4 font-bold text-base">Get Started</a>
-          <p class="mt-4 text-xs text-muted">Free, forever. No KeeperPass account — just the Google one you already have.</p>
+    <section class="cta-wrap" aria-labelledby="cta-title">
+      <div class="container">
+        <div class="cta-band" data-reveal>
+          <img src="favicon.svg" alt="" class="mark" width="56" height="56" />
+          <h2 id="cta-title">Open your first vault.</h2>
+          <p>Sign in with Google or Dropbox, choose a secret, and KeeperPass writes its first encrypted file in about two seconds.</p>
+          <div class="actions">
+            <a href="https://vault.keeperpass.com" class="btn btn-lg btn-invert">Get started — it's free</a>
+            <a href="https://github.com/vironautics/keeperpass" target="_blank" rel="noopener" class="btn btn-lg btn-line">Read the code</a>
+          </div>
+          <small>No KeeperPass account — just the Google or Dropbox one you already have.</small>
         </div>
       </div>
     </section>
   </main>
 
   <!-- ============ FOOTER ============ -->
-  <footer class="border-t border-edge">
-    <div class="mx-auto max-w-6xl px-6 py-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
-      <div class="lg:col-span-1">
-        <span class="wordmark h-4" role="img" aria-label="KeeperPass"></span>
-        <p class="mt-4 text-sm text-muted max-w-[16rem]">Your Drive. Your keys. Your vault.</p>
-        <a href="https://github.com/vironautics/keeperpass" target="_blank" rel="noopener" class="mt-5 inline-flex items-center gap-2 text-sm font-bold text-muted hover:text-foreground transition-colors">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.5 0 12.3c0 5.44 3.44 10.05 8.21 11.68.6.11.82-.27.82-.6 0-.29-.01-1.26-.02-2.29-3.34.75-4.04-1.45-4.04-1.45-.55-1.44-1.34-1.82-1.34-1.82-1.09-.77.08-.75.08-.75 1.21.09 1.84 1.28 1.84 1.28 1.07 1.88 2.8 1.34 3.49 1.02.11-.79.42-1.34.76-1.65-2.67-.31-5.47-1.38-5.47-6.13 0-1.35.47-2.46 1.24-3.32-.12-.31-.54-1.57.12-3.28 0 0 1.01-.33 3.3 1.27a11.2 11.2 0 0 1 6.01 0c2.29-1.6 3.3-1.27 3.3-1.27.66 1.71.24 2.97.12 3.28.77.86 1.24 1.97 1.24 3.32 0 4.76-2.8 5.81-5.48 6.12.43.38.81 1.13.81 2.28 0 1.65-.01 2.98-.01 3.38 0 .33.22.72.83.6C20.56 22.34 24 17.73 24 12.3 24 5.5 18.63 0 12 0Z"/></svg>
-          View source
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <a href="#top" class="brand" aria-label="KeeperPass home">
+            <span class="wordmark" aria-hidden="true"></span>
         </a>
+        <p class="footer-tagline">Your cloud. Your keys. Your vault.</p>
       </div>
-
       <div>
-        <p class="text-xs font-bold tracking-[0.1em] uppercase text-muted">Product</p>
-        <ul class="mt-4 space-y-3 text-sm">
-          <li><a href="#how-it-works" style="color: var(--foreground);" class="hover:text-accent transition-colors">How it works</a></li>
-          <li><a href="#screenshots" style="color: var(--foreground);" class="hover:text-accent transition-colors">Screenshots</a></li>
-          <li><a href="#encryption" style="color: var(--foreground);" class="hover:text-accent transition-colors">Encryption</a></li>
-          <li><a href="#pricing" style="color: var(--foreground);" class="hover:text-accent transition-colors">Pricing</a></li>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#how-it-works">How it works</a></li>
+          <li><a href="#storage">Storage</a></li>
+          <li><a href="#security">Security</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#faq">FAQ</a></li>
         </ul>
       </div>
-
       <div>
-        <p class="text-xs font-bold tracking-[0.1em] uppercase text-muted">Company</p>
-        <ul class="mt-4 space-y-3 text-sm">
-          <li><a href="mailto:contact@keeperpass.com" style="color: var(--foreground);" class="hover:text-accent transition-colors">Contact</a></li>
-          <li><a href="/privacy-policy" style="color: var(--foreground);" class="hover:text-accent transition-colors">Privacy Policy</a></li>
-          <li><a href="/terms-of-service" style="color: var(--foreground);" class="hover:text-accent transition-colors">Terms of Service</a></li>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="mailto:contact@keeperpass.com">Contact</a></li>
+          <li><a href="/privacy-policy">Privacy Policy</a></li>
+          <li><a href="/terms-of-service">Terms of Service</a></li>
+          <li><a href="https://github.com/vironautics/keeperpass" target="_blank" rel="noopener">Source on GitHub</a></li>
         </ul>
       </div>
-
       <div>
-        <p class="text-xs font-bold tracking-[0.1em] uppercase text-muted">Get started</p>
-        <ul class="mt-4 space-y-3 text-sm">
-          <li><a href="https://vault.keeperpass.com" style="color: var(--foreground);" class="hover:text-accent transition-colors">Web app</a></li>
-          <li><a href="https://github.com/vironautics/keeperpass/blob/main/extention/README.md#build--install" target="_blank" rel="noopener" style="color: var(--foreground);" class="hover:text-accent transition-colors">Extension for Chrome (build &amp; install)</a></li>
-          <li><span class="text-muted">Extension for Edge (in progress)</span></li>
-          <li><a href="https://addons.mozilla.org/en-US/firefox/addon/keeperpass/" target="_blank" rel="noopener" style="color: var(--foreground);" class="hover:text-accent transition-colors">Extension for Firefox</a></li>
-          <li><a href="https://github.com/vironautics/keeperpass/blob/main/mobile/README.md#build--install" target="_blank" rel="noopener" style="color: var(--foreground);" class="hover:text-accent transition-colors">Mobile app (build &amp; install)</a></li>
+        <h4>Get started</h4>
+        <ul>
+          <li><a href="https://vault.keeperpass.com">Web app</a></li>
+          <li><a href="https://addons.mozilla.org/en-US/firefox/addon/keeperpass/" target="_blank" rel="noopener">Extension for Firefox</a></li>
+          <li><a href="https://github.com/vironautics/keeperpass/blob/main/extention/README.md#build--install" target="_blank" rel="noopener">Extension for Chrome (build &amp; install)</a></li>
+          <li><span>Extension for Edge (in progress)</span></li>
+          <li><a href="https://github.com/vironautics/keeperpass/blob/main/mobile/README.md#build--install" target="_blank" rel="noopener">Mobile app (build &amp; install)</a></li>
         </ul>
       </div>
     </div>
-
-    <div class="border-t border-edge">
-      <div class="mx-auto max-w-6xl px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted">
-        <p>© 2026 KeeperPass. Not affiliated with Google.</p>
+    <div class="footer-bottom">
+      <div class="container">
+        <p>© 2026 KeeperPass. Not affiliated with Google or Dropbox.</p>
         <p>Licensed under AGPL-3.0 · Free and open source</p>
       </div>
     </div>
   </footer>
 
   <script>
-    // Header gains a background once the page scrolls under it.
-    var header = document.getElementById('site-header');
-    var onScroll = function () {
-      header.classList.toggle('is-scrolled', window.scrollY > 8);
-    };
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
+    (function () {
+      var root = document.documentElement;
+      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Mobile menu toggle.
-    var toggle = document.getElementById('nav-toggle');
-    var menu = document.getElementById('mobile-menu');
-    var iconMenu = document.getElementById('icon-menu');
-    var iconClose = document.getElementById('icon-close');
-    function closeMenu() {
-      menu.classList.add('hidden');
-      iconMenu.classList.remove('hidden');
-      iconClose.classList.add('hidden');
-      toggle.setAttribute('aria-expanded', 'false');
-    }
-    toggle.addEventListener('click', function () {
-      var isOpen = !menu.classList.contains('hidden');
-      if (isOpen) {
-        closeMenu();
-      } else {
-        menu.classList.remove('hidden');
-        iconMenu.classList.add('hidden');
-        iconClose.classList.remove('hidden');
-        toggle.setAttribute('aria-expanded', 'true');
-      }
-    });
-    document.querySelectorAll('.mobile-nav-link').forEach(function (link) {
-      link.addEventListener('click', closeMenu);
-    });
-    document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape' && !menu.classList.contains('hidden')) {
-        closeMenu();
-        toggle.focus();
-      }
-    });
-
-    // Scroll spy: mark the nav link for whichever section is currently in view.
-    var navLinks = document.querySelectorAll('[data-nav-link]');
-    if (navLinks.length && 'IntersectionObserver' in window) {
-      var navSpy = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (!entry.isIntersecting) return;
-          var id = entry.target.id;
-          navLinks.forEach(function (link) {
-            if (link.getAttribute('data-nav-link') === id) {
-              link.setAttribute('aria-current', 'true');
-            } else {
-              link.removeAttribute('aria-current');
-            }
-          });
+      // ---- theme: the toggle button and the D key both flip it, and the choice is remembered ----
+      var themeToggle = document.getElementById('theme-toggle');
+      function syncThemeUi() {
+        var dark = root.classList.contains('dark');
+        themeToggle.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
+        document.querySelectorAll('meta[name="theme-color"]').forEach(function (meta) {
+          meta.setAttribute('content', dark ? '#0e0c0b' : '#faf9f7');
         });
-      }, { rootMargin: '-45% 0px -50% 0px' });
-      document.querySelectorAll('#how-it-works, #screenshots, #encryption, #extension, #pricing').forEach(function (section) {
-        navSpy.observe(section);
+      }
+      function toggleTheme() {
+        var dark = !root.classList.contains('dark');
+        root.classList.toggle('dark', dark);
+        root.classList.toggle('light', !dark);
+        try { localStorage.setItem('keeperpass.theme', dark ? 'dark' : 'light'); } catch (e) {}
+        syncThemeUi();
+      }
+      syncThemeUi();
+      themeToggle.addEventListener('click', toggleTheme);
+      document.addEventListener('keydown', function (event) {
+        var target = event.target;
+        var typing = target && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName));
+        if ((event.key === 'd' || event.key === 'D') && !typing && !event.metaKey && !event.ctrlKey && !event.altKey) {
+          toggleTheme();
+        }
       });
-    }
 
-    // Fade sections in as they cross the viewport. Purely progressive —
-    // everything is visible without JS, this just times the entrance.
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-            io.unobserve(entry.target);
-          }
+      // ---- header gains a background once the page scrolls under it ----
+      var header = document.getElementById('site-header');
+      function onScroll() { header.classList.toggle('is-scrolled', window.scrollY > 8); }
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+
+      // ---- mobile menu ----
+      var toggle = document.getElementById('nav-toggle');
+      var menu = document.getElementById('mobile-menu');
+      var iconMenu = document.getElementById('icon-menu');
+      var iconClose = document.getElementById('icon-close');
+      function setMenu(open) {
+        menu.hidden = !open;
+        iconMenu.hidden = open;
+        iconClose.hidden = !open;
+        header.classList.toggle('menu-open', open);
+        toggle.setAttribute('aria-expanded', String(open));
+        toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      }
+      toggle.addEventListener('click', function () { setMenu(menu.hidden); });
+      document.querySelectorAll('.mobile-nav-link').forEach(function (link) {
+        link.addEventListener('click', function () { setMenu(false); });
+      });
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && !menu.hidden) { setMenu(false); toggle.focus(); }
+      });
+      window.addEventListener('resize', function () { if (window.innerWidth >= 1024 && !menu.hidden) setMenu(false); });
+
+      // ---- hero: where the file lands, per provider ----
+      var chevron = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
+      var paths = {
+        drive: ['My Drive', 'keeperpass'],
+        dropbox: ['Dropbox', 'Apps', 'keeperpass']
+      };
+      var pathEl = document.getElementById('vault-path');
+      var providerButtons = document.querySelectorAll('[data-provider]');
+      providerButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          providerButtons.forEach(function (other) { other.setAttribute('aria-pressed', String(other === button)); });
+          pathEl.innerHTML = paths[button.getAttribute('data-provider')]
+            .map(function (part) { return '<b>' + part + '</b>'; })
+            .join(chevron) + chevron + 'vault.json.enc';
         });
-      }, { threshold: 0.15 });
-      document.querySelectorAll('[data-reveal]').forEach(function (el) { io.observe(el); });
-    } else {
-      document.querySelectorAll('[data-reveal]').forEach(function (el) { el.classList.add('is-visible'); });
-    }
+      });
 
-    // Click-to-enlarge screenshots. `openLightbox` is called inline from
-    // each `.shot-trigger` button with itself as the argument, so there's no
-    // need to re-derive which screenshot was clicked from the event target.
-    var lightbox = document.getElementById('lightbox');
-    var lightboxImg = document.getElementById('lightbox-img');
-
-    function openLightbox(trigger) {
-      var img = trigger.querySelector('img');
-      if (!img || img.style.display === 'none') {
-        return; // Fallback placeholder is showing — nothing to enlarge yet.
+      // ---- scroll spy ----
+      var navLinks = document.querySelectorAll('[data-nav-link]');
+      if ('IntersectionObserver' in window) {
+        var spy = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            navLinks.forEach(function (link) {
+              if (link.getAttribute('data-nav-link') === entry.target.id) link.setAttribute('aria-current', 'true');
+              else link.removeAttribute('aria-current');
+            });
+          });
+        }, { rootMargin: '-45% 0px -50% 0px' });
+        // Every section is watched, so one without a nav link (hero, screenshots…) clears the highlight.
+        document.querySelectorAll('main section[id]').forEach(function (section) { spy.observe(section); });
       }
-      lightboxImg.src = img.src;
-      lightboxImg.alt = img.alt;
-      lightbox.showModal();
-    }
 
-    document.getElementById('lightbox-close').addEventListener('click', function () {
-      lightbox.close();
-    });
-
-    // A native <dialog>'s backdrop click lands on the dialog element itself
-    // (with click coordinates outside its box) — the image fills the dialog
-    // exactly (no padding, sized to content), so this only fires for an
-    // actual outside click, never a click on the image.
-    lightbox.addEventListener('click', function (event) {
-      if (event.target === lightbox) {
-        lightbox.close();
+      // ---- reveal on scroll (everything is visible without JS, or with reduced motion) ----
+      var revealables = document.querySelectorAll('[data-reveal]');
+      if (!reduceMotion && 'IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) { entry.target.classList.add('is-visible'); io.unobserve(entry.target); }
+          });
+        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+        revealables.forEach(function (el) { io.observe(el); });
+      } else {
+        revealables.forEach(function (el) { el.classList.add('is-visible'); });
       }
-    });
+
+      // ---- screenshots: a placeholder if an image is missing, a lightbox on click ----
+      var lightbox = document.getElementById('lightbox');
+      var lightboxImg = document.getElementById('lightbox-img');
+      document.querySelectorAll('[data-lightbox]').forEach(function (trigger) {
+        var img = trigger.querySelector('img');
+        function showFallback() {
+          trigger.style.display = 'none';
+          trigger.parentElement.querySelector('.shot-fallback').style.display = 'flex';
+        }
+        img.addEventListener('error', showFallback);
+        trigger.addEventListener('click', function () {
+          lightboxImg.src = img.src;
+          lightboxImg.alt = img.alt;
+          lightbox.showModal();
+        });
+      });
+      document.getElementById('lightbox-close').addEventListener('click', function () { lightbox.close(); });
+      // A backdrop click lands on the <dialog> itself; the image fills the dialog, so this is only an outside click.
+      lightbox.addEventListener('click', function (event) { if (event.target === lightbox) lightbox.close(); });
+    })();
   </script>
 </body>
 </html>

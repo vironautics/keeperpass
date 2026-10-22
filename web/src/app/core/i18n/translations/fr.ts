@@ -343,6 +343,9 @@ export const fr: TranslationTable = {
   'audit.compromisedPassword.empty': 'Aucun de vos mots de passe n’a été trouvé dans une fuite connue.',
 
   'tags.title': 'Tags',
+  'tags.subtitle': 'Des étiquettes communes à tous les coffres-forts, pour tout retrouver vite',
+  'tags.openAria': 'Afficher les éléments étiquetés {name}',
+  'tags.since': 'depuis le {date}',
   'tags.selectMultipleAria': 'Sélectionner plusieurs tags',
   'tags.addTagAria': 'Ajouter un tag',
   'tags.selectedOne': '{count} tag sélectionné',
@@ -376,6 +379,9 @@ export const fr: TranslationTable = {
     'Chacun est retiré de tous les éléments qui le portent. Les éléments eux-mêmes sont conservés. Cette action est irréversible.',
 
   'vaults.title': 'Mes coffres-forts',
+  'vaults.subtitle': 'Des groupes d’éléments séparés — travail, famille, personnel',
+  'vaults.defaultBadge': 'Par défaut',
+  'vaults.openAria': 'Ouvrir {name}',
   'vaults.selectMultipleAria': 'Sélectionner plusieurs coffres-forts',
   'vaults.newVaultAria': 'Nouveau coffre-fort',
   'vaults.selectedOne': '{count} coffre-fort sélectionné',
@@ -474,6 +480,8 @@ export const fr: TranslationTable = {
   'layout.sync.retry': 'Réessayer',
 
   'policies.title': 'Politiques',
+  'policies.subtitle': 'Les conditions d’utilisation de KeeperPass et le traitement de vos données',
+  'policies.opensNewTab': 'S’ouvre dans un nouvel onglet',
   'policies.termsTab': 'Conditions générales',
   'policies.privacyTab': 'Politique de confidentialité',
   'policies.termsBody':

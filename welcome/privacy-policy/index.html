@@ -4,18 +4,21 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Privacy Policy — KeeperPass</title>
-<meta name="description" content="What KeeperPass does and does not know about you: no server, no account, and a vault encrypted in your browser before it reaches your own Google Drive." />
+<meta name="description" content="What KeeperPass does and does not know about you: no server, no account, and a vault encrypted in your browser before it reaches your own Google Drive or Dropbox." />
 <link rel="canonical" href="https://keeperpass.com/privacy-policy" />
-<link rel="icon" href="/logo.svg" type="image/svg+xml" />
+<link rel="icon" href="/favicon.ico" sizes="48x48" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/favicon-96.png" type="image/png" sizes="96x96" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 <link rel="manifest" href="/site.webmanifest" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="KeeperPass" />
 <meta property="og:title" content="Privacy Policy — KeeperPass" />
-<meta property="og:description" content="What KeeperPass does and does not know about you: no server, no account, and a vault encrypted in your browser before it reaches your own Google Drive." />
+<meta property="og:description" content="What KeeperPass does and does not know about you: no server, no account, and a vault encrypted in your browser before it reaches your own Google Drive or Dropbox." />
 <meta property="og:url" content="https://keeperpass.com/privacy-policy" />
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="Privacy Policy — KeeperPass" />
-<meta name="twitter:description" content="What KeeperPass does and does not know about you: no server, no account, and a vault encrypted in your browser before it reaches your own Google Drive." />
+<meta name="twitter:description" content="What KeeperPass does and does not know about you: no server, no account, and a vault encrypted in your browser before it reaches your own Google Drive or Dropbox." />
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
   tailwind.config = {
@@ -81,11 +84,11 @@
   <main class="mx-auto max-w-3xl px-6 py-16">
     <p class="text-xs font-bold tracking-[0.14em] uppercase" style="color: var(--accent-strong);">Legal</p>
     <h1 class="mt-3 font-black text-4xl">Privacy Policy</h1>
-    <p class="mt-3 text-sm text-muted">Last updated 2 September 2026</p>
+    <p class="mt-3 text-sm text-muted">Last updated 22 October 2026</p>
 
     <div class="prose mt-10">
       <div class="callout">
-        <p><strong>The short version.</strong> KeeperPass has no server and no database. There is no KeeperPass account. Your vault is encrypted inside your browser and stored as a single file in your own Google Drive. We cannot read your passwords, because we never receive them and have nowhere to put them. Three third parties do receive something while you use the app — Google, DuckDuckGo, and Have I Been Pwned — and <a href="#third-parties">section 6</a> sets out exactly what each one gets.</p>
+        <p><strong>The short version.</strong> KeeperPass has no server and no database. There is no KeeperPass account. Your vault is encrypted inside your browser and stored as a single file in your own Google Drive or Dropbox — whichever you choose. We cannot read your passwords, because we never receive them and have nowhere to put them. A few third parties do receive something while you use the app — your storage provider (Google or Dropbox), DuckDuckGo, and Have I Been Pwned — and <a href="#third-parties">section 6</a> sets out exactly what each one gets.</p>
       </div>
 
       <h2>1. Who we are</h2>
@@ -110,11 +113,11 @@
       </ul>
       <p>This is a structural property, not a promise about our intentions. We have not built the infrastructure that would let us collect these things, and the source code that runs in your browser can be inspected to confirm it.</p>
 
-      <h2>4. Signing in with Google</h2>
-      <p>KeeperPass has no password of its own and no registration form. You sign in through Google's own OAuth flow, using Google Identity Services. Two consequences follow.</p>
+      <h2>4. Signing in with Google or Dropbox</h2>
+      <p>KeeperPass has no password of its own and no registration form. You sign in with the account that holds your vault: either through Google's own OAuth flow, using Google Identity Services, or through Dropbox's own OAuth flow (authorization code with PKCE, in a Dropbox pop-up window). The web app supports both. The browser extension and the mobile app currently support Google only.</p>
 
-      <h3>The permissions we request</h3>
-      <p>KeeperPass asks Google for exactly these scopes, and no others:</p>
+      <h3>The permissions we request from Google</h3>
+      <p>If you sign in with Google, KeeperPass asks for exactly these scopes, and no others:</p>
       <div class="tablewrap">
         <table>
           <thead><tr><th>Scope</th><th>What it allows</th></tr></thead>
@@ -124,27 +127,44 @@
           </tbody>
         </table>
       </div>
-      <p>Your profile information is fetched from Google directly by your browser and used only within that browser session, to display your name and to open your own vault file. It is not logged, stored, or transmitted to any KeeperPass-operated system, because none exists.</p>
+      <h3>The permissions we request from Dropbox</h3>
+      <p>KeeperPass is registered with Dropbox as an <strong>App folder</strong> app. It can only reach its own folder, <code>Apps/keeperpass</code>, and <strong>cannot</strong> see, list, open, or search any other file in your Dropbox. Within that folder, it asks for exactly these scopes, and no others:</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Scope</th><th>What it allows</th></tr></thead>
+          <tbody>
+            <tr><td><code>account_info.read</code></td><td>Reads your basic account details — your name and email address — so the app can show which Dropbox account is signed in.</td></tr>
+            <tr><td><code>files.metadata.read</code></td><td>Checks whether a vault file exists in the app folder, and which version it is, so that two devices saving at once do not overwrite each other.</td></tr>
+            <tr><td><code>files.content.read</code></td><td>Downloads the encrypted vault file so it can be decrypted in your browser.</td></tr>
+            <tr><td><code>files.content.write</code></td><td>Uploads the encrypted vault file after each change.</td></tr>
+            <tr><td><code>files.metadata.write</code></td><td>Renames the vault file to a backup copy when you reset your secret, move your vault, or delete your account, so your data is never erased.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Your profile information is fetched from Google or Dropbox directly by your browser and used only within that browser session, to display your name and to open your own vault file. It is not logged, stored, or transmitted to any KeeperPass-operated system, because none exists.</p>
 
-      <h3>Your Google access token</h3>
-      <p>The access token Google issues is held in your browser's <code>sessionStorage</code> so that a page refresh does not force you to sign in again. It is <strong>deliberately never written to <code>localStorage</code></strong>, which means it is discarded when you close the tab. It is never transmitted to us.</p>
+      <h3>Your access tokens</h3>
+      <p>The access token Google or Dropbox issues is held in your browser's <code>sessionStorage</code> so that a page refresh does not force you to sign in again. Dropbox also issues a refresh token, which lets the app renew access without another pop-up; it is held in <code>sessionStorage</code> in the same way. These tokens are <strong>deliberately never written to <code>localStorage</code></strong>, which means they are discarded when you close the tab. They are never transmitted to us.</p>
 
-      <h3>What Google itself learns</h3>
-      <p>Signing in requires your browser to load Google's script from <code>accounts.google.com</code> and to call Google's APIs. Google therefore sees your IP address, your device and browser, and the fact that you are using KeeperPass, and it handles that under its own policies. See <a href="https://policies.google.com/privacy" rel="noopener">Google's Privacy Policy</a>.</p>
+      <h3>What Google and Dropbox themselves learn</h3>
+      <p>Signing in with Google requires your browser to load Google's script from <code>accounts.google.com</code> and to call Google's APIs. Signing in with Dropbox opens a <code>www.dropbox.com</code> window, and your browser then calls <code>api.dropboxapi.com</code> and <code>content.dropboxapi.com</code>. Whichever provider you use therefore sees your IP address, your device and browser, and the fact that you are using KeeperPass, and handles that under its own policies. See <a href="https://policies.google.com/privacy" rel="noopener">Google's Privacy Policy</a> and <a href="https://www.dropbox.com/privacy" rel="noopener">Dropbox's Privacy Policy</a>.</p>
 
-      <h2>5. Your vault in your Google Drive</h2>
-      <p>KeeperPass creates one folder in your Drive, named <code>keeperpass</code>, containing one file, <code>vault.json.enc</code>. That file is your entire vault.</p>
-      <p>Before it is ever written to Drive, the vault is compressed and then encrypted in your browser:</p>
+      <h2>5. Your vault in your Google Drive or Dropbox</h2>
+      <p>In Google Drive, KeeperPass creates one folder, named <code>keeperpass</code>, containing one file, <code>vault.json.enc</code>. In Dropbox, the same file is kept in the app folder, <code>Apps/keeperpass</code>. That file is your entire vault.</p>
+      <p>Before it is ever uploaded, the vault is compressed and then encrypted in your browser:</p>
       <ul>
         <li>Your master secret is put through <strong>Argon2id</strong> — a memory-hard key derivation function — with a 16-byte random salt, 64 MiB of memory, 3 iterations, and a parallelism of 4. These are the same parameters Bitwarden uses in production.</li>
         <li>The resulting 256-bit key encrypts the vault with <strong>AES-256-GCM</strong>, using a fresh 12-byte random nonce for every save, so encrypting the same vault twice never produces the same ciphertext.</li>
         <li>The derivation parameters travel alongside the ciphertext, so vaults written under older settings stay readable when those settings are strengthened.</li>
       </ul>
-      <p><strong>Google stores the encrypted bytes and cannot decrypt them.</strong> Neither can we. Your master secret never leaves your device, and no copy of it exists anywhere else.</p>
-      <p>The vault file lives in your Drive, under your Google account. It counts against your Google storage, it is subject to Google's terms, and you can delete it yourself at any time without involving us.</p>
+      <p><strong>Google or Dropbox stores the encrypted bytes and cannot decrypt them.</strong> Neither can we. Your master secret never leaves your device, and no copy of it exists anywhere else.</p>
+      <p>The vault file lives in your own Google Drive or Dropbox, under your own account. It counts against your storage with that provider, it is subject to that provider's terms, and you can delete it yourself at any time without involving us.</p>
+
+      <h3>Moving your vault between providers</h3>
+      <p>In the web app, <strong>Settings → Storage → Move Vault</strong> moves your vault from Google Drive to Dropbox, or back. Your browser signs in to the second provider, re-encrypts the vault, uploads it there, and checks the saved copy. Only then is the old file renamed — never deleted — in the original location. The vault travels only between your browser and the two providers you chose; it never passes through us.</p>
 
       <h2 id="third-parties">6. Third parties your browser contacts</h2>
-      <p>While the app has no back end of its own, it does make requests from your browser to three external services. This is the complete list.</p>
+      <p>While the app has no back end of its own, it does make requests from your browser to the external services below. You use either Google or Dropbox for storage — both only if you move your vault from one to the other. This is the complete list.</p>
       <div class="tablewrap">
         <table>
           <thead><tr><th>Service</th><th>What is sent</th><th>When</th></tr></thead>
@@ -152,7 +172,12 @@
             <tr>
               <td><strong>Google</strong><br>(sign-in and Drive)</td>
               <td>Your OAuth credentials, your IP address, and the encrypted vault file.</td>
-              <td>At sign-in, and on every load and save of your vault.</td>
+              <td>At sign-in, and on every load and save of your vault, if you use Google.</td>
+            </tr>
+            <tr>
+              <td><strong>Dropbox</strong><br>(sign-in and storage)</td>
+              <td>Your OAuth credentials, your IP address, and the encrypted vault file.</td>
+              <td>At sign-in, when an access token is renewed, and on every load and save of your vault, if you use Dropbox.</td>
             </tr>
             <tr>
               <td><strong>DuckDuckGo</strong><br>(website icons)</td>
@@ -182,41 +207,47 @@
         <table>
           <thead><tr><th>Key</th><th>Where</th><th>What it holds</th></tr></thead>
           <tbody>
-            <tr><td><code>keeperpass:accessToken</code></td><td>Session storage</td><td>Your Google access token. Cleared when the tab closes.</td></tr>
+            <tr><td><code>keeperpass:provider</code></td><td>Session storage</td><td>Whether you signed in with Google or Dropbox. Cleared when the tab closes.</td></tr>
+            <tr><td><code>keeperpass:accessToken</code></td><td>Session storage</td><td>Your Google or Dropbox access token. Cleared when the tab closes.</td></tr>
             <tr><td><code>keeperpass:accessTokenExpiry</code></td><td>Session storage</td><td>When that token expires. Cleared when the tab closes.</td></tr>
+            <tr><td><code>keeperpass:refreshToken</code></td><td>Session storage</td><td>Dropbox only: the refresh token used to renew access without another sign-in. Cleared when the tab closes.</td></tr>
             <tr><td><code>keeperpass:recentItemIds</code></td><td>Local storage</td><td>The identifiers of up to 50 recently opened items, so this device can show a "recently used" list. Identifiers only — no names, no passwords. Kept out of the vault deliberately, so that what you looked at on a shared computer does not follow you to your phone.</td></tr>
             <tr><td><code>keeperpass:locale</code></td><td>Local storage</td><td>Your language choice.</td></tr>
             <tr><td><code>keeperpass.theme</code></td><td>Local storage</td><td>Your light or dark theme choice.</td></tr>
           </tbody>
         </table>
       </div>
-      <p>Clearing your browser's site data removes all of it. Your vault is unaffected, because it lives in your Drive.</p>
+      <p>Clearing your browser's site data removes all of it. Your vault is unaffected, because it lives in your Google Drive or Dropbox.</p>
 
       <h2>8. The browser extension</h2>
       <p>The extension needs broad permissions to do its job, and you should understand what they mean.</p>
       <p>It requests access to <strong>all websites</strong> and runs a small script on the pages you visit. That script exists to find login forms so that it can fill your credentials into them. It reads the structure of forms on the page — where the username and password fields are — and it communicates only with the extension itself.</p>
-      <p><strong>The page script makes no network requests whatsoever.</strong> It has no ability to transmit anything to us or to anyone else, and page content, form values, and your browsing history are never sent off your device. The only outbound connections the extension makes are to Google, for sign-in and for your vault file.</p>
+      <p><strong>The page script makes no network requests whatsoever.</strong> It has no ability to transmit anything to us or to anyone else, and page content, form values, and your browsing history are never sent off your device. The only outbound connections the extension makes are to Google, for sign-in and for your vault file. The extension currently supports Google Drive only; Dropbox is available in the web app.</p>
       <p>Removing the extension removes its access immediately. Your vault is unaffected.</p>
 
       <h2>9. The marketing website and analytics</h2>
       <p>This website (keeperpass.com) uses <strong>Google Analytics</strong> (measurement ID <code>G-G2HHD6E3VL</code>) to understand aggregate traffic — which pages are visited, roughly which country visitors come from, and what kind of device they use. Google Analytics sets cookies in your browser and processes your IP address.</p>
-      <p>This runs on the marketing site only. <strong>It does not run on the web app or in the browser extension</strong>, and it has no access to anything vault-related: no vault contents, no items, no passwords, no Google account data. See <a href="https://policies.google.com/privacy" rel="noopener">Google's Privacy Policy</a> for how Google handles what it collects.</p>
+      <p>This runs on the marketing site only. <strong>It does not run on the web app or in the browser extension</strong>, and it has no access to anything vault-related: no vault contents, no items, no passwords, no Google or Dropbox account data. See <a href="https://policies.google.com/privacy" rel="noopener">Google's Privacy Policy</a> for how Google handles what it collects.</p>
 
       <h2>10. Where this data goes</h2>
-      <p>The third-party services described above — Google, DuckDuckGo, and Have I Been Pwned — are operated principally from the United States, and handle what they receive under their own privacy policies.</p>
+      <p>The third-party services described above — Google, Dropbox, DuckDuckGo, and Have I Been Pwned — are operated principally from the United States, and handle what they receive under their own privacy policies.</p>
 
       <h2>11. How long anything is kept</h2>
       <ul>
-        <li><strong>Your vault</strong> is kept in your Google Drive until you delete it. We hold no copy and cannot delete it for you.</li>
-        <li><strong>Browser storage</strong> is kept until you clear it, or — for your access token — until you close the tab.</li>
+        <li><strong>Your vault</strong> is kept in your Google Drive or Dropbox until you delete it. We hold no copy and cannot delete it for you.</li>
+        <li><strong>Browser storage</strong> is kept until you clear it, or — for your access and refresh tokens — until you close the tab.</li>
         <li><strong>Analytics data</strong> is retained according to the Google Analytics retention setting on our property.</li>
         <li><strong>Emails you send us</strong> are kept for as long as needed to deal with the matter, and then deleted.</li>
       </ul>
       <p>We hold no user database, so there is nothing else to retain or to purge.</p>
 
       <h2>12. Your control over your data, and your responsibility for it</h2>
-      <p>Because we operate no user database, we hold no personal data about you beyond what is described above. Your vault is not ours to produce, correct, or delete — it lives in your own Google Drive, under your own Google account, and you already have full control of it. To export it, use the export feature in the app; to erase it, delete the <code>keeperpass</code> folder from your Drive and revoke KeeperPass's access in your <a href="https://myaccount.google.com/permissions" rel="noopener">Google account permissions</a>.</p>
-      <p><strong>Your Google Drive account is yours to secure and maintain.</strong> We have no visibility into it, no access to it beyond the narrow <code>drive.file</code> scope described in section 4, and no ability to back it up, recover it, or restore anything from it. If your Google account is lost, suspended, or compromised, if you delete the vault file yourself, or if data is lost through your own action or through Google's handling of your account, <strong>that loss is not something we can prevent, reverse, or be held responsible for.</strong> See the <a href="/terms-of-service">Terms of Service</a> for how this limits our liability.</p>
+      <p>Because we operate no user database, we hold no personal data about you beyond what is described above. Your vault is not ours to produce, correct, or delete — it lives in your own Google Drive or Dropbox, under your own account, and you already have full control of it. To export it, use the export feature in the app. To erase it:</p>
+      <ul>
+        <li><strong>Google Drive:</strong> delete the <code>keeperpass</code> folder from your Drive and revoke KeeperPass's access in your <a href="https://myaccount.google.com/permissions" rel="noopener">Google account permissions</a>.</li>
+        <li><strong>Dropbox:</strong> delete the <code>Apps/keeperpass</code> folder from your Dropbox and disconnect KeeperPass in your <a href="https://www.dropbox.com/account/connected_apps" rel="noopener">Dropbox connected apps</a>.</li>
+      </ul>
+      <p><strong>Your Google or Dropbox account is yours to secure and maintain.</strong> We have no visibility into it, no access to it beyond the narrow permissions described in section 4, and no ability to back it up, recover it, or restore anything from it. If your Google or Dropbox account is lost, suspended, or compromised, if you delete the vault file yourself, or if data is lost through your own action or through your provider's handling of your account, <strong>that loss is not something we can prevent, reverse, or be held responsible for.</strong> See the <a href="/terms-of-service">Terms of Service</a> for how this limits our liability.</p>
       <p>To reach us about anything in this policy, write to <a href="mailto:contact@keeperpass.com">contact@keeperpass.com</a>.</p>
 
       <h2>13. Children</h2>

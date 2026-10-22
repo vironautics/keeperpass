@@ -1,79 +1,109 @@
-<header class="flex shrink-0 items-center gap-1 border-b p-2">
+<header class="bg-card flex h-14 shrink-0 items-center gap-3 border-b px-3 sm:px-6">
   <!--
     The sidebar is a sheet below `md`, so it needs one obvious way in. From `md` up the
     sidebar column is permanently on screen and its own header owns the toggle.
   -->
-  <button hlmSidebarTrigger class="md:hidden" [srOnlyText]="'common.openNavMenu' | t"></button>
+  <button
+    hlmSidebarTrigger
+    class="-ms-1 size-9 rounded-lg md:hidden"
+    [srOnlyText]="'common.openNavMenu' | t"
+  ></button>
 
-  <h1 class="flex min-w-0 flex-1 items-center gap-2 px-1 text-sm font-semibold">
-    <app-icon name="policies" class="text-accent-strong text-[0.8125rem]" />
-    <span class="min-w-0 truncate">{{ 'policies.title' | t }}</span>
-  </h1>
+  <span
+    class="bg-primary/15 text-accent-strong inline-flex size-9 shrink-0 items-center justify-center rounded-xl"
+    aria-hidden="true"
+  >
+    <ng-icon name="lucideScale" size="1.125rem" strokeWidth="1.75" />
+  </span>
+
+  <div class="flex min-w-0 flex-1 flex-col leading-tight">
+    <h1 class="text-foreground truncate text-base font-extrabold tracking-tight">
+      {{ 'policies.title' | t }}
+    </h1>
+    <p class="text-muted-foreground truncate text-xs max-sm:hidden">{{ 'policies.subtitle' | t }}</p>
+  </div>
 </header>
 
 <!--
-  Two documents behind one pair of tabs, in a reading column: legal text at full window
-  width is 200 characters a line and nobody reads it.
+  Two documents behind one segmented control, in a reading column: legal text at full
+  window width is 200 characters a line and nobody reads it.
 
   `hlm-tabs` owns which one is showing; `activeTab` mirrors it so the component (and its
-  spec) can still ask and set. The prose is styled with utilities on a wrapper rather
-  than per element — one `[&_h3]:` rule beats a class on forty headings.
+  spec) can still ask and set.
 -->
-<main class="min-h-0 flex-1 overflow-y-auto">
-  <div class="mx-auto w-full max-w-3xl p-4 sm:p-6">
+<main class="bg-background min-h-0 flex-1 overflow-y-auto">
+  <div class="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 sm:py-8">
     <hlm-tabs [tab]="activeTab()" (tabActivated)="onTabActivated($event)">
-      <hlm-tabs-list class="tab-nav w-full" [attr.aria-label]="'policies.title' | t">
-        <button hlmTabsTrigger="terms" class="tab-button flex-1">{{ 'policies.termsTab' | t }}</button>
-        <button hlmTabsTrigger="privacy" class="tab-button flex-1">{{ 'policies.privacyTab' | t }}</button>
+      <hlm-tabs-list
+        class="tab-nav bg-muted w-full rounded-xl p-1 group-data-horizontal/tabs:h-11"
+        [attr.aria-label]="'policies.title' | t"
+      >
+        @for (doc of documents; track doc.tab) {
+          <button
+            [hlmTabsTrigger]="doc.tab"
+            class="tab-button data-active:bg-card dark:data-active:bg-card h-9 flex-1 gap-2 rounded-lg border-0 font-semibold data-active:shadow-xs"
+          >
+            <ng-icon [name]="doc.icon" size="1rem" strokeWidth="1.75" />
+            {{ doc.title | t }}
+          </button>
+        }
       </hlm-tabs-list>
 
-      <div hlmTabsContent="terms" class="tab-content">
-        <div hlmCard class="mt-4">
-          <div hlmCardHeader>
-            <h2 hlmCardTitle class="text-base">{{ 'policies.termsTab' | t }}</h2>
-          </div>
+      @for (doc of documents; track doc.tab) {
+        <div [hlmTabsContent]="doc.tab" class="tab-content">
+          <article class="bg-card mt-5 overflow-hidden rounded-2xl border shadow-xs">
+            <div class="flex items-start gap-4 p-5 sm:p-7">
+              <span
+                class="bg-primary/15 text-accent-strong inline-flex size-12 shrink-0 items-center justify-center rounded-2xl"
+                aria-hidden="true"
+              >
+                <ng-icon [name]="doc.icon" size="1.375rem" strokeWidth="1.75" />
+              </span>
+              <div class="flex min-w-0 flex-col gap-2">
+                <h2 class="text-foreground text-xl font-extrabold tracking-tight">
+                  {{ doc.title | t }}
+                </h2>
+                <p class="text-muted-foreground text-[0.9375rem] leading-relaxed">
+                  {{ doc.body | t }}
+                </p>
+              </div>
+            </div>
 
-          <div hlmCardContent class="text-muted-foreground flex flex-col gap-4 text-sm leading-relaxed">
-            <p>
-              {{ 'policies.termsBody' | t }}
-            </p>
-            <p>
-              {{ 'policies.linkPrefix' | t }}
+            <!--
+              The document itself lives on the website, so the way to it is the one thing
+              on this card that matters: a full-width link that says where it goes.
+            -->
+            <div class="bg-muted/40 border-t p-3 sm:p-4">
               <a
-                href="https://keeperpass.com/terms-of-service"
+                [href]="doc.href"
                 target="_blank"
                 rel="noopener"
-                class="text-accent-strong font-semibold hover:underline"
-                >keeperpass.com/terms-of-service</a
-              >.
-            </p>
-          </div>
+                class="group bg-card hover:border-primary/50 focus-visible:ring-ring/50 flex items-center gap-3 rounded-xl border px-4 py-3 transition-colors outline-none focus-visible:ring-3"
+              >
+                <ng-icon
+                  name="lucideGlobe"
+                  size="1.125rem"
+                  strokeWidth="1.75"
+                  class="text-muted-foreground shrink-0"
+                />
+                <span class="flex min-w-0 flex-1 flex-col">
+                  <span class="text-muted-foreground text-xs">{{ 'policies.linkPrefix' | t }}</span>
+                  <span class="text-accent-strong truncate text-sm font-bold">{{ doc.label }}</span>
+                </span>
+                <span class="text-muted-foreground flex shrink-0 items-center gap-1.5 text-xs max-sm:hidden">
+                  {{ 'policies.opensNewTab' | t }}
+                </span>
+                <ng-icon
+                  name="lucideExternalLink"
+                  size="1rem"
+                  strokeWidth="2"
+                  class="text-muted-foreground group-hover:text-accent-strong shrink-0 transition-colors"
+                />
+              </a>
+            </div>
+          </article>
         </div>
-      </div>
-
-      <div hlmTabsContent="privacy" class="tab-content">
-        <div hlmCard class="mt-4">
-          <div hlmCardHeader>
-            <h2 hlmCardTitle class="text-base">{{ 'policies.privacyTab' | t }}</h2>
-          </div>
-
-          <div hlmCardContent class="text-muted-foreground flex flex-col gap-4 text-sm leading-relaxed">
-            <p>
-              {{ 'policies.privacyBody' | t }}
-            </p>
-            <p>
-              {{ 'policies.linkPrefix' | t }}
-              <a
-                href="https://keeperpass.com/privacy-policy"
-                target="_blank"
-                rel="noopener"
-                class="text-accent-strong font-semibold hover:underline"
-                >keeperpass.com/privacy-policy</a
-              >.
-            </p>
-          </div>
-        </div>
-      </div>
+      }
     </hlm-tabs>
   </div>
 </main>

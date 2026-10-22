@@ -1,35 +1,75 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { HlmCardImports } from '@spartan-ng/helm/card';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideExternalLink,
+  lucideFileText,
+  lucideGlobe,
+  lucideScale,
+  lucideShieldCheck,
+} from '@ng-icons/lucide';
 import { HlmSidebarTrigger } from '@spartan-ng/helm/sidebar';
 import { HlmTabsImports } from '@spartan-ng/helm/tabs';
-import { TranslatePipe } from '../../../core/i18n';
-import { Icon } from '../../../ui/icon/icon';
+import { TranslatePipe, TranslationKey } from '../../../core/i18n';
 
 type PolicyTab = 'terms' | 'privacy';
 
+/** One policy: its tab, what the card says about it, and where the full text lives. */
+interface PolicyDocument {
+  tab: PolicyTab;
+  icon: string;
+  title: TranslationKey;
+  body: TranslationKey;
+  href: string;
+  /** The address as shown — the domain and path, which is what people check. */
+  label: string;
+}
+
 /**
- * The two legal documents, behind one pair of tabs.
- *
- * `hlm-tabs` holds the selection; `activeTab` mirrors it so the rest of the component —
- * and anything driving this page programmatically — can still read and set which
- * document is showing.
+ * Terms and privacy, each summarised on a card that points at the one maintained copy on
+ * the website rather than duplicating it in the app.
  */
 @Component({
   selector: 'app-policies-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Icon, HlmCardImports, HlmSidebarTrigger, HlmTabsImports, TranslatePipe],
+  imports: [NgIcon, HlmSidebarTrigger, HlmTabsImports, TranslatePipe],
+  providers: [
+    provideIcons({
+      lucideExternalLink,
+      lucideFileText,
+      lucideGlobe,
+      lucideScale,
+      lucideShieldCheck,
+    }),
+  ],
   templateUrl: './policies-page.html',
-  /** Fills the shell's view area — see `ItemsPage` for why routed views position themselves. */
   host: { class: 'bg-card absolute inset-x-0 bottom-0 top-[var(--inset-top,0px)] flex flex-col' },
 })
 export class PoliciesPage {
   readonly activeTab = signal<PolicyTab>('terms');
 
+  protected readonly documents: readonly PolicyDocument[] = [
+    {
+      tab: 'terms',
+      icon: 'lucideFileText',
+      title: 'policies.termsTab',
+      body: 'policies.termsBody',
+      href: 'https://keeperpass.com/terms-of-service',
+      label: 'keeperpass.com/terms-of-service',
+    },
+    {
+      tab: 'privacy',
+      icon: 'lucideShieldCheck',
+      title: 'policies.privacyTab',
+      body: 'policies.privacyBody',
+      href: 'https://keeperpass.com/privacy-policy',
+      label: 'keeperpass.com/privacy-policy',
+    },
+  ];
+
   selectTab(tab: PolicyTab): void {
     this.activeTab.set(tab);
   }
 
-  /** `tabActivated` emits the trigger's key, which is a plain string, so it is narrowed. */
   protected onTabActivated(tab: string): void {
     if (tab === 'terms' || tab === 'privacy') {
       this.activeTab.set(tab);

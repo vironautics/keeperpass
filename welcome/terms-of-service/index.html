@@ -6,7 +6,10 @@
 <title>Terms of Service — KeeperPass</title>
 <meta name="description" content="The terms on which KeeperPass is provided: a free password manager with no account, no server, and no way for anyone but you to open your vault." />
 <link rel="canonical" href="https://keeperpass.com/terms-of-service" />
-<link rel="icon" href="/logo.svg" type="image/svg+xml" />
+<link rel="icon" href="/favicon.ico" sizes="48x48" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/favicon-96.png" type="image/png" sizes="96x96" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 <link rel="manifest" href="/site.webmanifest" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="KeeperPass" />
@@ -75,7 +78,7 @@
   <main class="mx-auto max-w-3xl px-6 py-16">
     <p class="text-xs font-bold tracking-[0.14em] uppercase" style="color: var(--accent-strong);">Legal</p>
     <h1 class="mt-3 font-black text-4xl">Terms of Service</h1>
-    <p class="mt-3 text-sm text-muted">Last updated 2 September 2026</p>
+    <p class="mt-3 text-sm text-muted">Last updated 22 October 2026</p>
 
     <div class="prose mt-10">
       <p>These terms govern your use of KeeperPass. Please read them together with the <a href="/privacy-policy">Privacy Policy</a>, which explains what data moves where.</p>
@@ -93,25 +96,25 @@
 
       <h2>3. What KeeperPass is</h2>
       <p>KeeperPass is a password manager that runs entirely in your browser. It is <strong>free of charge</strong>: there is no subscription, no paid tier, and no payment of any kind.</p>
-      <p>There is no KeeperPass account and no KeeperPass server holding your data. Your vault is encrypted on your own device and stored as a single file in <strong>your own Google Drive</strong>, under your own Google account. We are not a custodian of your data — we never hold it.</p>
-      <p>You will need a Google account to use KeeperPass. Your use of Google Drive is governed by your own agreement with Google, which we are not party to and cannot alter.</p>
+      <p>There is no KeeperPass account and no KeeperPass server holding your data. Your vault is encrypted on your own device and stored as a single file in <strong>your own Google Drive or Dropbox</strong>, under your own account with that provider. We are not a custodian of your data — we never hold it.</p>
+      <p>You will need a Google account or a Dropbox account to use KeeperPass. The web app works with either; the browser extension and the mobile app currently require Google. Your use of Google Drive or Dropbox is governed by your own agreement with that provider, which we are not party to and cannot alter.</p>
 
       <h2>4. Your master secret, and what we cannot do</h2>
       <p>Your vault is encrypted with a key derived from your master secret. That secret is never transmitted to us and is never stored anywhere outside your device. This has consequences you must accept before relying on the Service:</p>
       <ul>
-        <li><strong>We cannot recover your vault.</strong> If you forget your master secret, the contents of your vault cannot be decrypted by us, by Google, or by anyone else. The data is not locked away pending a support request — it is mathematically unavailable.</li>
-        <li><strong>There is no password reset in the usual sense.</strong> Resetting your secret does not recover anything. It moves your existing encrypted file aside, keeping it as a timestamped backup in your Drive in case you later remember the original secret, and starts a fresh, empty vault.</li>
+        <li><strong>We cannot recover your vault.</strong> If you forget your master secret, the contents of your vault cannot be decrypted by us, by Google, by Dropbox, or by anyone else. The data is not locked away pending a support request — it is mathematically unavailable.</li>
+        <li><strong>There is no password reset in the usual sense.</strong> Resetting your secret does not recover anything. It moves your existing encrypted file aside, keeping it as a timestamped backup in your Google Drive or Dropbox in case you later remember the original secret, and starts a fresh, empty vault.</li>
         <li><strong>Keeping your own copies is your responsibility.</strong> The app provides an export feature. We strongly recommend using it to keep your own backups, stored securely.</li>
-        <li><strong>Your Google account security is part of your vault's security.</strong> Anyone with access to both your Google session and your master secret can open your vault.</li>
+        <li><strong>Your Google or Dropbox account security is part of your vault's security.</strong> Anyone with access to both your Google or Dropbox session and your master secret can open your vault.</li>
       </ul>
-      <p>You accept sole responsibility for safeguarding your master secret and your Google account credentials.</p>
+      <p>You accept sole responsibility for safeguarding your master secret and your Google or Dropbox account credentials.</p>
 
       <h2>5. Acceptable use</h2>
       <p>You agree not to:</p>
       <ul>
         <li>Use the Service to store or process data you have no legal right to hold.</li>
         <li>Use it for any unlawful purpose, or to store credentials obtained without authorisation.</li>
-        <li>Interfere with the security of the Service, or with the Google authorisation flow, whether for yourself or for anyone else.</li>
+        <li>Interfere with the security of the Service, or with the Google or Dropbox authorisation flows, whether for yourself or for anyone else.</li>
         <li>Attempt to disrupt the Service or the third-party services it depends on, including by automated or excessive requests.</li>
         <li>Misrepresent the Service as your own, or use our name or branding in a way that suggests an endorsement or affiliation that does not exist.</li>
       </ul>
@@ -120,7 +123,8 @@
       <h2>6. Third-party services</h2>
       <p>KeeperPass depends on services we do not control, and it sends limited information to them as part of normal operation. Section 6 of the <a href="/privacy-policy#third-parties">Privacy Policy</a> sets out exactly what each one receives. In summary:</p>
       <ul>
-        <li><strong>Google</strong> — for sign-in and for storing your encrypted vault file.</li>
+        <li><strong>Google</strong> — for sign-in and for storing your encrypted vault file, if you choose Google Drive.</li>
+        <li><strong>Dropbox</strong> — for sign-in and for storing your encrypted vault file, if you choose Dropbox.</li>
         <li><strong>Have I Been Pwned</strong> — for checking your passwords against known breaches, using a method that never reveals the password.</li>
         <li><strong>DuckDuckGo</strong> — for fetching website icons, which reveals to that service the hostnames stored in your items.</li>
       </ul>
@@ -128,7 +132,7 @@
 
       <h2>7. Availability and changes to the Service</h2>
       <p>We provide the Service on a best-efforts basis and do not guarantee that it will be available without interruption or free from errors. We may modify, suspend, or discontinue any part of it, including the hosted web app, at any time.</p>
-      <p>Because your vault lives in your own Google Drive rather than on our infrastructure, the discontinuation of the hosted app would not delete your data. Your encrypted file would remain in your Drive, and you would retain the ability to run the software yourself.</p>
+      <p>Because your vault lives in your own Google Drive or Dropbox rather than on our infrastructure, the discontinuation of the hosted app would not delete your data. Your encrypted file would remain in your storage, and you would retain the ability to run the software yourself.</p>
 
       <h2>8. Source code</h2>
       <p>The KeeperPass source code is published at <a href="https://github.com/vironautics/keeperpass" rel="noopener">github.com/vironautics/keeperpass</a>, where you can read it and verify the claims made in these documents. Your rights to use, modify, and redistribute that code are governed by the licence terms published in that repository, not by this document. Nothing in these terms grants you any right in our name, logo, or branding.</p>
@@ -139,13 +143,13 @@
 
       <h2>10. Limitation of liability</h2>
       <p>To the fullest extent permitted by law, we are not liable for any indirect, incidental, special, or consequential loss, nor for any loss of data, loss of profits, or loss of business, arising out of or in connection with your use of the Service.</p>
-      <p>In particular, and given the design described in section 4, <strong>we are not liable for the loss of vault data</strong> resulting from a forgotten master secret, from the loss, suspension, or compromise of your Google account, from your own deletion of the vault file, from any error or action on your part, or from any failure, change, or error on Google's part. <strong>Your Google Drive account is entirely your own to manage and secure.</strong> We have no access to it beyond the narrow scope described in the Privacy Policy, and no ability to back it up, recover it, or restore anything from it on your behalf — any data loss arising from how you manage, secure, or use your own Google account is your responsibility, not ours.</p>
+      <p>In particular, and given the design described in section 4, <strong>we are not liable for the loss of vault data</strong> resulting from a forgotten master secret, from the loss, suspension, or compromise of your Google or Dropbox account, from your own deletion of the vault file, from any error or action on your part, or from any failure, change, or error on Google's or Dropbox's part. <strong>Your Google or Dropbox account is entirely your own to manage and secure.</strong> We have no access to it beyond the narrow scope described in the Privacy Policy, and no ability to back it up, recover it, or restore anything from it on your behalf — any data loss arising from how you manage, secure, or use your own Google or Dropbox account is your responsibility, not ours.</p>
       <p><strong>Nothing in these terms excludes or limits our liability</strong> for death or personal injury caused by our negligence, for fraud or fraudulent misrepresentation, or for any other liability that cannot lawfully be excluded or limited. Where our liability cannot be excluded but may be limited, it is limited to the maximum extent permitted by applicable law.</p>
       <p>Since the Service is provided free of charge, no fees have been paid to us that could form the basis of a monetary claim.</p>
 
       <h2>11. Ending your use</h2>
-      <p>You may stop using KeeperPass at any time. To remove it completely: delete the <code>keeperpass</code> folder from your Google Drive, revoke KeeperPass's access in your <a href="https://myaccount.google.com/permissions" rel="noopener">Google account permissions</a>, uninstall the browser extension, and clear your browser's site data for vault.keeperpass.com.</p>
-      <p>We may suspend or withdraw access to the hosted Service where it is being used in breach of section 5, or where required by law. Because we hold no account and no data of yours, this does not affect the vault file in your Drive.</p>
+      <p>You may stop using KeeperPass at any time. To remove it completely: delete the <code>keeperpass</code> folder from your Google Drive and revoke KeeperPass's access in your <a href="https://myaccount.google.com/permissions" rel="noopener">Google account permissions</a>, or, if you use Dropbox, delete the <code>Apps/keeperpass</code> folder and disconnect KeeperPass in your <a href="https://www.dropbox.com/account/connected_apps" rel="noopener">Dropbox connected apps</a>; then uninstall the browser extension, and clear your browser's site data for vault.keeperpass.com.</p>
+      <p>We may suspend or withdraw access to the hosted Service where it is being used in breach of section 5, or where required by law. Because we hold no account and no data of yours, this does not affect the vault file in your Google Drive or Dropbox.</p>
 
       <h2>12. Changes to these terms</h2>
       <p>We may update these terms. When we do, the "last updated" date above changes, and the revised terms take effect when published on this page. Where a change materially affects your rights, we will make that clear rather than revising silently. Continuing to use the Service after a change means you accept the revised terms; if you do not accept them, please stop using it.</p>

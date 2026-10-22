@@ -356,6 +356,9 @@ export const en = {
   'audit.compromisedPassword.empty': 'None of your passwords turned up in a known breach.',
 
   'tags.title': 'Tags',
+  'tags.subtitle': 'Labels that cut across vaults, for finding things fast',
+  'tags.openAria': 'Show items tagged {name}',
+  'tags.since': 'since {date}',
   'tags.selectMultipleAria': 'Select multiple tags',
   'tags.addTagAria': 'Add tag',
   'tags.selectedOne': '{count} tag selected',
@@ -388,6 +391,9 @@ export const en = {
     'Each one is removed from every item that has it. The items themselves are kept. This cannot be undone.',
 
   'vaults.title': 'My Vaults',
+  'vaults.subtitle': 'Separate groups of items — work, family, personal',
+  'vaults.defaultBadge': 'Default',
+  'vaults.openAria': 'Open {name}',
   'vaults.selectMultipleAria': 'Select multiple vaults',
   'vaults.newVaultAria': 'New vault',
   'vaults.selectedOne': '{count} vault selected',
@@ -482,6 +488,8 @@ export const en = {
   'layout.sync.retry': 'Retry',
 
   'policies.title': 'Policies',
+  'policies.subtitle': 'The terms you use KeeperPass under, and how your data is handled',
+  'policies.opensNewTab': 'Opens in a new tab',
   'policies.termsTab': 'Terms & Conditions',
   'policies.privacyTab': 'Privacy Policy',
   'policies.termsBody':

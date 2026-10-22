@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { VaultStore, PERSONAL_VAULT_ID } from '../../../core/vault/vault.store';
 import { VaultSyncService } from '../../../core/vault/vault-sync.service';
 import { VaultsPage } from './vaults-page';
@@ -10,6 +11,8 @@ describe('VaultsPage', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [VaultsPage],
+      // The cards link into the items list.
+      providers: [provideRouter([])],
     }).compileComponents();
 
     store = TestBed.inject(VaultStore);

@@ -1,25 +1,32 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucidePencil, lucideTag, lucideTrash2 } from '@ng-icons/lucide';
+import {
+  lucideCheckCheck,
+  lucideListChecks,
+  lucidePencil,
+  lucidePlus,
+  lucideTag,
+  lucideTags,
+  lucideTrash2,
+  lucideX,
+} from '@ng-icons/lucide';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { HlmAlertDialogImports } from '@spartan-ng/helm/alert-dialog';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmCheckbox } from '@spartan-ng/helm/checkbox';
 import { HlmDialogImports } from '@spartan-ng/helm/dialog';
-import { HlmEmptyImports } from '@spartan-ng/helm/empty';
 import { HlmFieldImports } from '@spartan-ng/helm/field';
 import { HlmInput } from '@spartan-ng/helm/input';
-import { HlmItemImports } from '@spartan-ng/helm/item';
 import { HlmSidebarTrigger } from '@spartan-ng/helm/sidebar';
 import { HlmTooltip } from '@spartan-ng/helm/tooltip';
 import { maxLength, singleLineValidator } from '../../../core/validation';
-import { TranslatePipe } from '../../../core/i18n';
+import { I18nService, TranslatePipe } from '../../../core/i18n';
 import { TagInfo } from '../../../core/models';
 import { VaultSyncService } from '../../../core/vault/vault-sync.service';
 import { VaultStore } from '../../../core/vault/vault.store';
 import { formatDate } from '../../items/format-date';
-import { Icon } from '../../../ui/icon/icon';
 
 /**
  * Tag management — reachable from the sidebar's "Tags" section via its gear
@@ -39,26 +46,36 @@ import { Icon } from '../../../ui/icon/icon';
   imports: [
     NgIcon,
     ReactiveFormsModule,
-    Icon,
+    RouterLink,
     HlmAlertDialogImports,
     HlmButton,
     HlmCheckbox,
     HlmDialogImports,
-    HlmEmptyImports,
     HlmFieldImports,
     HlmInput,
-    HlmItemImports,
     HlmSidebarTrigger,
     HlmTooltip,
     TranslatePipe,
   ],
-  providers: [provideIcons({ lucidePencil, lucideTag, lucideTrash2 })],
+  providers: [
+    provideIcons({
+      lucideCheckCheck,
+      lucideListChecks,
+      lucidePencil,
+      lucidePlus,
+      lucideTag,
+      lucideTags,
+      lucideTrash2,
+      lucideX,
+    }),
+  ],
   templateUrl: './tags-page.html',
   /** Fills the shell's view area — see `ItemsPage` for why routed views position themselves. */
   host: { class: 'bg-card absolute inset-x-0 bottom-0 top-[var(--inset-top,0px)] flex flex-col' },
 })
 export class TagsPage {
   private readonly store = inject(VaultStore);
+  private readonly i18n = inject(I18nService);
   private readonly vaultSync = inject(VaultSyncService);
 
   protected readonly tags = this.store.tags;
@@ -74,7 +91,12 @@ export class TagsPage {
    * inventing a date.
    */
   protected createdLabel(tag: TagInfo): string {
-    return tag.created ? `since ${formatDate(tag.created)}` : '';
+    return tag.created ? this.i18n.translate('tags.since', { date: formatDate(tag.created) }) : '';
+  }
+
+  /** The tag's colour as a soft wash behind its icon — the colour itself stays for the glyph. */
+  protected tint(color: string | undefined): string {
+    return color ? `color-mix(in oklab, ${color} 16%, transparent)` : 'var(--muted)';
   }
 
   // --- Bulk selection --------------------------------------------------

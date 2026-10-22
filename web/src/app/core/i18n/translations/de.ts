@@ -345,6 +345,9 @@ export const de: TranslationTable = {
   'audit.compromisedPassword.empty': 'Keines Ihrer Passwörter wurde in einem bekannten Datenleck gefunden.',
 
   'tags.title': 'Tags',
+  'tags.subtitle': 'Markierungen über alle Tresore hinweg, um Dinge schnell zu finden',
+  'tags.openAria': 'Einträge mit {name} anzeigen',
+  'tags.since': 'seit {date}',
   'tags.selectMultipleAria': 'Mehrere Tags auswählen',
   'tags.addTagAria': 'Tag hinzufügen',
   'tags.selectedOne': '{count} Tag ausgewählt',
@@ -378,6 +381,9 @@ export const de: TranslationTable = {
     'Jedes wird von jedem Eintrag entfernt, der es trägt. Die Einträge selbst bleiben erhalten. Dies kann nicht rückgängig gemacht werden.',
 
   'vaults.title': 'Meine Tresore',
+  'vaults.subtitle': 'Getrennte Gruppen von Einträgen — Arbeit, Familie, Privat',
+  'vaults.defaultBadge': 'Standard',
+  'vaults.openAria': '{name} öffnen',
   'vaults.selectMultipleAria': 'Mehrere Tresore auswählen',
   'vaults.newVaultAria': 'Neuer Tresor',
   'vaults.selectedOne': '{count} Tresor ausgewählt',
@@ -474,6 +480,8 @@ export const de: TranslationTable = {
   'layout.sync.retry': 'Erneut versuchen',
 
   'policies.title': 'Richtlinien',
+  'policies.subtitle': 'Die Bedingungen für die Nutzung von KeeperPass und der Umgang mit Ihren Daten',
+  'policies.opensNewTab': 'Öffnet sich in einem neuen Tab',
   'policies.termsTab': 'Allgemeine Geschäftsbedingungen',
   'policies.privacyTab': 'Datenschutzerklärung',
   'policies.termsBody':
